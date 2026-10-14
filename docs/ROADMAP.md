@@ -1,16 +1,17 @@
 # CEStudy Development Roadmap
 
 **Status:** Planning  
-**Approach:** Validate the problem, define a small MVP, build the responsive web app first, and defer mobile apps until the core experience proves useful.
+**Approach:** Validate the problem, define a small MVP, build the responsive web app first, and defer native mobile apps until the core experience proves useful.
 
 ## Phase 0: Project foundation
 
 - [x] Create the GitHub repository.
 - [x] Add initial project documentation.
-- [ ] Confirm repository visibility and access settings.
+- [x] Keep the repository public for now, as decided.
+- [x] Select the initial technology stack.
+- [x] Document mandatory backend security requirements.
 - [ ] Agree on the first target user and most important problem.
 - [ ] Define success metrics for a small pilot.
-- [ ] Compare candidate tech stacks and their free-tier limits before committing.
 
 **Exit condition:** The target user, first use case, MVP boundary, and initial success measures are written down.
 
@@ -32,15 +33,24 @@
 - [ ] Draft mobile-first wireframes.
 - [ ] Define the question format, answer explanations, topic tags, and content review status.
 - [ ] Decide whether accounts are necessary for the first release.
-- [ ] Define privacy, moderation, backup, and abuse-prevention requirements.
+- [ ] Refine privacy, moderation, backup, and abuse-prevention requirements for the chosen MVP.
 - [ ] Estimate database, hosting, AI, and storage costs under realistic usage.
-- [ ] Select a stack based on cost, ease of development on mobile, security, and portability.
 
 **Exit condition:** The MVP and technical design can be implemented without major unresolved decisions.
 
+## Selected initial stack
+
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS.
+- **Hosting:** Cloudflare Pages.
+- **Main backend:** Supabase PostgreSQL with RLS; Auth and Storage when needed.
+- **Source control and automation:** GitHub.
+- **Optional server-side functions:** Cloudflare Workers or Supabase Edge Functions only for specific requirements.
+
+See [Project Scope](PROJECT_SCOPE.md) for the direction and [Security Requirements](SECURITY_REQUIREMENTS.md) for mandatory security standards.
+
 ## Phase 3: Build the web MVP
 
-The exact stack and implementation tasks will be chosen after Phase 2.
+The stack is selected. Implementation tasks should follow the approved MVP scope and security requirements.
 
 Possible MVP components:
 - [ ] Responsive home and subject navigation.
@@ -48,22 +58,25 @@ Possible MVP components:
 - [ ] Practice-question flow with answer feedback.
 - [ ] Clear explanations and content-source/verification metadata.
 - [ ] Basic progress tracking if it is essential to the validated use case.
-- [ ] Minimal administration workflow for managing and reviewing content.
-- [ ] Error handling, accessibility checks, and basic analytics that respect privacy.
-- [ ] Deployment, environment configuration, and database backup plan.
+- [ ] Minimal, protected content-management workflow for managing and reviewing questions.
+- [ ] Database migrations with explicit grants and RLS policies.
+- [ ] Automated database security tests for both allowed and forbidden access.
+- [ ] Error handling, accessibility checks, and privacy-conscious analytics.
+- [ ] Deployment, environment configuration, secret management, and database/storage backup plan.
 
-**Exit condition:** A small group can use the site to complete the core study task reliably on a phone.
+**Exit condition:** A small group can use the site to complete the core study task reliably on a phone, and security checks show that unauthorized actions are denied.
 
 ## Phase 4: Test and improve
 
 - [ ] Test with a small group of students.
 - [ ] Check answer accuracy and report incorrect or unclear content.
 - [ ] Measure whether users complete practice sessions and return.
-- [ ] Fix high-impact usability and reliability issues.
+- [ ] Fix high-impact usability, security, and reliability issues.
 - [ ] Review actual costs and free-tier limits.
 - [ ] Document known limitations and support/contact process.
+- [ ] Complete the production security gate in [Security Requirements](SECURITY_REQUIREMENTS.md).
 
-**Exit condition:** User feedback and usage evidence justify the next development step.
+**Exit condition:** User feedback, usage evidence, and security testing justify the next development step.
 
 ## Phase 5: Expand carefully
 
@@ -83,6 +96,8 @@ Possible future work, only when evidence supports it:
 - [ ] Clearly distinguish verified content from unreviewed community or AI-generated content.
 - [ ] Respect copyright and require clear rights/attribution for submitted material.
 - [ ] Collect only the personal data the product actually needs.
+- [ ] Apply least privilege and review database grants, RLS policies, views, functions, and storage policies.
+- [ ] Test denial cases, including cross-user access and privilege escalation.
 - [ ] Monitor service limits, storage, backups, and recurring costs.
 - [ ] Avoid adding features just because they are technically possible.
 
@@ -92,5 +107,6 @@ Record significant choices with the date, options considered, reason, and conseq
 
 | Date | Decision | Status |
 |---|---|---|
-| 2026-10-14 | Start with product definition and a responsive web MVP; postpone mobile apps until validated | Initial direction |
-| 2026-10-14 | Keep the tech stack undecided until requirements and cost limits are reviewed | Open |
+| 2026-10-14 | Start with product definition and a responsive web MVP; postpone native mobile apps until validated | Approved direction |
+| 2026-10-14 | Use React + TypeScript + Vite + Tailwind CSS, hosted on Cloudflare Pages, with Supabase as the main backend and GitHub for development | Selected |
+| 2026-10-14 | Require database-enforced access control, least-privilege grants, RLS, secret management, and automated security tests before production | Mandatory |
