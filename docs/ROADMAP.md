@@ -6,8 +6,8 @@
 ## Current checkpoint (2026-10-15)
 
 - The repository contains the React + TypeScript + Vite + Tailwind app, 72-subject catalog, four year-level routes, Mathematics Foundations, and subject detail pages.
-- Reproducible dependency setup is committed. Latest repository CI passed on commit `d95c1b03ded0aa8df24ffb50cd6be001fa052efd`: [view run](https://github.com/justryan-n2d/CEStudy/actions/runs/38603970336).
-- The dedicated CEStudy Supabase project is initialized in Singapore. The migration and seed were applied remotely: 72 catalog rows, eight `needs-review` questions, zero published questions. RLS and read-only public grants were verified; no security-advisor lints were returned.
+- Reproducible dependency setup is committed. Security PR [#1](https://github.com/justryan-n2d/CEStudy/pull/1) updated Vitest to patched 4.1.11; [candidate CI run 38622378132](https://github.com/justryan-n2d/CEStudy/actions/runs/38622378132) passed `npm audit` with zero vulnerabilities, lint, tests, build, Pages preview, and isolated Supabase migration/RLS tests.
+- The dedicated CEStudy Supabase project is initialized in Singapore: 72 catalog rows, eight `needs-review` questions, zero published questions. RLS and read-only client grants were verified; Supabase security advisor returned no findings. A default-privilege hardening migration is applied and the database tests now cover anonymous/authenticated write denial and future defaults.
 - **Cloudflare Pages is deployed** at [https://cestudy.pages.dev](https://cestudy.pages.dev) from `justryan-n2d/CEStudy`. The user reported that the initial mobile smoke tests worked. The separate failed legacy Worker named `cestudy` was deleted after Pages was working. The chosen architecture does not require a Worker just to host the frontend; add a Worker or Edge Function only for a specific server-side feature.
 - Phase 0, Phase 1 (problem validation), and Phase 2 (MVP definition) have some unfinished evidence/checklist items. Building began before user interviews and success metrics were fully recorded; this should be corrected before expanding beyond a small technical preview.
 
@@ -70,7 +70,9 @@ Possible MVP components:
 - [x] Database migration with explicit read grants and RLS policies applied to the dedicated remote project.
 - [x] Automated local database security tests and remote checks for RLS/grants/publication status.
 - [ ] Complete accessibility and browser-error review on the deployed preview.
-- [ ] Finish Pages environment configuration, deployed-preview checks, and backup/restore planning.
+- [x] Configure Cloudflare Pages, publish the site, and add baseline security headers; the Pages preview build and deploy succeeded in CI.
+- [ ] Verify the production API connection, actual response headers/CSP behavior, and browser console/network on desktop and a 320 px viewport.
+- [x] Document a source-controlled recovery path for the current seeded-only dataset; full production backup/export and restore drill remain required before mutable student data is added.
 
 **Exit condition:** A small group can use the site to complete the core study task reliably on a phone, and security checks show that unauthorized actions are denied.
 
@@ -132,6 +134,9 @@ Record significant choices with the date, options considered, reason, and conseq
 - [x] Confirm the isolated Supabase migration, seed, and RLS policy tests pass in [GitHub Actions run 38595589226](https://github.com/justryan-n2d/CEStudy/actions/runs/38595589226).
 - [x] Generate and commit `package-lock.json`; locked installation and frontend checks pass in the lockfile-refresh workflow.
 - [x] Create the separate remote CEStudy Supabase project, apply the migration, seed data, and verify RLS, grants, draft visibility, and security-advisor output. See [remote Supabase verification](deployment/2026-10-15-remote-supabase-verification.md).
+- [x] Apply `20261014190554_client_default_privileges_hardening.sql` remotely and expand automated RLS/default-permission tests.
+- [x] Upgrade Vitest to 4.1.11; candidate CI passed `npm audit` (0 vulnerabilities), lint, tests, build, Pages deployment, and isolated Supabase security tests.
+- [x] Add baseline Cloudflare Pages security headers and CI packaging checks; the live response/CSP check remains a manual release gate.
 - [x] Connect Cloudflare Pages to `justryan-n2d/CEStudy`, configure the two CEStudy browser environment variables, and deploy the site at [https://cestudy.pages.dev](https://cestudy.pages.dev). Initial mobile smoke tests were reported successful; further viewport and browser checks remain.
 - [ ] Complete target-user validation and define pilot success measures.
 - [ ] Identify the human content reviewer; review each practice question before publishing.

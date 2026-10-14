@@ -50,7 +50,8 @@ These are user-reported functional checks, not an independent browser audit. Sti
 - Searchable and filterable 72-record subject catalog with curriculum-source notes.
 - Basic Algebra practice flow exists, but no question is published yet.
 - `package-lock.json` is committed and `npm ci` is used for reproducible installs.
-- Latest recorded GitHub Actions run on commit `d95c1b03ded0aa8df24ffb50cd6be001fa052efd` passed: [CI run 38603970336](https://github.com/justryan-n2d/CEStudy/actions/runs/38603970336).
+- Security update PR [#1](https://github.com/justryan-n2d/CEStudy/pull/1) merged as `6b69e7b`. Candidate [CI run 38622378132](https://github.com/justryan-n2d/CEStudy/actions/runs/38622378132) passed ESLint, tests, production build, `npm audit` (0 vulnerabilities), Pages preview deployment, and the isolated Supabase migration/RLS test suite.
+- CI now verifies that `dist/_redirects` and `dist/_headers` are packaged. Weekly Dependabot updates are configured for npm and GitHub Actions. The production response headers and browser CSP behavior still require an on-device/browser check.
 
 ### Supabase
 
@@ -63,6 +64,10 @@ These are user-reported functional checks, not an independent browser audit. Sti
 - The practice-question RLS policy only allows rows where `status = 'published'`.
 - The remote verification query confirmed table counts, RLS status, and grants.
 - Supabase security advisor returned no lint findings.
+- Migration `20261014190554_client_default_privileges_hardening.sql` is applied remotely. New tables, sequences, and functions created by the standard `postgres` migration owner no longer receive default client/PUBLIC grants.
+- Expanded pgTAP tests cover anonymous and authenticated reads, published-only practice visibility, denied writes, and safe defaults for future objects. CI passed these tests.
+- The managed `supabase_admin` role's default privileges could not be changed through the ordinary project database connection and remain platform-managed. No app-facing objects in `public` are owned by that role; create application objects through reviewed `postgres`-owned migrations with explicit grants and RLS.
+- The public schema currently contains only the two expected app tables and no public views/functions or Storage buckets. Performance advisor shows three unused catalog indexes at this early usage stage; these are informational, not security findings, and should be reviewed after real query usage exists.
 - A detailed record is available in [remote Supabase verification](deployment/2026-10-15-remote-supabase-verification.md).
 
 ## Architecture reminder: Pages, not a Worker
@@ -87,12 +92,14 @@ See [Cloudflare Pages setup](deployment/cloudflare-pages.md).
 
 ## Next actions, in order
 
-1. Run the remaining deployed-site checks at 320 px and desktop widths; inspect console/network errors and confirm CHED source links.
-2. Confirm public clients cannot see unpublished practice questions and that the existing RLS/read-only permissions still behave as intended.
-3. Complete accessibility and backup/restore planning, and record results.
-4. Complete student discovery and set pilot success measures. Identify a human content reviewer.
-5. Keep all sample questions unpublished until their answers and explanations are independently verified.
-6. After the release checks pass, run a small, controlled student pilot and document feedback before inviting a wider group.
+1. Confirm the deployed browser requests use the dedicated CEStudy Supabase URL and only the publishable key; the catalog can use a bundled fallback, so a visible catalog alone does not prove the live API connection.
+2. Check the live site's security response headers and browser console/network at 320 px and desktop widths; confirm routing, catalog search/filters, and CHED source links.
+3. Complete an end-to-end UI check that unpublished questions remain hidden. Database-level RLS and write-denial tests already pass in CI.
+4. Record and rehearse the current source-controlled database recovery approach. Before adding mutable student data, configure a production backup/export schedule and perform a restore drill.
+5. Complete a full repository/history secret scan and verify Cloudflare's production environment uses only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`, never a secret/service-role key.
+6. Complete student discovery and set pilot success measures. Identify a human content reviewer.
+7. Keep all sample questions unpublished until their answers and explanations are independently verified.
+8. After the release checks pass, run a small, controlled student pilot and document feedback before inviting a wider group.
 
 ## Documentation practice
 

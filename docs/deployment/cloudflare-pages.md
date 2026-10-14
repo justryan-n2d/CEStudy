@@ -1,6 +1,6 @@
 # Deploy CEStudy to Cloudflare Pages
 
-This guide covers the first *preview* and later production deployment. Keep CEStudy closed to student users until the preview and release checklist have passed.
+This guide documents CEStudy's Cloudflare Pages deployment and the remaining verification required before opening the site broadly to students.
 
 ## 1. Connect GitHub to Pages
 
@@ -19,12 +19,12 @@ Cloudflare's Git integration should build a preview for a pull request or previe
 
 ## 2. Configure browser environment variables
 
-After creating a dedicated CEStudy Supabase project and applying its reviewed migration, add these build variables in Pages **Settings → Environment variables** for the preview environment:
+After creating the dedicated CEStudy Supabase project and applying its reviewed migrations, configure these build variables in Pages **Settings → Environment variables** for the production environment and for previews when preview builds need the live database:
 
 - `VITE_SUPABASE_URL`: the CEStudy project API URL.
 - `VITE_SUPABASE_PUBLISHABLE_KEY`: the project's publishable key.
 
-Set the corresponding values separately for production only when production has been approved. These values are embedded in the browser build. Use only the publishable key, never a secret/service-role key, database password, or Supabase access token. Do not commit actual values to GitHub.
+These values are embedded in the browser build. Use only the publishable key, never a secret/service-role key, database password, or Supabase access token. Do not commit actual values to GitHub.
 
 Without these variables, the app uses its bundled public catalog fallback. With them configured, it reads subjects from Supabase and reports database configuration/read-policy errors instead of silently hiding them.
 
