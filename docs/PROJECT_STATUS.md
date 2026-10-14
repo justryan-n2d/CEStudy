@@ -6,6 +6,26 @@
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
+
+## Release verification update (2026-10-15)
+
+### Confirmed directly
+
+- The dedicated Supabase project named CEStudy is `ACTIVE_HEALTHY`; the source client reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. It never names a service-role key as browser configuration. The published source `public/_headers` allows connections only to the dedicated CEStudy Supabase host. **The actual Cloudflare Pages environment values and live browser request have not been independently inspected**, so a direct browser-network check remains required.
+- Remote database query confirmed 72 catalog subjects, 8 practice questions, 0 published questions and 8 unpublished questions. Both public tables have RLS enabled. The practice-question SELECT policy only allows `status = 'published'`; `anon` and `authenticated` have SELECT only and no public client write privileges. The Supabase security advisor returned no security lint findings.
+- CI verifies that the built Pages artifact contains `_headers` and `_redirects`. Source headers include Content Security Policy, `X-Content-Type-Options`, `X-Frame-Options`, Referrer Policy and Permissions Policy. The actual production HTTP response and CSP runtime behavior have not been verified in a browser during this audit.
+- A Gitleaks workflow now checks full Git history on push/PR, can be run manually, and scans weekly. The initial full-history scan passed: [Secret scan run 38624711552](https://github.com/justryan-n2d/CEStudy/actions/runs/38624711552).
+- An official CHED 2017 memorandum archive links the catalog's CMO No. 92, s. 2017 Civil Engineering PDF. [CHED memorandum archive](https://legacy.ched.gov.ph/2017-ched-memorandum-orders/).
+- All eight original Basic Algebra sample questions passed a mathematical answer/step consistency pre-review. No correction was identified. This is **not** the required independent human content approval; every question remains `needs-review` and unpublished. See [sample question pre-review](reviews/2026-10-15-basic-algebra-draft-review.md).
+- Backup/recovery instructions and a controlled pilot plan have been documented in [backup and recovery](deployment/backup-and-recovery.md) and [student pilot plan](plans/2026-10-15-student-pilot-plan.md). A real off-site database export, restore drill and student pilot have **not** been completed.
+
+### Not independently verified in this session
+
+The available browser/network tools could not retrieve the live Pages site or run a real browser. This is a tooling limitation, not evidence that the site is down. Production request URLs, response headers, browser console errors, 320 px/desktop layouts, route-by-route refreshes, and live CHED clicks must still be checked from a real browser before public launch. Initial mobile checks noted above were reported by the user and are not an independent browser audit.
+
+The GitHub integration successfully read the public repository but its API permission did not allow reading branch-protection settings; the public rulesets endpoint returned an empty list. The state of main-branch protection is therefore not confirmed.
+
+
 ## Phase summary
 
 | Phase | State | Notes |
