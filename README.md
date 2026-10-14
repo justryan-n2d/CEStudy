@@ -11,12 +11,12 @@ CEStudy aims to help Civil Engineering students from first year through fourth y
 - **Useful practice:** organize questions by subject, topic, and difficulty where appropriate.
 - **Trustworthy learning:** explain answers and flag uncertain or unreviewed material instead of presenting it as fact.
 - **Community contributions:** allow learning materials and questions to be contributed with clear review and attribution rules.
-- **AI-assisted, not AI-dependent:** use AI where it meaningfully improves explanations and study support.
+- **No student-facing AI in the MVP:** prioritize reviewed practice materials; consider an AI Study Helper only after real student feedback justifies it.
 - **Future-ready:** validate the web MVP before considering separate Android and iOS apps.
 
 ## Current status
 
-**Planning and product definition.** The initial stack and mandatory security baseline have been selected; implementation and production launch are not yet complete. See the [roadmap](docs/ROADMAP.md), [project scope](docs/PROJECT_SCOPE.md), and [security requirements](docs/SECURITY_REQUIREMENTS.md).
+**Planning and product definition.** The initial stack and mandatory security baseline have been selected. The MVP will not include a student-facing AI tutor or live AI API integration; implementation and production launch are not yet complete. See the [roadmap](docs/ROADMAP.md), [project scope](docs/PROJECT_SCOPE.md), and [security requirements](docs/SECURITY_REQUIREMENTS.md).
 
 ## Selected initial technology stack
 
