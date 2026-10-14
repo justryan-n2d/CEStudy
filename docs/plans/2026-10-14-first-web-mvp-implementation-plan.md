@@ -4,9 +4,9 @@
 
 **Goal:** Build the first useful, responsive CEStudy website with the full four-year BSCE subject catalog, transparent curriculum references, and one focused practice module whose material is reviewed before being labeled verified.
 
-**Architecture:** The repository currently contains planning documentation and no application source or test setup. First record and approve the architecture choice, then build a small client-rendered web app. The recommended baseline is a React + TypeScript + Vite single-page app with a typed local catalog and question set, deployed from GitHub to Cloudflare Pages. Keep the initial catalog static; add a backend only after a feature requires accounts, remote editing, or synchronized user data.
+**Architecture:** The repository currently contains planning documentation and no application source or test setup. The user has approved a responsive React + TypeScript + Vite + Tailwind CSS web app, hosted on Cloudflare Pages, with Supabase as the main backend and GitHub for source control and automation. Supabase PostgreSQL will hold the subject catalog and published practice content from the first backend-enabled release. Every exposed table must have reviewed grants and RLS policies. The browser is untrusted; it receives only a publishable key, while writes and content publication remain restricted to trusted maintenance paths in the MVP.
 
-**Tech Stack:** Not yet finalized. Recommended baseline for approval: React, TypeScript, Vite, React Router, plain responsive CSS, Vitest, React Testing Library, GitHub Actions, and Cloudflare Pages. Supabase, AI provider integrations, native Android/iOS apps, and account-based progress syncing are deferred.
+**Tech Stack:** React, TypeScript, Vite, Tailwind CSS, React Router, `@supabase/supabase-js`, Supabase PostgreSQL and RLS, Vitest, React Testing Library, Supabase database tests where practical, GitHub Actions, and Cloudflare Pages. User-facing AI, AI-generated questions, live AI API calls, account registration, cross-device progress, public submissions, and native Android/iOS apps are deferred. Supabase Auth and Storage should be added only when an approved feature needs them.
 
 ## Global Constraints
 
@@ -22,13 +22,14 @@
 - Do not publish copied third-party material without appropriate rights and attribution.
 - Keep secrets, tokens, and private user data out of the public repository.
 - Favor mobile usability, fast loading, accessibility, simple maintenance, and minimal recurring cost.
-- Do not implement account registration, cloud-synced progress, public submissions, paid features, or AI-generated answers in this first version.
-- The recommended technology stack is a proposal, not a final decision. Do not scaffold the app until Task 1's architecture decision is approved.
-- Proposed file paths below are not present in the current repository; create them only after the architecture decision is accepted.
+- Do not implement account registration, cloud-synced progress, public submissions, paid features, a student-facing AI tutor, AI-generated questions, or live AI API calls in this first version.
+- Use AI tools during development or drafting only as assistants; independently check engineering calculations, explanations, and references before publishing content.
+- The technology stack has been selected. Task 1 records the approved decision and its security boundaries; it is not a second approval gate.
+- Proposed application file paths below are not present in the current repository; create them as implementation tasks require.
 
 ---
 
-## Task 1: Approve the initial web architecture
+## Task 1: Record the approved web and backend architecture
 
 **Files:**
 - Create: `docs/decisions/0001-initial-web-architecture.md` (proposed)
@@ -37,22 +38,22 @@
 
 **Interfaces:**
 - Consumes: approved subject catalog and project scope.
-- Produces: an explicit architecture decision covering frontend, hosting, data source, testing, and what is deferred.
+- Produces: a concise decision record reflecting the already-approved frontend, hosting, Supabase backend, security controls, testing approach, and deferred features.
 
 - [ ] **Step 1: Compare the viable approaches**
 
 Document these options and their trade-offs:
-1. **Recommended:** Vite + React + TypeScript; catalog and initial reviewed study content stored as checked-in typed data; Cloudflare Pages deploys the static build from GitHub. No backend required for the initial catalog.
-2. A static HTML/CSS/JavaScript app with local data. Fewer dependencies, but more manual structure as the subject catalog and practice interface grow.
-3. A full-stack framework plus database from the beginning. More capability for accounts and content management, but adds configuration, backend permissions, and ongoing usage considerations before those features have been validated.
+1. **Selected:** Vite + React + TypeScript + Tailwind CSS; Supabase PostgreSQL stores the subject catalog and published practice content, with RLS-controlled public reads and no client-side write permissions in the MVP; Cloudflare Pages deploys the web app from GitHub.
+2. A static HTML/CSS/JavaScript app with local data. Fewer dependencies, but less aligned with the selected backend-driven catalog and content workflow.
+3. A server-rendered full-stack framework plus database. More capability than the selected approach requires for this MVP and not chosen at this time.
 
 - [ ] **Step 2: Evaluate against project constraints**
 
-The decision record must compare mobile friendliness, ease of editing through GitHub tools, testing, accessibility, deployment effort, free-tier limits, data portability, future expansion, and required secrets. State that free-tier limits can change and must be rechecked before launch.
+The decision record must summarize why the selected stack fits mobile usability, editing through GitHub, testing, accessibility, deployment, cost, data portability, and future expansion. State that service limits can change and must be rechecked before launch. Document that the Supabase publishable key is public by design and is safe only with correct grants and RLS; privileged keys must never reach the client.
 
 - [ ] **Step 3: Record the decision and its boundaries**
 
-Recommend Option 1 for approval. Keep Supabase deferred until remote content editing, accounts, or synchronized progress is required. No AI API key should be needed to render the first version. If a different option is selected, revise Tasks 2-5 before creating application files.
+Record Option 1 as already approved. Supabase PostgreSQL and RLS are part of the chosen architecture; Auth and Storage remain deferred until needed. Public content is maintained through reviewed migrations or trusted maintenance operations, not a public admin interface. No AI API key or live AI service is needed for the MVP. Do not reopen the stack decision unless the user requests a change.
 
 - [ ] **Step 4: Verify the decision record**
 
@@ -60,7 +61,7 @@ Review the document against every evaluation criterion above. Expected result: o
 
 - [ ] **Step 5: Review gate**
 
-Do not begin Task 2 until the user approves the architecture recommendation or asks for a revision.
+The user has approved the architecture. Proceed after the decision record is consistent with the current stack and security requirements.
 
 ---
 
@@ -77,6 +78,8 @@ Do not begin Task 2 until the user approves the architecture recommendation or a
 - Create: `src/test/setup.ts`
 - Create: `src/test/smoke/App.test.tsx`
 - Create: `eslint.config.js`
+- Create: `src/lib/supabase.ts`
+- Create: `.env.example` (placeholders only; no real credentials)
 
 **Interfaces:**
 - Consumes: the approved architecture decision from Task 1.
@@ -88,7 +91,7 @@ Test that the application renders the CEStudy identity, primary navigation, and 
 
 - [ ] **Step 2: Create the smallest app shell**
 
-Set up the agreed frontend stack and scripts named `dev`, `build`, `preview`, `test`, and `lint`. Use React Router only if Task 1 approves the recommended React architecture. Add a header, navigation, main region, and footer with semantic HTML. Use responsive CSS and visible keyboard focus states.
+Set up the agreed frontend stack and scripts named `dev`, `build`, `preview`, `test`, and `lint`. Add `@supabase/supabase-js` and a small client module configured from `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. These values must be placeholders in `.env.example`; never put a secret/service-role key in a `VITE_` variable. Add a header, navigation, main region, and footer with semantic HTML. Use Tailwind CSS, responsive layouts, and visible keyboard focus states. Do not make protected write operations from the browser.
 
 - [ ] **Step 3: Keep global layout separate from content**
 
@@ -110,11 +113,13 @@ Commit through the connected GitHub tools with message: `feat: scaffold responsi
 
 ---
 
-## Task 3: Build the typed subject catalog and curriculum-aware browsing
+## Task 3: Create the Supabase schema, RLS policies, and seeded catalog
 
 **Files (proposed):**
-- Create: `src/data/catalog.ts`
+- Create: `supabase/config.toml` and migration(s), initialized using the Supabase CLI
+- Create: `supabase/seed.sql` or an equivalent version-controlled seed file
 - Create: `src/types/catalog.ts`
+- Create: `src/data/catalog.ts` as a typed Supabase data-access layer
 - Create: `src/components/CurriculumNotice.tsx`
 - Create: `src/components/SubjectCard.tsx`
 - Create: `src/components/CatalogFilters.tsx`
@@ -124,22 +129,24 @@ Commit through the connected GitHub tools with message: `feat: scaffold responsi
 - Create: `src/pages/SubjectPage.tsx`
 - Create: `src/test/catalog.test.ts`
 - Create: `src/test/catalog-pages.test.tsx`
+- Create: `src/test/security/catalog-rls.test.sql` or equivalent database tests
 - Modify: `src/App.tsx`
 
 **Interfaces:**
-- Produces `YearLevel = 1 | 2 | 3 | 4`.
-- Produces a typed `CatalogSubject` record with stable `id` and `slug`, `title`, `category`, `classification`, typical placement where applicable, optional specialization, source reference, and content availability.
+- Define typed `YearLevel = 1 | 2 | 3 | 4` and `CatalogSubject` records with stable ID/slug, title, category, classification, typical placement where applicable, optional specialization, source reference, and content availability.
+- Store catalog subjects in Supabase PostgreSQL and use checked-in migrations/seed data as the source-controlled update path for the MVP.
 - Subject classification values: `ched-common-course`, `ched-specialized-course`, `supplementary-math-foundation`, and `additional-ce-review-topic`.
 - Subject availability values: `coming-soon`, `in-preparation`, and `has-published-content`.
-- The catalog module exports a single typed collection used by every catalog view.
+- The typed data-access layer reads catalog records from Supabase; the client must not receive privileged credentials.
+- Public catalog reads are intentional. Do not place private moderation notes or other non-public fields in tables readable by the `anon` role.
 
 - [ ] **Step 1: Add failing catalog contract tests**
 
-Assert that the catalog has entries for all four year levels; includes a separate Mathematics Foundations section; represents all five specialization areas; includes a curriculum source for CHED-referenced entries; and does not display generic placeholders such as `Professional Course - Specialized 1` as real course names.
+Test the catalog schema and policies. Confirm public users can read intended catalog entries, cannot insert/update/delete catalog records, and cannot access private/internal fields. Test expected denial cases using direct API/database requests, not only by hiding UI controls. Also verify seed data includes all four year levels, Mathematics Foundations, all five specialization areas, and appropriate CHED source notes.
 
 - [ ] **Step 2: Add catalog metadata**
 
-Seed the catalog from the approved design document. Preserve the distinction between common courses, specialized professional courses, supplementary math foundations, and additional CE review topics. Include the official CHED link and a note that course placement can vary by university. Preserve the sample-semester placement only where it is given in the design document.
+Initialize Supabase migrations using the documented CLI workflow. Create the subject/catalog schema and constraints; enable RLS on every exposed table; configure grants and explicit policies together. Public roles may select intentionally public catalog information only. Do not grant public insert, update, or delete access. Seed the catalog from the approved design document and preserve the distinction between common courses, specialized professional courses, supplementary math foundations, and additional CE review topics. Include the official CHED link and a note that course placement can vary by university. Preserve sample-semester placement only where it is given in the design document.
 
 - [ ] **Step 3: Build the browse experience**
 
@@ -151,13 +158,13 @@ An empty search returns a helpful no-results message and a way to clear filters.
 
 - [ ] **Step 5: Verify the focused pass**
 
-Run: `npm run test -- --run src/test/catalog.test.ts src/test/catalog-pages.test.tsx`  
-Expected: data contract tests and page tests pass, including curriculum note visibility, link presence, search behavior, filter clearing, no-results behavior, and all four year-level routes.
+Run the catalog UI tests and Supabase database policy tests using the project’s documented local/test workflow.  
+Expected: schema/seed checks pass; intended public SELECT requests succeed; anonymous writes and unauthorized access fail; page tests cover curriculum note visibility, link presence, search behavior, filter clearing, no-results behavior, and all four year-level routes.
 
 - [ ] **Step 6: Run the integration checks and commit**
 
-Run: `npm run lint && npm run test -- --run && npm run build`  
-Expected: all catalog tests pass and the production build succeeds. Commit with message: `feat: add curriculum-aware CE subject catalog`.
+Run: `npm run lint && npm run test -- --run && npm run build`, plus the database security test command documented for the repository.  
+Expected: UI tests pass, production build succeeds, and database policies deny unauthorized requests. Commit with message: `feat: add secure curriculum-aware CE subject catalog`.
 
 ---
 
@@ -167,7 +174,7 @@ Expected: all catalog tests pass and the production build succeeds. Commit with 
 
 **Files (proposed):**
 - Create: `src/types/study-content.ts`
-- Create: `src/data/math-foundations/basic-algebra.ts`
+- Create: `src/data/math-foundations/basic-algebra.ts` as reviewed seed content for the Supabase question bank
 - Create: `src/components/PracticeQuestion.tsx`
 - Create: `src/components/SolutionSteps.tsx`
 - Create: `src/pages/PracticePage.tsx`
@@ -180,7 +187,7 @@ Expected: all catalog tests pass and the production build succeeds. Commit with 
 - Produces a `PracticeQuestion` record with stable `id`, `subjectId`, `topic`, `prompt`, optional answer choices, correct answer, ordered solution steps, short explanation, source note, and material status.
 - Material statuses: `draft`, `needs-review`, `verified`, `published`, `correction-required`, and `retired`.
 - The student-facing practice page consumes only items marked `published`. A status of `verified` alone is not the same as publication.
-- The first practice session is in-memory only. It does not require sign-in and does not claim to save progress between devices or sessions.
+- The first practice session does not require sign-in and does not save progress between devices or sessions. Published questions are retrieved from Supabase through public read policies; drafts and review-only questions must remain unavailable to public clients.
 
 - [ ] **Step 1: Add failing data and flow tests**
 
@@ -188,11 +195,11 @@ Cover correct and incorrect answers, retrying or moving to the next question, di
 
 - [ ] **Step 2: Create the content model and original question set**
 
-Draft 8-12 original Basic Algebra questions with calculations and worked steps. Record material status and source/review notes. The author must independently recalculate the answer and each solution step. Until a human review gate is completed, items remain `needs-review` and are not released as published.
+Draft 8-12 original Basic Algebra questions with calculations and worked steps, then seed them through a reviewed migration/seed workflow. Record status and source/review notes. Independently recalculate each answer and solution step. Until a human review gate is complete, items remain `needs-review` and must not be visible through public queries or RLS policies.
 
 - [ ] **Step 3: Implement the practice flow**
 
-Students can open a practice set, answer a question, submit an answer, see whether the answer is correct, read the solution steps, and move through the set. Avoid AI-generated answers in the live app. Do not claim a student's progress is saved after leaving the page.
+Students can open a practice set, answer a question, submit an answer, see whether the answer is correct, read the reviewed solution steps, and move through the set. There is no student-facing AI tutor, AI-generated question flow, or live AI API integration in this MVP. Do not claim a student's progress is saved after leaving the page.
 
 - [ ] **Step 4: Enforce the content publication gate**
 
@@ -224,7 +231,7 @@ Expected: all tests pass and the production build succeeds. Commit with message:
 
 - [ ] **Step 1: Add workflow checks**
 
-Configure GitHub Actions to run on pushes and pull requests. Use a supported Node.js LTS version, install dependencies with `npm ci`, then run lint, tests, and production build. Grant read-only repository permissions unless another permission has a documented need. Do not expose secrets to workflows triggered by external pull requests.
+Configure GitHub Actions to run on pushes and pull requests. Use a supported Node.js LTS version, install dependencies with `npm ci`, then run lint, UI tests, production build, and applicable database/RLS checks. Grant read-only repository permissions unless another permission has a documented need. Do not put Supabase secret/service-role credentials in client variables or CI logs; use protected secrets only for a documented trusted task, and do not expose them to untrusted pull-request workflows.
 
 - [ ] **Step 2: Add deployment instructions**
 
@@ -266,22 +273,21 @@ The first version is ready for a small student pilot when:
 
 ## Explicitly deferred
 
-- Accounts and password recovery.
-- Persistent cross-device progress, bookmarks, and analytics tied to individual students.
-- Supabase database and storage.
-- AI tutoring, AI-generated questions, or API calls that require a secret.
-- User-submitted content, moderation dashboards, and public authoring.
+- Student-facing AI tutoring, AI-generated questions, and live AI API calls. Reconsider only after student testing demonstrates a meaningful need and the accuracy, privacy, security, and cost controls have been designed.
+- Account registration, password recovery, and cross-device progress, bookmarks, or analytics tied to individual students.
+- Supabase Auth and Storage unless a specifically approved MVP feature needs them. Supabase PostgreSQL and RLS are in scope for the catalog and published practice content.
+- A public admin dashboard, user-submitted content, moderation dashboards, and public authoring. Initially, curated content is changed through reviewed migrations or trusted maintenance operations.
 - Payments and subscriptions.
 - Native Android/iOS apps.
 - Bulk entry of high-quality content into every subject.
 
 ## Open decisions before implementation
 
-1. **Architecture:** approve the recommended React + TypeScript + Vite + Cloudflare Pages baseline, or request a revised comparison before code is scaffolded.
-2. **Initial learning slice:** confirm Basic Algebra as the first practice module or name another foundation topic.
-3. **Practice-set size:** approve the recommended 8-12 questions or choose a different initial count.
-4. **Content review:** identify who performs the final human check before practice items move from `needs-review` to `published`. Until this is decided, seed material must remain unpublished.
-5. **Deployment access:** confirm that the user can connect the public GitHub repository to Cloudflare Pages through the Cloudflare dashboard. No credentials should be shared in chat.
+1. **Initial learning slice:** confirm Basic Algebra as the first practice module or name another foundation topic.
+2. **Practice-set size:** approve the recommended 8-12 questions or choose a different initial count.
+3. **Content review:** identify who performs the final human check before practice items move from `needs-review` to `published`. Until this is decided, seed material must remain unpublished.
+4. **Supabase project setup:** create or select the Supabase project and configure local/preview/production environment values through the dashboard. Do not share credentials in chat or commit real values.
+5. **Deployment access:** connect the GitHub repository to Cloudflare Pages through the Cloudflare dashboard. No credentials should be shared in chat.
 
 ## Reference links
 
@@ -289,4 +295,7 @@ The first version is ready for a small student pilot when:
 - Project scope: `docs/PROJECT_SCOPE.md`
 - Cloudflare React-to-Pages guide: https://developers.cloudflare.com/pages/framework-guides/deploy-a-react-site/
 - Cloudflare Pages limits: https://developers.cloudflare.com/pages/platform/limits/
-- Supabase plan and usage details (relevant only if a backend is introduced later): https://supabase.com/docs/guides/platform/billing-on-supabase
+- Supabase plan and usage details: https://supabase.com/docs/guides/platform/billing-on-supabase
+- Supabase RLS guide: https://supabase.com/docs/guides/database/postgres/row-level-security
+- Supabase API security guide: https://supabase.com/docs/guides/api/securing-your-api
+- Supabase production checklist: https://supabase.com/docs/guides/deployment/going-into-prod
