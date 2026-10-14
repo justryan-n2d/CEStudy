@@ -24,7 +24,8 @@ Students may have reviewer files and scattered practice questions but lack a con
 4. **Transparent sources:** record attribution and the review status of content.
 5. **Useful AI:** AI may help explain concepts, but should not be treated as an unquestionable source of engineering answers.
 6. **Privacy by default:** avoid collecting unnecessary personal information.
-7. **Incremental development:** ship a small, useful web MVP before considering native mobile apps.
+7. **Security by design:** enforce permissions in the backend and database, not only in frontend code. Follow the [security requirements](SECURITY_REQUIREMENTS.md).
+8. **Incremental development:** ship a small, useful web MVP before considering native mobile apps.
 
 ## Candidate MVP features
 
@@ -53,17 +54,19 @@ Accounts, AI features, community submissions, advanced analytics, and mobile app
 - Provide a way to report mistakes and correct them.
 - Do not imply endorsement by a university, professional organization, or licensing authority.
 
-## Technical direction
+## Selected technical direction
 
-The technology stack has not been selected. Evaluate options using:
-- Free-tier limits and likely operating costs.
-- Ease of coding, testing, and maintaining from a phone.
-- Security and access control.
-- Backup and data export options.
-- Portability and avoidance of unnecessary vendor lock-in.
-- Accessibility, performance, and mobile support.
+The initial stack was selected on 2026-10-14:
 
-Potential tools may include GitHub, a managed database/backend, and a low-cost hosting platform, but no specific choice is final.
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS.
+- **Hosting:** Cloudflare Pages.
+- **Main backend:** Supabase PostgreSQL with RLS; Supabase Auth and Storage when needed by the MVP.
+- **Source control and automation:** GitHub.
+- **Optional server-side compute:** Cloudflare Workers or Supabase Edge Functions only when a specific need justifies them.
+
+The app will begin as a responsive website/web app, designed mobile-first. Native Android and iOS apps are deferred until the web product has been validated.
+
+The mandatory security baseline is documented in [Security Requirements](SECURITY_REQUIREMENTS.md). Security requirements must be implemented and tested before production release; a technology choice by itself does not make the application secure.
 
 ## Key risks
 
@@ -71,6 +74,7 @@ Potential tools may include GitHub, a managed database/backend, and a low-cost h
 |---|---|
 | Incorrect engineering answers | Review process, source metadata, user reports, and visible verification status |
 | Copyright issues | Permission checks, attribution, and content removal process |
+| Unauthorized data access | Database-enforced RLS, least-privilege grants, server-side authorization, and automated negative tests |
 | AI costs grow unexpectedly | Usage limits, caching where appropriate, and AI as an optional feature |
 | Free-tier limits change | Monitor usage, keep backups, and review alternatives |
 | Scope becomes too large | Validate and ship one core study workflow first |
