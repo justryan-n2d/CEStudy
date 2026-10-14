@@ -6,9 +6,19 @@ CEStudy helps Civil Engineering students from first year through fourth year bro
 
 ## Current status
 
-The app scaffold, 72-subject catalog, four year-level routes, subject pages, and practice flow are implemented. Reproducible dependency setup and CI checks pass. The dedicated remote Supabase project is configured with 72 catalog entries and eight unpublished Basic Algebra draft questions; remote RLS and read-only grants were verified. **Current phase: Phase 3, deploying and verifying the web MVP.** Cloudflare Pages is not connected yet, so there is no verified live preview. See [current project status](docs/PROJECT_STATUS.md) and [roadmap](docs/ROADMAP.md). Do not open CEStudy to students yet. The eight practice questions remain **needs review** and hidden until a human reviewer checks and intentionally publishes them.
+**The website is deployed on Cloudflare Pages:** [https://cestudy.pages.dev](https://cestudy.pages.dev). The production deployment was reported successful on 2026-10-15, and the user reported that the initial mobile smoke tests worked.
 
-Do not describe CEStudy as production-ready until database security tests, deployment checks, CHED source review, backups, and mobile usability checks are complete.
+The app includes a 72-subject catalog, four year-level routes, subject pages, and a practice flow. The dedicated remote Supabase project is configured with 72 catalog entries and eight unpublished Basic Algebra draft questions. Remote RLS and read-only grants were verified. **Current phase: Phase 3, deployed web MVP and technical verification.** The site is not ready to open broadly to students: responsive/accessibility review, browser console and network checks, backup/restore planning, student validation, and content review remain. See [current project status](docs/PROJECT_STATUS.md) and [roadmap](docs/ROADMAP.md).
+
+### Deployment and smoke-test record (2026-10-15)
+
+- **Live URL:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
+- **Hosting:** Cloudflare Pages, connected to the `justryan-n2d/CEStudy` GitHub repository; production branch `main`.
+- **Build settings:** `npm run build`, output directory `dist`, repository root.
+- **User-reported manual checks:** homepage, subject catalog, catalog search and filters, Year 2 route, Mathematics Foundations, subject details/direct route refresh, and catalog display worked on mobile.
+- **Still to verify before wider release:** inspect the site at 320 px and desktop widths; review browser console/network requests; check CHED source links and unpublished-question visibility; complete accessibility, backup/restore, security, and content-review gates.
+
+Do not describe CEStudy as production-ready for a student launch until the remaining release checks have passed. The eight practice questions remain **needs review** and hidden until a human reviewer checks and intentionally publishes them.
 
 ## Product boundaries
 
@@ -38,7 +48,7 @@ Requirements: Node.js 22.12+ and npm.
 
 ## Supabase setup
 
-The dedicated remote CEStudy Supabase project has been created and the migration/seed have been applied. For local development, use the local Supabase workflow described in [the setup guide](docs/deployment/supabase-setup.md). For the hosted preview, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in Cloudflare Pages to the values from the dedicated CEStudy project. Never share credentials in chat or commit them. Only a publishable key belongs in browser code; never use a secret/service-role key or database password in a `VITE_*` variable.
+The dedicated remote CEStudy Supabase project has been created and the migration/seed have been applied. Cloudflare Pages has been configured with the browser build variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for the deployed website. For local development, use the local Supabase workflow described in [the setup guide](docs/deployment/supabase-setup.md). Never share credentials in chat or commit them. Only a publishable key belongs in browser code; never use a secret/service-role key or database password in a `VITE_*` variable.
 
 The migration grants only SELECT to anon and authenticated roles for catalog and practice tables. RLS exposes catalog entries and only practice rows whose status is published. Public write grants and policies are absent.
 
