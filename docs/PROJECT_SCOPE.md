@@ -22,7 +22,7 @@ Students may have reviewer files and scattered practice questions but lack a con
 2. **Free-first:** minimize running costs and avoid paywalls around the basic learning loop.
 3. **Accuracy before quantity:** prioritize reviewed, well-explained questions over a large unverified question bank.
 4. **Transparent sources:** record attribution and the review status of content.
-5. **Useful AI:** AI may help explain concepts, but should not be treated as an unquestionable source of engineering answers.
+5. **AI scope:** No student-facing AI tutor, AI-generated questions, or live AI API integration in the MVP. AI may help during development or content drafting, but engineering content must be independently checked before publication. Reconsider user-facing AI only after student feedback and a review of accuracy, privacy, security, and operating costs.
 6. **Privacy by default:** avoid collecting unnecessary personal information.
 7. **Security by design:** enforce permissions in the backend and database, not only in frontend code. Follow the [security requirements](SECURITY_REQUIREMENTS.md).
 8. **Incremental development:** ship a small, useful web MVP before considering native mobile apps.
@@ -36,7 +36,7 @@ Final MVP features are **not yet approved**. Candidates to validate:
 - Save questions or review progress.
 - Basic content-management and review workflow.
 
-Accounts, AI features, community submissions, advanced analytics, and mobile applications should be added only if the validated use case requires them.
+Accounts, student-facing AI, community submissions, advanced analytics, and mobile applications should be added only if the validated use case requires them. The AI Study Helper is explicitly a future option, not part of the MVP.
 
 ## Out of scope for the first version
 
@@ -79,6 +79,7 @@ The mandatory security baseline is documented in [Security Requirements](SECURIT
 | Free-tier limits change | Monitor usage, keep backups, and review alternatives |
 | Scope becomes too large | Validate and ship one core study workflow first |
 | Low student retention | Test with real students and measure return usage before expanding |
+| Unnecessary or unreliable AI feature | Exclude student-facing AI from the MVP; reconsider only with student evidence, quality checks, and cost controls |
 
 ## Open questions
 
