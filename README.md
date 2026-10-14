@@ -6,20 +6,21 @@ CEStudy helps Civil Engineering students from first year through fourth year bro
 
 ## Current status
 
-**The website is deployed on Cloudflare Pages:** [https://cestudy.pages.dev](https://cestudy.pages.dev). The production deployment was reported successful on 2026-10-15, and the user reported that the initial mobile smoke tests worked. The earlier failed legacy Cloudflare Worker named `cestudy` was subsequently deleted; the live Pages site remains the active frontend host.
+**Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev), deployed on Cloudflare Pages. The old, failed legacy Cloudflare Worker named `cestudy` was removed; Pages remains the active frontend host.
 
-The app includes a 72-subject catalog, four year-level routes, subject pages, and a practice flow. The dedicated remote Supabase project is configured with 72 catalog entries and eight unpublished Basic Algebra draft questions. Remote RLS and read-only grants were verified. The default-privilege hardening migration and expanded database tests are now in place. The security update to Vitest 4.1.11 passed the full CI suite. Latest main-branch verification [run 38623258999](https://github.com/justryan-n2d/CEStudy/actions/runs/38623258999) passed `npm audit` (0 vulnerabilities), lint, unit tests, production build, Pages deployment check, and isolated Supabase migration/RLS tests. **Current phase: Phase 3, deployed web MVP and technical verification.** The site is not ready to open broadly to students: responsive/accessibility review, browser console and network checks, backup/restore planning, student validation, and content review remain. See [current project status](docs/PROJECT_STATUS.md) and [roadmap](docs/ROADMAP.md).
+The app has a 72-subject catalog, four year-level routes, subject detail pages, and a practice flow. Automated Chromium smoke test [run 38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed **70/70 checks** against the live site. It verified the live Supabase connection and publishable key, security response headers, six direct routes, 320 px and 1440 px layouts, no captured browser errors, the CHED PDF link, and an empty published-practice set. GitHub Actions also passed lint, unit tests, dependency audit, build and isolated Supabase migration/RLS tests [in run 38627053630](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053630). Full-history Gitleaks scan passed [in run 38627053653](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053653).
+
+**Release status:** The deployed web MVP is passing its current automated technical smoke checks, but CEStudy is **not ready for a broad student launch yet**. All eight Basic Algebra items remain unpublished until a human reviewer approves them; a real private database export/restore drill and the small student pilot are also still pending. See [current project status](docs/PROJECT_STATUS.md), [pre-launch checklist](docs/deployment/launch-checklist.md), and [roadmap](docs/ROADMAP.md).
 
 ### Deployment and smoke-test record (2026-10-15)
 
 - **Live URL:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
-- **Hosting:** Cloudflare Pages, connected to the `justryan-n2d/CEStudy` GitHub repository; production branch `main`.
-- **Build settings:** `npm run build`, output directory `dist`, repository root.
-- **Security headers:** `public/_headers` sets a restrictive Content Security Policy and baseline browser security headers. CI verifies the file is packaged; the live response and CSP behavior still need a browser check.
-- **User-reported manual checks:** homepage, subject catalog, catalog search and filters, Year 2 route, Mathematics Foundations, subject details/direct route refresh, and catalog display worked on mobile.
-- **Still to verify before wider release:** inspect the site at 320 px and desktop widths; review browser console/network requests; check CHED source links and unpublished-question visibility; complete accessibility, backup/restore, security, and content-review gates.
-
-Do not describe CEStudy as production-ready for a student launch until the remaining release checks have passed. The eight practice questions remain **needs review** and hidden until a human reviewer checks and intentionally publishes them.
+- **Hosting:** Cloudflare Pages connected to `justryan-n2d/CEStudy`; production branch `main`, build command `npm run build`, output directory `dist`.
+- **Live browser check:** [Run 38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289), Chromium, 70/70 checks passed. Six routes returned HTTP 200. Responses had CSP, `X-Content-Type-Options`, `X-Frame-Options`, Referrer Policy, and Permissions Policy. The catalog loaded 72 rows from the dedicated CEStudy Supabase host with an `sb_publishable_` key; no privileged key was detected.
+- **Responsive and runtime checks:** no horizontal overflow at 320 px or 1440 px and no browser console, page, request or same-origin HTTP errors in the run.
+- **Practice privacy:** public API request is filtered to published items and returns zero rows; deployed UI shows the review gate. Independent RLS queries confirm `anon` and `authenticated` users cannot see any of the eight unpublished questions.
+- **CHED source:** the rendered CMO No. 92, s. 2017 Civil Engineering PDF link returned HTTP 200 with `application/pdf`.
+- **Still to do before a student launch:** full accessibility and physical-device review, GitHub branch-protection confirmation, a real private off-site database export and restore drill, human approval of all practice questions, and a controlled student pilot with recorded feedback.
 
 ## Product boundaries
 

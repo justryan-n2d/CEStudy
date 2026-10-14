@@ -9,22 +9,42 @@
 
 ## Release verification update (2026-10-15)
 
-### Confirmed directly
+### Live browser verification passed
 
-- The dedicated Supabase project named CEStudy is `ACTIVE_HEALTHY`; the source client reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. It never names a service-role key as browser configuration. The published source `public/_headers` allows connections only to the dedicated CEStudy Supabase host. **The actual Cloudflare Pages environment values and live browser request have not been independently inspected**, so a direct browser-network check remains required.
-- Remote database query confirmed 72 catalog subjects, 8 practice questions, 0 published questions and 8 unpublished questions. Both public tables have RLS enabled. The practice-question SELECT policy only allows `status = 'published'`; `anon` and `authenticated` have SELECT only and no public client write privileges. The Supabase security advisor returned no security lint findings.
-- CI verifies that the built Pages artifact contains `_headers` and `_redirects`. Source headers include Content Security Policy, `X-Content-Type-Options`, `X-Frame-Options`, Referrer Policy and Permissions Policy. The actual production HTTP response and CSP runtime behavior have not been verified in a browser during this audit.
-- A Gitleaks workflow now checks full Git history on push/PR, can be run manually, and scans weekly. The initial full-history scan passed: [Secret scan run 38624711552](https://github.com/justryan-n2d/CEStudy/actions/runs/38624711552).
-- An official CHED 2017 memorandum archive links the catalog's CMO No. 92, s. 2017 Civil Engineering PDF. [CHED memorandum archive](https://legacy.ched.gov.ph/2017-ched-memorandum-orders/).
-- All eight original Basic Algebra sample questions passed a mathematical answer/step consistency pre-review. No correction was identified. This is **not** the required independent human content approval; every question remains `needs-review` and unpublished. See [sample question pre-review](reviews/2026-10-15-basic-algebra-draft-review.md).
-- Backup/recovery instructions and a controlled pilot plan have been documented in [backup and recovery](deployment/backup-and-recovery.md) and [student pilot plan](plans/2026-10-15-student-pilot-plan.md). A real off-site database export, restore drill and student pilot have **not** been completed.
+Automated Chromium smoke test [run 38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed **70/70 checks** against the live Pages deployment.
 
-### Not independently verified in this session
+- Six live routes loaded directly with HTTP 200 and the expected page heading: home, catalog, Year 2, Mathematics Foundations, Basic Algebra subject detail, and Basic Algebra practice.
+- The live responses contained Content Security Policy, `X-Content-Type-Options`, `X-Frame-Options`, Referrer Policy, and Permissions Policy headers. The CSP includes the dedicated CEStudy Supabase host.
+- At 320 px and 1440 px viewport widths, Chromium measured no horizontal overflow.
+- Browser console, page, request, and same-origin HTTP error checks reported no errors.
+- Actual network requests reached `qqmdwltfgpqtcvdbcmto.supabase.co`. Catalog requests returned HTTP 200 and all 72 catalog entries. Captured API key headers used the `sb_publishable_` prefix; no privileged/service-role key was detected in browser requests. Key material is not included in the logs.
+- The practice API request used `status=eq.published`, returned HTTP 200 and zero rows. The practice screen displayed its review gate and did not show a seeded draft prompt.
+- The rendered CHED CMO No. 92, s. 2017 link matched the official Civil Engineering PDF. The PDF returned HTTP 200 and `application/pdf`.
 
-The available browser/network tools could not retrieve the live Pages site or run a real browser. This is a tooling limitation, not evidence that the site is down. Production request URLs, response headers, browser console errors, 320 px/desktop layouts, route-by-route refreshes, and live CHED clicks must still be checked from a real browser before public launch. Initial mobile checks noted above were reported by the user and are not an independent browser audit.
+This is an automated Chromium run at 320 px and 1440 px, not a full accessibility audit or testing on every physical device/browser.
 
-The GitHub integration successfully read the public repository but its API permission did not allow reading branch-protection settings; the public rulesets endpoint returned an empty list. The state of main-branch protection is therefore not confirmed.
+### Database access and privacy confirmed
 
+- The dedicated Supabase project named CEStudy is `ACTIVE_HEALTHY`, with project ref `qqmdwltfgpqtcvdbcmto`.
+- Remote query confirmed 72 catalog subjects and eight practice questions, all with `needs-review`; published count remains zero.
+- Both exposed public tables have RLS enabled. The practice SELECT policy exposes only rows where `status = 'published'`; client roles `anon` and `authenticated` have SELECT only, with no client INSERT/UPDATE/DELETE grants.
+- Queries executed under both `anon` and `authenticated` returned 72 catalog rows and zero practice rows, including zero unpublished rows.
+- Supabase security advisor returned no security lint findings. Default-privilege hardening is applied for objects created through standard `postgres`-owned migrations.
+
+### Secret scanning and dependency CI
+
+- Full-history Gitleaks scan passed on latest source commit: [run 38627053653](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053653). The workflow checks pushes and pull requests, supports manual runs, and scans weekly. A scan is useful protection but does not replace rotating any credential if a leak is ever identified.
+- Latest CI passed lint, unit tests, dependency audit, build, Pages header/redirect packaging, and isolated Supabase migration/RLS tests: [run 38627053630](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053630).
+- An official CHED 2017 memorandum archive links CMO No. 92, s. 2017, Civil Engineering: [CHED memorandum archive](https://legacy.ched.gov.ph/2017-ched-memorandum-orders/).
+
+### Content, backup and pilot gates still open
+
+- All eight original Basic Algebra questions received a mathematical answer/step consistency pre-review with no arithmetic mismatch found. This is not independent academic approval. All eight remain `needs-review` and unpublished until a human reviewer checks clarity, options, workings, explanations, and attribution. See [sample question pre-review](reviews/2026-10-15-basic-algebra-draft-review.md).
+- Backup and recovery instructions are documented in [backup and recovery](deployment/backup-and-recovery.md). A real private off-site database export, restore drill, and restore evidence have **not** been completed.
+- The controlled 5–8-student pilot procedure and proposed metrics are documented in [student pilot plan](plans/2026-10-15-student-pilot-plan.md). No student pilot has been run.
+- The GitHub integration cannot read the repository's branch-protection settings, and the public rulesets query returned no rulesets. Main-branch protection and required status-check settings must still be confirmed in GitHub Settings.
+
+Do not open CEStudy broadly to students until a human reviewer is identified, the pilot/review process is approved, branch protection is checked, and the required recovery safeguards are completed for the data CEStudy will hold.
 
 ## Phase summary
 
