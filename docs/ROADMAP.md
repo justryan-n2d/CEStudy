@@ -34,7 +34,7 @@
 - [ ] Define the question format, answer explanations, topic tags, and content review status.
 - [ ] Decide whether accounts are necessary for the first release.
 - [ ] Refine privacy, moderation, backup, and abuse-prevention requirements for the chosen MVP.
-- [ ] Estimate database, hosting, AI, and storage costs under realistic usage.
+- [ ] Estimate database, hosting, and storage costs under realistic usage. Estimate AI costs only if a student-facing AI feature is proposed for a later phase.
 
 **Exit condition:** The MVP and technical design can be implemented without major unresolved decisions.
 
@@ -82,7 +82,7 @@ Possible MVP components:
 
 Possible future work, only when evidence supports it:
 - [ ] User-submitted questions with moderation and attribution.
-- [ ] AI-assisted explanations and study support with cost controls.
+- [ ] Consider an optional AI Study Helper only after student testing shows a clear need; evaluate accuracy, privacy, backend security, and cost before approving it. No student-facing AI tutor or live AI API is included in the MVP.
 - [ ] Bookmarks, custom quizzes, and richer progress insights.
 - [ ] Offline-friendly behavior or downloadable reviewer sets.
 - [ ] Additional subjects and year levels.
@@ -110,3 +110,4 @@ Record significant choices with the date, options considered, reason, and conseq
 | 2026-10-14 | Start with product definition and a responsive web MVP; postpone native mobile apps until validated | Approved direction |
 | 2026-10-14 | Use React + TypeScript + Vite + Tailwind CSS, hosted on Cloudflare Pages, with Supabase as the main backend and GitHub for development | Selected |
 | 2026-10-14 | Require database-enforced access control, least-privilege grants, RLS, secret management, and automated security tests before production | Mandatory |
+| 2026-10-14 | Exclude student-facing AI tutor, AI-generated questions, and live AI API integration from the MVP; reconsider AI only after student feedback | Approved scope |
