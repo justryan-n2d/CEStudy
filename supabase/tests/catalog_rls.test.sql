@@ -1,10 +1,31 @@
 begin;
-select plan(18);
+select plan(21);
 
 select ok((select relrowsecurity from pg_class where oid='public.catalog_subjects'::regclass),'RLS enabled on catalog_subjects');
 select ok((select relrowsecurity from pg_class where oid='public.practice_questions'::regclass),'RLS enabled on practice_questions');
 select ok(exists(select 1 from pg_policies where schemaname='public' and tablename='catalog_subjects' and cmd='SELECT' and roles @> ARRAY['anon']::name[]),'catalog has a SELECT policy for anon');
 select ok(exists(select 1 from pg_policies where schemaname='public' and tablename='practice_questions' and cmd='SELECT' and roles @> ARRAY['anon']::name[] and qual like '%published%'),'practice has a published-only SELECT policy for anon');
+select ok(not exists(
+  select 1 from pg_default_acl d
+  cross join lateral aclexplode(d.defaclacl) acl
+  where d.defaclrole=(select oid from pg_roles where rolname='postgres')
+    and d.defaclnamespace='public'::regnamespace and d.defaclobjtype='r'
+    and (acl.grantee=0 or acl.grantee in (select oid from pg_roles where rolname in ('anon','authenticated')))
+),'future public tables created by postgres do not default to client/PUBLIC grants');
+select ok(not exists(
+  select 1 from pg_default_acl d
+  cross join lateral aclexplode(d.defaclacl) acl
+  where d.defaclrole=(select oid from pg_roles where rolname='postgres')
+    and d.defaclnamespace='public'::regnamespace and d.defaclobjtype='S'
+    and (acl.grantee=0 or acl.grantee in (select oid from pg_roles where rolname in ('anon','authenticated')))
+),'future public sequences created by postgres do not default to client/PUBLIC grants');
+select ok(not exists(
+  select 1 from pg_default_acl d
+  cross join lateral aclexplode(d.defaclacl) acl
+  where d.defaclrole=(select oid from pg_roles where rolname='postgres')
+    and d.defaclnamespace='public'::regnamespace and d.defaclobjtype='f'
+    and (acl.grantee=0 or acl.grantee in (select oid from pg_roles where rolname in ('anon','authenticated')))
+),'future public functions created by postgres do not default to client/PUBLIC EXECUTE');
 
 -- Add one temporary published fixture as the migration/test owner. Seeded questions remain needs-review.
 insert into public.practice_questions (
