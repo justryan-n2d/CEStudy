@@ -31,7 +31,7 @@ function recordApiResponse(kind, response) {
     apikeyIsPublishable: key.startsWith("sb_publishable_"),
     apikeyIsPrivileged: key.startsWith("sb_secret_") ||
       (key.startsWith("eyJ") && key.toLowerCase().includes("service_role")),
-    response,
+    bodyPromise: response.json().catch(() => null),
   });
 }
 
@@ -154,7 +154,7 @@ async function main() {
   for (const item of catalog) {
     if (item.status !== 200) continue;
     try {
-      const body = await item.response.json();
+      const body = await item.bodyPromise;
       if (Array.isArray(body) && body.length === 72) catalogRowsConfirmed = true;
     } catch {}
   }
@@ -180,7 +180,7 @@ async function main() {
       continue;
     }
     try {
-      const body = await item.response.json();
+      const body = await item.bodyPromise;
       practiceCounts.push(Array.isArray(body) ? body.length : null);
     } catch {
       practiceCounts.push(null);
