@@ -6,7 +6,7 @@ CEStudy helps Civil Engineering students from first year through fourth year bro
 
 ## Current status
 
-**The website is deployed on Cloudflare Pages:** [https://cestudy.pages.dev](https://cestudy.pages.dev). The production deployment was reported successful on 2026-10-15, and the user reported that the initial mobile smoke tests worked.
+**The website is deployed on Cloudflare Pages:** [https://cestudy.pages.dev](https://cestudy.pages.dev). The production deployment was reported successful on 2026-10-15, and the user reported that the initial mobile smoke tests worked. The earlier failed legacy Cloudflare Worker named `cestudy` was subsequently deleted; the live Pages site remains the active frontend host.
 
 The app includes a 72-subject catalog, four year-level routes, subject pages, and a practice flow. The dedicated remote Supabase project is configured with 72 catalog entries and eight unpublished Basic Algebra draft questions. Remote RLS and read-only grants were verified. **Current phase: Phase 3, deployed web MVP and technical verification.** The site is not ready to open broadly to students: responsive/accessibility review, browser console and network checks, backup/restore planning, student validation, and content review remain. See [current project status](docs/PROJECT_STATUS.md) and [roadmap](docs/ROADMAP.md).
 
