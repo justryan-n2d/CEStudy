@@ -38,7 +38,7 @@ The managed `supabase_admin` role's existing default privileges could not be cha
 ## CI and Pages deployment verification
 
 - Security PR [#1](https://github.com/justryan-n2d/CEStudy/pull/1) updated the development test runner to patched Vitest 4.1.11.
-- Candidate workflow run [38622378132](https://github.com/justryan-n2d/CEStudy/actions/runs/38622378132) passed:
+- Latest main-branch workflow run [38623258999](https://github.com/justryan-n2d/CEStudy/actions/runs/38623258999) passed:
   - `npm audit --audit-level=high` with **0 vulnerabilities**.
   - ESLint, frontend tests, and production build.
   - Pages preview deployment.

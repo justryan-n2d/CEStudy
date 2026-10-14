@@ -50,7 +50,7 @@ These are user-reported functional checks, not an independent browser audit. Sti
 - Searchable and filterable 72-record subject catalog with curriculum-source notes.
 - Basic Algebra practice flow exists, but no question is published yet.
 - `package-lock.json` is committed and `npm ci` is used for reproducible installs.
-- Security update PR [#1](https://github.com/justryan-n2d/CEStudy/pull/1) merged as `6b69e7b`. Candidate [CI run 38622378132](https://github.com/justryan-n2d/CEStudy/actions/runs/38622378132) passed ESLint, tests, production build, `npm audit` (0 vulnerabilities), Pages preview deployment, and the isolated Supabase migration/RLS test suite.
+- Security update PR [#1](https://github.com/justryan-n2d/CEStudy/pull/1) merged as `6b69e7b`. Latest main-branch [CI run 38623258999](https://github.com/justryan-n2d/CEStudy/actions/runs/38623258999) passed ESLint, tests, production build, `npm audit` (0 vulnerabilities), Pages deployment check, and the isolated Supabase migration/RLS test suite. The baseline migration filename now matches the remote migration version.
 - CI now verifies that `dist/_redirects` and `dist/_headers` are packaged. Weekly Dependabot updates are configured for npm and GitHub Actions. The production response headers and browser CSP behavior still require an on-device/browser check.
 
 ### Supabase

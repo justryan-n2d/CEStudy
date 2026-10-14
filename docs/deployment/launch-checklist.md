@@ -5,7 +5,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 ## Dependency and build
 
 - [x] `package-lock.json` is committed and `npm ci` succeeds.
-- [x] GitHub Actions lint, tests, frontend build, dependency audit, and Supabase database security tests passed on the candidate code in [run 38622378132](https://github.com/justryan-n2d/CEStudy/actions/runs/38622378132).
+- [x] GitHub Actions lint, tests, frontend build, dependency audit, and Supabase database security tests passed on the latest main commit in [run 38623258999](https://github.com/justryan-n2d/CEStudy/actions/runs/38623258999).
 - [x] `npm audit --audit-level=high` reports no high or critical dependency vulnerabilities; the successful audit reported 0 vulnerabilities after upgrading Vitest to 4.1.11.
 - [ ] Complete a repository and Git-history secret scan; quick current-source searches found no common Supabase secret/service-role key patterns, but are not a full history scan.
 
