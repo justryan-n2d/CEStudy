@@ -7,7 +7,7 @@
 
 - Created a separate Supabase project named `CEStudy` in the approved organization.
 - Selected region `ap-southeast-1` (Singapore) for the intended Philippines audience.
-- Applied `supabase/migrations/20261014170630_public_catalog_and_practice.sql` (source filename: `supabase/migrations/202610140001_public_catalog_and_practice.sql`; remote migration version is `20261014170630`).
+- Applied `supabase/migrations/20261014170630_public_catalog_and_practice.sql`, whose version matches the remote migration history.
 - Seeded the public subject catalog and original practice-question drafts from `supabase/seed.sql`.
 - Applied `20261014190554_client_default_privileges_hardening.sql` to the remote project.
 - Deployed the website on Cloudflare Pages at [https://cestudy.pages.dev](https://cestudy.pages.dev), connected to the public GitHub repository `justryan-n2d/CEStudy`.
