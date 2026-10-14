@@ -30,7 +30,7 @@ jobs:
       EXPECTED_PUBLISHED_QUESTION_COUNT: "0"
     steps:
       - name: Check out CEStudy
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -38,10 +38,14 @@ jobs:
       - name: Install locked app dependencies
         run: npm ci
       - name: Install temporary browser test dependency
-        run: npm install --no-save --package-lock=false playwright@1.64.0
+        run: npm install --prefix /tmp/cestudy-playwright --no-package-lock playwright@1.64.0
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        run: /tmp/cestudy-playwright/node_modules/.bin/playwright install --with-deps chromium
+      - name: Check browser test script syntax
+        run: node --check scripts/live-smoke.cjs
       - name: Run live security and responsive smoke checks
+        env:
+          PLAYWRIGHT_MODULE_PATH: /tmp/cestudy-playwright/node_modules/playwright
         run: node scripts/live-smoke.cjs
       - name: Upload screenshots and safe test summary if checks fail
         if: failure()

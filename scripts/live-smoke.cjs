@@ -1,6 +1,7 @@
 const fs = require("node:fs/promises");
 const path = require("node:path");
-const { chromium } = require("playwright");
+const playwrightModulePath = process.env.PLAYWRIGHT_MODULE_PATH || "playwright";
+const { chromium } = require(playwrightModulePath);
 
 const baseUrl = (process.env.CESTUDY_BASE_URL || "https://cestudy.pages.dev").replace(/\/$/, "");
 const expectedSupabaseHost = process.env.EXPECTED_SUPABASE_HOST || "qqmdwltfgpqtcvdbcmto.supabase.co";
