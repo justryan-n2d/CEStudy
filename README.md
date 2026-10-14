@@ -7,16 +7,25 @@ CEStudy aims to help Civil Engineering students from first year through fourth y
 ## Product direction
 
 - **Free-first:** keep the core study experience affordable and useful.
-- **Mobile-friendly:** design for students who primarily use phones.
+- **Mobile-friendly:** build a responsive web app designed for students who primarily use phones, with PWA support considered where useful.
 - **Useful practice:** organize questions by subject, topic, and difficulty where appropriate.
 - **Trustworthy learning:** explain answers and flag uncertain or unreviewed material instead of presenting it as fact.
 - **Community contributions:** allow learning materials and questions to be contributed with clear review and attribution rules.
 - **AI-assisted, not AI-dependent:** use AI where it meaningfully improves explanations and study support.
-- **Future-ready:** start with a responsive website; consider Android and iOS after validating the web MVP.
+- **Future-ready:** validate the web MVP before considering separate Android and iOS apps.
 
 ## Current status
 
-**Planning and product definition.** No production tech stack has been selected yet. See the [roadmap](docs/ROADMAP.md) and [project scope](docs/PROJECT_SCOPE.md).
+**Planning and product definition.** The initial stack and mandatory security baseline have been selected; implementation and production launch are not yet complete. See the [roadmap](docs/ROADMAP.md), [project scope](docs/PROJECT_SCOPE.md), and [security requirements](docs/SECURITY_REQUIREMENTS.md).
+
+## Selected initial technology stack
+
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS.
+- **Hosting:** Cloudflare Pages.
+- **Main backend:** Supabase, using PostgreSQL and RLS; Auth and Storage will be added as required by the approved MVP.
+- **Development workflow:** GitHub for source control and automated checks.
+
+Cloudflare Workers or Supabase Edge Functions may be introduced later only when a specific server-side requirement justifies them. The initial architecture should stay simple and avoid overlapping backend services unnecessarily.
 
 ## Planned core experience
 
@@ -28,19 +37,22 @@ CEStudy aims to help Civil Engineering students from first year through fourth y
 
 These are planned directions, not implemented features.
 
-## Development principles
+## Development and security principles
 
 - Build the smallest useful version before adding advanced features.
-- Prioritize accuracy, readability, accessibility, and low data usage.
+- Prioritize accuracy, readability, accessibility, performance, and low data usage.
 - Keep secrets and private user data out of Git.
-- Choose services based on current cost, limits, maintainability, and portability.
+- Enforce access control in PostgreSQL/Supabase and trusted backend operations, never only in the frontend.
+- Require reviewed grants, RLS policies, least privilege, and automated allow/deny tests before production release.
 - Verify important calculations and technical explanations before publication.
+- Choose services based on cost, security, maintainability, backup options, and portability.
 - Document major decisions in the repository.
 
 ## Documentation
 
 - [Project scope](docs/PROJECT_SCOPE.md)
 - [Development roadmap](docs/ROADMAP.md)
+- [Security requirements](docs/SECURITY_REQUIREMENTS.md)
 
 ## License
 
