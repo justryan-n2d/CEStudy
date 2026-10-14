@@ -26,7 +26,7 @@ Do not describe CEStudy as production-ready until database security tests, deplo
 - Supabase PostgreSQL with explicit grants and Row Level Security
 - GitHub for source control, tests, and CI
 
-See the docs folder for project scope, roadmap, security requirements, implementation plan, catalog design, architecture decision, and deployment guide.
+See the docs folder for project scope, roadmap, security requirements, implementation plan, catalog design, architecture decision, development workflow, Supabase setup, and Cloudflare Pages deployment.
 
 ## Local development
 

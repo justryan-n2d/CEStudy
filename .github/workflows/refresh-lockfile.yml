@@ -1,0 +1,61 @@
+name: Refresh npm lockfile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - ".github/workflows/refresh-lockfile.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: cestudy-lockfile-main
+  cancel-in-progress: false
+
+jobs:
+  lockfile:
+    name: Resolve, verify, and commit npm lockfile
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generate package lock
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Verify locked install
+        run: npm ci --no-audit --no-fund
+      - name: Run lint, tests, and production build
+        run: |
+          npm run lint
+          npm run test -- --run
+          npm run build
+      - name: Commit updated lockfile when needed
+        id: commit-lockfile
+        run: |
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "The committed lockfile already matches package.json."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: refresh npm dependency lockfile"
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run CI against the updated main head
+        if: steps.commit-lockfile.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ci.yml --ref main
