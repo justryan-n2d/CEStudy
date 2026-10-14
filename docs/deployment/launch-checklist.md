@@ -19,7 +19,7 @@ Do not announce or open CEStudy to student users until each blocking item is che
 - [ ] Supabase security advisors reviewed; database backup/restore strategy documented.
 - [ ] Only URL + publishable key configured in the frontend; no privileged secret exposed.
 
-## Cloudflare Pages preview
+## Cloudflare Pages deployment
 
 - [ ] GitHub repository linked to Pages; build command is `npm ci && npm run build`, output directory is `dist`, Node is 22.
 - [ ] Preview environment variables point at the CEStudy project.
