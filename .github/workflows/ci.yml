@@ -25,12 +25,20 @@ jobs:
           node-version: 22
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
       - name: Run ESLint
         run: npm run lint
       - name: Run tests
         run: npm run test -- --run
       - name: Build production assets
         run: npm run build
+      - name: Verify Pages routing and security headers are packaged
+        run: |
+          test -f dist/_redirects
+          test -f dist/_headers
+          grep -q "Content-Security-Policy" dist/_headers
+          grep -q "X-Content-Type-Options: nosniff" dist/_headers
 
   database-security:
     name: Supabase migration and RLS tests
