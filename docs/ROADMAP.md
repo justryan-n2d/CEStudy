@@ -1,7 +1,15 @@
 # CEStudy Development Roadmap
 
-**Status:** Implementation started; automated verification and deployment remain pending  
+**Status (2026-10-15):** Phase 3, web MVP build and deployment verification. The frontend and dedicated remote Supabase database are configured; Cloudflare Pages preview and student validation remain pending.  
 **Approach:** Validate the problem, define a small MVP, build the responsive web app first, and defer native mobile apps until the core experience proves useful.
+
+## Current checkpoint (2026-10-15)
+
+- The repository contains the React + TypeScript + Vite + Tailwind app, 72-subject catalog, four year-level routes, Mathematics Foundations, and subject detail pages.
+- Reproducible dependency setup is committed. Latest repository CI passed on commit `d95c1b03ded0aa8df24ffb50cd6be001fa052efd`: [view run](https://github.com/justryan-n2d/CEStudy/actions/runs/38603970336).
+- The dedicated CEStudy Supabase project is initialized in Singapore. The migration and seed were applied remotely: 72 catalog rows, eight `needs-review` questions, zero published questions. RLS and read-only public grants were verified; no security-advisor lints were returned.
+- The current active task is to configure and test **Cloudflare Pages** using the GitHub repository. The chosen architecture does not require creating a Cloudflare Worker just to host the frontend. A Worker or Edge Function should be introduced only for a specific server-side feature.
+- Phase 0, Phase 1 (problem validation), and Phase 2 (MVP definition) have some unfinished evidence/checklist items. Building began before user interviews and success metrics were fully recorded; this should be corrected before expanding beyond a small technical preview.
 
 ## Phase 0: Project foundation
 
@@ -50,19 +58,19 @@ See [Project Scope](PROJECT_SCOPE.md) for the direction and [Security Requiremen
 
 ## Phase 3: Build the web MVP
 
-The initial scaffold and catalog are committed to `main`. Source implementation must still be verified by CI and the Supabase database policy tests before being treated as release-ready.
+The initial scaffold and catalog are committed to `main`. Frontend CI and local Supabase policy tests have passed, and the dedicated remote Supabase project has also been provisioned and checked. The deployed Pages preview remains the next technical gate.
 
 Possible MVP components:
-- [ ] Responsive home and subject navigation.
-- [ ] Subject and topic pages.
-- [ ] Practice-question flow with answer feedback.
-- [ ] Clear explanations and content-source/verification metadata.
+- [x] Responsive home and subject navigation.
+- [x] Subject and topic pages.
+- [x] Practice-question flow is implemented; questions remain hidden until published.
+- [x] Content source/verification metadata is represented in the catalog and practice schema.
 - [ ] Basic progress tracking if it is essential to the validated use case.
 - [ ] Minimal, protected content-management workflow for managing and reviewing questions.
-- [ ] Database migrations with explicit grants and RLS policies.
-- [ ] Automated database security tests for both allowed and forbidden access.
-- [ ] Error handling, accessibility checks, and privacy-conscious analytics.
-- [ ] Deployment, environment configuration, secret management, and database/storage backup plan.
+- [x] Database migration with explicit read grants and RLS policies applied to the dedicated remote project.
+- [x] Automated local database security tests and remote checks for RLS/grants/publication status.
+- [ ] Complete accessibility and browser-error review on the deployed preview.
+- [ ] Finish Pages environment configuration, deployed-preview checks, and backup/restore planning.
 
 **Exit condition:** A small group can use the site to complete the core study task reliably on a phone, and security checks show that unauthorized actions are denied.
 
@@ -113,7 +121,7 @@ Record significant choices with the date, options considered, reason, and conseq
 | 2026-10-14 | Exclude student-facing AI tutor, AI-generated questions, and live AI API integration from the MVP; reconsider AI only after student feedback | Approved scope |
 
 
-## Implementation checkpoint (2026-10-14)
+## Implementation checkpoint (updated 2026-10-15)
 
 - [x] Create the initial React + TypeScript + Vite + Tailwind application shell.
 - [x] Add the curriculum note, four year-level routes, search/filterable 72-record catalog, detail pages, and Mathematics Foundations hub.
@@ -123,5 +131,7 @@ Record significant choices with the date, options considered, reason, and conseq
 - [x] Observe successful GitHub Actions app checks (ESLint, five test files, and production build all passed for the initial app commit).
 - [x] Confirm the isolated Supabase migration, seed, and RLS policy tests pass in [GitHub Actions run 38595589226](https://github.com/justryan-n2d/CEStudy/actions/runs/38595589226).
 - [x] Generate and commit `package-lock.json`; locked installation and frontend checks pass in the lockfile-refresh workflow.
-- [ ] Connect Cloudflare Pages and verify the deployed preview at 320 px and desktop widths.
-- [ ] Complete target-user validation and identify the human reviewer before publishing questions.
+- [x] Create the separate remote CEStudy Supabase project, apply the migration, seed data, and verify RLS, grants, draft visibility, and security-advisor output. See [remote Supabase verification](deployment/2026-10-15-remote-supabase-verification.md).
+- [ ] Connect Cloudflare Pages to `justryan-n2d/CEStudy`, set the two CEStudy browser environment variables, and verify the actual preview at 320 px and desktop widths.
+- [ ] Complete target-user validation and define pilot success measures.
+- [ ] Identify the human content reviewer; review each practice question before publishing.
