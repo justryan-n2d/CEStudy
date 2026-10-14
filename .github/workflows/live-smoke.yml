@@ -1,0 +1,53 @@
+name: Live website browser smoke test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "13 20 * * *"
+  workflow_run:
+    workflows: ["CEStudy CI"]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cestudy-live-smoke
+  cancel-in-progress: false
+
+jobs:
+  live-browser-smoke:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    name: Check deployed website in Chromium
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      CESTUDY_BASE_URL: https://cestudy.pages.dev
+      EXPECTED_SUPABASE_HOST: qqmdwltfgpqtcvdbcmto.supabase.co
+      EXPECTED_PUBLISHED_QUESTION_COUNT: "0"
+    steps:
+      - name: Check out CEStudy
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install locked app dependencies
+        run: npm ci
+      - name: Install temporary browser test dependency
+        run: npm install --no-save --package-lock=false playwright@1.64.0
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run live security and responsive smoke checks
+        run: node scripts/live-smoke.cjs
+      - name: Upload screenshots and safe test summary if checks fail
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cestudy-live-smoke-failure
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 7
