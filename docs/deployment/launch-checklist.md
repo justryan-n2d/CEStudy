@@ -7,7 +7,9 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] `package-lock.json` is committed and `npm ci` succeeds.
 - [x] GitHub Actions lint, tests, frontend build, dependency audit, and Supabase database security tests passed on the latest main commit in [run 38623258999](https://github.com/justryan-n2d/CEStudy/actions/runs/38623258999).
 - [x] `npm audit --audit-level=high` reports no high or critical dependency vulnerabilities; the successful audit reported 0 vulnerabilities after upgrading Vitest to 4.1.11.
-- [ ] Complete a repository and Git-history secret scan; quick current-source searches found no common Supabase secret/service-role key patterns, but are not a full history scan.
+- [x] Review `.gitignore` and current source-code search results: `.env` files, key files, `secrets/`, and `credentials/` are excluded, and searches found no common Supabase service-role key or database-URL patterns.
+- [ ] Complete a full repository/Git-history secret scan; current-source searches do not prove that older commits contain no exposed credentials.
+- [ ] In GitHub repository settings, verify whether `main` requires pull requests and passing CI status checks before merge. The current repository connection could not inspect branch-protection settings.
 
 ## Supabase
 

@@ -47,7 +47,14 @@ The managed `supabase_admin` role's existing default privileges could not be cha
 - `public/_headers` sets baseline headers including Content Security Policy, `X-Content-Type-Options`, `X-Frame-Options`, Referrer Policy, and a restrictive Permissions Policy. The artifact check confirms the file is packaged, but the actual production HTTP response and CSP behavior still require browser verification.
 - Initial mobile smoke tests reported by the user: homepage, catalog, search/filters, Year 2, Mathematics Foundations, and key subject-detail route refreshes worked.
 
-These checks do **not** independently prove that the deployed browser is calling the remote Supabase project rather than using the bundled catalog fallback. Verify that in browser network requests before release.
+## Current-source security spot-check
+
+- `.gitignore` excludes `.env`, `.env.*` (except `.env.example`), `*.pem`, `*.key`, `secrets/`, and `credentials/`.
+- `.env.example` contains placeholders only; browser config imports `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`, not a service-role key.
+- Repository code searches returned no matches for common Supabase service-role key names, `sb_secret_` patterns, PostgreSQL connection URLs, client-side `dangerouslySetInnerHTML`/`innerHTML`, `eval(`, `.insert(`, `.update(`, or `.delete(` patterns. This is a focused source search, not a comprehensive static-analysis or a full Git-history secret scan.
+- The public catalog client performs SELECT only. Practice-question reads filter for `status = 'published'`, with PostgreSQL grants and RLS as the security boundary.
+
+These checks do **not** independently prove that the deployed browser is calling the remote Supabase project rather than using the bundled catalog fallback. Verify that in browser network requests before release. A full Git-history secret scan and review of `main` branch protection settings remain open.
 
 ## Recovery and backup approach for the current MVP
 

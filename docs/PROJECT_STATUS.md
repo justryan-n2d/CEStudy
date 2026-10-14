@@ -96,10 +96,12 @@ See [Cloudflare Pages setup](deployment/cloudflare-pages.md).
 2. Check the live site's security response headers and browser console/network at 320 px and desktop widths; confirm routing, catalog search/filters, and CHED source links.
 3. Complete an end-to-end UI check that unpublished questions remain hidden. Database-level RLS and write-denial tests already pass in CI.
 4. Record and rehearse the current source-controlled database recovery approach. Before adding mutable student data, configure a production backup/export schedule and perform a restore drill.
-5. Complete a full repository/history secret scan and verify Cloudflare's production environment uses only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`, never a secret/service-role key.
-6. Complete student discovery and set pilot success measures. Identify a human content reviewer.
-7. Keep all sample questions unpublished until their answers and explanations are independently verified.
-8. After the release checks pass, run a small, controlled student pilot and document feedback before inviting a wider group.
+5. Complete a full repository/history secret scan; a focused current-source scan found no common privileged-key patterns, but it does not examine every historical commit.
+6. In GitHub repository settings, verify that `main` branch protection and required CI checks are configured as appropriate; the current connection could not inspect branch-protection settings.
+7. Verify Cloudflare's production environment uses only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`, never a secret/service-role key.
+8. Complete student discovery and set pilot success measures. Identify a human content reviewer.
+9. Keep all sample questions unpublished until their answers and explanations are independently verified.
+10. After the release checks pass, run a small, controlled student pilot and document feedback before inviting a wider group.
 
 ## Documentation practice
 
