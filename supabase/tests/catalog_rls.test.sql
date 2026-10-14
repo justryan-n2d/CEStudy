@@ -1,0 +1,15 @@
+begin;
+select plan(10);
+select ok((select relrowsecurity from pg_class where oid='public.catalog_subjects'::regclass),'RLS enabled on catalog_subjects');
+select ok((select relrowsecurity from pg_class where oid='public.practice_questions'::regclass),'RLS enabled on practice_questions');
+select ok(exists(select 1 from pg_policies where schemaname='public' and tablename='catalog_subjects' and cmd='SELECT'),'catalog has a SELECT policy');
+select ok(exists(select 1 from pg_policies where schemaname='public' and tablename='practice_questions' and cmd='SELECT'),'practice has a SELECT policy');
+set local role anon;
+select ok((select count(*) from public.catalog_subjects)>=70,'anon can read the public catalog');
+select is((select count(*) from public.practice_questions),0::bigint,'questions under review are hidden from anon');
+select throws_ok($$insert into public.catalog_subjects(slug,title,summary,category,classification,source_reference,source_note,availability,display_order) values('unauthorized-test','Unauthorized','Denied','year-level','ched-common-course','test','test','coming-soon',99999)$$,'42501',null,'anon catalog INSERT denied');
+select throws_ok($$update public.catalog_subjects set title='Tampered' where slug='calculus-1'$$,'42501',null,'anon catalog UPDATE denied');
+select throws_ok($$delete from public.catalog_subjects where slug='calculus-1'$$,'42501',null,'anon catalog DELETE denied');
+select throws_ok($$insert into public.practice_questions(id,subject_slug,topic,prompt,choices,correct_answer,solution_steps,explanation,source_note,status,display_order) values('unauthorized-question','basic-algebra','test','test','["a","b"]'::jsonb,'a','["step"]'::jsonb,'test','test','published',99999)$$,'42501',null,'anon practice INSERT/publication denied');
+select * from finish();
+rollback;

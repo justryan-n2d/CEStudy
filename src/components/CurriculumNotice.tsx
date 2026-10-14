@@ -1,0 +1,4 @@
+const CHED="https://legacy.ched.gov.ph/wp-content/uploads/2018/04/CMO-92-s.-2017-BS-Civil-Engineering.pdf";
+export function CurriculumNotice(){return <aside className="curriculum-notice" aria-labelledby="curriculum-reference-title"><div className="notice-icon" aria-hidden="true">i</div><div>
+<h2 id="curriculum-reference-title">Curriculum reference</h2><p>CEStudy uses CHED Memorandum Order No. 92, series of 2017, <em>Policies, Standards and Guidelines for the Bachelor of Science in Civil Engineering (BSCE) Program</em>, as its initial national curriculum reference. Year-level placements follow the CHED sample program of study and may differ from individual universities. Supplementary mathematics foundations are review topics, not standalone courses represented as required by that order. CEStudy is independent and is not affiliated with or endorsed by CHED.</p>
+<a href={CHED} target="_blank" rel="noreferrer">Read the CHED reference (PDF) ↗</a></div></aside>}

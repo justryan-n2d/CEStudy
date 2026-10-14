@@ -1,0 +1,12 @@
+import { useMemo,useState } from "react";
+import { CatalogFilters } from "../components/CatalogFilters";
+import { CurriculumNotice } from "../components/CurriculumNotice";
+import { SubjectCard } from "../components/SubjectCard";
+import { useCatalog } from "../hooks/useCatalog";
+export function CatalogPage(){const {subjects,loading,error}=useCatalog();const [query,setQuery]=useState("");const [year,setYear]=useState("");const [category,setCategory]=useState("");const [classification,setClassification]=useState("");const [availability,setAvailability]=useState("");
+const filtered=useMemo(()=>{const q=query.trim().toLowerCase();return subjects.filter(s=>{const mq=!q||[s.title,s.summary,...s.aliases,s.specialization??""].join(" ").toLowerCase().includes(q);const my=!year||(year==="none"?s.yearLevel===null:String(s.yearLevel)===year);return mq&&my&&(!category||s.category===category)&&(!classification||s.classification===classification)&&(!availability||s.availability===availability)})},[subjects,query,year,category,classification,availability]);
+const clear=()=>{setQuery("");setYear("");setCategory("");setClassification("");setAvailability("")};
+return <div className="page-wrap"><section className="page-intro"><span className="kicker">Browse the learning library</span><h1>Subject catalog</h1><p>Explore CE subjects across all four year levels, specialization courses, and math refreshers. Filter by what you need today.</p></section><CurriculumNotice/>
+<CatalogFilters query={query} onQueryChange={setQuery} year={year} onYearChange={setYear} category={category} onCategoryChange={setCategory} classification={classification} onClassificationChange={setClassification} availability={availability} onAvailabilityChange={setAvailability} onClear={clear}/>
+<div className="results-heading"><h2>{loading?"Loading subjects…":"Subjects and topics"}</h2><span>{loading?"":filtered.length+" result"+(filtered.length===1?"":"s")}</span></div>
+{error?<div className="state-panel state-error" role="alert"><h3>Catalog unavailable</h3><p>{error}</p><p>Check your Supabase project URL, publishable key, and public read policy.</p></div>:loading?<div className="state-panel" aria-live="polite">Loading the subject catalog…</div>:filtered.length?<div className="subject-grid">{filtered.map(s=><SubjectCard key={s.slug} subject={s}/>)}</div>:<div className="state-panel"><h3>No subjects found</h3><p>Try another search or clear one or more filters.</p><button className="button button-secondary" type="button" onClick={clear}>Clear filters</button></div>}</div>}
