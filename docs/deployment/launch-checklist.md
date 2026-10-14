@@ -27,6 +27,7 @@ Do not announce or open CEStudy to student users until each blocking item is che
 - [ ] Direct links and refreshes work on every app route.
 - [ ] Catalog search, filters, empty states, and source links work.
 - [ ] Browser console/network checks show no unexpected errors.
+- [ ] Cloudflare Pages security headers are present and Content Security Policy causes no required-resource violations.
 - [ ] Practice review gate works and no unpublished questions are leaked.
 
 ## Educational content and pilot
