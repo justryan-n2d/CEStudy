@@ -16,7 +16,7 @@ it("checks answers, reveals steps, advances, and shows the score",async()=>{cons
 expect(await screen.findByRole("heading",{name:"Solve for x: 2x = 6."})).toBeInTheDocument();await user.click(screen.getByRole("radio",{name:"x = 3"}));await user.click(screen.getByRole("button",{name:/check answer/i}));
 expect(screen.getByRole("status")).toHaveTextContent("Correct.");expect(screen.getByText("Divide both sides by 2.")).toBeInTheDocument();
 await user.click(screen.getByRole("button",{name:/next question/i}));expect(await screen.findByRole("heading",{name:"Solve for y: y + 4 = 9."})).toBeInTheDocument();
-await user.click(screen.getByRole("radio",{name:"y = 4"}));await user.click(screen.getByRole("button",{name:/check answer/i}));expect(screen.getByRole("status")).toHaveTextContent("Not quite.");expect(screen.getByText("The correct answer is y = 5.")).toBeInTheDocument();
+await user.click(screen.getByRole("radio",{name:"y = 4"}));await user.click(screen.getByRole("button",{name:/check answer/i}));expect(screen.getByRole("status")).toHaveTextContent("Not quite.");expect(screen.getByRole("status")).toHaveTextContent("The correct answer is y = 5.");
 await user.click(screen.getByRole("button",{name:/see results/i}));expect(screen.getByRole("heading",{name:/practice session complete/i})).toBeInTheDocument();expect(screen.getByText("You answered 1 out of 2 questions correctly.")).toBeInTheDocument()});
 it("keeps questions hidden when none have been published",async()=>{vi.mocked(fetchPublishedPracticeQuestions).mockResolvedValueOnce([]);render(<MemoryRouter><PracticePage/></MemoryRouter>);expect(await screen.findByRole("heading",{name:/practice questions are being reviewed/i})).toBeInTheDocument()});
 });
