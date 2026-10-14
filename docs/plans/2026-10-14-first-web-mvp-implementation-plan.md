@@ -1,10 +1,12 @@
 # CEStudy First Web MVP Implementation Plan
 
+> **Plan status note (2026-10-15):** This is the original implementation plan and records the intended task sequence. Some checkboxes below are historical and were not maintained as a live tracker. The current status source of truth is [`docs/PROJECT_STATUS.md`](../PROJECT_STATUS.md) and the [roadmap](../ROADMAP.md). The app shell/catalog, reproducible install and CI, and remote Supabase provisioning are complete. Cloudflare Pages preview configuration/verification and student validation remain pending.
+>
 > **For agentic workers:** Use the host's available task-by-task implementation workflow. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build the first useful, responsive CEStudy website with the full four-year BSCE subject catalog, transparent curriculum references, and one focused practice module whose material is reviewed before being labeled verified.
 
-**Architecture:** The repository currently contains planning documentation and no application source or test setup. The user has approved a responsive React + TypeScript + Vite + Tailwind CSS web app, hosted on Cloudflare Pages, with Supabase as the main backend and GitHub for source control and automation. Supabase PostgreSQL will hold the subject catalog and published practice content in the MVP. Every exposed table must have reviewed grants and RLS policies. The browser is untrusted; it receives only a publishable key, while writes and content publication remain restricted to trusted maintenance paths in the MVP.
+**Architecture:** The repository now contains an implemented React + TypeScript + Vite + Tailwind CSS web app and CI setup. The selected host remains Cloudflare Pages; the dedicated Supabase backend is provisioned and remotely checked, while Cloudflare Pages deployment is not yet configured. GitHub is used for source control and automation. Supabase PostgreSQL will hold the subject catalog and published practice content in the MVP. Every exposed table must have reviewed grants and RLS policies. The browser is untrusted; it receives only a publishable key, while writes and content publication remain restricted to trusted maintenance paths in the MVP.
 
 **Tech Stack:** React, TypeScript, Vite, Tailwind CSS, React Router, `@supabase/supabase-js`, Supabase PostgreSQL and RLS, Vitest, React Testing Library, Supabase database tests where practical, GitHub Actions, and Cloudflare Pages. User-facing AI, AI-generated questions, live AI API calls, account registration, cross-device progress, public submissions, and native Android/iOS apps are deferred. Supabase Auth and Storage should be added only when an approved feature needs them.
 
