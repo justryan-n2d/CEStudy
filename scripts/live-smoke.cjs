@@ -192,6 +192,7 @@ async function main() {
   );
 
   activeRoute = "/practice/basic-algebra";
+  await page.goto(baseUrl + "/practice/basic-algebra", { waitUntil: "networkidle", timeout: 45000 }).catch(() => null);
   const practiceText = await page.locator("body").innerText().catch(() => "");
   if (expectedPublishedCount === 0) {
     check(
