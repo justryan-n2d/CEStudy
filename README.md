@@ -6,7 +6,7 @@ CEStudy helps Civil Engineering students from first year through fourth year bro
 
 ## Current status
 
-The first responsive app scaffold and curriculum-aware catalog are committed to `main`; frontend and local database checks have passed; the remote Supabase project and Cloudflare Pages deployment still need configuration. The local catalog can be explored before Supabase is configured. When Supabase is configured, the app reads public catalog records through a read-only client policy. Basic Algebra questions are seeded as **needs review** and are not available to student-facing queries until a human reviewer checks them and intentionally publishes them.
+The app scaffold, 72-subject catalog, four year-level routes, subject pages, and practice flow are implemented. Reproducible dependency setup and CI checks pass. The dedicated remote Supabase project is configured with 72 catalog entries and eight unpublished Basic Algebra draft questions; remote RLS and read-only grants were verified. **Current phase: Phase 3, deploying and verifying the web MVP.** Cloudflare Pages is not connected yet, so there is no verified live preview. See [current project status](docs/PROJECT_STATUS.md) and [roadmap](docs/ROADMAP.md). Do not open CEStudy to students yet. The eight practice questions remain **needs review** and hidden until a human reviewer checks and intentionally publishes them.
 
 Do not describe CEStudy as production-ready until database security tests, deployment checks, CHED source review, backups, and mobile usability checks are complete.
 
@@ -32,19 +32,13 @@ See the docs folder for project scope, roadmap, security requirements, implement
 
 Requirements: Node.js 22.12+ and npm.
 
-1. Install packages with npm install.
-2. Start the development server using npm run dev.
-3. Run npm run lint, npm run test -- --run, and npm run build before sharing changes.
-
-Generate and commit a package lockfile from a network-enabled development environment before release. It cannot be generated reliably through repository-file editing alone.
+1. Install the exact dependency versions with `npm ci` (the lockfile is committed).
+2. Start the development server using `npm run dev`.
+3. Run `npm run lint`, `npm run test -- --run`, and `npm run build` before sharing changes.
 
 ## Supabase setup
 
-1. Create or select a Supabase project. Never share credentials in chat or commit them.
-2. Apply the SQL migration in the migrations folder.
-3. Run supabase/seed.sql through the local seed workflow or Supabase SQL Editor after the migration. It is safe to rerun.
-4. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in the local or Cloudflare Pages environment. Use only a publishable key in the browser; never use a secret/service-role key.
-5. Run the RLS tests using the Supabase CLI before production.
+The dedicated remote CEStudy Supabase project has been created and the migration/seed have been applied. For local development, use the local Supabase workflow described in [the setup guide](docs/deployment/supabase-setup.md). For the hosted preview, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in Cloudflare Pages to the values from the dedicated CEStudy project. Never share credentials in chat or commit them. Only a publishable key belongs in browser code; never use a secret/service-role key or database password in a `VITE_*` variable.
 
 The migration grants only SELECT to anon and authenticated roles for catalog and practice tables. RLS exposes catalog entries and only practice rows whose status is published. Public write grants and policies are absent.
 
