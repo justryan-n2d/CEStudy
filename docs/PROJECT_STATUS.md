@@ -67,19 +67,13 @@ Do not open CEStudy broadly to students until a human reviewer is identified, th
 - **Deployment result:** The user reported that Pages creation/deployment succeeded and that the site worked during the initial mobile checks.
 - **Legacy Worker cleanup:** The user confirmed on 2026-10-15 that the separate failed Cloudflare Worker named `cestudy` was deleted after the Pages site was working. The active frontend remains the Pages project at `https://cestudy.pages.dev`; the Worker was not required by the Pages + Supabase architecture.
 
-## User-reported smoke tests
+## User-reported and automated smoke tests
 
-The following checks were reported working on mobile after deployment:
+The following initial checks were reported working on mobile after deployment: homepage, subject catalog, catalog search and filters, Year 2, Mathematics Foundations, subject detail routes with direct refresh, and catalog display.
 
-- Homepage opens.
-- Subject catalog displays.
-- Search and catalog filters work.
-- Year 2 route opens.
-- Mathematics Foundations page opens.
-- Subject detail routes load and can be refreshed directly.
-- Catalog content appears as expected.
+The subsequent independent Chromium run [38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed 70/70 live checks, including six direct-route loads, live Supabase API and publishable-key verification, required response headers, 320 px and 1440 px overflow checks, zero browser/runtime errors, hidden unpublished questions, and the official CHED PDF link.
 
-These are user-reported functional checks, not an independent browser audit. Still pending: test at a 320 px viewport and desktop width; inspect browser console and network requests; verify CHED links; confirm unpublished practice questions remain hidden; and complete accessibility, backup/restore, and security release checks.
+Still pending before a student launch: full accessibility and physical-device review, confirmation of main-branch protection, real database export and restore drill, human question review, and the controlled student pilot. Search/filter edge-case testing has not been exhaustively automated.
 
 ## Completed and verified
 
