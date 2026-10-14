@@ -1,6 +1,6 @@
 # CEStudy Development Roadmap
 
-**Status (2026-10-15):** Phase 3, web MVP build and deployment verification. The frontend and dedicated remote Supabase database are configured; Cloudflare Pages preview and student validation remain pending.  
+**Status (2026-10-15):** Phase 3, deployed web MVP and technical verification. The site is live at [https://cestudy.pages.dev](https://cestudy.pages.dev), initial mobile smoke tests were reported successful, and the earlier failed legacy `cestudy` Worker has been deleted. Wider student release and validation remain pending.  
 **Approach:** Validate the problem, define a small MVP, build the responsive web app first, and defer native mobile apps until the core experience proves useful.
 
 ## Current checkpoint (2026-10-15)
@@ -8,7 +8,7 @@
 - The repository contains the React + TypeScript + Vite + Tailwind app, 72-subject catalog, four year-level routes, Mathematics Foundations, and subject detail pages.
 - Reproducible dependency setup is committed. Latest repository CI passed on commit `d95c1b03ded0aa8df24ffb50cd6be001fa052efd`: [view run](https://github.com/justryan-n2d/CEStudy/actions/runs/38603970336).
 - The dedicated CEStudy Supabase project is initialized in Singapore. The migration and seed were applied remotely: 72 catalog rows, eight `needs-review` questions, zero published questions. RLS and read-only public grants were verified; no security-advisor lints were returned.
-- The current active task is to configure and test **Cloudflare Pages** using the GitHub repository. The chosen architecture does not require creating a Cloudflare Worker just to host the frontend. A Worker or Edge Function should be introduced only for a specific server-side feature.
+- **Cloudflare Pages is deployed** at [https://cestudy.pages.dev](https://cestudy.pages.dev) from `justryan-n2d/CEStudy`. The user reported that the initial mobile smoke tests worked. The separate failed legacy Worker named `cestudy` was deleted after Pages was working. The chosen architecture does not require a Worker just to host the frontend; add a Worker or Edge Function only for a specific server-side feature.
 - Phase 0, Phase 1 (problem validation), and Phase 2 (MVP definition) have some unfinished evidence/checklist items. Building began before user interviews and success metrics were fully recorded; this should be corrected before expanding beyond a small technical preview.
 
 ## Phase 0: Project foundation
@@ -58,7 +58,7 @@ See [Project Scope](PROJECT_SCOPE.md) for the direction and [Security Requiremen
 
 ## Phase 3: Build the web MVP
 
-The initial scaffold and catalog are committed to `main`. Frontend CI and local Supabase policy tests have passed, and the dedicated remote Supabase project has also been provisioned and checked. The deployed Pages preview remains the next technical gate.
+The initial scaffold and catalog are committed to `main`. Frontend CI and local Supabase policy tests have passed, and the dedicated remote Supabase project has also been provisioned and checked. The Pages production site is now live at [https://cestudy.pages.dev](https://cestudy.pages.dev); responsive, browser, accessibility, backup/restore, and release checks remain.
 
 Possible MVP components:
 - [x] Responsive home and subject navigation.
@@ -132,6 +132,6 @@ Record significant choices with the date, options considered, reason, and conseq
 - [x] Confirm the isolated Supabase migration, seed, and RLS policy tests pass in [GitHub Actions run 38595589226](https://github.com/justryan-n2d/CEStudy/actions/runs/38595589226).
 - [x] Generate and commit `package-lock.json`; locked installation and frontend checks pass in the lockfile-refresh workflow.
 - [x] Create the separate remote CEStudy Supabase project, apply the migration, seed data, and verify RLS, grants, draft visibility, and security-advisor output. See [remote Supabase verification](deployment/2026-10-15-remote-supabase-verification.md).
-- [ ] Connect Cloudflare Pages to `justryan-n2d/CEStudy`, set the two CEStudy browser environment variables, and verify the actual preview at 320 px and desktop widths.
+- [x] Connect Cloudflare Pages to `justryan-n2d/CEStudy`, configure the two CEStudy browser environment variables, and deploy the site at [https://cestudy.pages.dev](https://cestudy.pages.dev). Initial mobile smoke tests were reported successful; further viewport and browser checks remain.
 - [ ] Complete target-user validation and define pilot success measures.
 - [ ] Identify the human content reviewer; review each practice question before publishing.
