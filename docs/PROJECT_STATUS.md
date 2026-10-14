@@ -25,7 +25,7 @@
 - **Build command:** `npm run build`.
 - **Build output directory:** `dist`.
 - **Deployment result:** The user reported that Pages creation/deployment succeeded and that the site worked during the initial mobile checks.
-- **Old Worker:** A separate Cloudflare Worker/application named `cestudy` had a failed Wrangler deployment and showed no active routes in the dashboard. It is not needed by the documented Pages + Supabase architecture. Review its triggers, domains, and bindings in Cloudflare before deleting it; do not confuse it with the working Pages site.
+- **Legacy Worker cleanup:** The user confirmed on 2026-10-15 that the separate failed Cloudflare Worker named `cestudy` was deleted after the Pages site was working. The active frontend remains the Pages project at `https://cestudy.pages.dev`; the Worker was not required by the Pages + Supabase architecture.
 
 ## User-reported smoke tests
 
@@ -87,13 +87,12 @@ See [Cloudflare Pages setup](deployment/cloudflare-pages.md).
 
 ## Next actions, in order
 
-1. Review the failed legacy `cestudy` Worker in the Cloudflare dashboard. Confirm it has no custom domains/routes, production traffic, or bindings needed by anything else; then delete only that Worker if the review confirms it is unused. Keep the working Pages site.
-2. Run the remaining deployed-site checks at 320 px and desktop widths; inspect console/network errors and confirm CHED source links.
-3. Confirm public clients cannot see unpublished practice questions and that the existing RLS/read-only permissions still behave as intended.
-4. Complete accessibility and backup/restore planning, and record results.
-5. Complete student discovery and set pilot success measures. Identify a human content reviewer.
-6. Keep all sample questions unpublished until their answers and explanations are independently verified.
-7. After the release checks pass, run a small, controlled student pilot and document feedback before inviting a wider group.
+1. Run the remaining deployed-site checks at 320 px and desktop widths; inspect console/network errors and confirm CHED source links.
+2. Confirm public clients cannot see unpublished practice questions and that the existing RLS/read-only permissions still behave as intended.
+3. Complete accessibility and backup/restore planning, and record results.
+4. Complete student discovery and set pilot success measures. Identify a human content reviewer.
+5. Keep all sample questions unpublished until their answers and explanations are independently verified.
+6. After the release checks pass, run a small, controlled student pilot and document feedback before inviting a wider group.
 
 ## Documentation practice
 
