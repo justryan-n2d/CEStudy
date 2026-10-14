@@ -10,7 +10,7 @@ This guide covers the first *preview* and later production deployment. Keep CESt
 4. Set the framework preset to **Vite** (or use the custom values below).
 5. Use these build settings:
 
-   - Build command: `npm ci && npm run build`
+   - Build command: `npm run build` (Cloudflare Pages installs dependencies before building)
    - Build output directory: `dist`
    - Root directory: repository root
    - Node.js: 22
