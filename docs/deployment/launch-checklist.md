@@ -5,7 +5,8 @@ Do not announce or open CEStudy to student users until each blocking item is che
 ## Dependency and build
 
 - [ ] `package-lock.json` is committed and `npm ci` succeeds.
-- [ ] GitHub Actions lint, tests, frontend build, and Supabase database security tests pass on the exact candidate commit.
+- [ ] GitHub Actions lint, tests, frontend build, dependency audit, and Supabase database security tests pass on the exact candidate commit.
+- [ ] `npm audit --audit-level=high` reports no high or critical dependency vulnerabilities.
 - [ ] No secrets, credentials, or private environment files appear in the repository.
 
 ## Supabase
