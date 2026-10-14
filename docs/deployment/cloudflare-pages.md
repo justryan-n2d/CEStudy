@@ -30,7 +30,7 @@ Without these variables, the app uses its bundled public catalog fallback. With 
 
 ## 3. Preview and routing checks
 
-The repository includes `public/_redirects` to route client-side React paths through `index.html`.
+The repository includes `public/_redirects` to route client-side React paths through `index.html`. The `public/_headers` file sets baseline browser security headers, including a Content Security Policy that permits scripts and assets from the same origin and API connections to the dedicated CEStudy Supabase project. After deployment, verify the headers in browser developer tools and confirm the console reports no Content Security Policy violations.
 
 Before release, verify the Pages preview:
 
