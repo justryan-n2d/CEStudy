@@ -21,7 +21,7 @@ Do not announce or open CEStudy to student users until each blocking item is che
 
 ## Cloudflare Pages deployment
 
-- [ ] GitHub repository linked to Pages; build command is `npm ci && npm run build`, output directory is `dist`, Node is 22.
+- [x] GitHub repository linked to Pages; build command is `npm run build`, output directory is `dist`.
 - [ ] Preview environment variables point at the CEStudy project.
 - [ ] Mobile 320 px and desktop views checked.
 - [ ] Direct links and refreshes work on every app route.
