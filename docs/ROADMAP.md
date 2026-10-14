@@ -121,6 +121,6 @@ Record significant choices with the date, options considered, reason, and conseq
 - [x] Keep all eight Basic Algebra questions in `needs-review` status and hide them from public queries until a trusted reviewer approves publication.
 - [x] Add focused UI/data tests and GitHub Actions checks for lint, tests, and production build.
 - [x] Observe successful GitHub Actions app checks (ESLint, five test files, and production build all passed for the initial app commit).
-- [ ] Confirm the new isolated Supabase CI job passes migration, seed, and RLS policy tests.
+- [x] Confirm the isolated Supabase migration, seed, and RLS policy tests pass in [GitHub Actions run 38595589226](https://github.com/justryan-n2d/CEStudy/actions/runs/38595589226).
 - [ ] Commit a lockfile and test the Cloudflare Pages preview at 320 px and desktop widths.
 - [ ] Complete target-user validation and identify the human reviewer before publishing questions.
