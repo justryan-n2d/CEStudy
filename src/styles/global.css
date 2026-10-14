@@ -4,3 +4,28 @@
 @media(max-width:850px){.header-inner{align-items:flex-start;flex-direction:column;gap:.7rem;padding-block:.9rem}.main-nav{width:100%;overflow-x:auto;padding-bottom:.15rem}.nav-link{flex-shrink:0;padding:.55rem .65rem;font-size:.81rem}.hero{grid-template-columns:1fr;gap:1.6rem;padding-top:2rem}.hero-copy{max-width:none}.hero-visual{min-height:300px}.year-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.subject-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.math-banner,.math-practice-callout{align-items:flex-start;flex-wrap:wrap}.math-banner .button,.math-practice-callout .button{margin-left:4.2rem}}
 @media(max-width:560px){.header-inner,.footer-inner,.main-content{width:min(100% - 28px,1120px)}.main-content{padding-top:.7rem;padding-bottom:2.5rem}.brand-copy small{font-size:.68rem}.hero{padding:1.7rem 0 2.3rem}.hero h1{font-size:2.5rem}.hero-copy>p{font-size:.98rem}.hero-visual{min-height:260px;border-radius:24px}.visual-ce{width:88px;height:88px;border-radius:25px;font-size:2.5rem}.floating-card{padding:.6rem}.floating-card-top{left:10px;top:18px}.floating-card-bottom{right:10px;bottom:18px}.floating-card strong{font-size:.73rem}.floating-card small{font-size:.64rem}.year-grid,.subject-grid,.filter-grid,.detail-columns{grid-template-columns:1fr}.year-card{min-height:142px}.section-heading{align-items:flex-start;flex-direction:column}.math-banner,.math-practice-callout{padding:1.1rem;gap:.8rem}.math-banner .math-symbol,.math-practice-callout .math-symbol{flex-basis:46px;width:46px;height:46px;border-radius:14px}.math-banner>div:nth-child(2),.math-practice-callout>div:nth-child(2){flex-basis:calc(100% - 60px)}.math-banner .button,.math-practice-callout .button{margin-left:0;width:100%}.stat-strip{grid-template-columns:repeat(2,minmax(0,1fr));padding:1rem}.stat-strip>div{padding-left:.7rem}.curriculum-notice{padding:.95rem;gap:.65rem}.notice-icon{flex-basis:26px;width:26px;height:26px}.footer-inner{align-items:flex-start;flex-direction:column;gap:.5rem}.footer-note{text-align:left}.detail-hero{padding:1.2rem}.review-gate{padding:1.3rem}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+/* Practice session controls and answer feedback */
+.practice-question-card{padding:clamp(1.1rem,3vw,2rem);border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow)}
+.practice-progress{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.55rem;margin-bottom:1.1rem;color:var(--muted);font-size:.78rem;font-weight:750}
+.practice-progress span:first-child{padding:.35rem .6rem;border-radius:999px;background:#edf5f5;color:var(--navy)}
+.practice-question-card h2{font-size:clamp(1.3rem,3vw,1.8rem);margin-bottom:1.25rem}
+.answer-options{display:grid;gap:.6rem;min-width:0;margin:0 0 1.2rem;padding:0;border:0}
+.answer-options legend{margin-bottom:.7rem;color:#52687b;font-size:.83rem;font-weight:750}
+.answer-option{display:flex;align-items:center;gap:.75rem;min-height:50px;padding:.75rem .9rem;border:1px solid #d5e0e7;border-radius:12px;background:#fff;color:var(--ink);cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.answer-option:hover{border-color:#8fb7c1;background:#f8fbfb}
+.answer-option input{width:18px;min-width:18px;height:18px;min-height:18px;margin:0;accent-color:var(--navy)}
+.answer-option-selected{border-color:#367b84;background:#edf7f4;box-shadow:inset 0 0 0 1px #367b84}
+.answer-options:disabled .answer-option{cursor:default}
+.answer-feedback{margin-top:1rem;padding:1.1rem;border:1px solid var(--line);border-radius:14px}
+.answer-feedback>strong{font-size:1.08rem}
+.answer-feedback p{color:#52687b;font-size:.9rem}
+.answer-feedback ol{padding-left:1.3rem;color:#344d60}
+.answer-feedback li{padding-left:.2rem;margin:.45rem 0;line-height:1.55}
+.answer-correct{border-color:#b9e0ce;background:#f1faf5}
+.answer-correct>strong{color:#206b50}
+.answer-incorrect{border-color:#efd2b7;background:#fff8f1}
+.answer-incorrect>strong{color:#92531c}
+.practice-source{margin:1rem 0 0;color:#718293;font-size:.74rem;line-height:1.55}
+.button:disabled{cursor:not-allowed;transform:none;opacity:.48;box-shadow:none}
+@media(max-width:560px){.practice-question-card{padding:1rem}.answer-feedback{padding:.9rem}.practice-progress{align-items:flex-start;flex-direction:column}}
