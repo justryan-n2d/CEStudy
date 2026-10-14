@@ -23,9 +23,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      # Use npm install only until the lockfile is committed. CI should switch to npm ci after that.
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
       - name: Run ESLint
         run: npm run lint
       - name: Run tests

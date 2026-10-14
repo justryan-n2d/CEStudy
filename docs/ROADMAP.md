@@ -122,5 +122,6 @@ Record significant choices with the date, options considered, reason, and conseq
 - [x] Add focused UI/data tests and GitHub Actions checks for lint, tests, and production build.
 - [x] Observe successful GitHub Actions app checks (ESLint, five test files, and production build all passed for the initial app commit).
 - [x] Confirm the isolated Supabase migration, seed, and RLS policy tests pass in [GitHub Actions run 38595589226](https://github.com/justryan-n2d/CEStudy/actions/runs/38595589226).
-- [ ] Commit a lockfile and test the Cloudflare Pages preview at 320 px and desktop widths.
+- [x] Generate and commit `package-lock.json`; locked installation and frontend checks pass in the lockfile-refresh workflow.
+- [ ] Connect Cloudflare Pages and verify the deployed preview at 320 px and desktop widths.
 - [ ] Complete target-user validation and identify the human reviewer before publishing questions.
