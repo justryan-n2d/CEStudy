@@ -4,7 +4,7 @@
 
 **Goal:** Build the first useful, responsive CEStudy website with the full four-year BSCE subject catalog, transparent curriculum references, and one focused practice module whose material is reviewed before being labeled verified.
 
-**Architecture:** The repository currently contains planning documentation and no application source or test setup. The user has approved a responsive React + TypeScript + Vite + Tailwind CSS web app, hosted on Cloudflare Pages, with Supabase as the main backend and GitHub for source control and automation. Supabase PostgreSQL will hold the subject catalog and published practice content from the first backend-enabled release. Every exposed table must have reviewed grants and RLS policies. The browser is untrusted; it receives only a publishable key, while writes and content publication remain restricted to trusted maintenance paths in the MVP.
+**Architecture:** The repository currently contains planning documentation and no application source or test setup. The user has approved a responsive React + TypeScript + Vite + Tailwind CSS web app, hosted on Cloudflare Pages, with Supabase as the main backend and GitHub for source control and automation. Supabase PostgreSQL will hold the subject catalog and published practice content in the MVP. Every exposed table must have reviewed grants and RLS policies. The browser is untrusted; it receives only a publishable key, while writes and content publication remain restricted to trusted maintenance paths in the MVP.
 
 **Tech Stack:** React, TypeScript, Vite, Tailwind CSS, React Router, `@supabase/supabase-js`, Supabase PostgreSQL and RLS, Vitest, React Testing Library, Supabase database tests where practical, GitHub Actions, and Cloudflare Pages. User-facing AI, AI-generated questions, live AI API calls, account registration, cross-device progress, public submissions, and native Android/iOS apps are deferred. Supabase Auth and Storage should be added only when an approved feature needs them.
 
@@ -174,7 +174,7 @@ Expected: UI tests pass, production build succeeds, and database policies deny u
 
 **Files (proposed):**
 - Create: `src/types/study-content.ts`
-- Create: `src/data/math-foundations/basic-algebra.ts` as reviewed seed content for the Supabase question bank
+- Modify: `supabase/seed.sql` (or an equivalent version-controlled seed file) to include approved Basic Algebra question records
 - Create: `src/components/PracticeQuestion.tsx`
 - Create: `src/components/SolutionSteps.tsx`
 - Create: `src/pages/PracticePage.tsx`
