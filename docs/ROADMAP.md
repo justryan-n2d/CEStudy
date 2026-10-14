@@ -120,7 +120,7 @@ Record significant choices with the date, options considered, reason, and conseq
 - [x] Add Supabase catalog/practice schema, public-read-only grants, RLS policies, and draft Basic Algebra seed records.
 - [x] Keep all eight Basic Algebra questions in `needs-review` status and hide them from public queries until a trusted reviewer approves publication.
 - [x] Add focused UI/data tests and GitHub Actions checks for lint, tests, and production build.
-- [ ] Observe successful GitHub Actions results; resolve any failures before treating the scaffold as verified.
-- [ ] Configure Supabase and run database policy tests against a controlled local instance or project.
+- [x] Observe successful GitHub Actions app checks (ESLint, five test files, and production build all passed for the initial app commit).
+- [ ] Confirm the new isolated Supabase CI job passes migration, seed, and RLS policy tests.
 - [ ] Commit a lockfile and test the Cloudflare Pages preview at 320 px and desktop widths.
 - [ ] Complete target-user validation and identify the human reviewer before publishing questions.
