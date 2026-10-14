@@ -1,0 +1,34 @@
+name: CEStudy CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cestudy-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  app-checks:
+    name: Lint, test, and build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Use npm install only until the lockfile is committed. CI should switch to npm ci after that.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Run ESLint
+        run: npm run lint
+      - name: Run tests
+        run: npm run test -- --run
+      - name: Build production assets
+        run: npm run build

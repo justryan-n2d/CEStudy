@@ -632,12 +632,12 @@ export const CATALOG_SUBJECTS:CatalogSubject[]=[
     "semester": "Second semester",
     "category": "year-level",
     "classification": "ched-common-course",
-    "specialization": null,
+    "specialization": "Construction Engineering and Management",
     "aliases": [
       "construction management"
     ],
     "sourceReference": "https://legacy.ched.gov.ph/wp-content/uploads/2018/04/CMO-92-s.-2017-BS-Civil-Engineering.pdf",
-    "sourceNote": "Typical placement follows the CHED sample program of study. Individual university curricula and semester placements may differ.",
+    "sourceNote": "Typical placement follows the CHED sample program of study. Individual university curricula and semester placements may differ. Also grouped under Construction Engineering and Management.",
     "availability": "coming-soon",
     "displayOrder": 37
   },

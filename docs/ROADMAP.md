@@ -1,6 +1,6 @@
 # CEStudy Development Roadmap
 
-**Status:** Planning  
+**Status:** Implementation started; automated verification and deployment remain pending  
 **Approach:** Validate the problem, define a small MVP, build the responsive web app first, and defer native mobile apps until the core experience proves useful.
 
 ## Phase 0: Project foundation
@@ -50,7 +50,7 @@ See [Project Scope](PROJECT_SCOPE.md) for the direction and [Security Requiremen
 
 ## Phase 3: Build the web MVP
 
-The stack is selected. Implementation tasks should follow the approved MVP scope and security requirements.
+The initial scaffold and catalog are committed to `main`. Source implementation must still be verified by CI and the Supabase database policy tests before being treated as release-ready.
 
 Possible MVP components:
 - [ ] Responsive home and subject navigation.
@@ -111,3 +111,16 @@ Record significant choices with the date, options considered, reason, and conseq
 | 2026-10-14 | Use React + TypeScript + Vite + Tailwind CSS, hosted on Cloudflare Pages, with Supabase as the main backend and GitHub for development | Selected |
 | 2026-10-14 | Require database-enforced access control, least-privilege grants, RLS, secret management, and automated security tests before production | Mandatory |
 | 2026-10-14 | Exclude student-facing AI tutor, AI-generated questions, and live AI API integration from the MVP; reconsider AI only after student feedback | Approved scope |
+
+
+## Implementation checkpoint (2026-10-14)
+
+- [x] Create the initial React + TypeScript + Vite + Tailwind application shell.
+- [x] Add the curriculum note, four year-level routes, search/filterable 72-record catalog, detail pages, and Mathematics Foundations hub.
+- [x] Add Supabase catalog/practice schema, public-read-only grants, RLS policies, and draft Basic Algebra seed records.
+- [x] Keep all eight Basic Algebra questions in `needs-review` status and hide them from public queries until a trusted reviewer approves publication.
+- [x] Add focused UI/data tests and GitHub Actions checks for lint, tests, and production build.
+- [ ] Observe successful GitHub Actions results; resolve any failures before treating the scaffold as verified.
+- [ ] Configure Supabase and run database policy tests against a controlled local instance or project.
+- [ ] Commit a lockfile and test the Cloudflare Pages preview at 320 px and desktop widths.
+- [ ] Complete target-user validation and identify the human reviewer before publishing questions.

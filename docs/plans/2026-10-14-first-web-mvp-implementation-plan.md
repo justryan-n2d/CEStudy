@@ -299,3 +299,8 @@ The first version is ready for a small student pilot when:
 - Supabase RLS guide: https://supabase.com/docs/guides/database/postgres/row-level-security
 - Supabase API security guide: https://supabase.com/docs/guides/api/securing-your-api
 - Supabase production checklist: https://supabase.com/docs/guides/deployment/going-into-prod
+
+
+## Execution notes (2026-10-14)
+
+The initial scaffold is committed to `main`. It adds the public catalog fallback, Supabase schema/seed, curriculum-aware routes, and focused UI tests. The practice flow fetches rows marked `published`; seeded Basic Algebra records remain `needs-review`. GitHub Actions is configured for lint, tests, and production build. A reproducible locked install, successful CI run, actual database policy execution, and live preview test are still pending. Do not mark these checks passed until their results are confirmed.

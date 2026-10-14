@@ -6,7 +6,7 @@ CEStudy helps Civil Engineering students from first year through fourth year bro
 
 ## Current status
 
-The responsive app scaffold and curriculum-aware catalog are being implemented. The local catalog can be explored before Supabase is configured. When Supabase is configured, the app reads public catalog records through a read-only client policy. Basic Algebra questions are seeded as **needs review** and are not available to student-facing queries until a human reviewer checks them and intentionally publishes them.
+The first responsive app scaffold and curriculum-aware catalog are committed to `main`; automated checks and backend integration still need verification. The local catalog can be explored before Supabase is configured. When Supabase is configured, the app reads public catalog records through a read-only client policy. Basic Algebra questions are seeded as **needs review** and are not available to student-facing queries until a human reviewer checks them and intentionally publishes them.
 
 Do not describe CEStudy as production-ready until database security tests, deployment checks, CHED source review, backups, and mobile usability checks are complete.
 
