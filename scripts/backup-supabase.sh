@@ -9,13 +9,25 @@ if [[ -z "${CESTUDY_DB_URL:-}" ]]; then
   echo "ERROR: CESTUDY_DB_URL is not set. Enter the CEStudy database URL in your trusted terminal first." >&2
   exit 2
 fi
+if [[ "$CESTUDY_DB_URL" != *"qqmdwltfgpqtcvdbcmto"* ]]; then
+  echo "ERROR: The connection string does not contain the expected CEStudy project reference. Stop and copy the connection string from CEStudy > Connect." >&2
+  exit 2
+fi
 
-for command_name in supabase tar sha256sum; do
+for command_name in supabase tar; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     echo "ERROR: Required command is missing: $command_name" >&2
     exit 2
   fi
 done
+if command -v sha256sum >/dev/null 2>&1; then
+  checksum() { sha256sum "$@"; }
+elif command -v shasum >/dev/null 2>&1; then
+  checksum() { shasum -a 256 "$@"; }
+else
+  echo "ERROR: Install sha256sum or shasum to write backup checksums." >&2
+  exit 2
+fi
 
 if [[ -n "${CESTUDY_GPG_RECIPIENT:-}" ]] && ! command -v gpg >/dev/null 2>&1; then
   echo "ERROR: CESTUDY_GPG_RECIPIENT was set but gpg is not installed." >&2
@@ -54,7 +66,7 @@ supabase --version > "$output_dir/cli-version.txt"
 printf 'Project: CEStudy (qqmdwltfgpqtcvdbcmto)\nExported UTC: %s\n' "$timestamp" > "$output_dir/manifest.txt"
 (
   cd "$output_dir"
-  sha256sum roles.sql schema.sql data.sql cli-version.txt manifest.txt > SHA256SUMS
+  checksum roles.sql schema.sql data.sql cli-version.txt manifest.txt > SHA256SUMS
 )
 chmod 600 "$output_dir/manifest.txt" "$output_dir/cli-version.txt" "$output_dir/SHA256SUMS"
 
@@ -68,13 +80,13 @@ if [[ -n "${CESTUDY_GPG_RECIPIENT:-}" ]]; then
   rm -rf "$output_dir"
   echo "Encrypted backup created: $archive.gpg"
   echo "Verify the encrypted archive checksum before transferring it off-site:"
-  sha256sum "$archive.gpg" > "$archive.gpg.sha256"
+  checksum "$archive.gpg" > "$archive.gpg.sha256"
   chmod 600 "$archive.gpg.sha256"
 else
   echo "Backup archive created: $archive"
   echo "The archive contains SQL data and is NOT encrypted. Transfer it only to private encrypted storage."
   echo "Folder with individual SQL files: $output_dir"
-  sha256sum "$archive" > "$archive.sha256"
+  checksum "$archive" > "$archive.sha256"
   chmod 600 "$archive.sha256"
 fi
 
