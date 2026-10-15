@@ -5,7 +5,7 @@
 ## Schedule and destination
 
 - Schedule: Sundays at 02:00 UTC (10:00 AM Philippine time); a maintainer can also start a run manually in GitHub Actions.
-- Destination: private Backblaze B2 bucket `cestudy-db-backups`, prefix `termux/weekly/`.
+- Destination: private Backblaze B2 bucket `cestudy-db-backup`, prefix `termux/weekly/`.
 - Retention: four latest complete verified encrypted backups. Each set contains an encrypted database dump, SHA-256 checksum, and verification marker. Pruning happens only after the newest set is uploaded and read back successfully.
 - Encryption: a random AES-256 key encrypts the dump with authenticated AES-GCM; the AES key is wrapped with RSA-OAEP using a 3072-bit public certificate. GitHub Actions receives only the public certificate. The private key never goes to GitHub.
 - Database client: PostgreSQL 17, matching the verified CEStudy server version 17.11.
@@ -103,23 +103,18 @@ In the same **Settings → Secrets and variables → Actions** page, open **Secr
 | `CESTUDY_DB_PORT` | `5432` |
 | `CESTUDY_DB_USER` | `postgres.qqmdwltfgpqtcvdbcmto` |
 | `CESTUDY_DB_PASSWORD` | Current CEStudy database password that passed the `psql` login test |
-| `B2_APPLICATION_KEY_ID` | Key ID for the restricted key for bucket `cestudy-db-backups` |
+| `B2_APPLICATION_KEY_ID` | Key ID for the restricted key for bucket `cestudy-db-backup` |
 | `B2_APPLICATION_KEY` | The matching Backblaze application-key secret, not its ID |
 
-The B2 key must be restricted to the exact bucket name `cestudy-db-backups` (plural) and prefix `termux/`. Read/write access is needed for upload, listing, and remote verification. Do not use a Backblaze master application key. The workflow writes under `termux/weekly/`.
+The workflow uses the existing bucket named exactly `cestudy-db-backup` and prefix `termux/weekly/`. The Backblaze key error confirmed that this is the bucket your current key is authorized to use, so the workflow has now been changed to target that same bucket. Do not create another bucket just to match the earlier mistaken plural name.
 
-**Important:** The most recent failed run showed that the configured GitHub key is instead restricted to `cestudy-db-backup` (singular). That key cannot write to the workflow's intended `cestudy-db-backups` bucket. In Backblaze, create a new restricted application key with:
-- Bucket access: `cestudy-db-backups` (select the existing plural-name bucket)
-- File name prefix: `termux/`
-- Capabilities: read and write, including listing files
-
-Copy the new key's ID and application-key value, then open GitHub **Settings → Secrets and variables → Actions → Secrets**. Edit `B2_APPLICATION_KEY_ID` and `B2_APPLICATION_KEY` so both come from the same new key. Do not mix the new ID with the old key value. Keep the old key until a backup succeeds, then revoke the old, wrongly restricted key if it is no longer used. The workflow now checks B2 access before starting the database export so a wrong bucket restriction fails quickly and clearly.
+The application key must have read and write access for the `termux/` prefix, including listing files. Do not use a Backblaze master application key. The workflow checks access to the configured bucket and prefix before starting the database export. If the preflight still fails, confirm the key is restricted to `cestudy-db-backup`, the prefix is `termux/`, and the key ID and application-key value in GitHub both belong to the same restricted key.
 
 ## 4. Configure Backblaze hidden-version cleanup
 
 The workflow hides stale B2 objects after a newer verified backup exists. Backblaze retains hidden versions unless a lifecycle rule deletes them, so configure cleanup for this prefix too. See the [Backblaze lifecycle rules guide](https://www.backblaze.com/docs/en/cloud-storage-lifecycle-rules).
 
-1. Sign in to Backblaze and open **B2 Cloud Storage → Buckets → `cestudy-db-backups`**.
+1. Sign in to Backblaze and open **B2 Cloud Storage → Buckets → `cestudy-db-backup`**.
 2. Open **Lifecycle Settings** and choose **Use custom lifecycle rules**.
 3. Add a rule for file name prefix `termux/weekly/`.
 4. Set **Days from uploading to hiding** to **None**.
@@ -147,7 +142,7 @@ After the variable, six repository secrets, lifecycle rule, and notification set
 3. Choose **Run workflow** on branch `main`.
 4. Open the run and wait for completion.
 5. Require the green success result and its summary confirming the encrypted archive, checksum, and verification marker were read back successfully.
-6. In Backblaze, inspect `cestudy-db-backups/termux/weekly/`. The current set should contain the `.dump.enc`, `.dump.enc.sha256`, and `.dump.enc.verified` files, plus up to three older complete verified sets.
+6. In Backblaze, inspect `cestudy-db-backup/termux/weekly/`. The current set should contain the `.dump.enc`, `.dump.enc.sha256`, and `.dump.enc.verified` files, plus up to three older complete verified sets.
 
 Do not count failed or cancelled runs as backups. If a run fails, inspect the failing step without sharing database credentials, B2 keys, or the private key. The workflow does not upload plaintext dumps as GitHub Actions artifacts.
 
