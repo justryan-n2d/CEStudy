@@ -1,47 +1,71 @@
 # CEStudy automated weekly database backups
 
-**Status:** Workflow and scripts are committed, but the first live backup is not active/verified until repository secrets, the age recipient variable, Backblaze lifecycle cleanup, and GitHub failure notifications are configured and the first workflow run passes.
+**Status:** The workflow and scripts are committed. The first backup is not active or verified until the certificate variable, repository secrets, Backblaze lifecycle rule, failure email notifications, and a successful manual workflow run are complete.
 
-## Schedule and storage
+## Schedule and destination
 
-- **Schedule:** Sundays at 02:00 UTC (10:00 AM Philippine time); the workflow can also be run manually from GitHub Actions.
-- **Destination:** private Backblaze B2 bucket `cestudy-db-backups`, prefix `termux/weekly/`.
-- **Retention:** latest four complete verified encrypted database dumps. Pruning runs only after the newest backup and its checksum have been read back and verified. Incomplete artifacts are hidden only after a newer successful verified backup exists.
-- **Encryption:** `age` public-key encryption before upload. The public recipient is a GitHub repository variable. The private identity must stay outside GitHub and must be backed up safely by the maintainer.
-- **Database client:** PostgreSQL 17, matching the verified CEStudy server version 17.11.
-- **Failure alerts:** GitHub Actions email notifications configured to notify for failed workflows only. The run summary also includes a link to the failed run.
+- Schedule: Sundays at 02:00 UTC (10:00 AM Philippine time); a maintainer can also start a run manually in GitHub Actions.
+- Destination: private Backblaze B2 bucket `cestudy-db-backups`, prefix `termux/weekly/`.
+- Retention: four latest complete verified encrypted backups. Each set contains an encrypted database dump, SHA-256 checksum, and verification marker. Pruning happens only after the newest set is uploaded and read back successfully.
+- Encryption: OpenSSL CMS using AES-256-GCM, with a 3072-bit RSA recipient certificate. GitHub Actions receives only the public certificate. The private key is never stored in GitHub.
+- Database client: PostgreSQL 17, matching the verified CEStudy server version 17.11.
+- Failure details: failed runs get a GitHub Actions summary with a direct run link. GitHub account notifications must be configured to receive failure emails.
 
-A workflow run is not a verified backup until the workflow completes successfully. Neither the earlier failed Termux attempts nor this configuration work produced a confirmed backup.
+A workflow run is not a verified backup until it finishes successfully. The earlier failed Termux attempts did not create a confirmed backup.
 
-## 1. Prepare an age encryption key on Termux
+## 1. Generate a private key and public certificate in Termux
 
-Do this once. `age` was installed during the Termux setup.
+OpenSSL is available in Termux. This avoids the known `age-keygen` error reported by Termux users.
+
+Run these commands:
 
 ```sh
-mkdir -p "$HOME/.config/age"
-chmod 700 "$HOME/.config/age"
-age-keygen -o "$HOME/.config/age/cestudy-backup-identity.txt"
-chmod 600 "$HOME/.config/age/cestudy-backup-identity.txt"
-age-keygen -y "$HOME/.config/age/cestudy-backup-identity.txt"
+umask 077
+mkdir -p "$HOME/.config/cestudy-backup"
+chmod 700 "$HOME/.config/cestudy-backup"
+
+if [ -e "$HOME/.config/cestudy-backup/private-key.pem" ] || [ -e "$HOME/.config/cestudy-backup/public-cert.pem" ]; then
+  echo "STOP: One or both key files already exist. Do not overwrite them."
+else
+  openssl req -x509 -newkey rsa:3072 -sha256 \
+    -keyout "$HOME/.config/cestudy-backup/private-key.pem" \
+    -out "$HOME/.config/cestudy-backup/public-cert.pem" \
+    -days 3650 \
+    -subj "/CN=CEStudy weekly database backup"
+fi
+
+chmod 600 "$HOME/.config/cestudy-backup/private-key.pem"
+chmod 600 "$HOME/.config/cestudy-backup/public-cert.pem"
+openssl x509 -in "$HOME/.config/cestudy-backup/public-cert.pem" -noout -subject -dates
 ```
 
-The last command prints the public recipient beginning with `age1`. Copy only that public recipient to GitHub. The file `cestudy-backup-identity.txt` contains the private identity. Store it in at least two safe places, with one copy in encrypted storage separate from Backblaze. Never commit it, upload it beside the encrypted backups, or paste it into chat. If the private identity is lost, the encrypted backups cannot be decrypted.
+OpenSSL should prompt you to set a passphrase for the private key. Save it securely. The private key file is encrypted, and the backup restore process will prompt for that passphrase.
 
-## 2. Add the age recipient as a repository variable
+**Never commit, paste, or upload `private-key.pem` to GitHub or to the Backblaze backup bucket.** Keep two protected copies of the private key and its passphrase in separate secure locations. If the key is lost, the encrypted database backups cannot be decrypted. Keep `public-cert.pem` alongside the private key for future restore operations.
+
+## 2. Add the public certificate as a GitHub repository variable
+
+The public certificate is safe for encryption-only use in the workflow; it cannot decrypt a backup. Encode it as a single line in Termux:
+
+```sh
+base64 "$HOME/.config/cestudy-backup/public-cert.pem" | tr -d '\n'
+printf '\n'
+```
+
+Copy the entire single-line output. Do not send it in chat.
 
 1. Open the [CEStudy repository](https://github.com/justryan-n2d/CEStudy).
 2. Select **Settings**.
-3. Under **Secrets and variables**, select **Actions**.
-4. Open the **Variables** tab and select **New repository variable**.
-5. Name: `CESTUDY_AGE_RECIPIENT`.
-6. Value: the output of `age-keygen -y ...` from Step 1, beginning with `age1`.
-7. Save the variable.
+3. Under **Secrets and variables**, open **Actions**.
+4. Select the **Variables** tab, then **New repository variable**.
+5. Name it `CESTUDY_BACKUP_CERT_B64`.
+6. Paste the one-line base64 certificate value and save.
 
-This is a public encryption recipient, not a decryption key. The private identity stays on the maintainer's trusted device/offline backup.
+The variable is public encryption material, not a private key or credential.
 
 ## 3. Add the database and B2 repository secrets
 
-In the same **Settings → Secrets and variables → Actions** page, open **Secrets** and create each repository secret below. Do not place these values in code, workflow YAML, a `VITE_*` variable, or a public issue.
+In the same **Settings → Secrets and variables → Actions** page, open **Secrets** and create each repository secret. Do not place these values in repository files, workflow YAML, a `VITE_*` variable, or a public issue.
 
 | Secret name | Value |
 | --- | --- |
@@ -49,64 +73,71 @@ In the same **Settings → Secrets and variables → Actions** page, open **Secr
 | `CESTUDY_DB_PORT` | `5432` |
 | `CESTUDY_DB_USER` | `postgres.qqmdwltfgpqtcvdbcmto` |
 | `CESTUDY_DB_PASSWORD` | Current CEStudy database password that passed the `psql` login test |
-| `B2_APPLICATION_KEY_ID` | Key ID from the restricted key for the `cestudy-db-backups` bucket |
-| `B2_APPLICATION_KEY` | The matching Backblaze application-key secret (the key value, not the key ID) |
+| `B2_APPLICATION_KEY_ID` | Key ID for the restricted key for bucket `cestudy-db-backups` |
+| `B2_APPLICATION_KEY` | The matching Backblaze application-key secret, not its ID |
 
-The configured Backblaze key must be limited to bucket `cestudy-db-backups` and prefix `termux/`; read/write access is needed for file listing, upload, and remote verification. Never use a Backblaze master application key in GitHub Actions. The script uploads only to `termux/weekly/`.
+The B2 key must be restricted to bucket `cestudy-db-backups` and prefix `termux/`. Read/write access is needed for upload, listing, and remote verification. Do not use a Backblaze master application key. The workflow writes under `termux/weekly/`.
 
-## 4. Configure B2 hidden-version cleanup
+## 4. Configure Backblaze hidden-version cleanup
 
-The workflow hides stale B2 objects after a newer verified backup exists. Backblaze retains hidden file versions unless a lifecycle rule deletes them, so configure a rule for the automation prefix too. Backblaze documents lifecycle cleanup in its [Lifecycle Rules guide](https://www.backblaze.com/docs/en/cloud-storage-lifecycle-rules).
+The workflow hides stale B2 objects after a newer verified backup exists. Backblaze retains hidden versions unless a lifecycle rule deletes them, so configure cleanup for this automation prefix too. See the [Backblaze lifecycle rules guide](https://www.backblaze.com/docs/en/cloud-storage-lifecycle-rules).
 
 1. Sign in to Backblaze and open **B2 Cloud Storage → Buckets → `cestudy-db-backups`**.
 2. Open **Lifecycle Settings** and choose **Use custom lifecycle rules**.
-3. Add a rule with file name prefix `termux/weekly/`.
-4. Set **Days from uploading to hiding** to **None** (the rule must not expire current backups by age).
+3. Add a rule for file name prefix `termux/weekly/`.
+4. Set **Days from uploading to hiding** to **None**.
 5. Set **Days from hiding to deleting** to **1**.
-6. Save/update the bucket lifecycle settings.
+6. Save the lifecycle settings.
 
-This lets the four retained current backups remain visible while older files hidden by the workflow are eventually permanently removed. Do not use a rule that hides all files after a fixed number of days; that could hide valid current backups.
+Do not configure a rule that hides all currently visible files after a fixed age. That could hide a backup still within the retained latest four.
 
-## 5. Turn on failure email notifications
+## 5. Enable GitHub failure email notifications
 
-GitHub supports email notifications for workflow failures. See its [official Actions notification instructions](https://docs.github.com/en/subscriptions-and-notifications/how-tos/managing-github-actions-notifications).
+See [GitHub Actions notification settings](https://docs.github.com/en/subscriptions-and-notifications/how-tos/managing-github-actions-notifications).
 
 1. Open [GitHub notification settings](https://github.com/settings/notifications).
-2. Under **System → Actions**, choose **Email** and select **Only notify for failed workflows**.
-3. Save the setting. Make sure the account receiving notifications watches the CEStudy repository and has a verified notification email address.
+2. Under **System → Actions**, select **Email** and choose **Only notify for failed workflows**.
+3. Save the settings. Ensure the account that created the workflow has a verified email and appropriate repository notification settings.
 
-GitHub sends scheduled-workflow notifications to the user who initially created the workflow; confirm the notification settings on the account that receives these alerts. The workflow's failure summary also links to the run, but an email will depend on these notification settings.
+The GitHub Actions run summary also provides a direct link to the failure, but email depends on these account notification settings.
 
 ## 6. Run the first backup and verify it
 
-After the variable, six repository secrets, lifecycle rule, and notifications are configured:
+After the variable, six repository secrets, lifecycle rule, and notification settings are configured:
 
-1. Open the repository's **Actions** tab.
+1. Open the repository **Actions** tab.
 2. Select **CEStudy weekly database backup**.
 3. Choose **Run workflow** on branch `main`.
-4. Open the new run and wait for it to finish.
-5. Require the green success result and the run summary confirming that the encrypted archive, checksum, and verification marker were read back successfully.
-6. In Backblaze, inspect `cestudy-db-backups/termux/weekly/`. It should contain the current `.dump.age`, `.dump.age.sha256`, and `.dump.age.verified` files plus up to three earlier complete verified sets.
+4. Open the new run and wait for completion.
+5. Require the green success result and its summary confirming that the encrypted archive, checksum, and verification marker were read back successfully.
+6. In Backblaze, inspect `cestudy-db-backups/termux/weekly/`. The current set should contain the `.dump.cms`, `.dump.cms.sha256`, and `.dump.cms.verified` files, plus up to three older complete verified sets.
 
-Do not count a failed or cancelled run as a backup. If the run fails, open the failed step and inspect its logs; do not post connection strings, database passwords, Backblaze keys, or private age identities anywhere. The workflow does not upload plaintext dumps or publish database data as GitHub Actions artifacts.
+Do not count failed or cancelled runs as backups. If a run fails, inspect the failing step without sharing database credentials, B2 keys, or the private key. The workflow does not upload plaintext database dumps as GitHub artifacts.
 
-## What the backup covers and what it does not
+## What a backup contains
 
-Each encrypted `.dump.age` file contains a PostgreSQL custom-format dump of the CEStudy database (all dumpable database schemas, tables, and data). The workflow checks that the archive can be listed by `pg_restore` and includes the app tables `public.catalog_subjects` and `public.practice_questions` before encrypting it. It also checks the SHA-256 of the uploaded encrypted object by streaming it back from B2.
+Each `.dump.cms` file is a PostgreSQL custom-format export of the CEStudy database's dumpable schemas, tables, and data, encrypted with CMS AES-256-GCM. Before encryption the workflow checks that `pg_restore` can read the archive and that it includes `public.catalog_subjects` and `public.practice_questions`. It then parses the CMS container and checks the SHA-256 of the uploaded encrypted bytes by streaming the file back from B2.
 
-A database dump does not include cluster-wide PostgreSQL roles, Supabase project settings/API keys, Cloudflare Pages settings, GitHub settings, Edge Function source, or the contents of Supabase Storage objects. Keep migrations in Git and document/backup any future Edge Functions, Storage objects, or mutable student data separately. A successful upload check is not a restore drill; restore a copy into a separate test project before relying on this as a complete disaster-recovery plan.
+A database dump does not include cluster-wide PostgreSQL roles, Supabase project settings/API keys, Cloudflare Pages settings, GitHub settings, Edge Function source, or Supabase Storage object contents. Preserve migrations in Git and handle any future Edge Functions, Storage objects, and mutable student data separately. A successful upload check is not a restore drill; test restoration in a separate Supabase project before relying on the backups for disaster recovery.
 
-## Recovery key reminder
+## Restore a downloaded backup for inspection
 
-The workflow intentionally has no decryption private key. To decrypt a downloaded archive on Termux after verifying its checksum, use the private identity file created in Step 1, for example:
+Download an encrypted archive and its `.sha256` file from B2 to Termux, then move into the folder containing both files. Verify the checksum:
 
 ```sh
-sha256sum -c CEStudy-YYYYMMDDTHHMMSSZ.dump.age.sha256
-age --decrypt \
-  --identity "$HOME/.config/age/cestudy-backup-identity.txt" \
-  --output CEStudy-restore-test.dump \
-  CEStudy-YYYYMMDDTHHMMSSZ.dump.age
-pg_restore --list CEStudy-restore-test.dump
+sha256sum -c CEStudy-YYYYMMDDTHHMMSSZ.dump.cms.sha256
 ```
 
-Replace the timestamped filename with the actual downloaded filename. This command only lists the dump's contents; it does not restore or modify any database. Perform a real restore only against a separate test Supabase project, never the live project as the first attempt.
+Replace the timestamp with the actual file name. Then decrypt into a local test dump:
+
+```sh
+openssl cms -decrypt -binary -inform DER \
+  -in CEStudy-YYYYMMDDTHHMMSSZ.dump.cms \
+  -recip "$HOME/.config/cestudy-backup/public-cert.pem" \
+  -inkey "$HOME/.config/cestudy-backup/private-key.pem" \
+  -out "$HOME/CEStudy-restore-test.dump"
+
+pg_restore --list "$HOME/CEStudy-restore-test.dump"
+```
+
+OpenSSL will ask for the private key's passphrase. These commands only verify and list the dump; they do not change any database. Perform a full restore test against a separate temporary Supabase project, never the live database on the first attempt.
