@@ -6,7 +6,8 @@ CEStudy helps Civil Engineering students from first year through fourth year bro
 
 ## Current status
 
-**Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev), deployed on Cloudflare Pages. The old, failed legacy Cloudflare Worker named `cestudy` was removed; Pages remains the active frontend host.
+**Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev), deployed on Cloudflare Pages. The old, failed legacy Cloudflare Worker named `cestudy` was removed; Pages remains the active frontend host.  
+**Current phase:** Phase 7, pre-launch hardening and release gates. The core frontend, database integration, and initial deployment are complete. The broad student launch is not approved yet. Follow the [organized phase plan](docs/PHASE_PLAN.md) for the authoritative phase statuses and next steps.
 
 The app has a 72-subject catalog, four year-level routes, subject detail pages, and a practice flow. Automated Chromium smoke test [run 38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed **70/70 checks** against the live site. It verified the live Supabase connection and publishable key, security response headers, six direct routes, 320 px and 1440 px layouts, no captured browser errors, the CHED PDF link, and an empty published-practice set. GitHub Actions also passed lint, unit tests, dependency audit, build and isolated Supabase migration/RLS tests [in run 38627053630](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053630). Full-history Gitleaks scan passed [in run 38627053653](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053653).
 
@@ -38,7 +39,7 @@ The app has a 72-subject catalog, four year-level routes, subject detail pages, 
 - Supabase PostgreSQL with explicit grants and Row Level Security
 - GitHub for source control, tests, and CI
 
-See the docs folder for project scope, roadmap, security requirements, implementation plan, catalog design, architecture decision, development workflow, Supabase setup, and Cloudflare Pages deployment.
+Start with the [organized phase plan](docs/PHASE_PLAN.md) for the current phase, detailed statuses, and ordered route to launch. See the docs folder for project scope, security requirements, catalog design, architecture decisions, development workflow, Supabase setup, Cloudflare Pages deployment, and release checklists.
 
 ## Local development
 
