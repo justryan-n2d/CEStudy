@@ -90,7 +90,7 @@ export RCLONE_CONFIG_B2_KEY="$B2_APPLICATION_KEY"
 export RCLONE_CONFIG_B2_HARD_DELETE=false
 unset B2_APPLICATION_KEY_ID B2_APPLICATION_KEY
 
-bucket="cestudy-db-backups"
+bucket="cestudy-db-backup"
 prefix="termux/weekly"
 remote_dir="b2:${bucket}/${prefix}"
 
@@ -98,9 +98,9 @@ printf 'Checking Backblaze B2 access before exporting the database...\n'
 if ! rclone lsf "$remote_dir" --max-depth 1 >/dev/null 2>"$work_dir/b2-preflight.log"; then
   if grep -qi 'you must use bucket' "$work_dir/b2-preflight.log"; then
     echo "ERROR: The configured Backblaze application key is restricted to a different bucket." >&2
-    echo "This workflow requires the exact bucket name 'cestudy-db-backups' and prefix 'termux/'. Create a new restricted application key for that bucket, then update BOTH GitHub secrets B2_APPLICATION_KEY_ID and B2_APPLICATION_KEY." >&2
+    echo "This workflow requires the exact bucket name 'cestudy-db-backup' and prefix 'termux/'. Create a new restricted application key for that bucket, then update BOTH GitHub secrets B2_APPLICATION_KEY_ID and B2_APPLICATION_KEY." >&2
   else
-    echo "ERROR: Cannot access the configured Backblaze destination 'cestudy-db-backups/termux/weekly/'." >&2
+    echo "ERROR: Cannot access the configured Backblaze destination 'cestudy-db-backup/termux/weekly/'." >&2
     echo "Check that the bucket exists and the paired application key ID/secret are correct, with read/write access to prefix 'termux/'. No database export was started." >&2
   fi
   exit 2
