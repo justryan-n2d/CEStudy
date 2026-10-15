@@ -9,7 +9,8 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] `npm audit --audit-level=high` reports no high or critical dependency vulnerabilities; the successful audit reported 0 vulnerabilities after upgrading Vitest to 4.1.11.
 - [x] Review `.gitignore` and current source-code search results: `.env` files, key files, `secrets/`, and `credentials/` are excluded, and searches found no common Supabase service-role key or database-URL patterns.
 - [x] Full-history Gitleaks scan passed on the first run: [workflow run 38624711552](https://github.com/justryan-n2d/CEStudy/actions/runs/38624711552). The scheduled workflow lives at [secret-scan.yml](../../.github/workflows/secret-scan.yml) and also runs on pushes, pull requests, and manual dispatch.
-- [ ] In GitHub repository settings, verify whether `main` requires pull requests and passing CI status checks before merge. The current repository connection could not inspect branch-protection settings.
+- [ ] **Blocker:** Restrict access to the public repository before adding unreleased question content. `supabase/seed.sql` currently contains the text of the eight unpublished questions. Follow [repository privacy and branch protection](github-privacy-and-branch-protection.md); treat the current drafts as already disclosed.
+- [ ] Configure a `main` branch ruleset requiring pull requests and successful CI plus full-history secret scan. The current repository connection cannot write repository settings; follow the linked manual steps.
 
 ## Supabase
 
