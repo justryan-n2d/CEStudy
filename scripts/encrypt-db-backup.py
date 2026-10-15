@@ -58,8 +58,10 @@ def encrypt_file(certificate_path: Path, input_path: Path, output_path: Path) ->
     encryptor.authenticate_additional_data(header)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    created_output = False
     try:
         with input_path.open("rb") as source, output_path.open("xb") as target:
+            created_output = True
             target.write(header)
             while True:
                 chunk = source.read(CHUNK_BYTES)
@@ -72,7 +74,8 @@ def encrypt_file(certificate_path: Path, input_path: Path, output_path: Path) ->
             os.fsync(target.fileno())
         output_path.chmod(0o600)
     except Exception:
-        output_path.unlink(missing_ok=True)
+        if created_output:
+            output_path.unlink(missing_ok=True)
         raise
 
 
@@ -122,8 +125,10 @@ def decrypt_file(identity_path: Path, input_path: Path, output_path: Path) -> No
         decryptor.authenticate_additional_data(header)
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
+        created_output = False
         try:
             with output_path.open("xb") as target:
+                created_output = True
                 remaining = ciphertext_len
                 while remaining:
                     chunk = source.read(min(CHUNK_BYTES, remaining))
@@ -137,7 +142,8 @@ def decrypt_file(identity_path: Path, input_path: Path, output_path: Path) -> No
                 os.fsync(target.fileno())
             output_path.chmod(0o600)
         except Exception:
-            output_path.unlink(missing_ok=True)
+            if created_output:
+                output_path.unlink(missing_ok=True)
             raise
 
 
