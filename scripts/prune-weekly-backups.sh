@@ -26,7 +26,7 @@ done
 # A backup counts as verified only if its marker and both payload files exist.
 # Timestamps are UTC and fixed-width, so reverse lexical order is newest first.
 mapfile -t markers < <(
-  grep -E '^CEStudy-[0-9]{8}T[0-9]{6}Z\.dump\.age\.verified$' "$listing_file" \
+  grep -E '^CEStudy-[0-9]{8}T[0-9]{6}Z\.dump\.cms\.verified$' "$listing_file" \
     | LC_ALL=C sort -r || true
 )
 valid_markers=()
@@ -60,7 +60,7 @@ done
 # backup has been uploaded. A B2 lifecycle rule removes hidden versions later.
 deleted_count=0
 for name in "${names[@]}"; do
-  if [[ "$name" =~ ^CEStudy-[0-9]{8}T[0-9]{6}Z\.dump\.age(\.sha256|\.verified)?$ ]] \
+  if [[ "$name" =~ ^CEStudy-[0-9]{8}T[0-9]{6}Z\.dump\.cms(\.sha256|\.verified)?$ ]] \
      && [[ -z "${keep[$name]+yes}" ]]; then
     rclone deletefile "${remote_dir%/}/$name"
     deleted_count=$((deleted_count + 1))
