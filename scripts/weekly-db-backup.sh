@@ -72,18 +72,9 @@ if [[ ! "$pg_dump_version" =~ ^pg_dump\ \(PostgreSQL\)\ 17\. ]]; then
   exit 2
 fi
 
-export PGSSLMODE=require
-export PGPASSWORD="$CESTUDY_DB_PASSWORD"
-unset CESTUDY_DB_PASSWORD
-server_version_num="$(psql --no-password --no-psqlrc -qAt \
-  --host="$CESTUDY_DB_HOST" --port="$CESTUDY_DB_PORT" \
-  --username="$CESTUDY_DB_USER" --dbname=postgres \
-  --set=ON_ERROR_STOP=1 --command='SHOW server_version_num')"
-if [[ ! "$server_version_num" =~ ^[0-9]+$ ]] || (( server_version_num / 10000 != 17 )); then
-  echo "ERROR: Expected PostgreSQL 17 on CEStudy; received server major version '$server_version_num'." >&2
-  exit 1
-fi
-
+# Create the protected temporary work area and configure B2 before touching
+# the database. This lets us fail fast if the restricted B2 key targets the
+# wrong bucket, instead of exporting and encrypting a dump that cannot upload.
 work_dir="$(mktemp -d "${RUNNER_TEMP%/}/cestudy-weekly-backup.XXXXXX")"
 trap 'result=$?; rm -rf -- "$work_dir"; unset PGPASSWORD RCLONE_CONFIG_B2_ACCOUNT RCLONE_CONFIG_B2_KEY B2_APPLICATION_KEY_ID B2_APPLICATION_KEY; exit "$result"' EXIT
 
@@ -96,14 +87,38 @@ export RCLONE_CONFIG="$rclone_config"
 export RCLONE_CONFIG_B2_TYPE=b2
 export RCLONE_CONFIG_B2_ACCOUNT="$B2_APPLICATION_KEY_ID"
 export RCLONE_CONFIG_B2_KEY="$B2_APPLICATION_KEY"
-# Use B2 hide markers rather than permanent deletion. The bucket lifecycle rule
-# described in the docs permanently expires hidden versions after one day.
 export RCLONE_CONFIG_B2_HARD_DELETE=false
 unset B2_APPLICATION_KEY_ID B2_APPLICATION_KEY
 
 bucket="cestudy-db-backups"
 prefix="termux/weekly"
 remote_dir="b2:${bucket}/${prefix}"
+
+printf 'Checking Backblaze B2 access before exporting the database...\n'
+if ! rclone lsf "$remote_dir" --max-depth 1 >/dev/null 2>"$work_dir/b2-preflight.log"; then
+  if grep -qi 'you must use bucket' "$work_dir/b2-preflight.log"; then
+    echo "ERROR: The configured Backblaze application key is restricted to a different bucket." >&2
+    echo "This workflow requires the exact bucket name 'cestudy-db-backups' and prefix 'termux/'. Create a new restricted application key for that bucket, then update BOTH GitHub secrets B2_APPLICATION_KEY_ID and B2_APPLICATION_KEY." >&2
+  else
+    echo "ERROR: Cannot access the configured Backblaze destination 'cestudy-db-backups/termux/weekly/'." >&2
+    echo "Check that the bucket exists and the paired application key ID/secret are correct, with read/write access to prefix 'termux/'. No database export was started." >&2
+  fi
+  exit 2
+fi
+
+export PGSSLMODE=require
+export PGPASSWORD="$CESTUDY_DB_PASSWORD"
+unset CESTUDY_DB_PASSWORD
+printf 'Checking the database connection and PostgreSQL version...\n'
+server_version_num="$(psql --no-password --no-psqlrc -qAt \
+  --host="$CESTUDY_DB_HOST" --port="$CESTUDY_DB_PORT" \
+  --username="$CESTUDY_DB_USER" --dbname=postgres \
+  --set=ON_ERROR_STOP=1 --command='SHOW server_version_num')"
+if [[ ! "$server_version_num" =~ ^[0-9]+$ ]] || (( server_version_num / 10000 != 17 )); then
+  echo "ERROR: Expected PostgreSQL 17 on CEStudy; received server major version '$server_version_num'." >&2
+  exit 1
+fi
+
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
 archive_name="CEStudy-${stamp}.dump.enc"
 dump_file="$work_dir/CEStudy-${stamp}.dump"
