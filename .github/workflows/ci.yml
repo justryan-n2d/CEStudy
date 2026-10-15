@@ -39,11 +39,19 @@ jobs:
           test -f dist/_headers
           grep -q "Content-Security-Policy" dist/_headers
           grep -q "X-Content-Type-Options: nosniff" dist/_headers
-      - name: Check backup shell syntax and retention behavior
+      - name: Set up Python for backup encryption tests
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install locked backup crypto dependency
+        run: python -m pip install --disable-pip-version-check --only-binary=:all: -r requirements-backup.txt
+      - name: Check backup syntax, encryption, and retention behavior
         run: |
-          for file in scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh; do
+          for file in scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh scripts/tests/backup-encryption.test.sh; do
             bash -n "$file"
           done
+          python -m py_compile scripts/encrypt-db-backup.py
+          bash scripts/tests/backup-encryption.test.sh
           bash scripts/tests/weekly-backup-retention.test.sh
 
   database-security:
