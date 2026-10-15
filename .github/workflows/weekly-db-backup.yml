@@ -41,6 +41,14 @@ jobs:
           openssl version
           rclone version | sed -n '1p'
 
+      - name: Set up Python for authenticated backup encryption
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install locked backup crypto dependency
+        run: python -m pip install --disable-pip-version-check --only-binary=:all: -r requirements-backup.txt
+
       - name: Create, encrypt, upload, verify, and prune backups
         shell: bash
         env:
