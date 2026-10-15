@@ -1,6 +1,6 @@
 # CEStudy database backup and recovery plan
 
-**Status:** Automated weekly backup workflow and retention helper have been added. The public certificate variable, repository secrets, B2 lifecycle rule, failure email notifications, the first successful production run, and a restore drill remain pending.
+**Status:** Automated weekly backup workflow and retention helper have been added. Adding the public recipient certificate file, configuring repository secrets, B2 lifecycle cleanup, failure email notifications, completing the first successful production run, and a restore drill remain pending.
 **Scope:** Current seeded-only MVP, before student accounts, submissions, or other mutable user data are introduced.
 
 ## Current recovery position
@@ -19,7 +19,7 @@ The CEStudy Supabase organization is on the Free plan. Supabase documents automa
 
 ## Automated weekly Backblaze workflow
 
-A scheduled workflow has been added at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It is scheduled for Sundays at 02:00 UTC (10:00 AM Philippine time), exports the database with PostgreSQL 17, encrypts with RSA-OAEP/SHA-256 plus streaming AES-256-GCM using a public certificate, uploads to the private `cestudy-db-backups/termux/weekly/` prefix, reads the uploaded encrypted archive back to verify its SHA-256, and retains the latest four complete verified sets. It does not run successfully until the maintainer completes the repository secret/variable setup, configures the B2 lifecycle rule for hidden versions, enables GitHub failure email notifications, and runs a first manual verification. Follow [automated weekly backup setup](weekly-backups.md) for the exact steps.
+A scheduled workflow has been added at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It is scheduled for Sundays at 02:00 UTC (10:00 AM Philippine time), exports the database with PostgreSQL 17, encrypts with RSA-OAEP/SHA-256 plus streaming AES-256-GCM using a public certificate, uploads to the private `cestudy-db-backups/termux/weekly/` prefix, reads the uploaded encrypted archive back to verify its SHA-256, and retains the latest four complete verified sets. It does not run successfully until the maintainer commits the existing public recipient certificate as `scripts/backup-recipient-cert.pem`, configures the database/B2 repository secrets, configures the B2 lifecycle rule for hidden versions, enables GitHub failure email notifications, and runs a first manual verification. Follow [automated weekly backup setup](weekly-backups.md) for the exact steps.
 
 ## Creating a logical export
 
@@ -72,7 +72,7 @@ Perform this before relying on the backups for mutable data:
 ## Release gate
 
 - [ ] Create the password-protected RSA private key and public certificate in Termux, and keep two protected copies of the private key and its passphrase.
-- [ ] Add the base64-encoded public certificate as the `CESTUDY_BACKUP_CERT_B64` repository variable and configure the six database/B2 repository secrets.
+- [ ] Copy the existing public certificate to `scripts/backup-recipient-cert.pem` in the repository, and configure the six database/B2 repository secrets.
 - [ ] Configure the B2 lifecycle rule for `termux/weekly/` and enable GitHub failed-workflow email notifications.
 - [ ] Complete a successful manual weekly-workflow run; confirm the encrypted archive, checksum, and `.verified` marker in B2.
 - [ ] Restore drill in a separate Supabase project passed and recorded.

@@ -1,6 +1,6 @@
 # CEStudy automated weekly database backups
 
-**Status:** The workflow, encryption helper, and retention tests are committed. The first backup is not active or verified until the public certificate variable, repository secrets, Backblaze lifecycle rule, failure email notifications, and a successful manual workflow run are complete.
+**Status:** The workflow, encryption helper, and retention tests are committed. The first backup is not active or verified until the public recipient certificate file is added, repository secrets are configured, the Backblaze lifecycle rule and failure email notifications are enabled, and a manual workflow run succeeds.
 
 ## Schedule and destination
 
@@ -48,36 +48,50 @@ OpenSSL should prompt you to set a passphrase for the private key. Save it secur
 
 **Never commit, paste, or upload `private-key.pem` to GitHub or to the Backblaze backup bucket.** Keep two protected copies of the private key and its passphrase in separate secure locations. If the key is lost, the encrypted database backups cannot be decrypted. Keep `public-cert.pem` alongside the private key for restore operations.
 
-## 2. Add the public certificate as a GitHub repository variable
+## 2. Add the public certificate to the repository
 
-The public certificate can encrypt backups but cannot decrypt them. Re-create and verify the one-line base64 file from the existing certificate in Termux. This does not regenerate or overwrite either key file:
+The workflow now reads the certificate from `scripts/backup-recipient-cert.pem` directly. This avoids copying a long Base64 value into GitHub Settings. A public certificate is safe to commit to this public repository because it can encrypt backups but cannot decrypt them. Never commit `private-key.pem`.
+
+Run this entire block in Termux. It copies the **existing** certificate, not a newly generated one. It stops if the local repository already has uncommitted changes.
 
 ```sh
+set -e
 base="$HOME/.config/cestudy-backup"
 test -s "$base/public-cert.pem" || { echo "ERROR: public-cert.pem is missing"; exit 1; }
-base64 "$base/public-cert.pem" | tr -d '\n' > "$base/public-cert.b64"
-base64 --decode "$base/public-cert.b64" > "$base/public-cert-check.pem" || { echo "ERROR: base64 decode failed"; exit 1; }
-cmp -s "$base/public-cert.pem" "$base/public-cert-check.pem" || { echo "ERROR: decoded file differs from the original certificate"; exit 1; }
-openssl x509 -in "$base/public-cert-check.pem" -noout -subject
-printf "Verified base64 length: "
-wc -c < "$base/public-cert.b64"
-echo "Now display the value to copy:"
-cat "$base/public-cert.b64"
-printf '\n'
+openssl x509 -in "$base/public-cert.pem" -noout -subject -dates
+
+mkdir -p "$HOME/projects"
+if [ -d "$HOME/projects/CEStudy/.git" ]; then
+  cd "$HOME/projects/CEStudy"
+  git fetch origin
+  git switch main
+  git pull --ff-only origin main
+else
+  git clone git@github.com:justryan-n2d/CEStudy.git "$HOME/projects/CEStudy"
+  cd "$HOME/projects/CEStudy"
+fi
+
+if [ -n "$(git status --porcelain)" ]; then
+  echo "STOP: This CEStudy checkout has other changes. Do not continue or commit them accidentally."
+  git status --short
+  exit 1
+fi
+
+cp "$base/public-cert.pem" scripts/backup-recipient-cert.pem
+openssl x509 -in scripts/backup-recipient-cert.pem -noout -subject -dates
+git status --short
 ```
 
-Only continue if the command reaches **Now display the value to copy** and reports no errors. Copy the entire output from the `cat` command, from its first character to its last. Do not copy the shell prompt. Do not add quote marks, backticks, spaces, or any line breaks inside the value. Do not send it in chat.
+The final status should show only `?? scripts/backup-recipient-cert.pem`. If it shows other files, stop and inspect before committing. Then run:
 
-To replace the GitHub variable:
+```sh
+git add scripts/backup-recipient-cert.pem
+git diff --cached --stat
+git commit -m "Add public certificate for weekly backup encryption"
+git push origin main
+```
 
-1. Open the [CEStudy repository](https://github.com/justryan-n2d/CEStudy).
-2. Select **Settings**.
-3. Under **Secrets and variables**, open **Actions**.
-4. Select **Variables**.
-5. Open the existing `CESTUDY_BACKUP_CERT_B64` variable and choose its edit option.
-6. Replace the **entire old value** with the complete verified one-line output from Termux, then save.
-
-This is public encryption material, not a private key or password. Never copy `private-key.pem` into GitHub.
+This push adds only the public certificate to GitHub. The private key and its passphrase stay in your protected storage on Termux. The old `CESTUDY_BACKUP_CERT_B64` repository variable is no longer used; after the certificate file is pushed, it can be deleted under repository **Settings → Secrets and variables → Actions → Variables**.
 
 ## 3. Add the database and B2 repository secrets
 

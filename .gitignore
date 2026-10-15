@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 *.pem
+!scripts/backup-recipient-cert.pem
 *.key
 secrets/
 credentials/
