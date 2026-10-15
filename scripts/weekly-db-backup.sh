@@ -10,7 +10,6 @@ required_vars=(
   CESTUDY_DB_PASSWORD
   B2_APPLICATION_KEY_ID
   B2_APPLICATION_KEY
-  CESTUDY_BACKUP_CERT_B64
   RUNNER_TEMP
   GITHUB_STEP_SUMMARY
 )
@@ -21,12 +20,36 @@ for name in "${required_vars[@]}"; do
   fi
 done
 
-for cmd in psql pg_dump pg_restore openssl base64 python3 rclone sha256sum grep awk cmp head; do
+for cmd in psql pg_dump pg_restore openssl python3 rclone sha256sum grep awk cmp head; do
   command -v "$cmd" >/dev/null 2>&1 || {
     echo "ERROR: Required command is missing: $cmd" >&2
     exit 2
   }
 done
+
+# The recipient certificate is public encryption material and is stored
+# directly in the repository. This avoids copying a long Base64 value through
+# the GitHub Actions variables UI.
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cert_file="$script_dir/backup-recipient-cert.pem"
+if [[ ! -s "$cert_file" ]]; then
+  echo "ERROR: Missing scripts/backup-recipient-cert.pem." >&2
+  echo "Copy the existing public-cert.pem from Termux into this repository file and push it to main." >&2
+  echo "Do not copy private-key.pem. The public certificate is safe to commit; the private key is not." >&2
+  exit 2
+fi
+if ! openssl x509 -in "$cert_file" -noout; then
+  echo "ERROR: scripts/backup-recipient-cert.pem is not a valid PEM X.509 certificate." >&2
+  exit 2
+fi
+if ! openssl x509 -in "$cert_file" -noout -text | grep -Fq 'Public Key Algorithm: rsaEncryption'; then
+  echo "ERROR: The backup certificate must contain an RSA public key." >&2
+  exit 2
+fi
+if ! openssl x509 -in "$cert_file" -noout -checkend 0 >/dev/null; then
+  echo "ERROR: The backup recipient certificate is expired. Do not generate a new key unless you also plan a key-rotation and recovery procedure." >&2
+  exit 2
+fi
 
 # Guard against accidentally backing up the wrong project or using a client
 # that cannot dump this project's PostgreSQL 17 server.
@@ -62,34 +85,7 @@ if [[ ! "$server_version_num" =~ ^[0-9]+$ ]] || (( server_version_num / 10000 !=
 fi
 
 work_dir="$(mktemp -d "${RUNNER_TEMP%/}/cestudy-weekly-backup.XXXXXX")"
-trap 'result=$?; rm -rf -- "$work_dir"; unset PGPASSWORD RCLONE_CONFIG_B2_ACCOUNT RCLONE_CONFIG_B2_KEY B2_APPLICATION_KEY_ID B2_APPLICATION_KEY CESTUDY_BACKUP_CERT_B64; exit "$result"' EXIT
-
-# Decode the public recipient certificate from a single-line base64 repository
-# variable. It is public encryption material, not a secret or decryption key.
-cert_file="$work_dir/recipient-cert.pem"
-# Strip whitespace defensively, then detect truncated or malformed repository
-# variable contents before attempting to parse the public certificate.
-cert_b64="$(printf '%s' "$CESTUDY_BACKUP_CERT_B64" | tr -d '[:space:]')"
-unset CESTUDY_BACKUP_CERT_B64
-if [[ -z "$cert_b64" ]] || (( ${#cert_b64} % 4 != 0 )); then
-  echo "ERROR: CESTUDY_BACKUP_CERT_B64 is incomplete or malformed (invalid base64 length)." >&2
-  echo "Re-create it from the local public-cert.pem, verify decoding locally, then replace the entire GitHub repository variable value." >&2
-  echo "Do not use private-key.pem or add quotes/backticks to the value." >&2
-  exit 2
-fi
-if ! printf '%s' "$cert_b64" | base64 --decode > "$cert_file"; then
-  echo "ERROR: CESTUDY_BACKUP_CERT_B64 is not valid base64. Re-create it from the local public-cert.pem and replace the full GitHub repository variable value." >&2
-  exit 2
-fi
-unset cert_b64
-if [[ ! -s "$cert_file" ]] || ! openssl x509 -in "$cert_file" -noout; then
-  echo "ERROR: Decoded CESTUDY_BACKUP_CERT_B64 is not a valid PEM X.509 certificate. Verify it against the original local public-cert.pem." >&2
-  exit 2
-fi
-if ! openssl x509 -in "$cert_file" -noout -text | grep -Fq 'Public Key Algorithm: rsaEncryption'; then
-  echo "ERROR: The backup certificate must contain an RSA public key." >&2
-  exit 2
-fi
+trap 'result=$?; rm -rf -- "$work_dir"; unset PGPASSWORD RCLONE_CONFIG_B2_ACCOUNT RCLONE_CONFIG_B2_KEY B2_APPLICATION_KEY_ID B2_APPLICATION_KEY; exit "$result"' EXIT
 
 # rclone uses environment-based configuration. Its temporary config file is
 # intentionally empty and private so this job does not depend on runner state.
