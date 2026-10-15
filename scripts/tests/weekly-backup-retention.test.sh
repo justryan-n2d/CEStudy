@@ -36,7 +36,7 @@ for stamp in 20261001T020000Z 20261008T020000Z 20261015T020000Z 20261022T020000Z
 done
 printf '%s\n' 'CEStudy-20260924T020000Z.dump.age' >> "$RCLONE_MOCK_LIST"
 
-"$script_dir/prune-weekly-backups.sh" "b2:cestudy-db-backups/termux/weekly"
+bash "$script_dir/prune-weekly-backups.sh" "b2:cestudy-db-backups/termux/weekly"
 
 expected_keep=(
   CEStudy-20261015T020000Z.dump.age
@@ -69,7 +69,7 @@ grep -Fxq 'CEStudy-20260924T020000Z.dump.age' "$RCLONE_MOCK_DELETED"
 # Fail closed when there is no complete verified backup: do not hide anything.
 : > "$RCLONE_MOCK_DELETED"
 printf '%s\n' 'CEStudy-20261112T020000Z.dump.age' > "$RCLONE_MOCK_LIST"
-if "$script_dir/prune-weekly-backups.sh" "b2:cestudy-db-backups/termux/weekly" >/dev/null 2>&1; then
+if bash "$script_dir/prune-weekly-backups.sh" "b2:cestudy-db-backups/termux/weekly" >/dev/null 2>&1; then
   echo 'FAIL: retention succeeded despite there being no complete verified set.' >&2
   exit 1
 fi
