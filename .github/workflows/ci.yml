@@ -51,6 +51,12 @@ jobs:
           for file in scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh scripts/tests/backup-encryption.test.sh; do
             bash -n "$file"
           done
+          if grep -Fq 'CESTUDY_BACKUP_CERT_B64' scripts/weekly-db-backup.sh .github/workflows/weekly-db-backup.yml; then
+            echo 'FAIL: the backup workflow must not rely on a long Base64 repository variable.' >&2
+            exit 1
+          fi
+          grep -Fq 'backup-recipient-cert.pem' scripts/weekly-db-backup.sh
+          grep -Fxq '!scripts/backup-recipient-cert.pem' .gitignore
           python -m py_compile scripts/encrypt-db-backup.py
           bash scripts/tests/backup-encryption.test.sh
           bash scripts/tests/weekly-backup-retention.test.sh
