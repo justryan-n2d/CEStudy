@@ -1,6 +1,6 @@
 # CEStudy database backup and recovery plan
 
-**Status:** Automated weekly backup workflow and retention helper have been added. Adding the public recipient certificate file, configuring repository secrets, B2 lifecycle cleanup, failure email notifications, completing the first successful production run, and a restore drill remain pending.
+**Status:** Automated weekly backup is active. The first successful live database backup passed in [GitHub Actions run 38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). Its encrypted archive and checksum were read back and verified in Backblaze B2, and retention completed with one verified set. The actual decrypt and full database restore drill remain pending. Backblaze hidden-version lifecycle cleanup and GitHub failure email settings also need manual confirmation.
 **Scope:** Current seeded-only MVP, before student accounts, submissions, or other mutable user data are introduced.
 
 ## Current recovery position
@@ -19,7 +19,7 @@ The CEStudy Supabase organization is on the Free plan. Supabase documents automa
 
 ## Automated weekly Backblaze workflow
 
-A scheduled workflow has been added at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It is scheduled for Sundays at 02:00 UTC (10:00 AM Philippine time), exports the database with PostgreSQL 17, encrypts with RSA-OAEP/SHA-256 plus streaming AES-256-GCM using a public certificate, uploads to the private `cestudy-db-backup/termux/weekly/` prefix, reads the uploaded encrypted archive back to verify its SHA-256, and retains the latest four complete verified sets. It does not run successfully until the maintainer commits the existing public recipient certificate as `scripts/backup-recipient-cert.pem`, configures the database/B2 repository secrets, configures the B2 lifecycle rule for hidden versions, enables GitHub failure email notifications, and runs a first manual verification. Follow [automated weekly backup setup](weekly-backups.md) for the exact steps.
+A scheduled workflow is active at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It runs Sundays at 02:00 UTC (10:00 AM Philippine time) and can also be run manually. It exports the database with PostgreSQL 17, validates the archive and expected tables, encrypts with RSA-OAEP/SHA-256 plus streaming AES-256-GCM, uploads to the private `cestudy-db-backup/termux/weekly/` prefix, reads the archive and checksum back, verifies the `.verified` marker, and retains the latest four complete verified sets. The first successful live run is recorded above. The scheduled backup process is automated; B2 lifecycle cleanup, GitHub failure email preferences, and the full restore drill are separate manual release checks.
 
 ## Creating a logical export
 
@@ -71,12 +71,11 @@ Perform this before relying on the backups for mutable data:
 
 ## Release gate
 
-- [ ] Create the password-protected RSA private key and public certificate in Termux, and keep two protected copies of the private key and its passphrase.
-- [ ] Copy the existing public certificate to `scripts/backup-recipient-cert.pem` in the repository, and configure the six database/B2 repository secrets.
-- [ ] Configure the B2 lifecycle rule for `termux/weekly/` and enable GitHub failed-workflow email notifications.
-- [ ] Complete a successful manual weekly-workflow run; confirm the encrypted archive, checksum, and `.verified` marker in B2.
-- [ ] Restore drill in a separate Supabase project passed and recorded.
+- [x] Create the password-protected RSA private key and public certificate in Termux, commit the public certificate, and configure the database/B2 repository secrets.
+- [ ] Configure and confirm the B2 lifecycle rule for `termux/weekly/` and GitHub failed-workflow email notifications.
+- [x] Complete a successful live weekly-workflow run; run 38773249088 verified the encrypted archive, checksum, and `.verified` marker in B2.
+- [ ] Decrypt the real backup using the private key kept in Termux, restore it into a separate test database, validate records and security settings, and record the restore drill.
 - [ ] Backup cadence and retention owner agreed before mutable data or student accounts launch.
 - [ ] Recovery steps and latest export location are known to the maintainer.
 
-The automation is committed but not yet activated: repository secrets, encryption recipient, lifecycle cleanup, notifications, the first live backup, and the restore drill remain uncompleted actions.
+The weekly backup automation is active and has completed one successful live backup. The remaining recovery gates are the B2 hidden-version lifecycle rule, failure email preferences, and a full isolated restore drill. Do not treat the system as fully recovery-tested until a real backup has been decrypted and restored successfully.
