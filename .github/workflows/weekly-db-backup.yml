@@ -1,0 +1,68 @@
+name: CEStudy weekly database backup
+
+on:
+  schedule:
+    - cron: '0 2 * * 0' # Sundays at 02:00 UTC / 10:00 Philippine time
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cestudy-weekly-database-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Export, encrypt, verify, and retain four backups
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Check out trusted main branch source
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL 17 client, age, and rclone
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          sudo apt-get update
+          sudo apt-get install -y ca-certificates curl gnupg age rclone
+          sudo install -d /usr/share/postgresql-common/pgdg
+          curl --fail --silent --show-error https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+            | sudo gpg --dearmor --yes -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
+          source /etc/os-release
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg] https://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+          pg_dump --version
+          age --version
+          rclone version | head -n 1
+
+      - name: Create, encrypt, upload, verify, and prune backups
+        shell: bash
+        env:
+          CESTUDY_DB_HOST: ${{ secrets.CESTUDY_DB_HOST }}
+          CESTUDY_DB_PORT: ${{ secrets.CESTUDY_DB_PORT }}
+          CESTUDY_DB_USER: ${{ secrets.CESTUDY_DB_USER }}
+          CESTUDY_DB_PASSWORD: ${{ secrets.CESTUDY_DB_PASSWORD }}
+          B2_APPLICATION_KEY_ID: ${{ secrets.B2_APPLICATION_KEY_ID }}
+          B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+          AGE_RECIPIENT: ${{ vars.CESTUDY_AGE_RECIPIENT }}
+        run: bash scripts/weekly-db-backup.sh
+
+      - name: Add failure alert details to the Actions run
+        if: failure()
+        shell: bash
+        run: |
+          {
+            echo '## CEStudy weekly database backup FAILED'
+            echo
+            echo 'This run must not be counted as a new verified backup. Previously verified backups were not intentionally pruned before verification.'
+            echo
+            echo "Run details: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo
+            echo 'Inspect the failed step logs. Do not post database credentials or application keys in an issue or log.'
+          } >> "$GITHUB_STEP_SUMMARY"
