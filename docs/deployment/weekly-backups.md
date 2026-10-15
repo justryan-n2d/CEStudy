@@ -106,7 +106,14 @@ In the same **Settings → Secrets and variables → Actions** page, open **Secr
 | `B2_APPLICATION_KEY_ID` | Key ID for the restricted key for bucket `cestudy-db-backups` |
 | `B2_APPLICATION_KEY` | The matching Backblaze application-key secret, not its ID |
 
-The B2 key must be restricted to bucket `cestudy-db-backups` and prefix `termux/`. Read/write access is needed for upload, listing, and remote verification. Do not use a Backblaze master application key. The workflow writes under `termux/weekly/`.
+The B2 key must be restricted to the exact bucket name `cestudy-db-backups` (plural) and prefix `termux/`. Read/write access is needed for upload, listing, and remote verification. Do not use a Backblaze master application key. The workflow writes under `termux/weekly/`.
+
+**Important:** The most recent failed run showed that the configured GitHub key is instead restricted to `cestudy-db-backup` (singular). That key cannot write to the workflow's intended `cestudy-db-backups` bucket. In Backblaze, create a new restricted application key with:
+- Bucket access: `cestudy-db-backups` (select the existing plural-name bucket)
+- File name prefix: `termux/`
+- Capabilities: read and write, including listing files
+
+Copy the new key's ID and application-key value, then open GitHub **Settings → Secrets and variables → Actions → Secrets**. Edit `B2_APPLICATION_KEY_ID` and `B2_APPLICATION_KEY` so both come from the same new key. Do not mix the new ID with the old key value. Keep the old key until a backup succeeds, then revoke the old, wrongly restricted key if it is no longer used. The workflow now checks B2 access before starting the database export so a wrong bucket restriction fails quickly and clearly.
 
 ## 4. Configure Backblaze hidden-version cleanup
 
