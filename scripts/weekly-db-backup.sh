@@ -44,7 +44,7 @@ if [[ ! "$CESTUDY_DB_PORT" =~ ^[0-9]+$ ]] || [[ "$CESTUDY_DB_PORT" != "5432" ]];
 fi
 
 pg_dump_version="$(pg_dump --version)"
-if [[ ! "$pg_dump_version" =~ PostgreSQL\ 17\. ]]; then
+if [[ ! "$pg_dump_version" =~ ^pg_dump\ \(PostgreSQL\)\ 17\. ]]; then
   echo "ERROR: PostgreSQL 17 client required for the live CEStudy PostgreSQL 17.11 database; found: $pg_dump_version" >&2
   exit 2
 fi
