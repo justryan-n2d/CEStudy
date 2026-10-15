@@ -57,6 +57,10 @@ jobs:
           fi
           grep -Fq 'backup-recipient-cert.pem' scripts/weekly-db-backup.sh
           grep -Fxq '!scripts/backup-recipient-cert.pem' .gitignore
+          grep -Fq 'rclone lsf "$remote_dir" --max-depth 1' scripts/weekly-db-backup.sh
+          preflight_line="$(grep -nF 'rclone lsf "$remote_dir" --max-depth 1' scripts/weekly-db-backup.sh | cut -d: -f1)"
+          dump_line="$(grep -nF 'pg_dump --no-password' scripts/weekly-db-backup.sh | cut -d: -f1)"
+          test "$preflight_line" -lt "$dump_line"
           python -m py_compile scripts/encrypt-db-backup.py
           bash scripts/tests/backup-encryption.test.sh
           bash scripts/tests/weekly-backup-retention.test.sh
