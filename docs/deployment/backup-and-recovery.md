@@ -11,11 +11,11 @@ This is a reproducible baseline, not a point-in-time backup of the live database
 
 ## Minimum backup policy
 
-1. Keep every schema change in a reviewed migration and every intentionally source-controlled baseline record in `supabase/seed.sql`.
+1. Keep schema changes in reviewed migrations. **Do not commit unreleased question text to a public repository or public build artifact.** The current public `supabase/seed.sql` contains the existing draft question text; treat those eight items as already disclosed rather than as confidential assessment questions. See [repository privacy and branch protection](github-privacy-and-branch-protection.md).
 2. Before introducing published questions or other content maintained outside the seed, export the database before and after each publication batch.
 3. Before adding accounts, student progress, public submissions, or other mutable user data, configure at least weekly logical exports to private off-site storage and retain the most recent four weekly exports. Use a shorter interval if the acceptable amount of lost data is lower.
 4. Keep export files, database connection strings, database passwords, access tokens, and encryption keys out of Git, public artifacts, chat, and application build variables. Store backups in private, encrypted storage with restricted access.
-5. Recheck the project plan and current Supabase backup options before a student-data launch. Supabase's official guidance notes that downloadable automated daily backups depend on plan; Free Plan projects should create their own exports and keep off-site copies.
+The CEStudy Supabase organization is on the Free plan. Supabase documents automatic daily backups for Pro, Team, and Enterprise plans and recommends that Free projects regularly export data with the CLI and keep off-site backups. See [Supabase Database Backups](https://supabase.com/docs/guides/platform/backups). Recheck plan features before any future upgrade or student-data launch.
 
 ## Creating a logical export
 
@@ -23,13 +23,29 @@ Use the current official Supabase CLI backup guide: https://supabase.com/docs/gu
 
 Run these commands from a trusted computer with the Supabase CLI and PostgreSQL tools installed. Set `CESTUDY_DB_URL` in the terminal's private environment using the **CEStudy project's** database connection string from Supabase Dashboard > Connect. Prefer the session pooler connection string unless direct connectivity is supported. Do not paste credentials into chat or commit them. Do not place this value in any `VITE_*` browser variable.
 
+The repository includes a helper script that checks the supplied connection string contains the CEStudy project reference, writes the export outside Git with restrictive local file permissions, and records checksums.
+
+In a trusted terminal, enter the database URL through a hidden prompt so it is not saved as a typed shell command:
+
+```sh
+read -rsp "Paste the CEStudy database URL from Supabase > Connect: " CESTUDY_DB_URL
+export CESTUDY_DB_URL
+printf '\\n'
+bash scripts/backup-supabase.sh
+unset CESTUDY_DB_URL
+```
+
+The script writes to `$HOME/CEStudy-backups/` by default. To create an encrypted archive using a GPG public key that is already configured locally, set `CESTUDY_GPG_RECIPIENT` to that key's recipient identifier before running the script. Without GPG encryption, the local archive is **not encrypted** and must be transferred only into private encrypted storage. Never commit backup output. Do not paste a database URL into GitHub Actions, chat, or any `VITE_*` variable.
+
+The helper runs the equivalent of these Supabase CLI exports:
+
 ```sh
 supabase db dump --db-url "$CESTUDY_DB_URL" -f roles.sql --role-only
 supabase db dump --db-url "$CESTUDY_DB_URL" -f schema.sql
 supabase db dump --db-url "$CESTUDY_DB_URL" -f data.sql --use-copy --data-only -x "storage.buckets_vectors" -x "storage.vector_indexes"
 ```
 
-Save the three resulting SQL files in a private backup folder **outside the Git repository**, record the export date and CEStudy project name in a separate non-secret manifest, then transfer them to encrypted off-site storage. Verify the files are non-empty. Keep the original files protected; do not upload them to the public CEStudy repository. Database dumps do not include Storage object files, but the current CEStudy project has no Storage buckets or student uploads.
+After the export, verify that the archive exists and the checksum file is present. Copy the backup to encrypted private off-site storage and keep the checksum with it. Database dumps do not include Storage object files; the current CEStudy project has no Storage buckets or student uploads. The script has been added to the repository, but **it has not yet been run against the live database**.
 
 ## Safe restore drill
 
