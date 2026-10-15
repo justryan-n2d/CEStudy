@@ -67,7 +67,6 @@ jobs:
           CESTUDY_DB_PASSWORD: ${{ secrets.CESTUDY_DB_PASSWORD }}
           B2_APPLICATION_KEY_ID: ${{ secrets.B2_APPLICATION_KEY_ID }}
           B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
-          CESTUDY_BACKUP_CERT_B64: ${{ vars.CESTUDY_BACKUP_CERT_B64 }}
         run: bash scripts/weekly-db-backup.sh
 
       - name: Add failure alert details to the Actions run
