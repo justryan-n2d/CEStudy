@@ -39,8 +39,10 @@ jobs:
           test -f dist/_headers
           grep -q "Content-Security-Policy" dist/_headers
           grep -q "X-Content-Type-Options: nosniff" dist/_headers
-      - name: Check Supabase backup helper syntax
-        run: bash -n scripts/backup-supabase.sh
+      - name: Check backup shell syntax and retention behavior
+        run: |
+          bash -n scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh
+          bash scripts/tests/weekly-backup-retention.test.sh
 
   database-security:
     name: Supabase migration and RLS tests
