@@ -50,23 +50,34 @@ OpenSSL should prompt you to set a passphrase for the private key. Save it secur
 
 ## 2. Add the public certificate as a GitHub repository variable
 
-The public certificate can encrypt backups but cannot decrypt them. Encode it as a single line in Termux:
+The public certificate can encrypt backups but cannot decrypt them. Re-create and verify the one-line base64 file from the existing certificate in Termux. This does not regenerate or overwrite either key file:
 
 ```sh
-base64 "$HOME/.config/cestudy-backup/public-cert.pem" | tr -d '\n'
+base="$HOME/.config/cestudy-backup"
+test -s "$base/public-cert.pem" || { echo "ERROR: public-cert.pem is missing"; exit 1; }
+base64 "$base/public-cert.pem" | tr -d '\n' > "$base/public-cert.b64"
+base64 --decode "$base/public-cert.b64" > "$base/public-cert-check.pem" || { echo "ERROR: base64 decode failed"; exit 1; }
+cmp -s "$base/public-cert.pem" "$base/public-cert-check.pem" || { echo "ERROR: decoded file differs from the original certificate"; exit 1; }
+openssl x509 -in "$base/public-cert-check.pem" -noout -subject
+printf "Verified base64 length: "
+wc -c < "$base/public-cert.b64"
+echo "Now display the value to copy:"
+cat "$base/public-cert.b64"
 printf '\n'
 ```
 
-Copy the entire single-line output. Do not send it in chat.
+Only continue if the command reaches **Now display the value to copy** and reports no errors. Copy the entire output from the `cat` command, from its first character to its last. Do not copy the shell prompt. Do not add quote marks, backticks, spaces, or any line breaks inside the value. Do not send it in chat.
+
+To replace the GitHub variable:
 
 1. Open the [CEStudy repository](https://github.com/justryan-n2d/CEStudy).
 2. Select **Settings**.
 3. Under **Secrets and variables**, open **Actions**.
-4. Select **Variables**, then **New repository variable**.
-5. Name it `CESTUDY_BACKUP_CERT_B64`.
-6. Paste the one-line base64 certificate value and save.
+4. Select **Variables**.
+5. Open the existing `CESTUDY_BACKUP_CERT_B64` variable and choose its edit option.
+6. Replace the **entire old value** with the complete verified one-line output from Termux, then save.
 
-This is public encryption material, not a private key or password.
+This is public encryption material, not a private key or password. Never copy `private-key.pem` into GitHub.
 
 ## 3. Add the database and B2 repository secrets
 
