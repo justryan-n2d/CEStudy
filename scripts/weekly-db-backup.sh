@@ -67,10 +67,23 @@ trap 'result=$?; rm -rf -- "$work_dir"; unset PGPASSWORD RCLONE_CONFIG_B2_ACCOUN
 # Decode the public recipient certificate from a single-line base64 repository
 # variable. It is public encryption material, not a secret or decryption key.
 cert_file="$work_dir/recipient-cert.pem"
-printf '%s' "$CESTUDY_BACKUP_CERT_B64" | base64 --decode > "$cert_file"
+# Strip whitespace defensively, then detect truncated or malformed repository
+# variable contents before attempting to parse the public certificate.
+cert_b64="$(printf '%s' "$CESTUDY_BACKUP_CERT_B64" | tr -d '[:space:]')"
 unset CESTUDY_BACKUP_CERT_B64
+if [[ -z "$cert_b64" ]] || (( ${#cert_b64} % 4 != 0 )); then
+  echo "ERROR: CESTUDY_BACKUP_CERT_B64 is incomplete or malformed (invalid base64 length)." >&2
+  echo "Re-create it from the local public-cert.pem, verify decoding locally, then replace the entire GitHub repository variable value." >&2
+  echo "Do not use private-key.pem or add quotes/backticks to the value." >&2
+  exit 2
+fi
+if ! printf '%s' "$cert_b64" | base64 --decode > "$cert_file"; then
+  echo "ERROR: CESTUDY_BACKUP_CERT_B64 is not valid base64. Re-create it from the local public-cert.pem and replace the full GitHub repository variable value." >&2
+  exit 2
+fi
+unset cert_b64
 if [[ ! -s "$cert_file" ]] || ! openssl x509 -in "$cert_file" -noout; then
-  echo "ERROR: CESTUDY_BACKUP_CERT_B64 is not a valid PEM X.509 certificate." >&2
+  echo "ERROR: Decoded CESTUDY_BACKUP_CERT_B64 is not a valid PEM X.509 certificate. Verify it against the original local public-cert.pem." >&2
   exit 2
 fi
 if ! openssl x509 -in "$cert_file" -noout -text | grep -Fq 'Public Key Algorithm: rsaEncryption'; then
