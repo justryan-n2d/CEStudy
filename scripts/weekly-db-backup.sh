@@ -21,7 +21,7 @@ for name in "${required_vars[@]}"; do
   fi
 done
 
-for cmd in psql pg_dump pg_restore openssl base64 rclone sha256sum grep awk cmp; do
+for cmd in psql pg_dump pg_restore openssl base64 python3 rclone sha256sum grep awk cmp head; do
   command -v "$cmd" >/dev/null 2>&1 || {
     echo "ERROR: Required command is missing: $cmd" >&2
     exit 2
@@ -96,7 +96,7 @@ bucket="cestudy-db-backups"
 prefix="termux/weekly"
 remote_dir="b2:${bucket}/${prefix}"
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
-archive_name="CEStudy-${stamp}.dump.cms"
+archive_name="CEStudy-${stamp}.dump.enc"
 dump_file="$work_dir/CEStudy-${stamp}.dump"
 encrypted_file="$work_dir/$archive_name"
 checksum_name="${archive_name}.sha256"
@@ -132,15 +132,17 @@ for table in catalog_subjects practice_questions; do
   fi
 done
 
-printf 'Encrypting with OpenSSL CMS and AES-256-GCM...\n'
-openssl cms -encrypt -binary -aes-256-gcm \
-  -in "$dump_file" -out "$encrypted_file" -outform DER "$cert_file"
+printf 'Encrypting with RSA-OAEP and streaming AES-256-GCM...\n'
+python3 "$(dirname "$0")/encrypt-db-backup.py" encrypt \
+  --certificate "$cert_file" --input "$dump_file" --output "$encrypted_file"
 if [[ ! -s "$encrypted_file" ]]; then
-  echo "ERROR: OpenSSL did not create a non-empty encrypted archive." >&2
+  echo "ERROR: Encryption did not create a non-empty backup." >&2
   exit 1
 fi
-# Parse the ciphertext container without the private key before upload.
-openssl cms -cmsout -inform DER -in "$encrypted_file" -noout
+if [[ "$(head -c 8 "$encrypted_file")" != "CESTUDY1" ]]; then
+  echo "ERROR: The encrypted backup has an invalid format header." >&2
+  exit 1
+fi
 rm -f -- "$dump_file"
 
 archive_sha256="$(sha256sum "$encrypted_file" | awk '{print $1}')"
@@ -168,8 +170,8 @@ timestamp_utc=$stamp
 archive=$archive_name
 sha256=$archive_sha256
 postgresql_major=17
-encryption=CMS_AES_256_GCM
-checks=pg_restore_list,expected_tables,cms_structure,remote_sha256
+encryption=RSA_OAEP_SHA256_AES_256_GCM
+checks=pg_restore_list,expected_tables,encryption_format,remote_sha256
 MARKER
 rclone copyto "$marker_file" "$remote_marker" --transfers 1 --checkers 1
 if ! rclone cat "$remote_marker" | cmp -s "$marker_file" -; then
@@ -189,7 +191,7 @@ bash "$(dirname "$0")/prune-weekly-backups.sh" "$remote_dir"
   echo "- SHA-256: `$archive_sha256`"
   echo "- Remote prefix: `${bucket}/${prefix}/`"
   echo '- PostgreSQL archive listing and expected tables verified before encryption.'
-  echo '- OpenSSL CMS AES-256-GCM archive structure parsed successfully.'
+  echo '- The encrypted archive format header and uploaded ciphertext integrity were checked.'
   echo '- Uploaded encrypted bytes and checksum file were read back and matched.'
   echo '- Retention pruning ran only after the new backup was verified.'
 } >> "$GITHUB_STEP_SUMMARY"
