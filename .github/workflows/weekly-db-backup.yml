@@ -23,12 +23,12 @@ jobs:
       - name: Check out trusted main branch source
         uses: actions/checkout@v4
 
-      - name: Install PostgreSQL 17 client, age, and rclone
+      - name: Install PostgreSQL 17 client, OpenSSL, and rclone
         shell: bash
         run: |
           set -Eeuo pipefail
           sudo apt-get update
-          sudo apt-get install -y ca-certificates curl gnupg age rclone
+          sudo apt-get install -y ca-certificates curl gnupg openssl rclone
           sudo install -d /usr/share/postgresql-common/pgdg
           curl --fail --silent --show-error https://www.postgresql.org/media/keys/ACCC4CF8.asc \
             | sudo gpg --dearmor --yes -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
@@ -38,7 +38,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-client-17
           pg_dump --version
-          age --version
+          openssl version
           rclone version | sed -n '1p'
 
       - name: Create, encrypt, upload, verify, and prune backups
@@ -50,7 +50,7 @@ jobs:
           CESTUDY_DB_PASSWORD: ${{ secrets.CESTUDY_DB_PASSWORD }}
           B2_APPLICATION_KEY_ID: ${{ secrets.B2_APPLICATION_KEY_ID }}
           B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
-          AGE_RECIPIENT: ${{ vars.CESTUDY_AGE_RECIPIENT }}
+          CESTUDY_BACKUP_CERT_B64: ${{ vars.CESTUDY_BACKUP_CERT_B64 }}
         run: bash scripts/weekly-db-backup.sh
 
       - name: Add failure alert details to the Actions run
