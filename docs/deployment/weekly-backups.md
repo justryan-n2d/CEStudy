@@ -1,6 +1,6 @@
 # CEStudy automated weekly database backups
 
-**Status:** The workflow, encryption helper, and retention tests are committed. The first backup is not active or verified until the public recipient certificate file is added, repository secrets are configured, the Backblaze lifecycle rule and failure email notifications are enabled, and a manual workflow run succeeds.
+**Status:** The workflow, encryption helper, retention tests, and public recipient certificate are committed. An earlier workflow run connected to the database, exported the dump, and encrypted it, but upload failed because the old script targeted `cestudy-db-backups` while the restricted Backblaze key allows `cestudy-db-backup`. The current script uses the singular bucket. Do not count backups as active or verified until a new run on current `main` succeeds, lifecycle cleanup and failure notifications are configured, and a restore is tested in a separate Supabase project.
 
 ## Schedule and destination
 
@@ -48,54 +48,18 @@ OpenSSL should prompt you to set a passphrase for the private key. Save it secur
 
 **Never commit, paste, or upload `private-key.pem` to GitHub or to the Backblaze backup bucket.** Keep two protected copies of the private key and its passphrase in separate secure locations. If the key is lost, the encrypted database backups cannot be decrypted. Keep `public-cert.pem` alongside the private key for restore operations.
 
-## 2. Add the public certificate to the repository
+## 2. Public recipient certificate (already committed)
 
-The workflow now reads the certificate from `scripts/backup-recipient-cert.pem` directly. This avoids copying a long Base64 value into GitHub Settings. A public certificate is safe to commit to this public repository because it can encrypt backups but cannot decrypt them. Never commit `private-key.pem`.
+The public recipient certificate is already committed at `scripts/backup-recipient-cert.pem`. No further Termux copy or commit is needed for the current setup.
 
-Run this entire block in Termux. It copies the **existing** certificate, not a newly generated one. It stops if the local repository already has uncommitted changes.
+- The workflow reads this public certificate directly from the repository.
+- A public certificate can encrypt the dump but cannot decrypt it. It is safe to keep in source control.
+- Keep `private-key.pem` and its passphrase outside GitHub and outside the backup bucket. Keep protected recovery copies.
+- Do not generate a new key or replace the certificate as a troubleshooting step. Key rotation requires a deliberate recovery plan and validation that older backups remain decryptable.
 
-```sh
-set -e
-base="$HOME/.config/cestudy-backup"
-test -s "$base/public-cert.pem" || { echo "ERROR: public-cert.pem is missing"; exit 1; }
-openssl x509 -in "$base/public-cert.pem" -noout -subject -dates
+## 3. Verify the database and B2 repository secrets
 
-mkdir -p "$HOME/projects"
-if [ -d "$HOME/projects/CEStudy/.git" ]; then
-  cd "$HOME/projects/CEStudy"
-  git fetch origin
-  git switch main
-  git pull --ff-only origin main
-else
-  git clone git@github.com:justryan-n2d/CEStudy.git "$HOME/projects/CEStudy"
-  cd "$HOME/projects/CEStudy"
-fi
-
-if [ -n "$(git status --porcelain)" ]; then
-  echo "STOP: This CEStudy checkout has other changes. Do not continue or commit them accidentally."
-  git status --short
-  exit 1
-fi
-
-cp "$base/public-cert.pem" scripts/backup-recipient-cert.pem
-openssl x509 -in scripts/backup-recipient-cert.pem -noout -subject -dates
-git status --short
-```
-
-The final status should show only `?? scripts/backup-recipient-cert.pem`. If it shows other files, stop and inspect before committing. Then run:
-
-```sh
-git add scripts/backup-recipient-cert.pem
-git diff --cached --stat
-git commit -m "Add public certificate for weekly backup encryption"
-git push origin main
-```
-
-This push adds only the public certificate to GitHub. The private key and its passphrase stay in your protected storage on Termux. The old `CESTUDY_BACKUP_CERT_B64` repository variable is no longer used; after the certificate file is pushed, it can be deleted under repository **Settings → Secrets and variables → Actions → Variables**.
-
-## 3. Add the database and B2 repository secrets
-
-In the same **Settings → Secrets and variables → Actions** page, open **Secrets** and create each repository secret. Do not put these values in source files, workflow YAML, a `VITE_*` variable, or a public issue.
+The failed workflow log showed that the database/B2 secrets were present and the database export plus encryption completed. Keep these values in **Settings → Secrets and variables → Actions → Secrets**. Do not print them, paste them into chat, or put them in source files, workflow YAML, a `VITE_*` variable, or a public issue. Recreate a secret only if it is missing or you have confirmed that its value is incorrect.
 
 | Secret name | Value |
 | --- | --- |
@@ -135,7 +99,7 @@ The GitHub Actions run summary also includes a direct link to a failure, but ema
 
 ## 6. Run the first backup and verify it
 
-After the variable, six repository secrets, lifecycle rule, and notification settings are configured:
+After confirming the required secrets, configuring the lifecycle rule, and enabling failure notifications:
 
 1. Open the repository **Actions** tab.
 2. Select **CEStudy weekly database backup**.
