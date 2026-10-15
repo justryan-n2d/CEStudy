@@ -39,7 +39,7 @@ jobs:
           sudo apt-get install -y postgresql-client-17
           pg_dump --version
           age --version
-          rclone version | head -n 1
+          rclone version | sed -n '1p'
 
       - name: Create, encrypt, upload, verify, and prune backups
         shell: bash
