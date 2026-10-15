@@ -8,7 +8,7 @@
 | ID | Question | Answer checked | Result |
 |---|---|---|---|
 | `algebra-q1-linear-equation` | Solve (3x + 5 = 20). | (x = 5) | Correct. Subtract 5, then divide by 3. |
-| `algebra-q2-distributive-property` | Solve (2(x - 3) = 14). | (x = 10) | Correct. Divide by 2, then add 3. |
+| `algebra-q2-distributive-property` | Solve (2(x - 3) = 14). | (x = 10) | Answer correct. The prior solution bypassed the distributive property despite the topic label; draft steps were corrected to distribute first. Human review still required. |
 | `algebra-q3-fraction-coefficient` | Solve ((3/4)x = 18). | (x = 24) | Correct. Multiply by (4/3). |
 | `algebra-q4-variable-both-sides` | Solve (5x - 2 = 3x + 10). | (x = 6) | Correct. Subtract (3x), add 2, divide by 2. |
 | `algebra-q5-factor-quadratic` | Factor (x^2 - 5x + 6). | ((x - 2)(x - 3)) | Correct. The numbers -2 and -3 multiply to 6 and add to -5. |
@@ -16,7 +16,7 @@
 | `algebra-q7-rearrange-ohms-law` | Rearrange (V = IR) for (I), assuming (R \ne 0). | (I = V/R) | Correct under the stated restriction. |
 | `algebra-q8-ratio-split` | Split 40 in the ratio 2:3. | 16 and 24 | Correct. Five units total; one unit is 8. |
 
-No arithmetic or solution-step correction was identified in this pass.
+A pedagogical mismatch was found in item 2: its prior solution did not demonstrate the distributive property named by the topic. The live draft and source seed were corrected to distribute first; the status remains `needs-review`. The remaining answers and solution steps showed no arithmetic mismatch in this pass.
 
 ## Required human review before any publication
 
