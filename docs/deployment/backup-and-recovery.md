@@ -1,6 +1,6 @@
 # CEStudy database backup and recovery plan
 
-**Status:** Automated weekly backup workflow and retention helper have been added. Repository secrets, the age recipient variable, B2 lifecycle rule, failure email notifications, the first successful production run, and a restore drill remain pending.
+**Status:** Automated weekly backup workflow and retention helper have been added. The public certificate variable, repository secrets, B2 lifecycle rule, failure email notifications, the first successful production run, and a restore drill remain pending.
 **Scope:** Current seeded-only MVP, before student accounts, submissions, or other mutable user data are introduced.
 
 ## Current recovery position
@@ -19,7 +19,7 @@ The CEStudy Supabase organization is on the Free plan. Supabase documents automa
 
 ## Automated weekly Backblaze workflow
 
-A scheduled workflow has been added at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It is scheduled for Sundays at 02:00 UTC (10:00 AM Philippine time), encrypts exports with `age`, uploads into the private `cestudy-db-backups/termux/weekly/` prefix, reads the uploaded encrypted archive back to verify its SHA-256, and retains the latest four complete verified sets. It does not run successfully until the maintainer completes the repository secret/variable setup, configures the B2 lifecycle rule for hidden versions, enables GitHub failure email notifications, and runs a first manual verification. Follow [automated weekly backup setup](weekly-backups.md) for the exact steps.
+A scheduled workflow has been added at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It is scheduled for Sundays at 02:00 UTC (10:00 AM Philippine time), encrypts exports with OpenSSL CMS AES-256-GCM using a public certificate, uploads into the private `cestudy-db-backups/termux/weekly/` prefix, reads the uploaded encrypted archive back to verify its SHA-256, and retains the latest four complete verified sets. It does not run successfully until the maintainer completes the repository secret/variable setup, configures the B2 lifecycle rule for hidden versions, enables GitHub failure email notifications, and runs a first manual verification. Follow [automated weekly backup setup](weekly-backups.md) for the exact steps.
 
 ## Creating a logical export
 
