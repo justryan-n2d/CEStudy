@@ -71,7 +71,8 @@ Perform this before relying on the backups for mutable data:
 
 ## Release gate
 
-- [ ] Configure the repository secrets and `CESTUDY_AGE_RECIPIENT` variable for the weekly workflow.
+- [ ] Create the password-protected RSA private key and public certificate in Termux, and keep two protected copies of the private key and its passphrase.
+- [ ] Add the base64-encoded public certificate as the `CESTUDY_BACKUP_CERT_B64` repository variable and configure the six database/B2 repository secrets.
 - [ ] Configure the B2 lifecycle rule for `termux/weekly/` and enable GitHub failed-workflow email notifications.
 - [ ] Complete a successful manual weekly-workflow run; confirm the encrypted archive, checksum, and `.verified` marker in B2.
 - [ ] Restore drill in a separate Supabase project passed and recorded.
