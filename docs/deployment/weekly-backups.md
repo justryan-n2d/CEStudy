@@ -1,6 +1,6 @@
 # CEStudy automated weekly database backups
 
-**Status:** The workflow, encryption helper, retention tests, and public recipient certificate are committed. An earlier workflow run connected to the database, exported the dump, and encrypted it, but upload failed because the old script targeted `cestudy-db-backups` while the restricted Backblaze key allows `cestudy-db-backup`. The current script uses the singular bucket. Do not count backups as active or verified until a new run on current `main` succeeds, lifecycle cleanup and failure notifications are configured, and a restore is tested in a separate Supabase project.
+**Status:** The first real weekly backup succeeded in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). The run exported the live database, encrypted it, uploaded the archive and checksum to the correct private B2 bucket, read both back for verification, wrote and re-read the `.verified` marker, and completed retention. One verified backup set is confirmed. A real decrypt and full restore into a separate test database have **not** been completed yet.
 
 ## Schedule and destination
 
@@ -9,9 +9,13 @@
 - Retention: four latest complete verified encrypted backups. Each set contains an encrypted database dump, SHA-256 checksum, and verification marker. Pruning happens only after the newest set is uploaded and read back successfully.
 - Encryption: a random AES-256 key encrypts the dump with authenticated AES-GCM; the AES key is wrapped with RSA-OAEP using a 3072-bit public certificate. GitHub Actions receives only the public certificate. The private key never goes to GitHub.
 - Database client: PostgreSQL 17, matching the verified CEStudy server version 17.11.
-- Failure details: failed runs get a GitHub Actions summary with a direct run link. GitHub account notifications must be configured to receive failure emails.
+- Failure details: failed runs automatically get a GitHub Actions summary with a direct run link. Email alerts depend on GitHub notification settings, which still need manual confirmation.
 
-A workflow run is not a verified backup until it finishes successfully. The earlier failed Termux attempts did not create a confirmed backup.
+### What is automatic, and what is manual?
+
+**Automatic in GitHub Actions:** the weekly schedule; B2 access preflight; PostgreSQL export; archive and expected-table checks; encryption using the public certificate; upload of the encrypted archive and checksum; remote read-back checks; creation and verification of the `.verified` marker; retention pruning after successful verification; failure summary; and CI tests for encrypt/decrypt, corrupted-tag rejection, retention, migrations, RLS, lint, and build.
+
+**Still manual:** Backblaze's lifecycle rule for deleting hidden old versions; GitHub account email notification settings; keeping protected copies of the private key and passphrase; downloading and decrypting a real backup; restoring the decrypted dump into a separate Supabase test database; validating restored counts, grants, RLS, and published-only question visibility; and recording the restore evidence. A successful upload is not proof that a full restore works.
 
 ## 1. Generate a private key and public certificate in Termux
 
@@ -97,16 +101,16 @@ See [GitHub Actions notification settings](https://docs.github.com/en/subscripti
 
 The GitHub Actions run summary also includes a direct link to a failure, but email depends on these account notification settings.
 
-## 6. Run the first backup and verify it
+## 6. Check the successful backup and future scheduled runs
 
-After confirming the required secrets, configuring the lifecycle rule, and enabling failure notifications:
+The first successful post-fix run is [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). It retained one verified set. For future manual verification, after confirming the required secrets, configuring the lifecycle rule, and enabling failure notifications:
 
 1. Open the repository **Actions** tab.
 2. Select **CEStudy weekly database backup**.
 3. Choose **Run workflow** on branch `main`.
 4. Open the run and wait for completion.
 5. Require the green success result and its summary confirming the encrypted archive, checksum, and verification marker were read back successfully.
-6. In Backblaze, inspect `cestudy-db-backup/termux/weekly/`. The current set should contain the `.dump.enc`, `.dump.enc.sha256`, and `.dump.enc.verified` files, plus up to three older complete verified sets.
+6. In Backblaze, inspect `cestudy-db-backup/termux/weekly/`. Each complete set contains `.dump.enc`, `.dump.enc.sha256`, and `.dump.enc.verified` files, with up to four complete sets retained.
 
 Do not count failed or cancelled runs as backups. If a run fails, inspect the failing step without sharing database credentials, B2 keys, or the private key. The workflow does not upload plaintext dumps as GitHub Actions artifacts.
 
