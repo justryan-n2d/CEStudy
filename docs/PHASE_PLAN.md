@@ -17,7 +17,7 @@ The current job is to make the deployed MVP safe and reliable enough for a contr
 
 - **Supabase database:** In use. The 72 catalog subjects and eight draft practice questions are stored in PostgreSQL tables. RLS and read-only public access have been tested.
 - **Supabase Storage buckets:** **Not configured, and not needed for the current MVP.** The app currently has no user-uploaded files or private media. Do not add a bucket unless an approved feature requires file/object storage.
-- **Database backup storage:** The workflow is implemented to write encrypted database backups to the existing private Backblaze B2 bucket named `cestudy-db-backup`, under `termux/weekly/`. The observed failed run used the old plural bucket path. The current script references the singular bucket, but a successful run after that fix and an independent restore drill still need to be recorded. Until then, backups are **not verified**.
+- **Database backup storage:** One real encrypted database backup was successfully uploaded and read-back verified in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), under the private Backblaze B2 bucket `cestudy-db-backup/termux/weekly/`. The scheduler, verification, and four-set retention are automated. The full decrypt and separate-database restore drill, B2 lifecycle cleanup, and GitHub failure-email preferences still need confirmation.
 
 ## Status meanings
 
@@ -189,15 +189,16 @@ Critical defects are fixed, the latest CI is green, routes work directly, and a 
 
 Work through these in order. Do not move to the student pilot until the blocking items are completed and documented.
 
-### 7.1 Make backup CI and the first real backup succeed
-- [ ] Confirm the corrected backup script is on `main`. It currently uses the singular existing bucket name `cestudy-db-backup`, not `cestudy-db-backups`.
-- [ ] Re-run the backup workflow from the latest `main`. The observed failures used the old plural destination; those failed runs did not create a verified backup.
-- [ ] Confirm the workflow passes its bucket/prefix preflight before exporting the database.
-- [ ] Require a successful upload and read-back verification of the encrypted archive, checksum, and verification marker.
-- [ ] Configure the Backblaze lifecycle rule for hidden-object cleanup and GitHub Actions failure email notifications.
-- [ ] Keep the private decryption key and passphrase in secure locations outside GitHub.
-- [ ] Restore a backup into a separate temporary Supabase project and record evidence that the tables and data are restored correctly. Never make the first restore attempt against the live project.
-- [ ] Update the backup status only after both backup creation and a separate-project restore are confirmed.
+### 7.1 Complete the real-backup recovery drill
+- [x] Corrected script on `main` uses the existing singular bucket `cestudy-db-backup`.
+- [x] Successful live backup run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) verified uploaded encrypted bytes, checksum, verification marker, and retention.
+- [x] CI tests exercise encryption, decryption, corrupted-tag rejection, backup syntax, and retention behavior. This uses a temporary test key and test data, not the actual production backup.
+- [ ] Confirm the Backblaze lifecycle rule deletes hidden old versions without hiding current backups.
+- [ ] Confirm GitHub Actions failure email notifications are enabled in account settings.
+- [ ] Keep the private decryption key and passphrase securely outside GitHub, with a protected recovery copy.
+- [ ] Decrypt the real B2 backup on Termux and confirm `pg_restore --list` succeeds.
+- [ ] Restore the real dump into a separate temporary Supabase database, validate record counts, grants, RLS, and published-only question visibility, and record evidence. Never test restore against production.
+- [ ] Update backup status to fully recovery-tested only after the isolated full restore passes.
 
 Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery plan](deployment/backup-and-recovery.md).
 
@@ -328,8 +329,7 @@ These are not blockers for the current no-account web MVP and should not distrac
 
 ## Immediate next actions
 
-1. Re-run the backup workflow using the fixed singular bucket path and confirm a complete successful run.
-2. Complete the separate-project database restore drill.
+1. Decrypt the verified real backup in Termux, then run the complete restore drill in an isolated database. A Supabase branch is available as a test target, but it has an estimated usage cost of $0.01344 per hour while active, so confirm before creating it.
 3. Restrict repository access and confirm Cloudflare Pages still deploys successfully.
 4. Configure main-branch protection and rerun CI plus the full-history secret scan.
 5. Complete the physical-device, accessibility, route, search/filter, and privacy review.
