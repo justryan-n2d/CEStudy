@@ -41,7 +41,9 @@ jobs:
           grep -q "X-Content-Type-Options: nosniff" dist/_headers
       - name: Check backup shell syntax and retention behavior
         run: |
-          bash -n scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh
+          for file in scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh; do
+            bash -n "$file"
+          done
           bash scripts/tests/weekly-backup-retention.test.sh
 
   database-security:
