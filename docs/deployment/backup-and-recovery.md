@@ -1,6 +1,6 @@
 # CEStudy database backup and recovery plan
 
-**Status:** Plan documented. A production export and restore drill have not yet been performed.
+**Status:** Automated weekly backup workflow and retention helper have been added. Repository secrets, the age recipient variable, B2 lifecycle rule, failure email notifications, the first successful production run, and a restore drill remain pending.
 **Scope:** Current seeded-only MVP, before student accounts, submissions, or other mutable user data are introduced.
 
 ## Current recovery position
@@ -16,6 +16,10 @@ This is a reproducible baseline, not a point-in-time backup of the live database
 3. Before adding accounts, student progress, public submissions, or other mutable user data, configure at least weekly logical exports to private off-site storage and retain the most recent four weekly exports. Use a shorter interval if the acceptable amount of lost data is lower.
 4. Keep export files, database connection strings, database passwords, access tokens, and encryption keys out of Git, public artifacts, chat, and application build variables. Store backups in private, encrypted storage with restricted access.
 The CEStudy Supabase organization is on the Free plan. Supabase documents automatic daily backups for Pro, Team, and Enterprise plans and recommends that Free projects regularly export data with the CLI and keep off-site backups. See [Supabase Database Backups](https://supabase.com/docs/guides/platform/backups). Recheck plan features before any future upgrade or student-data launch.
+
+## Automated weekly Backblaze workflow
+
+A scheduled workflow has been added at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It is scheduled for Sundays at 02:00 UTC (10:00 AM Philippine time), encrypts exports with `age`, uploads into the private `cestudy-db-backups/termux/weekly/` prefix, reads the uploaded encrypted archive back to verify its SHA-256, and retains the latest four complete verified sets. It does not run successfully until the maintainer completes the repository secret/variable setup, configures the B2 lifecycle rule for hidden versions, enables GitHub failure email notifications, and runs a first manual verification. Follow [automated weekly backup setup](weekly-backups.md) for the exact steps.
 
 ## Creating a logical export
 
@@ -67,9 +71,11 @@ Perform this before relying on the backups for mutable data:
 
 ## Release gate
 
-- [ ] Export files created and copied to encrypted private off-site storage.
+- [ ] Configure the repository secrets and `CESTUDY_AGE_RECIPIENT` variable for the weekly workflow.
+- [ ] Configure the B2 lifecycle rule for `termux/weekly/` and enable GitHub failed-workflow email notifications.
+- [ ] Complete a successful manual weekly-workflow run; confirm the encrypted archive, checksum, and `.verified` marker in B2.
 - [ ] Restore drill in a separate Supabase project passed and recorded.
 - [ ] Backup cadence and retention owner agreed before mutable data or student accounts launch.
 - [ ] Recovery steps and latest export location are known to the maintainer.
 
-The plan is documented, but the export, off-site copy, and restore drill remain uncompleted actions.
+The automation is committed but not yet activated: repository secrets, encryption recipient, lifecycle cleanup, notifications, the first live backup, and the restore drill remain uncompleted actions.
