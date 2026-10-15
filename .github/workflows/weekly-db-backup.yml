@@ -37,7 +37,15 @@ jobs:
             | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null
           sudo apt-get update
           sudo apt-get install -y postgresql-client-17
+          # The runner may already have PostgreSQL 16 earlier in PATH. Explicitly
+          # select v17 for this project, and persist the path for later steps.
+          test -x /usr/lib/postgresql/17/bin/pg_dump
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
+          export PATH="/usr/lib/postgresql/17/bin:$PATH"
+          command -v pg_dump
           pg_dump --version
+          psql --version
+          pg_restore --version
           openssl version
           rclone version | sed -n '1p'
 
