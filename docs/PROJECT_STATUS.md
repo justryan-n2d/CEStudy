@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-10-16  
 **Current phase:** **Phase 7, pre-launch hardening and release gates.**  
-**Release status:** The live web MVP is deployed and the initial automated live smoke test passed 70/70 checks. The site is not approved for a broad student launch yet. Backup creation/restore proof, repository privacy, branch protection, final manual QA, human content review, and the student pilot remain release gates. See the [organized phase plan](PHASE_PLAN.md) for the canonical status and next actions.
+**Release status:** The live web MVP is deployed and the automated live smoke test passed 70/70 checks. A real encrypted database backup has now succeeded, but decrypting and fully restoring that backup in an isolated database remains untested. The site is not approved for a broad student launch yet. Restore proof, repository privacy, branch protection, final manual QA, human content review, and the student pilot remain release gates. See the [organized phase plan](PHASE_PLAN.md) for the canonical status and next actions.
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
@@ -41,7 +41,7 @@ This is an automated Chromium run at 320 px and 1440 px, not a full accessibilit
 
 - All eight original Basic Algebra questions received a mathematical answer/step consistency pre-review with no arithmetic mismatch found. This is not independent academic approval. All eight remain `needs-review` and unpublished until a human reviewer checks clarity, options, workings, explanations, and attribution. See [sample question pre-review](reviews/2026-10-15-basic-algebra-draft-review.md).
 - **Source-level privacy gap discovered:** the GitHub repository is public, and `supabase/seed.sql` contains the text of the eight unpublished questions. RLS hides these rows from the CEStudy website/API, but cannot protect files in a public GitHub repository. Treat these initial questions as already disclosed; do not use them as confidential assessments. Restrict repository access before adding any new unreleased question bank, then confirm Cloudflare Pages still deploys from the now-private repository. Previously downloaded public forks/copies cannot be recalled.
-- The GitHub Actions workflow, encryption helper, retention tests, and public recipient certificate at `scripts/backup-recipient-cert.pem` are committed. The workflow log shows the database connection, export, and encryption steps succeeded, then upload failed because that run targeted the plural bucket `cestudy-db-backups`; the restricted key is for the existing singular bucket `cestudy-db-backup`. The current script now uses the singular name, but no successful post-fix run or separate-project restore drill has been verified. Confirm Backblaze lifecycle cleanup and GitHub failure notifications before treating backups as operational. See [weekly backup setup](deployment/weekly-backups.md).
+- The GitHub Actions workflow, encryption helper, retention tests, and public recipient certificate at `scripts/backup-recipient-cert.pem` are committed. The first successful live backup run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) exported the database, encrypted it, uploaded the encrypted archive and checksum to the correct singular bucket `cestudy-db-backup`, read them back for verification, verified the marker, and completed retention with one backup set. Current CI [38774949531](https://github.com/justryan-n2d/CEStudy/actions/runs/38774949531) also passed its encryption/decryption and retention tests using test data. A full restore of the actual backup into a separate database remains untested. Confirm Backblaze lifecycle cleanup and GitHub failure email settings. See [weekly backup setup](deployment/weekly-backups.md).
 - The controlled 5–8-student pilot procedure and proposed metrics are documented in [student pilot plan](plans/2026-10-15-student-pilot-plan.md). No student pilot has been run.
 - The GitHub integration cannot read the repository's branch-protection settings, and the public rulesets query returned no rulesets. Main-branch protection and required status-check settings must still be confirmed in GitHub Settings.
 
@@ -66,7 +66,7 @@ The authoritative phase table and detailed tasks live in [the organized phase pl
 | 10. Final polish and broad public launch | Not started | Complete pilot fixes and a documented go/no-go decision before announcing broadly. |
 | 11. Ongoing operations and future expansion | Deferred | Accounts, AI tutor, submissions, and native mobile apps remain future options. |
 
-**Storage clarification:** Supabase PostgreSQL is already in use. A Supabase Storage bucket is not configured and is not required for this MVP. Encrypted database backups target Backblaze B2 bucket `cestudy-db-backup`, but no successful post-fix backup plus separate-project restore has yet been recorded.
+**Storage clarification:** Supabase PostgreSQL is already in use. A Supabase Storage bucket is not configured and is not required for this MVP. Encrypted database backups target Backblaze B2 bucket `cestudy-db-backup`; one verified backup is present, but the actual decrypt and isolated restore drill remain pending.
 
 ## Deployment record (2026-10-15)
 
@@ -84,7 +84,7 @@ The following initial checks were reported working on mobile after deployment: h
 
 The subsequent independent Chromium run [38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed 70/70 live checks, including six direct-route loads, live Supabase API and publishable-key verification, required response headers, 320 px and 1440 px overflow checks, zero browser/runtime errors, hidden unpublished questions, and the official CHED PDF link.
 
-Still pending before a student launch: full accessibility and physical-device review, confirmation of main-branch protection, real database export and restore drill, human question review, and the controlled student pilot. Search/filter edge-case testing has not been exhaustively automated.
+Still pending before a student launch: full accessibility and physical-device review, confirmation of main-branch protection, a real-backup decrypt and isolated restore drill, human question review, and the controlled student pilot. Search/filter edge-case testing has not been exhaustively automated.
 
 ## Completed and verified
 
@@ -139,8 +139,8 @@ See [Cloudflare Pages setup](deployment/cloudflare-pages.md).
 
 Follow the [organized phase plan](PHASE_PLAN.md) for the full checklist. The immediate order is:
 
-1. Re-run the weekly backup workflow on the latest `main` commit after the singular Backblaze bucket-path correction. The observed failure came from the earlier plural path; a failed run must not be counted as a backup.
-2. Confirm upload verification succeeds, then restore a backup into a separate temporary Supabase project and record evidence.
+1. Download the verified backup set from B2 and test the real checksum and decryption in Termux using the saved private key.
+2. Restore the decrypted archive into a separate temporary Supabase database and record validation evidence. A Supabase branch can be used as an isolated target after explicit cost approval.
 3. Restrict repository access before adding any new unreleased question content. Then verify the Cloudflare Pages Git integration still works and the site redeploys.
 4. Configure main-branch protection with required CI and secret-scan checks. Rerun CI and the full-history secret scan on the latest commit.
 5. Complete physical-device and accessibility review, search/filter edge cases, and final live privacy checks.
