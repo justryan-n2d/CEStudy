@@ -210,10 +210,10 @@ bash "$(dirname "$0")/prune-weekly-backups.sh" "$remote_dir"
 {
   echo '## CEStudy weekly database backup succeeded'
   echo
-  echo "- UTC timestamp: `$stamp`"
-  echo "- Encrypted archive: `$archive_name`"
-  echo "- SHA-256: `$archive_sha256`"
-  echo "- Remote prefix: `${bucket}/${prefix}/`"
+  printf -- '- UTC timestamp: `%s`\n' "$stamp"
+  printf -- '- Encrypted archive: `%s`\n' "$archive_name"
+  printf -- '- SHA-256: `%s`\n' "$archive_sha256"
+  printf -- '- Remote prefix: `%s`\n' "${bucket}/${prefix}/"
   echo '- PostgreSQL archive listing and expected tables verified before encryption.'
   echo '- The encrypted archive format header and uploaded ciphertext integrity were checked.'
   echo '- Uploaded encrypted bytes and checksum file were read back and matched.'
