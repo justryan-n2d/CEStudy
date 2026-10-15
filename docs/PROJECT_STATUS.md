@@ -1,8 +1,8 @@
 # CEStudy project status
 
-**Last updated:** 2026-10-15  
-**Current phase:** Phase 3, deployed web MVP and technical verification.  
-**Release status:** The Cloudflare Pages site is live and initial mobile smoke tests were reported successful. Do not open CEStudy broadly to students until the remaining technical, content, and pilot gates pass.
+**Last updated:** 2026-10-16  
+**Current phase:** **Phase 7, pre-launch hardening and release gates.**  
+**Release status:** The live web MVP is deployed and the initial automated live smoke test passed 70/70 checks. The site is not approved for a broad student launch yet. Backup creation/restore proof, repository privacy, branch protection, final manual QA, human content review, and the student pilot remain release gates. See the [organized phase plan](PHASE_PLAN.md) for the canonical status and next actions.
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
@@ -49,14 +49,24 @@ Do not open CEStudy broadly to students until a human reviewer is identified, th
 
 ## Phase summary
 
+The authoritative phase table and detailed tasks live in [the organized phase plan](PHASE_PLAN.md). Current summary:
+
 | Phase | State | Notes |
 | --- | --- | --- |
-| 0. Project foundation | Partially complete | Stack and repository docs are in place. Target user and success metrics still need to be recorded. |
-| 1. Validate the need | Not yet evidenced | Student interviews and comparison of current study/reviewer needs have not been documented. |
-| 2. Define the MVP | Direction selected, validation incomplete | Initial scope and architecture were approved; detailed user journey, wireframes, pilot metrics, and content operations still need completion. |
-| 3. Build the web MVP | Deployed; verification continues | Cloudflare Pages production site is live at [cestudy.pages.dev](https://cestudy.pages.dev). Initial mobile smoke tests were reported successful. |
-| 4. Test and improve | Technical checks in progress; student pilot not started | Complete browser, responsive, accessibility, content, backup, and security release checks before a small controlled pilot. |
-| 5. Expand carefully | Deferred | Accounts, synced progress, public submissions, AI tutor, and native mobile apps remain out of MVP scope. |
+| 0. Repository and project foundation | Complete | Stack, repository, security requirements, and development workflow exist. |
+| 1. Student discovery and problem validation | Not started | Student interviews and discovery findings are not yet documented. |
+| 2. MVP scope, user journey, and UX specification | Partially complete | Scope and architecture are selected; discovery evidence, success measures, and wireframe/user-journey notes remain. |
+| 3. Database, backend access, and security baseline | Complete for current MVP | Supabase tables, explicit grants, RLS, draft publication gate, and database tests are in place. |
+| 4. Frontend MVP implementation | Complete for current MVP | Main catalog, year routes, foundations hub, subject pages, and practice screen are deployed. |
+| 5. Cloudflare Pages and Supabase integration | Complete for initial deployment | Live site is active at [cestudy.pages.dev](https://cestudy.pages.dev). |
+| 6. Automated and manual technical QA | Partially complete | Live Chromium run 38627326289 passed 70/70 checks; physical-device, accessibility, and some search/filter edge cases remain. |
+| 7. Pre-launch hardening and release gates | **Current** | Verify backup and restore, restrict repository access, configure branch protection, complete manual QA, and rerun current CI/security checks. |
+| 8. Human content review and approved publishing | Not started | The eight drafts have not been independently approved; published count remains zero. |
+| 9. Controlled student pilot | Not started | The 5–8-student pilot plan exists but has not run. |
+| 10. Final polish and broad public launch | Not started | Complete pilot fixes and a documented go/no-go decision before announcing broadly. |
+| 11. Ongoing operations and future expansion | Deferred | Accounts, AI tutor, submissions, and native mobile apps remain future options. |
+
+**Storage clarification:** Supabase PostgreSQL is already in use. A Supabase Storage bucket is not configured and is not required for this MVP. Encrypted database backups target Backblaze B2 bucket `cestudy-db-backup`, but no successful post-fix backup plus separate-project restore has yet been recorded.
 
 ## Deployment record (2026-10-15)
 
@@ -127,16 +137,18 @@ See [Cloudflare Pages setup](deployment/cloudflare-pages.md).
 
 ## Next actions, in order
 
-1. Confirm the deployed browser requests use the dedicated CEStudy Supabase URL and only the publishable key; the catalog can use a bundled fallback, so a visible catalog alone does not prove the live API connection.
-2. Check the live site's security response headers and browser console/network at 320 px and desktop widths; confirm routing, catalog search/filters, and CHED source links.
-3. Complete an end-to-end UI check that unpublished questions remain hidden. Database-level RLS and write-denial tests already pass in CI.
-4. Finish the activation checklist in [weekly backup setup](deployment/weekly-backups.md), run the first verified encrypted B2 backup, then perform a restore drill in a separate Supabase project before adding mutable student data.
-5. Complete a full repository/history secret scan; a focused current-source scan found no common privileged-key patterns, but it does not examine every historical commit.
-6. In GitHub repository settings, verify that `main` branch protection and required CI checks are configured as appropriate; the current connection could not inspect branch-protection settings.
-7. Verify Cloudflare's production environment uses only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`, never a secret/service-role key.
-8. Complete student discovery and set pilot success measures. Identify a human content reviewer.
-9. Keep all sample questions unpublished until their answers and explanations are independently verified.
-10. After the release checks pass, run a small, controlled student pilot and document feedback before inviting a wider group.
+Follow the [organized phase plan](PHASE_PLAN.md) for the full checklist. The immediate order is:
+
+1. Re-run the weekly backup workflow on the latest `main` commit after the singular Backblaze bucket-path correction. The observed failure came from the earlier plural path; a failed run must not be counted as a backup.
+2. Confirm upload verification succeeds, then restore a backup into a separate temporary Supabase project and record evidence.
+3. Restrict repository access before adding any new unreleased question content. Then verify the Cloudflare Pages Git integration still works and the site redeploys.
+4. Configure main-branch protection with required CI and secret-scan checks. Rerun CI and the full-history secret scan on the latest commit.
+5. Complete physical-device and accessibility review, search/filter edge cases, and final live privacy checks.
+6. Identify a human content reviewer and approve a small initial question set before publishing it.
+7. Run the documented 5–8-student pilot, address critical findings, and record the go/no-go decision.
+8. Complete final polish and approve the broad launch only after the release gates pass.
+
+Do not create Supabase Storage buckets for the current MVP unless an approved feature needs file uploads or private objects.
 
 ## Documentation practice
 
