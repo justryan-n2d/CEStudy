@@ -164,7 +164,7 @@ fi
 
 # Pruning runs only after the new encrypted archive, checksum and marker all
 # pass remote-read verification. On failure, old verified copies remain intact.
-"$(dirname "$0")/prune-weekly-backups.sh" "$remote_dir"
+bash "$(dirname "$0")/prune-weekly-backups.sh" "$remote_dir"
 
 {
   echo '## CEStudy weekly database backup succeeded'
