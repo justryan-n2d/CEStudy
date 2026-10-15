@@ -44,7 +44,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install locked backup crypto dependency
-        run: python -m pip install --disable-pip-version-check --only-binary=:all: -r requirements-backup.txt
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: -r requirements-backup.txt
       - name: Check backup syntax, encryption, and retention behavior
         run: |
           for file in scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh scripts/tests/backup-encryption.test.sh; do
