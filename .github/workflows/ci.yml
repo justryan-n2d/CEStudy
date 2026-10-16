@@ -25,6 +25,12 @@ jobs:
           node-version: 22
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
+      - name: Prevent unpublished practice content in the public seed
+        run: |
+          if grep -Eiq 'insert[[:space:]]+into[[:space:]]+public\\.practice_questions|practice_seed|correct_answer|solution_steps' supabase/seed.sql; then
+            echo "::error::Unpublished practice-question content must not be stored in the public seed." >&2
+            exit 1
+          fi
       - name: Audit dependencies
         run: npm audit --audit-level=high
       - name: Run ESLint
