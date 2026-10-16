@@ -60,7 +60,7 @@ The authoritative phase table and detailed tasks live in [the organized phase pl
 | 4. Frontend MVP implementation | Complete for current MVP | Main catalog, year routes, foundations hub, subject pages, and practice screen are deployed. |
 | 5. Cloudflare Pages and Supabase integration | Complete for initial deployment | Live site is active at [cestudy.pages.dev](https://cestudy.pages.dev). |
 | 6. Automated and manual technical QA | Partially complete | Live Chromium run 38627326289 passed 70/70 checks; physical-device, accessibility, and some search/filter edge cases remain. |
-| 7. Pre-launch hardening and release gates | **Current** | Verify backup and restore, restrict repository access, configure branch protection, complete manual QA, and rerun current CI/security checks. |
+| 7. Pre-launch hardening and release gates | **Current** | Verify backup and restore, configure branch protection, complete manual QA, and rerun current CI/security checks. Future question content is kept out of public source by policy and CI. |
 | 8. Human content review and approved publishing | Not started | The eight drafts have not been independently approved; published count remains zero. |
 | 9. Controlled student pilot | Not started | The 5–8-student pilot plan exists but has not run. |
 | 10. Final polish and broad public launch | Not started | Complete pilot fixes and a documented go/no-go decision before announcing broadly. |
@@ -141,7 +141,7 @@ Follow the [organized phase plan](PHASE_PLAN.md) for the full checklist. The imm
 
 1. Download the verified backup set from B2 and test the real checksum and decryption in Termux using the saved private key.
 2. Restore the decrypted archive into a separate temporary Supabase database and record validation evidence. A Supabase branch can be used as an isolated target after explicit cost approval.
-3. Restrict repository access before adding any new unreleased question content. Then verify the Cloudflare Pages Git integration still works and the site redeploys.
+3. Keep the repository public by decision. After the question-content protection PR merges, confirm Cloudflare Pages still deploys successfully and the live site works. Future unpublished questions must stay in the CEStudy Supabase database, not public source.
 4. Configure main-branch protection with required CI and secret-scan checks. Rerun CI and the full-history secret scan on the latest commit.
 5. Complete physical-device and accessibility review, search/filter edge cases, and final live privacy checks.
 6. Identify a human content reviewer and approve a small initial question set before publishing it.
