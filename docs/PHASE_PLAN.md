@@ -40,7 +40,7 @@ A phase can be partially complete even when a later phase has already been built
 | 4 | Frontend MVP implementation | **Complete for the current MVP** | The main browsing and practice UI is built and deployed. Remaining design/accessibility polish is tracked in Phase 7. |
 | 5 | Cloudflare Pages and Supabase integration | **Complete for initial deployment** | The live site uses the dedicated CEStudy Supabase project and the Pages deployment is active. |
 | 6 | Automated and manual technical QA | **Partially complete** | Initial CI and 70/70 live Chromium checks passed; full accessibility and physical-device review plus some search/filter edge cases remain. |
-| 7 | Pre-launch hardening and release gates | **CURRENT** | Verify backup recovery, enforce future-question content separation, configure branch protection, complete final QA, and update release documentation. |
+| 7 | Pre-launch hardening and release gates | **CURRENT** | Verify backup recovery and the production deployment of the implemented future-question content separation, configure branch protection, complete final QA, and update release documentation. |
 | 8 | Human content review and approved question publishing | **Not started** | Have a qualified human review each question and only publish content that passes the review process. |
 | 9 | Controlled student pilot | **Not started** | Run the planned 5–8-student usability pilot after blocking release gates pass. |
 | 10 | Final polish and broad public launch | **Not started** | Fix pilot findings, complete sign-off, and then announce the wider release. |
@@ -204,12 +204,12 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 
 ### 7.2 Protect future unpublished question content without changing repository visibility
 
-- [x] Keep the GitHub repository public by decision; the original eight drafts are accepted as disclosed. No history rewrite or visibility migration is needed for those questions.
+- [x] Keep the GitHub repository public by decision. The original eight drafts were exposed in public Git history, and that exposure is accepted; no history rewrite, incident remediation, or visibility change is required for those drafts.
 - [x] Remove the real practice-question INSERT block from the current public `supabase/seed.sql`; it now seeds public catalog metadata only.
 - [x] Replace educational-looking test question examples with synthetic placeholders and make the RLS test create generic published/unpublished fixtures inside a rolled-back transaction.
 - [x] Add a CI guard that fails if practice-question INSERTs, `practice_seed`, `correct_answer`, or `solution_steps` return to the public seed.
 - [x] Document the Supabase-only workflow for future drafts in [unpublished question authoring and publication](content-authoring-and-publication.md).
-- [ ] After merge, confirm the CI guard passes, the Cloudflare Pages production deployment succeeds, and the live site still loads the catalog and published-only practice review gate.
+- [ ] For the content-separation commit already on `main`, confirm the CI guard passes and the latest Cloudflare Pages production deployment succeeds; then verify the live catalog and published-only practice review gate.
 - [ ] Configure a `main` branch ruleset requiring PRs and successful CI plus full-history secret scan. Branch protection is a separate release gate.
 - [ ] Continue to require human review before changing any future question to `published`.
 
@@ -333,7 +333,7 @@ These are not blockers for the current no-account web MVP and should not distrac
 ## Immediate next actions
 
 1. Decrypt the verified real backup in Termux, then run the complete restore drill in an isolated database. A Supabase branch is available as a test target, but it has an estimated usage cost of $0.01344 per hour while active, so confirm before creating it.
-3. Keep the repository public by decision. After the question-content protection changes merge, verify the CI guard and confirm Cloudflare Pages deploys successfully. Future unpublished question text stays in Supabase, not public source.
+3. Keep the repository public by decision. The content-separation commit is already on `main`; verify its CI guard and the latest Cloudflare Pages production deployment. Future unpublished question text stays in Supabase, not public source.
 4. Configure main-branch protection and rerun CI plus the full-history secret scan.
 5. Complete the physical-device, accessibility, route, search/filter, and privacy review.
 6. Identify a human question reviewer, approve a small set, and publish only approved content.
