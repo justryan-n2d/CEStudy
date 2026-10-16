@@ -7,9 +7,9 @@ The primary identity is the **white master artwork on a solid blue background**.
 | Asset | Background and foreground | Intended use |
 |---|---|---|
 | `public/branding/cestudy-master-logo-white.svg` | White background, blue traced artwork | Retains the original reference's light-background treatment for future pages or materials that need it |
-| `public/branding/cestudy-master-logo-transparent.svg` | Transparent background, blue traced artwork | Use on white or light surfaces where the logo should not have a white square behind it |
+| `public/branding/cestudy-master-logo-transparent.svg` | Transparent background, blue traced artwork | Loading states and light surfaces where the logo should not have a white square behind it |
 | `public/branding/cestudy-master-logo.svg` | Solid blue background, white traced artwork | Primary full logo |
-| `public/branding/cestudy-app-icon.svg` | Solid blue background, master-traced white artwork with simplified central axes | Header, favicon, and small app-icon derivative |
+| `public/branding/cestudy-app-icon.svg` | Solid blue background, master-traced white artwork with simplified central axes | Optional app-icon derivative; the website header and favicon use the full master logo |
 
 ## Rules
 
