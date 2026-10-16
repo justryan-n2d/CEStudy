@@ -1,6 +1,6 @@
 # CEStudy database backup and recovery plan
 
-**Status:** Automated weekly backup is active. The first successful live database backup passed in [GitHub Actions run 38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). Its encrypted archive and checksum were read back and verified in Backblaze B2, and retention completed with one verified set. The actual decrypt and full database restore drill remain pending. Backblaze hidden-version lifecycle cleanup and GitHub failure email settings also need manual confirmation.
+**Status:** Automated weekly backup is active. The first successful live database backup passed in [GitHub Actions run 38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). Its encrypted archive and checksum were read back and verified in Backblaze B2, and retention completed with one verified set. On 2026-10-16 the actual backup was decrypted and restored into an isolated local PostgreSQL 18.2 database; application rows, RLS policies, and client privileges passed validation. A restore into a separate managed Supabase project remains untested. Backblaze hidden-version lifecycle cleanup and GitHub failure email settings also need manual confirmation. See [restore-drill evidence](restore-drill-2026-10-16.md).
 **Scope:** Current seeded-only MVP, before student accounts, submissions, or other mutable user data are introduced.
 
 ## Current recovery position
@@ -53,7 +53,9 @@ After the export, verify that the archive exists and the checksum file is presen
 
 ## Safe restore drill
 
-Perform this before relying on the backups for mutable data:
+The real backup has passed a local isolated restore drill on 2026-10-16; see [restore-drill evidence](restore-drill-2026-10-16.md). That test restored only the `public` application schema and recreated app-facing permissions locally. It did not test a managed Supabase target.
+
+For a managed-Supabase-target recovery rehearsal (still outstanding), perform this before relying on backups for future mutable data:
 
 1. Create a separate temporary Supabase project. Confirm its name and project reference before running any restore command.
 2. Follow the restore procedure in the official guide for the exported `roles.sql`, `schema.sql`, and `data.sql`, adapting the documented connection string to the new temporary project only.
@@ -74,8 +76,9 @@ Perform this before relying on the backups for mutable data:
 - [x] Create the password-protected RSA private key and public certificate in Termux, commit the public certificate, and configure the database/B2 repository secrets.
 - [ ] Configure and confirm the B2 lifecycle rule for `termux/weekly/` and GitHub failed-workflow email notifications.
 - [x] Complete a successful live weekly-workflow run; run 38773249088 verified the encrypted archive, checksum, and `.verified` marker in B2.
-- [ ] Decrypt the real backup using the private key kept in Termux, restore it into a separate test database, validate records and security settings, and record the restore drill.
+- [x] Decrypt the actual B2 backup in Termux, verify its checksum and AES-GCM authentication, restore its `public` application schema into isolated local PostgreSQL 18.2, and validate counts, RLS, and client permissions. Evidence: [restore drill](restore-drill-2026-10-16.md).
+- [ ] Restore/rehearse the actual backup into a separate managed Supabase project and validate platform-target behavior; the local restore does not cover Supabase-managed roles/system schemas/settings.
 - [ ] Backup cadence and retention owner agreed before mutable data or student accounts launch.
 - [ ] Recovery steps and latest export location are known to the maintainer.
 
-The weekly backup automation is active and has completed one successful live backup. The remaining recovery gates are the B2 hidden-version lifecycle rule, failure email preferences, and a full isolated restore drill. Do not treat the system as fully recovery-tested until a real backup has been decrypted and restored successfully.
+The weekly backup automation is active and has completed one successful live backup. The real encrypted backup has also been decrypted and restored into isolated local PostgreSQL, with the application schema and tested security behavior validated. Remaining recovery gates include the B2 hidden-version lifecycle rule, failure-email preferences, and the separate managed-Supabase-target restore. Do not treat recovery into a managed Supabase project as proven until that target-specific test passes.

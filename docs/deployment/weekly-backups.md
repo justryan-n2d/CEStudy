@@ -1,6 +1,6 @@
 # CEStudy automated weekly database backups
 
-**Status:** The first real weekly backup succeeded in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). The run exported the live database, encrypted it, uploaded the archive and checksum to the correct private B2 bucket, read both back for verification, wrote and re-read the `.verified` marker, and completed retention. One verified backup set is confirmed. A real decrypt and full restore into a separate test database have **not** been completed yet.
+**Status:** The first real weekly backup succeeded in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). The run exported the live database, encrypted it, uploaded the archive and checksum to the correct private B2 bucket, read both back for verification, wrote and re-read the `.verified` marker, and completed retention. On 2026-10-16 the actual backup was checksum-checked, decrypted, restored into isolated local PostgreSQL 18.2, and validated for app data, RLS, and client permissions. The managed-Supabase-target restore remains untested; see [restore-drill evidence](restore-drill-2026-10-16.md).
 
 ## Schedule and destination
 
@@ -121,6 +121,10 @@ Each `.dump.enc` file is a PostgreSQL custom-format export encrypted by `scripts
 The workflow uses the pinned dependency in [`requirements-backup.txt`](../../requirements-backup.txt). Termux restores should install the maintained package with `pkg install python-cryptography`, not `pip install cryptography`.
 
 A database dump does not include cluster-wide PostgreSQL roles, Supabase project settings/API keys, Cloudflare Pages settings, GitHub settings, Edge Function source, or Supabase Storage object contents. Preserve migrations in Git and handle any future Edge Functions, Storage objects, and mutable student data separately. A successful upload check is not a restore drill; test restoring in a separate Supabase project before relying on the backups for disaster recovery.
+
+## Recorded local restore drill (2026-10-16)
+
+The actual encrypted backup was decrypted in Termux and restored successfully into the isolated local PostgreSQL database `cestudy_restore_test`. The checksum and marker digest matched (`37110f2572ce33ba33a600c8e738a2850780e39401a9df1a94c1b32a71d4a3d4`); AES-GCM authentication succeeded; and the restored application data and security checks passed. Full commands, counts, and the local-only limitation are in [the restore-drill record](restore-drill-2026-10-16.md). This is not a restore into a managed Supabase project.
 
 ## Restore a downloaded backup for inspection
 
