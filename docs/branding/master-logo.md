@@ -3,7 +3,9 @@
 ## Canonical asset
 
 - **Primary SVG:** `public/branding/cestudy-master-logo.svg`
-- **Small-size icon:** `public/branding/cestudy-app-icon.svg`
+- **Website header and favicon:** `public/branding/cestudy-master-logo.svg`
+- **Small-size derivative:** `public/branding/cestudy-app-icon.svg` (retained as an optional variant, not the main website mark)
+- **Loading states:** `public/branding/cestudy-master-logo-transparent.svg`
 - **Reference:** The supplied “Blueprint C: Hard Hat and Book Logo” image.
 - **Primary design:** Blue background (`#0754B5`) with the traced C, hard hat, open book, blueprint marks, and Cartesian plane rendered in white.
 - **Cartesian origin:** Centered at approximately `(680, 645)` in the 1254 × 1254 viewBox, at the visual center of the C's inner opening. Both axes have arrowheads in both directions.
@@ -12,11 +14,13 @@
 ## Usage
 
 1. Use the full master logo on larger surfaces, such as branding pages, an About section, or a launch/splash screen.
-2. Use `cestudy-app-icon.svg` for the website header, browser favicon, and future home-screen/app-icon derivatives. It stays faithful to the master drawing; check previews at 32–48 px before changing its level of detail.
-3. Keep proportions unchanged. Do not stretch, rotate, apply independent recolors, or add additional decoration.
-4. Use the files documented in [logo variations](logo-variations.md) when a white or transparent background is required. The primary brand remains white artwork on blue.
-5. If a platform requires a raster icon, export a derivative from the applicable SVG and keep the SVG as the source of truth.
-6. CEStudy is an independent educational project. The logo does not imply endorsement by CHED or another institution.
+2. Use the full `cestudy-master-logo.svg` in the website header and as the browser favicon, matching the primary master identity.
+3. Use `cestudy-master-logo-transparent.svg` in loading states on light surfaces. The shared `BrandLoader` component gives it a subtle pulse and respects reduced-motion preferences.
+4. Keep `cestudy-app-icon.svg` as an optional simplified derivative for future app-icon trials; it is not used as the website's main logo.
+5. Keep proportions unchanged. Do not stretch, rotate, apply independent recolors, or add additional decoration.
+6. Use the files documented in [logo variations](logo-variations.md) when a white or transparent background is required. The primary brand remains white artwork on blue.
+7. If a platform requires a raster icon, export a derivative from the applicable SVG and keep the SVG as the source of truth.
+8. CEStudy is an independent educational project. The logo does not imply endorsement by CHED or another institution.
 
 ## Web usage
 
