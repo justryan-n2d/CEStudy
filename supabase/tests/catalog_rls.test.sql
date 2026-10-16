@@ -27,20 +27,27 @@ select ok(not exists(
     and (acl.grantee=0 or acl.grantee in (select oid from pg_roles where rolname in ('anon','authenticated')))
 ),'future public functions created by postgres do not default to client/PUBLIC EXECUTE');
 
--- Add one temporary published fixture as the migration/test owner. Seeded questions remain needs-review.
+-- Use synthetic fixtures only. One published row should be visible; one unpublished row must stay hidden.
 insert into public.practice_questions (
   id, subject_slug, topic, prompt, choices, correct_answer, solution_steps,
   explanation, source_note, status, display_order
-) values (
+) values
+(
   'rls-published-visible-test', 'basic-algebra', 'RLS policy test',
-  'Which option is the test fixture answer?', '["A", "B"]'::jsonb, 'A',
-  '["Test-only fixture"]'::jsonb, 'Test fixture, rolled back at the end.',
-  'Test-only data; not educational content.', 'published', 999
+  'TEST PUBLISHED PROMPT', '["TEST OPTION A", "TEST OPTION B"]'::jsonb, 'TEST OPTION A',
+  '["TEST STEP"]'::jsonb, 'TEST EXPLANATION',
+  'Synthetic test fixture only.', 'published', 999
+),
+(
+  'rls-unpublished-hidden-test', 'basic-algebra', 'RLS policy test',
+  'TEST UNPUBLISHED PROMPT', '["TEST OPTION A", "TEST OPTION B"]'::jsonb, 'TEST OPTION A',
+  '["TEST STEP"]'::jsonb, 'TEST EXPLANATION',
+  'Synthetic test fixture only.', 'needs-review', 998
 );
 
 set local role anon;
 select ok((select count(*) from public.catalog_subjects)>=70,'anon can read the public catalog');
-select is((select count(*) from public.practice_questions),1::bigint,'anon sees the one published fixture and none of the eight draft questions');
+select is((select count(*) from public.practice_questions),1::bigint,'anon sees only the published fixture');
 select throws_ok($$insert into public.catalog_subjects(slug,title,summary,category,classification,source_reference,source_note,availability,display_order) values('unauthorized-test','Unauthorized','Denied','year-level','ched-common-course','test','test','coming-soon',99999)$$,'42501',null,'anon catalog INSERT denied');
 select throws_ok($$update public.catalog_subjects set title='Tampered' where slug='calculus-1'$$,'42501',null,'anon catalog UPDATE denied');
 select throws_ok($$delete from public.catalog_subjects where slug='calculus-1'$$,'42501',null,'anon catalog DELETE denied');
@@ -50,7 +57,7 @@ select throws_ok($$update public.practice_questions set status='published' where
 reset role;
 set local role authenticated;
 select ok((select count(*) from public.catalog_subjects)>=70,'authenticated can read the public catalog');
-select is((select count(*) from public.practice_questions),1::bigint,'authenticated sees only the published fixture and none of the eight draft questions');
+select is((select count(*) from public.practice_questions),1::bigint,'authenticated sees only the published fixture');
 select throws_ok($$insert into public.catalog_subjects(slug,title,summary,category,classification,source_reference,source_note,availability,display_order) values('authenticated-unauthorized-test','Unauthorized','Denied','year-level','ched-common-course','test','test','coming-soon',99998)$$,'42501',null,'authenticated catalog INSERT denied');
 select throws_ok($$update public.catalog_subjects set title='Tampered' where slug='calculus-1'$$,'42501',null,'authenticated catalog UPDATE denied');
 select throws_ok($$delete from public.catalog_subjects where slug='calculus-1'$$,'42501',null,'authenticated catalog DELETE denied');

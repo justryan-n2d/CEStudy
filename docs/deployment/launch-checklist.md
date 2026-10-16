@@ -9,7 +9,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] `npm audit --audit-level=high` reports no high or critical dependency vulnerabilities; the successful audit reported 0 vulnerabilities after upgrading Vitest to 4.1.11.
 - [x] Review `.gitignore` and current source-code search results: `.env` files, key files, `secrets/`, and `credentials/` are excluded, and searches found no common Supabase service-role key or database-URL patterns.
 - [x] Full-history Gitleaks scan passed on the first run: [workflow run 38624711552](https://github.com/justryan-n2d/CEStudy/actions/runs/38624711552). The scheduled workflow lives at [secret-scan.yml](../../.github/workflows/secret-scan.yml) and also runs on pushes, pull requests, and manual dispatch.
-- [ ] **Blocker:** Restrict access to the public repository before adding unreleased question content. `supabase/seed.sql` currently contains the text of the eight unpublished questions. Follow [repository privacy and branch protection](github-privacy-and-branch-protection.md); treat the current drafts as already disclosed.
+- [x] Future-question content policy implemented: the repo stays public by decision, the original eight drafts are accepted as disclosed, `supabase/seed.sql` contains catalog metadata only, CI rejects practice-question content in that seed, and future real drafts belong only in the CEStudy Supabase database. Follow [the authoring policy](../content-authoring-and-publication.md); keep branch protection as a separate manual gate.
 - [ ] Configure a `main` branch ruleset requiring pull requests and successful CI plus full-history secret scan. The current repository connection cannot write repository settings; follow the linked manual steps.
 
 ## Supabase
@@ -21,7 +21,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] Questions requiring review remain hidden; all eight remote questions remain `needs-review`, with zero published.
 - [x] Anonymous and authenticated write attempts are denied in isolated database security tests.
 - [x] Supabase security advisor reviewed; no security lint findings. Default-privilege hardening is applied for new objects created by the standard `postgres` migration owner.
-- [x] Recovery method for the current seeded-only database is documented in [remote Supabase verification](2026-10-15-remote-supabase-verification.md); schema and baseline data are source-controlled and rebuilt by the isolated CI setup.
+- [x] Recovery method for the current catalog and schema is documented; public catalog metadata can be seeded from source. Actual unpublished question rows are intentionally not reconstructed from public Git, and the encrypted database backup is the recovery source for those rows.
 - [x] Backup/recovery procedure documented in [backup and recovery plan](backup-and-recovery.md).
 - [ ] Create a real private off-site export, test restoring it to a separate temporary project, and record verification before adding mutable student data or submissions.
 - [x] Live Chromium network capture confirmed the deployed browser requests use `qqmdwltfgpqtcvdbcmto.supabase.co` and an `sb_publishable_` key; no privileged key was detected. See [live browser run 38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289).
@@ -40,7 +40,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 
 ## Educational content and pilot
 
-- [x] Mathematical pre-review completed for all eight seeded questions with no answer/step mismatch found; see [review record](../reviews/2026-10-15-basic-algebra-draft-review.md). This does not replace human approval. All eight stay unpublished.
+- [x] Mathematical pre-review completed for the eight existing draft questions (originally seeded) with no answer/step mismatch found; see [review record](../reviews/2026-10-15-basic-algebra-draft-review.md). This does not replace human approval. All eight stay unpublished.
 - [ ] Human content reviewer identified and all questions independently approved before any status changes to `published`.
 - [ ] Every published question is checked for correctness, clear steps, source/attribution, and permission to use. No questions are currently published.
 - [x] Proposed measures and session procedure documented in the [controlled student pilot plan](../plans/2026-10-15-student-pilot-plan.md).
