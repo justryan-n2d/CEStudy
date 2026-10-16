@@ -17,7 +17,7 @@ The current job is to make the deployed MVP safe and reliable enough for a contr
 
 - **Supabase database:** In use. The 72 catalog subjects and eight draft practice questions are stored in PostgreSQL tables. RLS and read-only public access have been tested.
 - **Supabase Storage buckets:** **Not configured, and not needed for the current MVP.** The app currently has no user-uploaded files or private media. Do not add a bucket unless an approved feature requires file/object storage.
-- **Database backup storage:** One real encrypted database backup was successfully uploaded and read-back verified in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), under the private Backblaze B2 bucket `cestudy-db-backup/termux/weekly/`. The scheduler, verification, and four-set retention are automated. The full decrypt and separate-database restore drill, B2 lifecycle cleanup, and GitHub failure-email preferences still need confirmation.
+- **Database backup storage:** One real encrypted database backup was successfully uploaded and read-back verified in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), under private Backblaze B2 bucket `cestudy-db-backup/termux/weekly/`. Its real decryption and isolated local PostgreSQL restore are now proven; a separate managed-Supabase-target restore, B2 lifecycle cleanup, and GitHub failure-email preferences remain unverified. See [restore-drill evidence](deployment/restore-drill-2026-10-16.md).
 
 ## Status meanings
 
@@ -40,7 +40,7 @@ A phase can be partially complete even when a later phase has already been built
 | 4 | Frontend MVP implementation | **Complete for the current MVP** | The main browsing and practice UI is built and deployed. Remaining design/accessibility polish is tracked in Phase 7. |
 | 5 | Cloudflare Pages and Supabase integration | **Complete for initial deployment** | The live site uses the dedicated CEStudy Supabase project and the Pages deployment is active. |
 | 6 | Automated and manual technical QA | **Partially complete** | Initial CI and 70/70 live Chromium checks passed; full accessibility and physical-device review plus some search/filter edge cases remain. |
-| 7 | Pre-launch hardening and release gates | **CURRENT** | Verify backup recovery, enforce future-question content separation, configure branch protection, complete final QA, and update release documentation. |
+| 7 | Pre-launch hardening and release gates | **CURRENT** | Actual encrypted backup restore into isolated local PostgreSQL is proven and documented. Managed-Supabase-target recovery, branch protection, manual QA, and current CI/security reruns remain. Future question content stays out of public source. |
 | 8 | Human content review and approved question publishing | **Not started** | Have a qualified human review each question and only publish content that passes the review process. |
 | 9 | Controlled student pilot | **Not started** | Run the planned 5–8-student usability pilot after blocking release gates pass. |
 | 10 | Final polish and broad public launch | **Not started** | Fix pilot findings, complete sign-off, and then announce the wider release. |
@@ -196,9 +196,10 @@ Work through these in order. Do not move to the student pilot until the blocking
 - [ ] Confirm the Backblaze lifecycle rule deletes hidden old versions without hiding current backups.
 - [ ] Confirm GitHub Actions failure email notifications are enabled in account settings.
 - [ ] Keep the private decryption key and passphrase securely outside GitHub, with a protected recovery copy.
-- [ ] Decrypt the real B2 backup on Termux and confirm `pg_restore --list` succeeds.
-- [ ] Restore the real dump into a separate temporary Supabase database, validate record counts, grants, RLS, and published-only question visibility, and record evidence. Never test restore against production.
-- [ ] Update backup status to fully recovery-tested only after the isolated full restore passes.
+- [x] Decrypt the real B2 backup in Termux; checksum and marker hashes matched, AES-GCM authentication succeeded, and `pg_restore --list` read the PostgreSQL 17.11 custom-format archive.
+- [x] Restore the actual dump into isolated local PostgreSQL 18.2 using `--schema=public --no-owner --no-acl --exit-on-error`; validate data counts, RLS, published-only visibility, and client privileges. Evidence: [restore drill](deployment/restore-drill-2026-10-16.md).
+- [ ] Restore/rehearse against a separate managed Supabase project and validate the target-specific behavior. The local restore does not test Supabase-managed roles/system schemas/settings; never use production as the target.
+- [x] Record the completed local restore evidence, while keeping managed-Supabase-target recovery explicitly untested.
 
 Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery plan](deployment/backup-and-recovery.md).
 
@@ -332,13 +333,13 @@ These are not blockers for the current no-account web MVP and should not distrac
 
 ## Immediate next actions
 
-1. Decrypt the verified real backup in Termux, then run the complete restore drill in an isolated database. A Supabase branch is available as a test target, but it has an estimated usage cost of $0.01344 per hour while active, so confirm before creating it.
-3. Keep the repository public by decision. After the question-content protection changes merge, verify the CI guard and confirm Cloudflare Pages deploys successfully. Future unpublished question text stays in Supabase, not public source.
-4. Configure main-branch protection and rerun CI plus the full-history secret scan.
-5. Complete the physical-device, accessibility, route, search/filter, and privacy review.
-6. Identify a human question reviewer, approve a small set, and publish only approved content.
-7. Run the controlled student pilot, fix high-impact issues, and record the go/no-go decision.
-8. Complete final polish and only then make a broad launch announcement.
+1. If managed-Supabase-target recovery proof is still required, restore the verified backup into a separate temporary Supabase project only after explicit cost approval; the local application-schema restore is already proven. A Supabase branch has an estimated usage cost of $0.01344 per hour while active.
+2. Keep the repository public by decision. After the question-content protection changes merge, verify the CI guard and confirm Cloudflare Pages deploys successfully. Future unpublished question text stays in Supabase, not public source.
+3. Configure main-branch protection and rerun CI plus the full-history secret scan.
+4. Complete the physical-device, accessibility, route, search/filter, and privacy review.
+5. Identify a human question reviewer, approve a small set, and publish only approved content.
+6. Run the controlled student pilot, fix high-impact issues, and record the go/no-go decision.
+7. Complete final polish and only then make a broad launch announcement.
 
 ## Detailed supporting documents
 
