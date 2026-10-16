@@ -13,4 +13,32 @@ await waitFor(()=>expect(screen.queryByRole("link",{name:"Calculus 1"})).not.toB
 await user.clear(search);expect(await screen.findByRole("link",{name:"Calculus 1"})).toBeInTheDocument()});
 it("offers a recoverable no-results state",async()=>{const user=userEvent.setup();render(<MemoryRouter><CatalogPage/></MemoryRouter>);await user.type(screen.getByRole("searchbox",{name:/search subjects/i}),"no-such-subject");expect(await screen.findByRole("heading",{name:/no subjects found/i})).toBeInTheDocument();await user.click(screen.getByRole("button",{name:/reset search and filters/i}));expect(await screen.findByRole("link",{name:"Calculus 1"})).toBeInTheDocument()});
 it("renders all four year-level routes",async()=>{const titles=["First year","Second year","Third year","Fourth year"];for(const [i,year] of [1,2,3,4].entries()){const view=render(<MemoryRouter initialEntries={["/year/"+year]}><Routes><Route path="/year/:year" element={<YearLevelPage/>}/></Routes></MemoryRouter>);expect(await screen.findByRole("heading",{name:titles[i]})).toBeInTheDocument();view.unmount()}});
+
+it("announces the result count and supports combined catalog filters",async()=>{
+const user=userEvent.setup();render(<MemoryRouter><CatalogPage/></MemoryRouter>);
+const search=screen.getByRole("searchbox",{name:/search subjects/i});
+await user.type(search,"statics");
+await user.selectOptions(screen.getByLabelText("Year level"),"2");
+await user.selectOptions(screen.getByLabelText("Subject family"),"year-level");
+await user.selectOptions(screen.getByLabelText("Classification"),"ched-common-course");
+await user.selectOptions(screen.getByLabelText("Content status"),"coming-soon");
+const count=await screen.findByText("1 result");
+expect(count).toHaveAttribute("role","status");
+expect(count).toHaveAttribute("aria-atomic","true");
+expect(await screen.findByRole("link",{name:"Statics of Rigid Bodies"})).toBeInTheDocument();
+expect(screen.queryByRole("link",{name:"Calculus 1"})).not.toBeInTheDocument();
+});
+it("filters unassigned math foundations and clears all filter values",async()=>{
+const user=userEvent.setup();render(<MemoryRouter><CatalogPage/></MemoryRouter>);
+await user.selectOptions(screen.getByLabelText("Year level"),"none");
+await user.selectOptions(screen.getByLabelText("Subject family"),"math-foundation");
+await user.selectOptions(screen.getByLabelText("Classification"),"supplementary-math-foundation");
+await user.selectOptions(screen.getByLabelText("Content status"),"in-preparation");
+expect(await screen.findByRole("link",{name:"Basic and Advanced Algebra"})).toBeInTheDocument();
+expect(screen.getByText("1 result")).toBeInTheDocument();
+await user.click(screen.getByRole("button",{name:/clear filters/i}));
+expect(await screen.findByText("72 results")).toBeInTheDocument();
+expect(await screen.findByRole("link",{name:"Calculus 1"})).toBeInTheDocument();
+});
+
 });
