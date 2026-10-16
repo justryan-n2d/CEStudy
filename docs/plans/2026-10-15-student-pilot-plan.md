@@ -29,7 +29,7 @@ If, and only if, a human-reviewed question set is intentionally published after 
 Record results without linking them to participant identities.
 
 - At least 80% of participants complete each core catalog/navigation task without assistance.
-- Zero critical privacy or security issues, and zero exposure of unpublished questions.
+- Zero critical privacy or security issues. The live app/API and pilot materials must not expose unpublished questions; the earlier exposure of the original eight drafts in public Git history is an accepted exception, not a pilot incident.
 - No blocking layout issue at phone width or desktop width.
 - Median ease-of-use score of at least 4 out of 5.
 - Every critical issue has an owner and an explicit fix or deferral decision before inviting more students.
