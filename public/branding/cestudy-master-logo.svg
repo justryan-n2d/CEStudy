@@ -1,13 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1254" height="1254" viewBox="0 0 1254 1254" role="img" aria-labelledby="logo-title logo-desc">
   <title id="logo-title">CEStudy master logo, primary white-on-blue version</title>
-  <desc id="logo-desc">CEStudy master logo: the traced C, hard hat, open book, blueprint marks, and a Cartesian plane centered in the C opening.</desc>
+  <desc id="logo-desc">CEStudy master logo with smoothly rounded blue-square corners: the traced C, hard hat, open book, blueprint marks, and a Cartesian plane centered in the C opening.</desc>
   <defs>
-    
+    <clipPath id="master-rounded-square-clip"><rect x="0" y="0" width="1254" height="1254" rx="176" ry="176"/></clipPath>
     <marker id="axis-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
       <path d="M0 0 L9 5 L0 10 Z" fill="#FFFFFF"/>
     </marker>
   </defs>
-  <rect width="1254" height="1254" fill="#0754B5"/>
+  <rect x="0" y="0" width="1254" height="1254" rx="176" ry="176" fill="#0754B5"/>
+  <g clip-path="url(#master-rounded-square-clip)" shape-rendering="geometricPrecision">
   <!-- Traced directly from the supplied reference; original silhouette, helmet, book and construction guides are retained. -->
   <g id="reference-artwork">
     <path fill="#FFFFFF" fill-rule="evenodd" d="M 397,391 L 396,392 L 395,392 L 394,393 L 393,393 L 392,394 L 391,394 L 390,395 L 389,395 L 388,396 L 385,397 L 383,399 L 382,399 L 381,400 L 378,401 L 376,403 L 375,403 L 374,404 L 373,404 L 372,405 L 369,406 L 367,408 L 366,408 L 365,409 L 362,410 L 357,414 L 354,415 L 351,418 L 350,418 L 349,419 L 348,419 L 346,421 L 345,421 L 342,424 L 342,429 L 343,430 L 343,435 L 344,436 L 344,442 L 345,443 L 345,449 L 346,450 L 346,455 L 347,456 L 347,461 L 348,462 L 348,468 L 349,469 L 349,471 L 350,471 L 356,465 L 357,465 L 364,458 L 365,458 L 368,455 L 369,455 L 373,451 L 374,451 L 381,445 L 382,445 L 384,443 L 385,443 L 387,441 L 388,441 L 390,439 L 391,439 L 393,437 L 394,437 L 396,435 L 397,435 L 399,433 L 400,433 L 403,431 L 403,427 L 402,426 L 402,421 L 401,420 L 401,414 L 400,413 L 400,407 L 399,406 L 399,400 L 398,399 L 398,393 L 397,392 Z" />
@@ -26,5 +27,6 @@
   <g fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="23" font-style="italic" font-weight="600">
     <text x="850" y="653">x</text>
     <text x="691" y="482">y</text>
+  </g>
   </g>
 </svg>
