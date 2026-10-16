@@ -4,19 +4,22 @@ import { describe, expect, it } from "vitest";
 const stylesheet = readFileSync(new URL("../styles/global.css", import.meta.url), "utf8");
 
 function cssColorFor(selector: string): string {
-  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const rule = stylesheet.match(new RegExp(`(?:^|\\})\\s*${escaped}\\s*\\{([^}]*)\\}`));
-  expect(rule, `Expected a CSS rule for ${selector}`).not.toBeNull();
-  const color = rule?.[1].match(/(?:^|;)\\s*color:\\s*(#[0-9a-f]{6})(?:;|$)/i)?.[1];
-  expect(color, `Expected a literal six-digit text color for ${selector}`).toBeTruthy();
+  const start = stylesheet.indexOf(`${selector}{`);
+  expect(start, `Expected a CSS rule for ${selector}`).toBeGreaterThanOrEqual(0);
+  if (start < 0) return "#000000";
+  const end = stylesheet.indexOf("}", start);
+  const rule = stylesheet.slice(start, end);
+  const declaration = rule.split(";").find((part) => part.trim().startsWith("color:"));
+  const color = declaration?.slice(declaration.indexOf(":") + 1).trim();
+  expect(color, `Expected a literal text color for ${selector}`).toMatch(/^#[0-9a-f]{6}$/i);
   return color ?? "#000000";
 }
 
 function luminance(hex: string): number {
-  const [r, g, b] = hex.slice(1).match(/../g)!.map((part) => parseInt(part, 16) / 255).map((channel) =>
+  const channels = hex.slice(1).match(/../g)!.map((part) => parseInt(part, 16) / 255).map((channel) =>
     channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
   );
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
 }
 
 function contrastRatio(foreground: string, background: string): number {
