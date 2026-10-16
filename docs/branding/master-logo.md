@@ -2,42 +2,36 @@
 
 ## Canonical asset
 
-- **SVG source:** `public/branding/cestudy-master-logo.svg`
+- **Primary SVG:** `public/branding/cestudy-master-logo.svg`
+- **Small-size icon:** `public/branding/cestudy-app-icon.svg`
 - **Reference:** The supplied “Blueprint C: Hard Hat and Book Logo” image.
-- **Purpose:** The master mark for the CEStudy website and future web/mobile app.
-- **Design:** Retains the reference's blue C silhouette, hard hat, open book, and blueprint construction marks. A simple Cartesian plane with x/y axes and tick marks is placed inside the C's central negative space. The axes intersect at the visual center of the C, so the origin is centered rather than offset to one side. Both axes have arrowheads at both ends.
-- **Colors and canvas:** Blue gradients and white details on a white square background, matching the reference's blue-and-white presentation.
-- **Format:** The shapes are traced vector paths in SVG. The file does not embed the reference PNG.
+- **Primary design:** Blue background (`#0754B5`) with the traced C, hard hat, open book, blueprint marks, and Cartesian plane rendered in white.
+- **Cartesian origin:** Centered at approximately `(680, 645)` in the 1254 × 1254 viewBox, at the visual center of the C's inner opening. Both axes have arrowheads in both directions.
+- **Small-size version:** The simplified icon keeps the C, hard hat, book, and coordinate axes while removing construction guides and tick marks that become noisy when scaled down.
 
-## Usage rules
+## Usage
 
-1. Use the SVG as the source of truth wherever SVG is supported. Do not recreate or substitute the mark with a different C, helmet, or book design.
-2. Preserve the original proportions and the relative position of the helmet, C, book, and blueprint marks. Keep the Cartesian plane centered in the open area inside the C, with the x- and y-axes crossing at the center of the C (the origin).
-3. Scale uniformly. Do not stretch, rotate, independently recolor, or add extra decorations.
-4. The asset includes a white background to retain the white fields and details of the supplied reference. Use it on white or light neutral surfaces.
-5. If a platform requires a raster icon, export the derivative from this SVG and do not replace the master source.
-6. This is independent CEStudy branding and does not imply endorsement by CHED or another institution.
+1. Use the full master logo on larger surfaces, such as branding pages, an About section, or a launch/splash screen.
+2. Use `cestudy-app-icon.svg` for the website header, browser favicon, and future home-screen/app-icon derivatives. It is designed to remain legible at small sizes.
+3. Keep proportions unchanged. Do not stretch, rotate, apply independent recolors, or add additional decoration.
+4. Use the files documented in [logo variations](logo-variations.md) when a white or transparent background is required. The primary brand remains white artwork on blue.
+5. If a platform requires a raster icon, export a derivative from the applicable SVG and keep the SVG as the source of truth.
+6. CEStudy is an independent educational project. The logo does not imply endorsement by CHED or another institution.
 
 ## Web usage
 
-The public asset is served from `/branding/cestudy-master-logo.svg`. The header and browser favicon should use the same file for consistent branding.
+Header and favicon use the small-size icon from `/branding/cestudy-app-icon.svg`:
 
 ```tsx
-<img
-  src="/branding/cestudy-master-logo.svg"
-  alt=""
-  aria-hidden="true"
-  width={48}
-  height={48}
-/>
+<img src="/branding/cestudy-app-icon.svg" alt="" aria-hidden="true" width={48} height={48} />
 ```
 
-When the logo sits inside a link that already has an accessible name, a decorative image (`alt=""`) avoids announcing the brand twice. For a standalone logo image, use `alt="CEStudy"`.
+When the icon is inside a link that already has an accessible name, keep it decorative (`alt=""`) to avoid announcing the brand twice. For a standalone logo image, provide `alt="CEStudy"`.
 
-## Future mobile app usage
+## Future mobile app use
 
-Use this SVG as the vector source for Android and iOS derivatives. Check small-size readability before exporting platform-specific icons. Keep the C, hard hat, book, and centered coordinate plane recognizable.
+Use the simplified SVG as the base for Android and iOS app icons, exporting platform-specific sizes only when required. Review 16, 32, 48, and 64 px versions before release. Use the full master SVG for larger launch or brand screens.
 
 ## Change control
 
-Update this file and this guide together for future logo changes. Preserve the supplied reference's composition unless the product owner explicitly approves a rebrand.
+Update the SVG and this guide together for future logo changes. Preserve the blue background, white C/graphics, and centered Cartesian origin unless the product owner approves a deliberate rebrand.
