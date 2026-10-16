@@ -25,7 +25,7 @@ describe("homepage and year-level navigation", () => {
   });
   it("points the shared navigation to the year-level overview", () => {
     render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
-    expect(screen.getByRole("navigation", { name: "Main navigation" }).querySelector('a[href="/years"]')).toHaveTextContent("Year levels");
+    expect(screen.getByRole("link", { name: "Year levels" })).toHaveAttribute("href", "/years");
   });
   it("uses white by default and the actual master-logo blue as an accent", () => {
     expect(stylesheet).toContain("background:#fff;");
