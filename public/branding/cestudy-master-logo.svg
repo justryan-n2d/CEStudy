@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">CEStudy master logo</title>
+  <desc id="logo-desc">A blue C formed with a civil engineering hard hat and open book, with a simple Cartesian coordinate plane at the center and blueprint construction marks around the outside.</desc>
+  <defs>
+    <linearGradient id="c-blue" x1="72" y1="95" x2="402" y2="425" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0754B8"/>
+      <stop offset="0.55" stop-color="#116BD4"/>
+      <stop offset="1" stop-color="#064BAA"/>
+    </linearGradient>
+    <linearGradient id="hat-blue" x1="167" y1="42" x2="324" y2="146" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0A5FC8"/>
+      <stop offset="1" stop-color="#0750B3"/>
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 L6 3.5 L0 7 Z" fill="#0759BB"/>
+    </marker>
+    <clipPath id="axis-clip">
+      <path d="M160 166 H355 V330 H160 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Light construction guides echo a civil-engineering blueprint. -->
+  <g fill="none" stroke="#0E63C5" stroke-linecap="square" stroke-width="3" opacity="0.95">
+    <path d="M31 210 H85 M84 183 V237"/>
+    <path d="M414 145 H478 M446 113 V177"/>
+    <path d="M34 428 H91 M63 399 V457"/>
+    <path d="M409 447 H478 M443 410 V480"/>
+    <path d="M92 150 C58 195 43 253 53 310 C64 389 126 449 213 474" stroke-width="2.5"/>
+    <path d="M208 35 C270 12 343 37 379 91" stroke-width="2.5"/>
+  </g>
+
+  <!-- The defining CEStudy C mark. -->
+  <path d="M373 122 C339 90 294 76 246 82 C151 94 79 173 79 267 C79 361 151 433 247 433 C306 433 355 407 387 365"
+        fill="none" stroke="url(#c-blue)" stroke-width="65" stroke-linecap="butt" stroke-linejoin="round"/>
+
+  <!-- The hard hat sits on the upper arm of the C. -->
+  <g>
+    <path d="M164 119 C165 78 188 46 226 37 C267 27 305 52 321 89 L329 111 L279 127 C270 95 247 77 224 85 C205 91 198 109 200 128 Z"
+          fill="url(#hat-blue)"/>
+    <path d="M207 51 C199 64 198 78 204 91" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+    <path d="M255 42 C275 54 289 73 294 94" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+    <path d="M145 137 C197 117 272 107 342 113 C353 114 354 123 345 130 C290 150 214 159 157 160 Z" fill="url(#hat-blue)"/>
+    <path d="M158 139 C210 124 277 117 329 120" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- A minimal Cartesian plane: faint grid, clear x/y axes, and arrowheads. -->
+  <g clip-path="url(#axis-clip)" fill="none" stroke-linecap="round">
+    <g stroke="#7DB6ED" stroke-width="2" opacity="0.72">
+      <path d="M207 173 V326 M300 173 V326 M164 207 H353 M164 305 H353"/>
+    </g>
+    <g stroke="#0759BB" stroke-width="4" marker-end="url(#arrowhead)">
+      <path d="M171 258 H347"/>
+      <path d="M257 324 V169"/>
+    </g>
+    <circle cx="257" cy="258" r="4.5" fill="#0759BB" stroke="none"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#0759BB">
+    <text x="350" y="279">x</text>
+    <text x="267" y="166">y</text>
+  </g>
+
+  <!-- Open book integrated into the lower opening of the C. -->
+  <g fill="none" stroke="#0757B9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M180 345 C207 331 236 337 257 356 C278 337 307 331 335 345 L335 371 C307 359 278 366 257 387 C236 366 207 359 180 371 Z" stroke-width="6"/>
+    <path d="M190 355 C217 347 239 357 257 370 C275 357 298 347 325 355" stroke-width="4"/>
+    <path d="M199 365 C222 360 242 370 257 381 C273 370 292 360 316 365" stroke-width="3.5"/>
+  </g>
+</svg>
