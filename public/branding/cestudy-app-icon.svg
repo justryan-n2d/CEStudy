@@ -6,11 +6,11 @@
     <path d="M365 154 C331 119 291 103 245 106 C160 112 103 176 103 258 C103 340 164 406 247 406 C294 406 336 388 366 359" stroke-width="57"/>
     <path d="M174 117 C176 81 207 52 256 50 C305 52 336 81 338 117 L359 135 L153 135 Z" stroke-width="13"/>
     <path d="M152 135 Q256 105 360 135 L368 151 Q256 131 144 151 Z" fill="#FFFFFF" stroke-width="9"/>
-    <path d="M183 91 V119 M256 70 V117 M329 91 V119" stroke-width="12"/>
+    <path d="M183 91 V119 M256 70 V117 M329 91 V119" stroke-width="8"/>
     <path d="M183 360 Q218 342 256 378 Q294 342 329 360 L329 380 Q292 368 256 399 Q220 368 183 380 Z" stroke-width="7"/>
     <path d="M200 368 Q229 363 256 388 Q283 363 312 368" stroke-width="5"/>
-    <path d="M184 250 H338" stroke-width="8"/>
-    <path d="M261 331 V170" stroke-width="8"/>
+    <path d="M184 250 H338" stroke-width="12"/>
+    <path d="M261 331 V170" stroke-width="12"/>
   </g>
   <g fill="#FFFFFF">
     <path d="M174 250 L196 236 V264 Z"/>
