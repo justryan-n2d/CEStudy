@@ -8,7 +8,7 @@ function cssColorFor(selector: string): string {
   expect(start, `Expected a CSS rule for ${selector}`).toBeGreaterThanOrEqual(0);
   if (start < 0) return "#000000";
   const end = stylesheet.indexOf("}", start);
-  const rule = stylesheet.slice(start, end);
+  const rule = stylesheet.slice(start + selector.length + 1, end);
   const declaration = rule.split(";").find((part) => part.trim().startsWith("color:"));
   const color = declaration?.slice(declaration.indexOf(":") + 1).trim();
   expect(color, `Expected a literal text color for ${selector}`).toMatch(/^#[0-9a-f]{6}$/i);
