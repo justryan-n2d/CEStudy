@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const stylesheet = readFileSync(new URL("../styles/global.css", import.meta.url), "utf8");
+const stylesheet = readFileSync("src/styles/global.css", "utf8");
 
 function cssColorFor(selector: string): string {
   const start = stylesheet.indexOf(`${selector}{`);
