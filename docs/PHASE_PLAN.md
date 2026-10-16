@@ -333,7 +333,7 @@ These are not blockers for the current no-account web MVP and should not distrac
 ## Immediate next actions
 
 1. Decrypt the verified real backup in Termux, then run the complete restore drill in an isolated database. A Supabase branch is available as a test target, but it has an estimated usage cost of $0.01344 per hour while active, so confirm before creating it.
-3. Restrict repository access and confirm Cloudflare Pages still deploys successfully.
+3. Keep the repository public by decision. After the question-content protection changes merge, verify the CI guard and confirm Cloudflare Pages deploys successfully. Future unpublished question text stays in Supabase, not public source.
 4. Configure main-branch protection and rerun CI plus the full-history secret scan.
 5. Complete the physical-device, accessibility, route, search/filter, and privacy review.
 6. Identify a human question reviewer, approve a small set, and publish only approved content.
