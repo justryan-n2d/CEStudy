@@ -5,13 +5,13 @@
 
 ## Current recovery position
 
-The app currently stores 72 catalog subjects and eight Basic Algebra questions marked `needs-review`. No question is published. Migrations and `supabase/seed.sql` are committed in the CEStudy repository, so the current baseline can be recreated in a fresh, isolated Supabase project and tested through CI.
+The remote CEStudy database contains 72 catalog subjects and eight Basic Algebra draft questions marked `needs-review`; no question is published. The eight drafts were previously exposed in public Git history, and that exposure is accepted. The current public `supabase/seed.sql` recreates catalog metadata only, not those draft questions. The remote database, not the public seed, is authoritative for the current draft rows.
 
 This is a reproducible baseline, not a point-in-time backup of the live database. The remote database is authoritative for its current state. Do not assume source control contains any future edits made directly in Supabase.
 
 ## Minimum backup policy
 
-1. Keep schema changes in reviewed migrations. **Do not commit unreleased question text to a public repository or public build artifact.** The current public `supabase/seed.sql` contains the existing draft question text; treat those eight items as already disclosed rather than as confidential assessment questions. See [repository privacy and branch protection](github-privacy-and-branch-protection.md).
+1. Keep schema changes in reviewed migrations. **Do not commit future unpublished question text to public source or public build artifacts.** The original eight drafts were already exposed in public Git history, and that exposure is accepted; no history rewrite or repository-visibility change is required for them. The current public `supabase/seed.sql` contains catalog metadata only. Keep future drafts directly in the CEStudy Supabase database. See [repository privacy and branch protection](github-privacy-and-branch-protection.md).
 2. Before introducing published questions or other content maintained outside the seed, export the database before and after each publication batch.
 3. Before adding accounts, student progress, public submissions, or other mutable user data, configure at least weekly logical exports to private off-site storage and retain the most recent four weekly exports. Use a shorter interval if the acceptable amount of lost data is lower.
 4. Keep export files, database connection strings, database passwords, access tokens, and encryption keys out of Git, public artifacts, chat, and application build variables. Store backups in private, encrypted storage with restricted access.
@@ -49,7 +49,7 @@ supabase db dump --db-url "$CESTUDY_DB_URL" -f schema.sql
 supabase db dump --db-url "$CESTUDY_DB_URL" -f data.sql --use-copy --data-only -x "storage.buckets_vectors" -x "storage.vector_indexes"
 ```
 
-After the export, verify that the archive exists and the checksum file is present. Copy the backup to encrypted private off-site storage and keep the checksum with it. Database dumps do not include Storage object files; the current CEStudy project has no Storage buckets or student uploads. The script has been added to the repository, but **it has not yet been run against the live database**.
+After the export, verify that the archive exists and the checksum file is present. Copy the backup to encrypted private off-site storage and keep the checksum with it. Database dumps do not include Storage object files; the current CEStudy project has no Storage buckets or student uploads. The standalone manual export helper has not yet been run against the live database. The separate scheduled weekly-backup workflow has completed the successful live run recorded above; the real decrypt and full restore drill remain pending.
 
 ## Safe restore drill
 

@@ -18,7 +18,7 @@ The live app is hosted by **Cloudflare Pages**, not GitHub Pages. Repository vis
 
 1. Open the Cloudflare Dashboard, then **Workers & Pages > CEStudy**.
 2. Under **Settings**, confirm the connected repository is `justryan-n2d/CEStudy`, production branch is `main`, build command is `npm run build`, and output directory is `dist`.
-3. Under **Deployments**, confirm the newest production build following the content-policy pull request is successful.
+3. Under **Deployments**, confirm the newest production build includes the content-separation commit already on `main` (`64bc447`) and is successful.
 4. Open [https://cestudy.pages.dev](https://cestudy.pages.dev), browse the catalog, and refresh a direct route such as `/math-foundations/basic-algebra/practice`. The published-only gate should still appear while there are no published questions.
 5. If the build does not run or fails, reconnect the Git integration only if the dashboard shows a genuine connection problem. Do not change the Supabase project URL or publishable key to troubleshoot a Git connection issue.
 

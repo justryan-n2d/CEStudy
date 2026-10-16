@@ -36,4 +36,4 @@ Only an authorized maintainer may update an approved row from `needs-review` to 
 
 ## Cloudflare Pages
 
-Repository visibility is unchanged. Cloudflare Pages remains configured to build from `justryan-n2d/CEStudy`, production branch `main`, with `npm run build` and `dist`. The code changes are delivered through a normal pull request and CI; verify the production Pages deployment and `https://cestudy.pages.dev` after merging. No repository-visibility migration or reconnect is required for this decision.
+Repository visibility is unchanged. Cloudflare Pages remains configured to build from `justryan-n2d/CEStudy`, production branch `main`, with `npm run build` and `dist`. The content-separation change is already on `main` in [commit `64bc447`](https://github.com/justryan-n2d/CEStudy/commit/64bc447b7c725fea62402ff4f9f5c6960586bee9). Confirm that the latest production Pages deployment succeeded and run the live-site smoke checks before closing the release gate. No repository-visibility migration or reconnect is required for this decision.
