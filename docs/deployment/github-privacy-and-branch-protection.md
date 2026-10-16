@@ -28,11 +28,16 @@ No visibility change was made, so the repository becoming private is not a deplo
 
 1. Open CEStudy on GitHub and choose **Settings**. If present, open **Rules > Rulesets** and select **New ruleset > New branch ruleset**. Otherwise use **Branches > Add branch protection rule**.
 2. Name the rule `Protect main`, set enforcement to **Active**, and target branch `main`.
-3. Require a pull request before merging. Because this is currently a single-maintainer project, do not require an approval count that cannot be satisfied; add independent review later.
-4. Require the CI checks for **Lint, test, and build**, **Supabase migration and RLS tests**, and the full-history **secret scan**.
-5. Enable **Block force pushes** and save the rule.
-6. Confirm a small documentation pull request cannot merge until the required checks pass.
+3. Require a pull request before merging. This project currently has a single maintainer, so leave the required-approval count at zero until another reviewer is available. Do not add bypass actors. If using classic branch protection, include administrators so the rule also applies to the repository owner.
+4. Require these exact status checks:
+   - `Lint, test, and build`
+   - `Supabase migration and RLS tests`
+   - `Scan repository history for secrets`
+   
+   These are the job names in `.github/workflows/ci.yml` and `.github/workflows/secret-scan.yml`. Do not require the live Chromium smoke test for pull requests: it is triggered after successful CI on `main`, not directly by `pull_request`.
+5. Enable **Block force pushes**. Keep branch deletion blocked as well, then save the rule.
+6. For verification, open the small documentation PR created for this change. Confirm all three required checks appear on the PR, the merge box identifies them as required, and merge is blocked while any required check is pending or failing. Once they pass, verify GitHub permits merge only when the configured PR requirements are satisfied. Do not use a passing PR by itself as proof of protection; first verify the saved rule targets `main` and is **Active**.
 
-The current GitHub branch metadata reported that branch protection was disabled at the time of this review. The GitHub connection used for repository work cannot write repository settings, so this remains a manual release gate.
+**Current status:** The GitHub connection available for repository edits cannot write repository settings, and prior project notes say branch-protection settings were not readable through that connection. Therefore the rule must still be saved by a maintainer in GitHub Settings. Leave the verification PR open until the active rule has been confirmed. A passing CI run alone does not protect `main`.
 
 Official documentation: [GitHub repository visibility](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility), [Cloudflare Pages Git integration](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/), [creating rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository), and [available rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets).
