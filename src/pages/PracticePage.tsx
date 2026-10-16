@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BrandLoader } from "../components/BrandLoader";
 import { PracticeQuestion } from "../components/PracticeQuestion";
 import { fetchPublishedPracticeQuestions } from "../data/practice-api";
 import type { PracticeQuestion as PracticeQuestionData } from "../types/study-content";
@@ -28,7 +29,7 @@ export function PracticePage() {
 
   return <div className="page-wrap practice-wrap"><Link className="back-link" to="/math-foundations">← Math foundations</Link>
     <section className="page-intro"><span className="kicker">Mathematics foundations</span><h1>Basic algebra practice</h1><p>Answer each question, check your work, and read the worked steps. This session is not saved between visits.</p></section>
-    {loading?<div className="state-panel" aria-live="polite">Checking for published questions…</div>
+    {loading?<div className="state-panel"><BrandLoader label="Checking for published questions…"/></div>
     :error?<div className="state-panel state-error" role="alert"><h2>Practice set unavailable</h2><p>{error}</p></div>
     :questions.length===0?<div className="state-panel review-gate"><span className="review-gate-icon" aria-hidden="true">✓</span><h2>Practice questions are being reviewed</h2><p>Draft questions are kept private. They appear here only after a human reviewer checks the answers, calculations, solution steps, and references, and an authorized maintainer publishes them.</p><p>No student progress is saved in this version, and there is no student-facing AI tutor.</p><Link className="button button-secondary" to="/catalog">Browse the subject catalog</Link></div>
     :complete?<div className="state-panel review-gate" role="status"><span className="review-gate-icon" aria-hidden="true">✓</span><h2>Practice session complete</h2><p>You answered {score} out of {questions.length} questions correctly.</p><button className="button button-primary" type="button" onClick={restart}>Try again</button><Link className="button button-secondary" to="/math-foundations">Explore more math topics</Link></div>
