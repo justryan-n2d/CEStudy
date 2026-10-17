@@ -110,6 +110,14 @@ describe("contact, support, bug reports, and feedback", () => {
     expect(invokeMock).not.toHaveBeenCalled();
   });
 
+  it("uses the saved QR and the GCash brand icon by default", async () => {
+    const user = userEvent.setup();
+    renderPage(<SupportPage />);
+    expect(document.querySelector(".payment-mark-gcash img")).toHaveAttribute("src", "/branding/icons/gcash.svg");
+    await user.click(screen.getByRole("button", { name: "View GCash details" }));
+    expect(screen.getByRole("img", { name: "GCash payment QR code" })).toHaveAttribute("src", "/branding/gcash-support-qr.png");
+  });
+
   it("records a configured support confirmation and shows the receipt state", async () => {
     const user = userEvent.setup();
     renderPage(<SupportPage gcashQrUrl="/test-gcash-qr.png" />);

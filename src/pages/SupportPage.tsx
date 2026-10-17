@@ -29,7 +29,7 @@ function newSubmissionId() {
 type SupportPageConfig = { gcashQrUrl?: string; paypalUrl?: string };
 
 export function SupportPage(config: SupportPageConfig = {}) {
-  const gcashQrUrl = validQrSource(config.gcashQrUrl ?? import.meta.env.VITE_GCASH_QR_URL?.trim() ?? "");
+  const gcashQrUrl = validQrSource(config.gcashQrUrl ?? (import.meta.env.VITE_GCASH_QR_URL?.trim() || "/branding/gcash-support-qr.png"));
   const paypalUrl = validExternalUrl(config.paypalUrl ?? import.meta.env.VITE_PAYPAL_SUPPORT_URL?.trim() ?? "");
   const [provider, setProvider] = useState<Provider | null>(null);
   const [note, setNote] = useState("");
@@ -90,10 +90,7 @@ export function SupportPage(config: SupportPageConfig = {}) {
       <div className="support-method-grid">
         <article className="support-method-card">
           <div className="payment-mark payment-mark-gcash" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" /><path d="M14 14h3v3h-3zM19 14v2M19 19h2M14 19v2M17 21h2" />
-            </svg>
+            <img src="/branding/icons/gcash.svg" alt="" width="120" height="90" loading="lazy" />
           </div>
           <div className="support-method-copy">
             <h2>GCash</h2>

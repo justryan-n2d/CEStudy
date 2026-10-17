@@ -43,7 +43,7 @@ Set these as Pages environment variables, then rebuild/deploy. These values are 
 
 - `VITE_CESTUDY_CONTACT_EMAIL`: defaults to `cestudy00@gmail.com`.
 - `VITE_BUG_REPORT_EMAIL`: defaults to `cestudy00@gmail.com`.
-- `VITE_GCASH_QR_URL`: same-origin path for the approved GCash QR image, such as `/branding/gcash-qr.png`. Add the image to `public/branding/` to comply with the existing CSP.
+- `VITE_GCASH_QR_URL`: optional same-origin override for the approved GCash QR image. If omitted or blank, Support uses `/branding/gcash-support-qr.png`, cropped from the QR supplied by the site owner. Keep the file under `public/branding/` to comply with the existing CSP.
 - `VITE_PAYPAL_SUPPORT_URL`: the HTTPS PayPal support/donation URL.
 
 ### Supabase Edge Function secrets

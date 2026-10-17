@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { Layout } from "../components/Layout";
@@ -41,6 +42,20 @@ describe("homepage and year-level navigation", () => {
     render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
     expect(screen.getByRole("navigation", { name: "Main navigation" }).querySelector('a[href="/years"]')).toHaveTextContent("Year levels");
   });
+  it("opens the More menu with an animated dropdown and reduced-motion fallback", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
+    const button = screen.getByRole("button", { name: "Open more pages menu" });
+    await user.click(button);
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    const menu = screen.getByRole("navigation", { name: "More CEStudy pages" });
+    expect(menu).toHaveClass("is-open");
+    expect(menu).toBeVisible();
+    expect(stylesheet).toContain("@keyframes ce-menu-drop-in");
+    expect(stylesheet).toContain('.mobile-menu-toggle[aria-expanded="true"] .navigation-glyph');
+    expect(stylesheet).toContain("@media(prefers-reduced-motion:reduce)");
+  });
+
   it("uses white by default and the actual master-logo blue as an accent", () => {
     expect(stylesheet).toContain("background:#fff;");
     expect(stylesheet).toContain("--brand-blue:#0754B5");

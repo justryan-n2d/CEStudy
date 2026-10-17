@@ -1,19 +1,21 @@
-# SVGL icon asset log
+# SVGL and payment-brand icon asset log
 
-Use SVGL as the first lookup for recognizable service/brand SVGs: https://svgl.app/. Its API docs describe searching by title and retrieving optimized SVG source: https://svgl.app/docs/api.
+Use [SVGL](https://svgl.app/) as the first lookup for recognizable service/brand SVGs. SVGL was checked for GCash, but the current library/repository tree did not contain a GCash asset.
 
-## Asset used
-- PayPal wordmark: public/branding/icons/paypal-wordmark.svg
-- Source repository: https://github.com/pheralb/svgl
-- Original path: static/library/paypal-wordmark.svg
-- Used next to the visible PayPal support label.
-- Do not recolor or use this as CEStudy branding. Check provider brand-use requirements before production.
+## Local payment icons
 
-## Not found
-- GCash did not appear in the SVGL repository paths checked during this work. Until a verified GCash logo is available, use a neutral QR-code icon beside the text label rather than inventing a provider logo.
+- **PayPal wordmark**: `public/branding/icons/paypal-wordmark.svg`
+  - Source: [pheralb/svgl](https://github.com/pheralb/svgl), original path `static/library/paypal-wordmark.svg`.
+- **GCash payment icon**: `public/branding/icons/gcash.svg`
+  - SVG source: [elestyle/elepay-payment-logos](https://github.com/elestyle/elepay-payment-logos), original path `payment_logos/svg/gcash.svg`.
+  - The repository README describes its payment-logo collection as free to use commercially. Confirm current provider brand-use requirements before production.
+- **GCash support QR**: `public/branding/gcash-support-qr.png`
+  - Cropped from the GCash QR image supplied in the owner's Library. The crop keeps the QR itself and its quiet margin, while omitting the larger card's displayed name and partial phone number.
+  - QR was decoded in a local verification check and matched the encoded content in the supplied card. Do not edit the QR modules or add overlays on top of them.
 
-## Rules
-- Store chosen SVGs locally to avoid extra runtime requests.
-- Preserve viewBox; avoid remote SVG embedding when a local asset is practical.
-- Payment providers remain visibly named; the meaning is not carried by an image alone.
-- Recheck source and provider brand requirements when introducing new service logos.
+## Asset rules
+
+- Store icons locally to avoid extra runtime requests.
+- Preserve the source logo's proportions and recognizable colors; don't use payment marks as CEStudy branding.
+- Payment providers remain visibly named, so meaning is never conveyed by image alone.
+- If SVGL adds a GCash asset later, compare quality and source before replacing the current icon.
