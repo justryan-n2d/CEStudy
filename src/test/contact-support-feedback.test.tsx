@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ReactNode } from "react";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import type { ReactNode } from "react";
 
 const { invokeMock } = vi.hoisted(() => ({ invokeMock: vi.fn() }));
 vi.mock("../lib/supabase", () => ({
@@ -26,21 +26,21 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.unstubAllEnvs();
+  vi.restoreAllMocks();
 });
 
 describe("contact, support, bug reports, and feedback", () => {
-  it("offers four separate destinations from the contact page", () => {
+  it("shows the configured website contact and four distinct destinations", () => {
     renderPage(<ContactPage />);
-    expect(screen.getByRole("heading", { name: "Contact CEStudy" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "cestudy00@gmail.com" })).toHaveAttribute("href", "mailto:cestudy00@gmail.com");
-    expect(screen.getByRole("link", { name: "View support options" })).toHaveAttribute("href", "/support");
-    expect(screen.getByRole("link", { name: "Report a bug" })).toHaveAttribute("href", "/bug-reports");
-    expect(screen.getByRole("link", { name: "Send feedback" })).toHaveAttribute("href", "/feedback");
+    expect(screen.getByRole("link", { name: /support ceStudy/i })).toHaveAttribute("href", "/support");
+    expect(screen.getByRole("link", { name: /report a bug/i })).toHaveAttribute("href", "/bug-reports");
+    expect(screen.getByRole("link", { name: /send feedback/i })).toHaveAttribute("href", "/feedback");
   });
 
-  it("shows the requested subject and report body in the Gmail draft URL", () => {
+  it("builds a Gmail draft with the recipient, automatic subject, and report details", () => {
     const url = new URL(buildGmailComposeUrl({
-      recipient: "bugs@example.com",
+      recipient: "cestudy00@gmail.com",
       summary: "Search does not work",
       page: "Subject catalog",
       observed: "Results stay the same",
@@ -48,32 +48,49 @@ describe("contact, support, bug reports, and feedback", () => {
       steps: "Open catalog, then search",
     }));
     expect(url.origin + url.pathname).toBe("https://mail.google.com/mail/");
-    expect(url.searchParams.get("to")).toBe("bugs@example.com");
+    expect(url.searchParams.get("to")).toBe("cestudy00@gmail.com");
     expect(url.searchParams.get("su")).toBe("CEStudy bug report: Search does not work");
     expect(url.searchParams.get("body")).toContain("Results stay the same");
     expect(url.searchParams.get("body")).toContain("Open catalog, then search");
   });
 
-  it("uses the supplied Gmail destination for bug reports by default", () => {
+  it("opens Gmail with the website address prefilled", async () => {
+    const user = userEvent.setup();
+    const open = vi.spyOn(window, "open").mockImplementation(() => null);
     renderPage(<BugReportsPage />);
-    expect(screen.getByRole("heading", { name: "Report a bug" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /open gmail draft/i })).toBeEnabled();
-    expect(screen.queryByText(/recipient gmail address has not been configured/i)).not.toBeInTheDocument();
+    await user.type(screen.getByLabelText(/Short summary/), "The search button is unresponsive");
+    await user.type(screen.getByLabelText(/What happened/), "The search button does not update the result list.");
+    await user.click(screen.getByRole("button", { name: /Open Gmail draft/i }));
+    expect(open).toHaveBeenCalledTimes(1);
+    const url = new URL(String(open.mock.calls[0][0]));
+    expect(url.searchParams.get("to")).toBe("cestudy00@gmail.com");
+    expect(url.searchParams.get("su")).toBe("CEStudy bug report: The search button is unresponsive");
   });
 
-  it("sends feedback through the Edge Function and displays the exact success popup", async () => {
+  it("sends feedback and displays the exact success popup", async () => {
     const user = userEvent.setup();
     renderPage(<FeedbackPage />);
     await user.type(screen.getByLabelText(/Message/), "Please add clearer worked examples to the math topics.");
     await user.click(screen.getByRole("button", { name: "Send message" }));
-
     expect(await screen.findByRole("heading", { name: "message sent!" })).toBeInTheDocument();
     expect(invokeMock).toHaveBeenCalledWith("submit-public-message", expect.objectContaining({
       body: expect.objectContaining({ type: "feedback", category: "general" }),
     }));
   });
 
-  it("shows a failure state when the private notification cannot be sent", async () => {
+  it("shows a loading state while feedback is being sent", async () => {
+    let release: ((value: { data: { ok: boolean }; error: null }) => void) | undefined;
+    invokeMock.mockImplementation(() => new Promise<{ data: { ok: boolean }; error: null }>(resolve => { release = resolve; }));
+    const user = userEvent.setup();
+    renderPage(<FeedbackPage />);
+    await user.type(screen.getByLabelText(/Message/), "Please add clearer worked examples to the math topics.");
+    await user.click(screen.getByRole("button", { name: "Send message" }));
+    expect(await screen.findByRole("button", { name: /Sending message/i })).toBeDisabled();
+    release?.({ data: { ok: true }, error: null });
+    expect(await screen.findByRole("heading", { name: "message sent!" })).toBeInTheDocument();
+  });
+
+  it("shows a failure state when a notification cannot be sent", async () => {
     invokeMock.mockResolvedValue({ data: { ok: false, message: "The authorized inbox could not be notified." }, error: null });
     const user = userEvent.setup();
     renderPage(<FeedbackPage />);
@@ -83,7 +100,7 @@ describe("contact, support, bug reports, and feedback", () => {
     expect(screen.queryByRole("heading", { name: "message sent!" })).not.toBeInTheDocument();
   });
 
-  it("keeps the support confirmation disabled until a payment destination is configured", async () => {
+  it("keeps support completion disabled until GCash details are configured", async () => {
     vi.stubEnv("VITE_GCASH_QR_URL", "");
     const user = userEvent.setup();
     renderPage(<SupportPage />);
@@ -93,17 +110,17 @@ describe("contact, support, bug reports, and feedback", () => {
     expect(invokeMock).not.toHaveBeenCalled();
   });
 
-  it("records a configured support confirmation and shows the confirmation state", async () => {
-    vi.stubEnv("VITE_GCASH_QR_URL", "/branding/test-gcash-qr.png");
+  it("records a configured support confirmation and shows the receipt state", async () => {
+    vi.stubEnv("VITE_GCASH_QR_URL", "https://assets.example.com/gcash-qr.png");
     const user = userEvent.setup();
     renderPage(<SupportPage />);
     await user.click(screen.getByRole("button", { name: "View GCash details" }));
-    expect(screen.getByRole("img", { name: "GCash payment QR code" })).toHaveAttribute("src", "/branding/test-gcash-qr.png");
+    expect(screen.getByRole("img", { name: "GCash payment QR code" })).toHaveAttribute("src", "https://assets.example.com/gcash-qr.png");
     await user.click(screen.getByRole("checkbox", { name: /I have sent support using GCash/i }));
     await user.click(screen.getByRole("button", { name: "Complete" }));
     expect(await screen.findByRole("heading", { name: "Support confirmation sent" })).toBeInTheDocument();
-    await waitFor(() => expect(invokeMock).toHaveBeenCalledWith("submit-public-message", expect.objectContaining({
+    expect(invokeMock).toHaveBeenCalledWith("submit-public-message", expect.objectContaining({
       body: expect.objectContaining({ type: "support", provider: "gcash", confirmed: true }),
-    })));
+    }));
   });
 });
