@@ -36,6 +36,7 @@ function isAllowedOrigin(origin: string | null): origin is string {
   try {
     const parsed = new URL(origin);
     return parsed.protocol === "https:"
+      && parsed.port === ""
       && parsed.origin === origin
       && /^[a-f0-9]{8}\.cestudy\.pages\.dev$/i.test(parsed.hostname);
   } catch {
