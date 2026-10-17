@@ -99,3 +99,33 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Clearly mark external links and open them safely in a new tab.
 - Use a three-column desktop layout that becomes two columns on tablet and one column on phones.
 - Keep the footer white, use the same neutral border and typography tokens, and reserve logo blue for link interaction/focus states.
+
+## Cross-platform product system
+
+CEStudy uses one design language with two intentionally different interfaces. The future app should not simply squeeze the responsive website into a native shell.
+
+### Shared foundations
+- The master logo, logo blue #0754B5, white surfaces, type hierarchy, semantic color roles, spacing and radius tokens.
+- Consistent meaning for primary and secondary actions, subject availability states, search, filters, progress, feedback, loading, errors and success.
+- Shared subject/content taxonomy, Supabase data contracts, validation rules, and access-control behavior.
+- Motion principles: short, purposeful transitions; no animation blocking study tasks; reduced-motion preferences are respected.
+- Brand/service logos are sourced from SVGL (https://svgl.app/) when available and stored locally. Generic interface icons remain simple and visually consistent.
+
+### Website-specific structure
+- Desktop: compact top navigation and multi-column subject lists.
+- Mobile web: persistent four-item quick navigation (Home, Subjects, Years, Math) plus a More menu for Contact, Support, Bug reports, and Feedback.
+- The mobile quick bar must not cover final content; allow room for safe-area insets on gesture-navigation devices.
+- The homepage uses a responsive hero photograph with appropriate srcset widths and reserved dimensions. Only the primary hero is loaded eagerly.
+- Scroll reveal applies only to major content sections. Use IntersectionObserver, unobserve after the first reveal, animate only opacity/transform, and show content immediately if reduced motion is requested or the API is unavailable. See MDN: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API.
+
+### Future native mobile app
+- Use a study-first home screen: Continue studying when progress exists, search, subjects, and practice reachable without a deep menu.
+- Use native bottom tabs and touch-first patterns, not the website DOM, header, footer, or mobile web menu.
+- Reuse the same brand, type/spacing tokens, statuses, data contracts, and interaction semantics; rebuild visual components in the future mobile framework.
+- Defer the framework decision until app implementation. Do not add React Native, Expo, or another mobile framework to the current website.
+- Use photography selectively; repeated study screens should stay content-first and lighter than the website homepage.
+
+## Photography and service icons
+- Homepage bridge photograph: Juan Coronel on Unsplash, https://unsplash.com/photos/an-aerial-view-of-a-bridge-over-a-river-RFJb724c660. Delivered through Unsplash's image CDN using responsive widths. Browser smoke tests check loading and CSP.
+- PayPal wordmark: public/branding/icons/paypal-wordmark.svg, sourced from SVGL. See docs/branding/svgl-icons.md.
+- Use object-fit: cover and a tested focal point. Never stretch a small thumbnail to fill a large hero.

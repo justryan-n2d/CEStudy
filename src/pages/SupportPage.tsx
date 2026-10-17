@@ -89,7 +89,12 @@ export function SupportPage(config: SupportPageConfig = {}) {
 
       <div className="support-method-grid">
         <article className="support-method-card">
-          <div className="payment-mark payment-mark-gcash" aria-hidden="true">G</div>
+          <div className="payment-mark payment-mark-gcash" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" /><path d="M14 14h3v3h-3zM19 14v2M19 19h2M14 19v2M17 21h2" />
+            </svg>
+          </div>
           <div className="support-method-copy">
             <h2>GCash</h2>
             <p>View the GCash QR code and optional note.</p>
@@ -97,7 +102,7 @@ export function SupportPage(config: SupportPageConfig = {}) {
           <button className="button button-secondary" type="button" onClick={() => openProvider("gcash")}>View GCash details</button>
         </article>
         <article className="support-method-card">
-          <div className="payment-mark payment-mark-paypal" aria-hidden="true">P</div>
+          <div className="payment-mark payment-mark-paypal" aria-hidden="true"><img src="/branding/icons/paypal-wordmark.svg" alt="" width="104" height="26" loading="lazy" /></div>
           <div className="support-method-copy">
             <h2>PayPal</h2>
             <p>Open the PayPal support link, then confirm once finished.</p>

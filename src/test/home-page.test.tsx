@@ -9,9 +9,14 @@ import stylesheet from "../styles/global.css?raw";
 describe("homepage and year-level navigation", () => {
   it("keeps the homepage focused on useful destinations", () => {
     render(<MemoryRouter><HomePage /></MemoryRouter>);
-    expect(screen.getByRole("heading", { name: "Find your CE subjects." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Build your CE foundation." })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /browse subjects/i })).toHaveAttribute("href", "/catalog");
     expect(screen.getByRole("link", { name: /math foundations/i })).toHaveAttribute("href", "/math-foundations");
+    const heroImage = screen.getByRole("img", { name: /bridge crossing a river/i });
+    expect(heroImage).toHaveAttribute("width", "1600");
+    expect(heroImage).toHaveAttribute("height", "1200");
+    expect(heroImage.getAttribute("srcset")).toContain("640 640w");
+    expect(heroImage).toHaveAttribute("fetchpriority", "high");
     for (const year of ["First year", "Second year", "Third year", "Fourth year"]) {
       expect(screen.getByRole("link", { name: `Browse ${year} subjects` })).toBeInTheDocument();
     }
@@ -23,6 +28,15 @@ describe("homepage and year-level navigation", () => {
     expect(screen.getByRole("link", { name: "Browse First year subjects" })).toHaveAttribute("href", "/year/1");
     expect(screen.getByRole("link", { name: "Browse Fourth year subjects" })).toHaveAttribute("href", "/year/4");
   });
+  it("keeps the four main destinations in mobile quick navigation", () => {
+    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
+    const quickNav = document.querySelector('nav[aria-label="Quick navigation"]');
+    expect(quickNav?.querySelector('a[href="/"]')).toHaveTextContent("Home");
+    expect(quickNav?.querySelector('a[href="/catalog"]')).toHaveTextContent("Subjects");
+    expect(quickNav?.querySelector('a[href="/years"]')).toHaveTextContent("Years");
+    expect(quickNav?.querySelector('a[href="/math-foundations"]')).toHaveTextContent("Math");
+  });
+
   it("points the shared navigation to the year-level overview", () => {
     render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
     expect(screen.getByRole("navigation", { name: "Main navigation" }).querySelector('a[href="/years"]')).toHaveTextContent("Year levels");

@@ -1,17 +1,60 @@
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
+type GlyphName = "home" | "book" | "layers" | "math" | "menu" | "close" | "help";
+
+function NavigationGlyph({ name }: { name: GlyphName }) {
+  const paths: Record<GlyphName, ReactNode> = {
+    home: <><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/></>,
+    book: <><path d="M12 7v14"/><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H12v18H5.5A2.5 2.5 0 0 0 3 23z"/><path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H12v18h6.5A2.5 2.5 0 0 1 21 23z"/></>,
+    layers: <><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/></>,
+    math: <><path d="M7 4h10"/><path d="M7 20h10"/><path d="M16 4 8 20"/><path d="M6 9h4"/><path d="M14 15h4"/></>,
+    menu: <><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></>,
+    close: <><path d="m6 6 12 12"/><path d="M18 6 6 18"/></>,
+    help: <><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.4 1.3-2 1.7-2 3.4"/><path d="M12 17.5h.01"/></>,
+  };
+  return <svg className="navigation-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
+}
+
 export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const headerRef = useRef<HTMLElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const links = [
     { to: "/catalog", label: "Subject catalog" },
     { to: "/years", label: "Year levels" },
     { to: "/math-foundations", label: "Math foundations" },
   ];
+  const mobileLinks = [
+    { to: "/", label: "Home", name: "home" as const, active: location.pathname === "/" },
+    { to: "/catalog", label: "Subjects", name: "book" as const, active: location.pathname === "/catalog" || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/practice/") },
+    { to: "/years", label: "Years", name: "layers" as const, active: location.pathname === "/years" || location.pathname.startsWith("/year/") },
+    { to: "/math-foundations", label: "Math", name: "math" as const, active: location.pathname === "/math-foundations" },
+  ];
+
+  useEffect(() => setMobileMenuOpen(false), [location.pathname]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handlePointerDown = (event: PointerEvent) => {
+      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) setMobileMenuOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileMenuOpen(false);
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">Skip to main content</a>
-      <header className="site-header">
+      <header ref={headerRef} className="site-header">
         <div className="header-inner">
           <Link className="brand" to="/" aria-label="CEStudy home">
             <img className="brand-logo" src="/branding/cestudy-master-logo.svg" alt="" aria-hidden="true" width={52} height={52} />
@@ -20,15 +63,22 @@ export function Layout({ children }: { children: ReactNode }) {
           <nav className="main-nav" aria-label="Main navigation">
             {links.map((item) => (
               <NavLink key={item.to} to={item.to}
-                className={({ isActive }) => (
-                  isActive || (item.to === "/years" && location.pathname.startsWith("/year/"))
-                    ? "nav-link active" : "nav-link"
-                )}>
+                className={({ isActive }) => isActive || (item.to === "/years" && location.pathname.startsWith("/year/")) ? "nav-link active" : "nav-link"}>
                 {item.label}
               </NavLink>
             ))}
           </nav>
+          <button className="mobile-menu-toggle" type="button" aria-expanded={mobileMenuOpen} aria-controls="mobile-help-menu"
+            aria-label={mobileMenuOpen ? "Close more pages menu" : "Open more pages menu"} onClick={() => setMobileMenuOpen((open) => !open)}>
+            <NavigationGlyph name={mobileMenuOpen ? "close" : "menu"} /><span>More</span>
+          </button>
         </div>
+        <nav id="mobile-help-menu" className={`mobile-help-menu${mobileMenuOpen ? " is-open" : ""}`} aria-label="More CEStudy pages" aria-hidden={!mobileMenuOpen}>
+          <Link to="/contact" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Contact CEStudy</Link>
+          <Link to="/support" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Support us</Link>
+          <Link to="/bug-reports" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Report a bug</Link>
+          <Link to="/feedback" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Send feedback</Link>
+        </nav>
       </header>
       <main id="main-content" className="main-content">{children}</main>
       <footer className="site-footer">
@@ -39,20 +89,20 @@ export function Layout({ children }: { children: ReactNode }) {
             <p className="footer-disclaimer">Independent educational project. Not affiliated with or endorsed by CHED.</p>
           </section>
           <nav className="footer-links" aria-label="Explore CEStudy">
-            <h2>Explore</h2>
-            <Link to="/catalog">Subject catalog</Link>
-            <Link to="/years">Year levels</Link>
-            <Link to="/math-foundations">Math foundations</Link>
+            <h2>Explore</h2><Link to="/catalog">Subject catalog</Link><Link to="/years">Year levels</Link><Link to="/math-foundations">Math foundations</Link>
           </nav>
           <nav className="footer-links" aria-label="Contact and help">
-            <h2>Contact and help</h2>
-            <Link to="/contact">Contact CEStudy</Link>
-            <Link to="/support">Support us</Link>
-            <Link to="/bug-reports">Report a bug</Link>
-            <Link to="/feedback">Send feedback</Link>
+            <h2>Contact and help</h2><Link to="/contact">Contact CEStudy</Link><Link to="/support">Support us</Link><Link to="/bug-reports">Report a bug</Link><Link to="/feedback">Send feedback</Link>
           </nav>
         </div>
       </footer>
+      <nav className="mobile-bottom-nav" aria-label="Quick navigation">
+        {mobileLinks.map((item) => (
+          <Link key={item.to} to={item.to} className={`mobile-tab${item.active ? " active" : ""}`} aria-current={item.active ? "page" : undefined}>
+            <NavigationGlyph name={item.name} /><span>{item.label}</span>
+          </Link>
+        ))}
+      </nav>
     </div>
   );
 }

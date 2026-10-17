@@ -67,7 +67,7 @@ async function main() {
   });
 
   const routes = [
-    { path: "/", heading: /Find your CE subjects\./ },
+    { path: "/", heading: /Build your CE foundation\./ },
     { path: "/catalog", heading: /Subject catalog/ },
     { path: "/years", heading: /Year levels/ },
     { path: "/year/2", heading: /Second year/ },
@@ -89,6 +89,13 @@ async function main() {
       await page.locator("h1").first().waitFor({ state: "visible", timeout: 15000 });
       const heading = (await page.locator("h1").first().innerText()).trim();
       check("Expected page heading: " + route.path, route.heading.test(heading), "heading=" + heading);
+      if (route.path === "/") {
+        const heroImage = page.locator(".hero-visual img").first();
+        const heroImageLoaded = await heroImage.evaluate((image) => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0).catch(() => false);
+        check("Homepage hero image loaded from the configured source", heroImageLoaded, heroImageLoaded ? "image decoded" : "hero image failed to load");
+        const csp = (await lastResponse?.allHeaders())?.["content-security-policy"] || "";
+        check("CSP allows the approved Unsplash image host", csp.includes("https://images.unsplash.com"), csp.includes("https://images.unsplash.com") ? "image host allowed" : "image host missing from CSP");
+      }
       const alerts = await page.locator('[role="alert"]').count();
       check("No application alert/error on " + route.path, alerts === 0, "alertCount=" + alerts);
 
@@ -143,6 +150,16 @@ async function main() {
         "viewport=" + metrics.viewport + ", documentWidth=" + metrics.document + ", bodyWidth=" + metrics.body
       );
       await page.screenshot({ path: path.join("artifacts", "catalog-" + width + "px.png"), fullPage: true });
+      if (width === 320) {
+        await page.goto(baseUrl + "/", { waitUntil: "networkidle", timeout: 45000 });
+        const bottomTabs = page.getByRole("navigation", { name: "Quick navigation" });
+        check("Mobile quick navigation is visible at 320px", await bottomTabs.isVisible().catch(() => false), "viewport=320");
+        check("Mobile navigation has four destinations", await bottomTabs.locator("a").count() === 4, "expected=4 tabs");
+        await page.getByRole("button", { name: "Open more pages menu" }).click();
+        const helpMenu = page.getByRole("navigation", { name: "More CEStudy pages" });
+        check("More menu opens by tap", await helpMenu.isVisible().catch(() => false), "menu opened");
+        check("More menu includes support and feedback", await helpMenu.getByRole("link", { name: "Support us" }).count() === 1 && await helpMenu.getByRole("link", { name: "Send feedback" }).count() === 1, "routes present");
+      }
     } catch (error) {
       check("Responsive check at " + width + "px", false, error.message);
     }
