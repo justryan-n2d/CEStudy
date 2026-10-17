@@ -35,8 +35,8 @@ select ok(not (select allowed from public.consume_public_submission_rate_limit(r
 select is((select retry_after_seconds > 0 from public.consume_public_submission_rate_limit(repeat('a',64),'feedback',2,3600)),true,'rate-limit response includes a positive retry delay');
 select ok((select allowed from public.consume_public_submission_rate_limit(repeat('b',64),'inbox_auth',1,900)),'first owner unlock attempt is allowed');
 select ok(not (select allowed from public.consume_public_submission_rate_limit(repeat('b',64),'inbox_auth',1,900)),'repeated owner unlock attempt is rate limited');
-select throws_ok($select * from public.consume_public_submission_rate_limit(repeat('z',64),'inbox_auth_invalid',1,900)$,'22023',null,'unsupported rate-limit categories are rejected');
-select throws_ok($select * from public.consume_public_submission_rate_limit(repeat('z',64),'feedback',0,3600)$,'22023',null,'invalid rate-limit settings are rejected');
+select throws_ok($query$select * from public.consume_public_submission_rate_limit(repeat('z',64),'inbox_auth_invalid',1,900)$query$,'22023',null,'unsupported rate-limit categories are rejected');
+select throws_ok($query$select * from public.consume_public_submission_rate_limit(repeat('z',64),'feedback',0,3600)$query$,'22023',null,'invalid rate-limit settings are rejected');
 
 select * from finish();
 rollback;
