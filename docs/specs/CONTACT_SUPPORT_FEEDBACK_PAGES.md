@@ -3,9 +3,8 @@
 ## Page plan
 
 ### Contact: `/contact`
-- Show the configured public contact email when one has been supplied.
+- Show `cestudy00@gmail.com` as the public contact address, with an optional Pages environment override.
 - Provide clear links to the distinct support, bug-report, and feedback pages.
-- If no contact email is configured, say so instead of inventing a destination.
 
 ### Support: `/support`
 - Offer GCash and PayPal cards.
@@ -17,7 +16,7 @@
 - Collect a short summary, affected page/feature, observed behavior, expected behavior, and reproduction steps.
 - Open a Gmail compose draft with a subject such as `CEStudy bug report: Search does not return results` and a prefilled report body.
 - The user reviews and sends the email themselves. CEStudy does not store this report.
-- The send button stays disabled until the intended Gmail recipient has been configured.
+- The recipient defaults to `cestudy00@gmail.com`; a Pages environment override is optional.
 
 ### Feedback: `/feedback`
 - Collect optional name and reply email, a category, and the message.
@@ -42,18 +41,18 @@
 
 Set these as Pages environment variables, then rebuild/deploy. These values are public by design and must not contain keys or secrets.
 
-- `VITE_CESTUDY_CONTACT_EMAIL`: the public CEStudy contact address.
-- `VITE_BUG_REPORT_EMAIL`: the Gmail address that should receive bug reports.
-- `VITE_GCASH_QR_URL`: an HTTPS URL or same-origin path to the approved GCash QR image.
+- `VITE_CESTUDY_CONTACT_EMAIL`: defaults to `cestudy00@gmail.com`.
+- `VITE_BUG_REPORT_EMAIL`: defaults to `cestudy00@gmail.com`.
+- `VITE_GCASH_QR_URL`: same-origin path for the approved GCash QR image, such as `/branding/gcash-qr.png`. Add the image to `public/branding/` to comply with the existing CSP.
 - `VITE_PAYPAL_SUPPORT_URL`: the HTTPS PayPal support/donation URL.
 
 ### Supabase Edge Function secrets
 
-Set these under the CEStudy Supabase project's Edge Function secrets. Never commit or add these to Vite variables.
+Set these under the CEStudy Supabase project's Edge Function secrets. Never commit or add these to Vite variables. Resend has no verified sender domain configured yet, so email notifications stay unavailable until a sender domain and API key are set.
 
 - `RESEND_API_KEY`: Resend API key used by the server function.
 - `RESEND_FROM_EMAIL`: sender identity on a domain verified in Resend.
-- `ADMIN_NOTIFICATION_RECIPIENTS`: comma-separated allowlist of exactly the addresses you authorize to receive and read feedback/support messages.
+- `ADMIN_NOTIFICATION_RECIPIENTS`: optional comma-separated allowlist of authorized feedback/support recipients. If absent, only `cestudy00@gmail.com` is notified.
 - `ALLOWED_ORIGINS`: comma-separated allowlist of CEStudy origins, including production and the stable Cloudflare branch-preview URL. Add a temporary preview URL only if that exact preview needs to submit messages.
 
 Supabase provides its function URL and server-side secret key through its runtime environment. Do not add them to client code.

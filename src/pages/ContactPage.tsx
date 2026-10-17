@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const configuredEmail = import.meta.env.VITE_CESTUDY_CONTACT_EMAIL?.trim() ?? "";
+const configuredEmail = import.meta.env.VITE_CESTUDY_CONTACT_EMAIL?.trim() || "cestudy00@gmail.com";
 const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(configuredEmail);
 
 export function ContactPage() {

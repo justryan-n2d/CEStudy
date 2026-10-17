@@ -5,13 +5,8 @@ import { submitPublicMessage } from "../data/public-messages";
 type Provider = "gcash" | "paypal";
 
 function validQrSource(value: string): string {
-  if (value.startsWith("/") && !value.startsWith("//")) return value;
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === "https:" ? value : "";
-  } catch {
-    return "";
-  }
+  // Use a same-origin asset to match the site's restrictive img-src CSP.
+  return value.startsWith("/") && !value.startsWith("//") ? value : "";
 }
 
 function validExternalUrl(value: string): string {

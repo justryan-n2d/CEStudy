@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 
-const bugReportEmail = import.meta.env.VITE_BUG_REPORT_EMAIL?.trim() ?? "";
+const bugReportEmail = import.meta.env.VITE_BUG_REPORT_EMAIL?.trim() || "cestudy00@gmail.com";
 const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bugReportEmail);
 
 export function buildGmailComposeUrl(input: {

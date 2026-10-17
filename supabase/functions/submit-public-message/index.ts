@@ -49,7 +49,7 @@ function serviceRoleKey(): string {
   if (secretKeys) {
     try {
       const parsed = JSON.parse(secretKeys) as Record<string, unknown>;
-      const value = parsed.default ?? Object.values(parsed).find((item) => typeof item === "string");
+      const value = parsed.default;
       if (typeof value === "string" && value.trim()) return value.trim();
     } catch {
       // Fail closed below.
@@ -61,7 +61,7 @@ function serviceRoleKey(): string {
 function notificationConfig() {
   const apiKey = Deno.env.get("RESEND_API_KEY")?.trim() ?? "";
   const from = Deno.env.get("RESEND_FROM_EMAIL")?.trim() ?? "";
-  const recipients = (Deno.env.get("ADMIN_NOTIFICATION_RECIPIENTS") ?? "")
+  const recipients = (Deno.env.get("ADMIN_NOTIFICATION_RECIPIENTS")?.trim() || "cestudy00@gmail.com")
     .split(",").map((item) => item.trim().toLowerCase()).filter(Boolean);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!apiKey || !from || recipients.length < 1 || recipients.length > 10 ||
@@ -84,10 +84,10 @@ async function digest(value: string): Promise<string> {
 
 function clientIdentity(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
-  const lastForwardedIp = forwarded?.split(",").map((part) => part.trim()).filter(Boolean).at(-1);
+  const firstForwardedIp = forwarded?.split(",").map((part) => part.trim()).filter(Boolean)[0];
   return request.headers.get("cf-connecting-ip")?.trim()
     || request.headers.get("x-real-ip")?.trim()
-    || lastForwardedIp
+    || firstForwardedIp
     || "unidentified-client";
 }
 
@@ -262,7 +262,7 @@ function validateSubmission(body: RecordValue):
 
 Deno.serve(async (request: Request) => {
   const origin = request.headers.get("origin");
-  if (origin && !allowedOrigins().includes(origin)) {
+  if (!origin || !allowedOrigins().includes(origin)) {
     return new Response(JSON.stringify({ ok: false, message: "This origin is not allowed." }), {
       status: 403,
       headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "Vary": "Origin" },
