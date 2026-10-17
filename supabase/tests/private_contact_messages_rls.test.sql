@@ -1,11 +1,14 @@
 begin;
-select plan(30);
+select plan(33);
 
 select ok((select relrowsecurity from pg_class where oid='public.feedback_messages'::regclass),'RLS enabled on feedback_messages');
 select ok((select relrowsecurity from pg_class where oid='public.support_confirmations'::regclass),'RLS enabled on support_confirmations');
 select ok((select relrowsecurity from pg_class where oid='public.contact_submission_limits'::regclass),'RLS enabled on contact_submission_limits');
 select ok(exists(select 1 from information_schema.columns where table_schema='public' and table_name='feedback_messages' and column_name='read_at'),'feedback messages have server-maintained read state');
 select ok(to_regclass('public.feedback_messages_unread_created_at_idx') is not null,'unread feedback has a partial index');
+select ok(exists(select 1 from information_schema.columns where table_schema='public' and table_name='feedback_messages' and column_name='is_pinned'),'pin state is stored in the private feedback table');
+select ok(to_regclass('public.feedback_messages_pinned_created_at_idx') is not null,'feedback pin ordering has an index');
+select ok(has_table_privilege('service_role','public.feedback_messages','DELETE'),'service role can permanently delete feedback');
 
 select is((select count(*)::integer from pg_policies where schemaname='public' and tablename in ('feedback_messages','support_confirmations','contact_submission_limits')),0,'private submissions have no client-facing RLS policies');
 

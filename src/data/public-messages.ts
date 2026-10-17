@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { FEEDBACK_INBOX_UNREAD_EVENT } from "./feedback-inbox";
 
 export type PublicMessageSubmission =
   | {
@@ -41,5 +42,9 @@ export async function submitPublicMessage(payload: PublicMessageSubmission): Pro
 
   if (!data?.ok) {
     throw new Error(data?.message || "We couldn't send this message. Please try again.");
+  }
+
+  if (payload.type === "feedback" && typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(FEEDBACK_INBOX_UNREAD_EVENT));
   }
 }

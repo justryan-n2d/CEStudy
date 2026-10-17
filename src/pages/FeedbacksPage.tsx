@@ -3,6 +3,7 @@ import type { FormEvent } from "react";
 import {
   FEEDBACK_INBOX_SESSION_EVENT, getFeedbackInboxSessionToken, getUnreadFeedbackCount,
   listFeedbackMessages, lockFeedbackInbox, markFeedbackMessageRead, unlockFeedbackInbox,
+  setFeedbackMessagePinned, deleteFeedbackMessage,
 } from "../data/feedback-inbox";
 import type { FeedbackRecord } from "../data/feedback-inbox";
 
@@ -15,6 +16,15 @@ function categoryLabel(category: string): string {
   return labels[category] ?? "Feedback";
 }
 
+type FeedbackIconName = "more" | "pin" | "trash";
+function FeedbackIcon({ name }: { name: FeedbackIconName }) {
+  return <svg className="feedback-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    {name === "more" ? <><circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="19" cy="12" r="1" fill="currentColor"/></>
+      : name === "pin" ? <><path d="m16 3 5 5-4 1-4 4-1 4-3-3-3-3 4-1 4-4z"/><path d="M12 17v4"/></>
+      : <><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 10v6M14 10v6"/></>}
+  </svg>;
+}
+
 export function FeedbacksPage() {
   const [unlocked, setUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
   const [passphrase, setPassphrase] = useState("");
@@ -25,6 +35,8 @@ export function FeedbacksPage() {
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [pendingActionId, setPendingActionId] = useState<string | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [error, setError] = useState("");
 
@@ -66,6 +78,28 @@ export function FeedbacksPage() {
         setUnreadCount(current => Math.max(0, current - 1));
       } catch (reason) { setError(reason instanceof Error ? reason.message : "This feedback could not be marked as read."); }
     }
+  }
+
+  async function handleTogglePin(message: FeedbackRecord) {
+    setOpenMenuId(null); setPendingActionId(message.id); setError("");
+    try {
+      await setFeedbackMessagePinned(message.id, !message.is_pinned);
+      await loadInbox();
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "This feedback could not be updated.");
+    } finally { setPendingActionId(null); }
+  }
+
+  async function handleDelete(message: FeedbackRecord) {
+    setOpenMenuId(null);
+    if (!window.confirm("Delete this feedback permanently? This cannot be undone.")) return;
+    setPendingActionId(message.id); setError("");
+    try {
+      await deleteFeedbackMessage(message.id);
+      await loadInbox();
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "This feedback could not be deleted.");
+    } finally { setPendingActionId(null); }
   }
 
   async function handleLoadOlder() {
@@ -114,12 +148,30 @@ export function FeedbacksPage() {
       : <section className="feedback-inbox-layout" aria-label="Feedback messages">
         <div className="feedback-message-list">{messages.map(message => {
           const selected = selectedId === message.id, unread = !message.read_at;
-          return <article key={message.id} className={`feedback-message-card${selected ? " selected" : ""}${unread ? " unread" : ""}`}>
-            <button type="button" className="feedback-message-summary" onClick={() => void handleOpenMessage(message)} aria-expanded={selected}>
-              <span className="feedback-message-heading"><span className="feedback-message-anonymous">Anonymous</span>{unread && <span className="feedback-message-new">New</span>}</span>
-              <strong>{categoryLabel(message.category)}</strong><span className="feedback-message-preview">{message.message}</span>
-              <time dateTime={message.created_at}>{readableDate(message.created_at)}</time>
-            </button>
+          return <article key={message.id} className={"feedback-message-card" + (selected ? " selected" : "") + (unread ? " unread" : "") + (openMenuId === message.id ? " has-open-feedback-menu" : "")}>
+            <div className="feedback-message-topline">
+              <button type="button" className="feedback-message-summary" onClick={() => void handleOpenMessage(message)} aria-expanded={selected}>
+                <span className="feedback-message-heading"><span className="feedback-message-anonymous">Anonymous</span>{unread && <span className="feedback-message-new">New</span>}</span>
+                <strong>{categoryLabel(message.category)}</strong><span className="feedback-message-preview">{message.message}</span>
+                <time dateTime={message.created_at}>{readableDate(message.created_at)}</time>
+              </button>
+              <div className="feedback-message-controls">
+                {message.is_pinned && <span className="feedback-pin-indicator" title="Pinned" aria-label="Pinned feedback"><FeedbackIcon name="pin" /></span>}
+                <button className="feedback-message-more" type="button" aria-label="More feedback actions" aria-haspopup="menu"
+                  aria-expanded={openMenuId === message.id} disabled={pendingActionId !== null}
+                  onClick={() => setOpenMenuId(current => current === message.id ? null : message.id)}>
+                  <FeedbackIcon name="more" />
+                </button>
+                {openMenuId === message.id && <div className="feedback-action-menu" role="menu" aria-label="Feedback actions">
+                  <button type="button" role="menuitem" disabled={pendingActionId !== null} onClick={() => void handleTogglePin(message)}>
+                    <FeedbackIcon name="pin" />{message.is_pinned ? "Unpin" : "Pin"}
+                  </button>
+                  <button type="button" role="menuitem" className="feedback-delete-action" disabled={pendingActionId !== null} onClick={() => void handleDelete(message)}>
+                    <FeedbackIcon name="trash" />Delete
+                  </button>
+                </div>}
+              </div>
+            </div>
             {selected && <div className="feedback-message-detail"><p>{message.message}</p><small>Sent {readableDate(message.created_at)}</small></div>}
           </article>;
         })}</div>

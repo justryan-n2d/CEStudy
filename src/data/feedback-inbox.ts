@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 export const FEEDBACK_INBOX_SESSION_EVENT = "cestudy-feedback-inbox-session";
 export const FEEDBACK_INBOX_UNREAD_EVENT = "cestudy-feedback-inbox-unread";
 export type FeedbackCategory = "general" | "content" | "usability" | "accessibility" | "feature" | "other";
-export type FeedbackRecord = { id: string; category: FeedbackCategory; message: string; created_at: string; read_at: string | null };
+export type FeedbackRecord = { id: string; category: FeedbackCategory; message: string; created_at: string; read_at: string | null; is_pinned: boolean };
 type InboxReply = { ok?: boolean; message?: string; token?: string; expiresAt?: string; messages?: FeedbackRecord[]; unreadCount?: number; hasMore?: boolean };
 
 let activeToken: string | null = null;
@@ -67,5 +67,13 @@ export async function getUnreadFeedbackCount(): Promise<number> {
 }
 export async function markFeedbackMessageRead(id: string): Promise<void> {
   await invokeInbox({ action: "mark-read", id }, true);
+  if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(FEEDBACK_INBOX_UNREAD_EVENT));
+}
+
+export async function setFeedbackMessagePinned(id: string, isPinned: boolean): Promise<void> {
+  await invokeInbox({ action: "set-pin", id, isPinned }, true);
+}
+export async function deleteFeedbackMessage(id: string): Promise<void> {
+  await invokeInbox({ action: "delete", id }, true);
   if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(FEEDBACK_INBOX_UNREAD_EVENT));
 }
