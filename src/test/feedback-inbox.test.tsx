@@ -165,7 +165,7 @@ describe("owner-only feedback inbox", () => {
       headers: { "x-feedback-inbox-token": "signed-owner-token" },
     })));
     await waitFor(() => expect(within(screen.getAllByRole("article")[0]).getByText(olderMessage)).toBeInTheDocument());
-    let pinnedCard = screen.getByText(olderMessage).closest("article");
+    const pinnedCard = screen.getByText(olderMessage).closest("article");
     expect(pinnedCard).not.toBeNull();
     expect(within(pinnedCard!).getByLabelText("Pinned feedback")).toBeInTheDocument();
 
