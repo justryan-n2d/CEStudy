@@ -73,6 +73,7 @@ describe("contact, support, bug reports, and feedback", () => {
     await user.type(screen.getByLabelText(/Message/), "Please add clearer worked examples to the math topics.");
     await user.click(screen.getByRole("button", { name: "Send message" }));
     expect(await screen.findByRole("heading", { name: "message sent!" })).toBeInTheDocument();
+    expect(screen.getByText("Thank you for helping us improve CEStudy. Your feedback helps us make the site better for civil engineering students.")).toBeInTheDocument();
     expect(invokeMock).toHaveBeenCalledWith("submit-public-message", expect.objectContaining({
       body: expect.objectContaining({ type: "feedback", category: "general" }),
     }));
