@@ -322,6 +322,25 @@
 .feedbacks-nav-icon .navigation-glyph{width:18px;height:18px}
 .feedback-unread-dot{position:absolute;top:0;right:-1px;width:7px;height:7px;border:1.5px solid #fff;border-radius:50%;background:#e53935;box-shadow:0 0 0 1px rgba(229,57,53,.08)}
 .mobile-feedbacks-link{display:flex;align-items:center;gap:.65rem}
+.mobile-menu-toggle{position:relative}
+.menu-toggle-icon{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.menu-unread-dot{top:-2px;right:-3px}
+.feedback-message-card{overflow:visible}
+.feedback-message-card.has-open-feedback-menu{position:relative;z-index:40}
+.feedback-message-topline{display:flex;align-items:flex-start;gap:.3rem}
+.feedback-message-topline .feedback-message-summary{flex:1;min-width:0}
+.feedback-message-controls{position:relative;z-index:5;display:flex;align-items:center;gap:.15rem;padding:.55rem .6rem 0 0;flex:0 0 auto}
+.feedback-message-more{display:grid;place-items:center;width:32px;height:32px;border:1px solid transparent;border-radius:9px;background:transparent;color:#405a70;cursor:pointer}
+.feedback-message-more:hover,.feedback-message-more:focus-visible{background:#f1f6fb;border-color:#dce7f1;outline:none}
+.feedback-message-more:disabled{opacity:.55;cursor:wait}
+.feedback-pin-indicator{display:inline-flex;align-items:center;justify-content:center;width:26px;height:32px;color:#0754b5}
+.feedback-action-icon{display:block;width:17px;height:17px;flex:0 0 auto}
+.feedback-message-more .feedback-action-icon{width:18px;height:18px}
+.feedback-action-menu{position:absolute;z-index:20;top:calc(100% + .25rem);right:.5rem;min-width:142px;padding:.3rem;border:1px solid #dbe5ee;border-radius:12px;background:#fff;box-shadow:0 12px 28px rgba(18,52,81,.16)}
+.feedback-action-menu button{display:flex;align-items:center;width:100%;gap:.6rem;padding:.6rem .7rem;border:0;border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:.85rem;text-align:left;cursor:pointer}
+.feedback-action-menu button:hover,.feedback-action-menu button:focus-visible{background:#f2f6fa;outline:none}
+.feedback-action-menu button:disabled{opacity:.55;cursor:wait}
+.feedback-action-menu button.feedback-delete-action{color:#b42318}
 .feedback-inbox-wrap{width:min(100%,1000px);margin-inline:auto}
 .feedback-inbox-unlock{max-width:520px}
 .feedback-inbox-unlock h2{font-size:1.25rem;margin:0}

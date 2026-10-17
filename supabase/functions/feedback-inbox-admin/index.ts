@@ -2,7 +2,7 @@
 const DEFAULT_ALLOWED_ORIGINS = ["https://cestudy.pages.dev", "https://design-white-blue-responsive.cestudy.pages.dev", "http://localhost:5173"];
 const MAX_BODY_BYTES = 8_000, TOKEN_TTL_SECONDS = 30 * 60, TOKEN_HEADER = "x-feedback-inbox-token";
 type RecordValue = Record<string, unknown>;
-type FeedbackRow = { id: string; category: string; message: string; created_at: string; read_at: string | null };
+type FeedbackRow = { id: string; category: string; message: string; created_at: string; read_at: string | null; is_pinned: boolean };
 
 function allowedOrigins(): string[] {
   const raw = Deno.env.get("ALLOWED_ORIGINS")?.trim();
@@ -109,7 +109,7 @@ function exactCount(range: string | null): number | null {
   const count = Number(match[1]); return Number.isFinite(count) ? count : null;
 }
 async function listFeedback(offset: number, limit: number) {
-  const query = new URLSearchParams({ select: "id,category,message,created_at,read_at", order: "created_at.desc", offset: String(offset), limit: String(limit) });
+  const query = new URLSearchParams({ select: "id,category,message,created_at,read_at,is_pinned", order: "is_pinned.desc,created_at.desc", offset: String(offset), limit: String(limit) });
   const res = await rest(`feedback_messages?${query.toString()}`, "GET", undefined, "count=exact", `${offset}-${offset + limit - 1}`);
   if (!res.ok) throw new Error("feedback_list_failed");
   const messages = await res.json() as FeedbackRow[], total = exactCount(res.headers.get("content-range"));
@@ -122,8 +122,25 @@ async function unreadCount() {
   const total = exactCount(res.headers.get("content-range"));
   return total ?? (await res.json() as Array<{ id: string }>).length;
 }
+function isFeedbackId(id: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+}
+async function setPinned(id: string, isPinned: boolean) {
+  const query = new URLSearchParams({ id: `eq.${id}` });
+  const res = await rest(`feedback_messages?${query.toString()}`, "PATCH", { is_pinned: isPinned }, "return=representation");
+  if (!res.ok) throw new Error("feedback_pin_update_failed");
+  const rows = await res.json() as unknown;
+  if (!Array.isArray(rows) || rows.length === 0) throw new Error("feedback_not_found");
+}
+async function deleteMessage(id: string) {
+  const query = new URLSearchParams({ id: `eq.${id}` });
+  const res = await rest(`feedback_messages?${query.toString()}`, "DELETE", undefined, "return=representation");
+  if (!res.ok) throw new Error("feedback_delete_failed");
+  const rows = await res.json() as unknown;
+  if (!Array.isArray(rows) || rows.length === 0) throw new Error("feedback_not_found");
+}
 async function markRead(id: string) {
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) throw new Error("bad_feedback_id");
+  if (!isFeedbackId(id)) throw new Error("bad_feedback_id");
   const query = new URLSearchParams({ id: `eq.${id}`, read_at: "is.null" });
   const res = await rest(`feedback_messages?${query.toString()}`, "PATCH", { read_at: new Date().toISOString() }, "return=minimal");
   if (!res.ok) throw new Error("feedback_read_update_failed");
@@ -164,6 +181,18 @@ Deno.serve(async (req: Request) => {
       if (!Number.isInteger(offset) || offset < 0 || offset > 100000 || !Number.isInteger(limit) || limit < 1 || limit > 50) return respond(req, 400, { ok: false, message: "Invalid feedback page request." });
       try { return respond(req, 200, { ok: true, ...await listFeedback(offset, limit) }); }
       catch { return respond(req, 503, { ok: false, message: "Feedback messages could not be loaded. Please try again." }); }
+    }
+    if (action === "set-pin") {
+      const id = clean(body.id);
+      if (!isFeedbackId(id) || typeof body.isPinned !== "boolean") return respond(req, 400, { ok: false, message: "Invalid feedback pin request." });
+      try { await setPinned(id, body.isPinned); return respond(req, 200, { ok: true }); }
+      catch { return respond(req, 503, { ok: false, message: "This feedback could not be pinned or unpinned. Please refresh and try again." }); }
+    }
+    if (action === "delete") {
+      const id = clean(body.id);
+      if (!isFeedbackId(id)) return respond(req, 400, { ok: false, message: "Invalid feedback delete request." });
+      try { await deleteMessage(id); return respond(req, 200, { ok: true }); }
+      catch { return respond(req, 503, { ok: false, message: "This feedback could not be deleted. Please refresh and try again." }); }
     }
     if (action === "mark-read") {
       try { await markRead(clean(body.id)); return respond(req, 200, { ok: true }); }

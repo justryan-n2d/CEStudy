@@ -61,14 +61,17 @@ export function Layout({ children }: { children: ReactNode }) {
       }
     };
     void refreshCount();
-    const interval = window.setInterval(() => void refreshCount(), 45_000);
+    const interval = window.setInterval(() => void refreshCount(), 15_000);
     const onFocus = () => void refreshCount();
+    const onVisibilityChange = () => { if (!document.hidden) void refreshCount(); };
     window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener(FEEDBACK_INBOX_UNREAD_EVENT, onFocus);
     return () => {
       active = false;
       window.clearInterval(interval);
       window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener(FEEDBACK_INBOX_UNREAD_EVENT, onFocus);
     };
   }, [feedbackInboxUnlocked]);
@@ -113,8 +116,8 @@ export function Layout({ children }: { children: ReactNode }) {
             )}
           </nav>
           <button className="mobile-menu-toggle" type="button" aria-expanded={mobileMenuOpen} aria-controls="mobile-help-menu"
-            aria-label={mobileMenuOpen ? "Close more pages menu" : "Open more pages menu"} onClick={() => setMobileMenuOpen((open) => !open)}>
-            <NavigationGlyph name={mobileMenuOpen ? "close" : "menu"} /><span>More</span>
+            aria-label={`${mobileMenuOpen ? "Close" : "Open"} more pages menu${unreadFeedbackCount > 0 ? ", unread feedback" : ""}`} onClick={() => setMobileMenuOpen((open) => !open)}>
+            <span className="menu-toggle-icon"><NavigationGlyph name={mobileMenuOpen ? "close" : "menu"} />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot menu-unread-dot" aria-hidden="true" />}</span><span>More</span>
           </button>
         </div>
         <nav id="mobile-help-menu" className={`mobile-help-menu${mobileMenuOpen ? " is-open" : ""}`} aria-label="More CEStudy pages" aria-hidden={!mobileMenuOpen}>
