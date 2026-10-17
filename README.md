@@ -13,7 +13,22 @@ The app has a 72-subject catalog, four year-level routes, subject detail pages, 
 
 **Release status:** The deployed web MVP is passing its current automated technical smoke checks, but CEStudy is **not ready for a broad student launch yet**. The repository stays public by decision because the eight original draft questions are non-sensitive and their exposure is accepted. Future unpublished question text must stay in the CEStudy Supabase database and must never be added to public source, seed files, docs, tests, artifacts, or logs. The current public seed contains catalog metadata only, and CI checks this rule. Cloudflare Pages remains configured for this public repository; verify the production deployment after this policy change. A managed-Supabase-target restore check, B2 lifecycle cleanup, GitHub failure-email verification, human content approval, branch protection, and the controlled student pilot remain release gates. The encrypted weekly Backblaze backup workflow has completed a successful live run: [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). The encrypted archive, checksum, and verification marker were read back successfully, with one verified backup set retained. The real encrypted backup has now been decrypted and restored into isolated local PostgreSQL 18.2 in Termux; 72 catalog rows, eight unpublished questions, RLS policies, and client write restrictions passed validation. A restore into a separate managed Supabase project remains untested. See [restore-drill evidence](docs/deployment/restore-drill-2026-10-16.md). B2 lifecycle cleanup and GitHub failure email settings also need confirmation. Human content sign-off, branch protection, and the student pilot are also pending. See [weekly backup setup](docs/deployment/weekly-backups.md), [current project status](docs/PROJECT_STATUS.md), [pre-launch checklist](docs/deployment/launch-checklist.md), [repository privacy guide](docs/deployment/github-privacy-and-branch-protection.md), and [roadmap](docs/ROADMAP.md).
 
-### Deployment and smoke-test record (2026-10-15)
+### Feedback inbox and contact rollout (2026-10-18)
+
+The responsive redesign and anonymous feedback inbox have been merged into `main`.
+
+- [PR #18](https://github.com/justryan-n2d/CEStudy/pull/18) merged the white/blue responsive UI, configurable hero photo with centered transparent master logo, animated menu/dialogs, the slightly darker footer, About Us, distinct Contact/Support/Bug Reports/Feedback pages, and the owner-only `/feedbacks` inbox.
+- [PR #19](https://github.com/justryan-n2d/CEStudy/pull/19) fixed Cloudflare Pages commit-preview origin handling. Feedback/support endpoints accept the production URL, the stable redesign branch URL, explicitly configured origins, and only HTTPS eight-hex commit-preview hosts under `cestudy.pages.dev`. Unrelated or lookalike Pages domains are not allowed.
+- The live Supabase project reports `submit-public-message` and `feedback-inbox-admin` as ACTIVE (version 2). The private feedback inbox migration is applied. Remote migration versions and filename alignment are tracked in [the rollout record](docs/deployment/feedback-inbox-rollout-2026-10-18.md).
+- A privileged live database check confirmed that anonymous/authenticated roles cannot directly read or insert feedback, RLS is enabled, and anon cannot call the private rate-limit RPC. The database contains submissions from earlier attempts despite the form having shown errors; message bodies and IDs are deliberately omitted from repository docs.
+- The `l.clone is not a function` error was fixed by checking that a Supabase error context supports `clone()` and `json()` before parsing it. Email notification is best-effort for feedback; successful private storage is the delivery condition. Support confirmation email still requires a verified Resend sender/API key.
+- The owner reported that `FEEDBACK_INBOX_ACCESS_KEY` was configured in Supabase Edge Function secrets. The value is never stored in source control, browser variables, logs, or this repository.
+
+**Verification:** [CI passed](https://github.com/justryan-n2d/CEStudy/actions/runs/39069346430) · [Secret scan passed](https://github.com/justryan-n2d/CEStudy/actions/runs/39069346426) · [Live website smoke test passed](https://github.com/justryan-n2d/CEStudy/actions/runs/39069495822).
+
+The existing browser smoke suite does not test the full feedback success dialog and owner-key unlock sequence. Those steps remain on the [manual live verification checklist](docs/deployment/feedback-inbox-rollout-2026-10-18.md). UI errors do not prove a message was unsaved; check the owner inbox before retrying to avoid duplicates.
+
+## Deployment and smoke-test record (2026-10-15)
 
 - **Live URL:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 - **Hosting:** Cloudflare Pages connected to `justryan-n2d/CEStudy`; production branch `main`, build command `npm run build`, output directory `dist`.
@@ -28,7 +43,7 @@ The app has a 72-subject catalog, four year-level routes, subject detail pages, 
 - Free-first, responsive web app designed for mobile screens.
 - Four year levels, Mathematics Foundations and Refreshers, and five specialization areas.
 - CHED placements are reference examples and may differ by university.
-- No student-facing AI tutor, AI-generated questions, live AI API calls, account registration, public submissions, or cross-device progress in the MVP.
+- No student-facing AI tutor, AI-generated questions, live AI API calls, student account registration, public academic-content submissions, or cross-device progress in the MVP. Anonymous private feedback and support-confirmation forms are implemented.
 - Only deliberately published questions are returned to public clients.
 - No question is marked verified merely because it was generated or seeded.
 

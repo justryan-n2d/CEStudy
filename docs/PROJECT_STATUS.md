@@ -1,11 +1,27 @@
 # CEStudy project status
 
-**Last updated:** 2026-10-16  
+**Last updated:** 2026-10-18  
 **Current phase:** **Phase 7, pre-launch hardening and release gates.**  
 **Release status:** The live web MVP is deployed and the automated live smoke test passed 70/70 checks. The real encrypted backup dated 2026-10-15 has now been checksum-checked, decrypted with successful AES-GCM authentication, and restored into an isolated local PostgreSQL 18.2 database in Termux. Validation confirmed 72 catalog rows, eight `needs-review` practice questions, zero published questions, RLS on both application tables, and no client INSERT/UPDATE/DELETE privileges. This proves a local application-schema restore, not a restore into a managed Supabase project. CEStudy is not approved for a broad student launch yet. The managed Supabase restore check, manual accessibility/device QA, human content review, and student pilot remain release gates. The active main-branch ruleset is now verified. The repository stays public by decision; future unpublished question content is kept out of public source and guarded by CI. See the [restore-drill evidence](deployment/restore-drill-2026-10-16.md) and [organized phase plan](PHASE_PLAN.md).
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
+
+## Feedback inbox rollout update (2026-10-18)
+
+PR #18 (responsive redesign and private anonymous owner inbox) and PR #19 (Cloudflare Pages commit-preview origin handling) are merged to `main`.
+
+- **Live frontend:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
+- **Supabase project:** `qqmdwltfgpqtcvdbcmto`
+- **Live Edge Functions:** `submit-public-message` and `feedback-inbox-admin` are ACTIVE, version 2. Both use `verify_jwt=false` for public-form/custom-owner-token handling; server-side validation and table grants/RLS remain required.
+- **Remote migration history:** `20261014170630` `public_catalog_and_practice`, `20261014190554` `client_default_privileges_hardening`, `20261017204914` `private_public_messages`, and `20261017204934` `feedback_inbox_owner_auth`. The documentation follow-up aligns the two recent repository migration filenames with their applied remote versions to avoid future history drift.
+- **Live security check:** RLS is enabled on private feedback/support tables. Anon/authenticated have no direct SELECT or INSERT privilege on `feedback_messages`; anon cannot execute the private rate-limit RPC. The owner inbox uses the server-side Edge Function rather than a client database query.
+- **Owner access secret:** The owner reported `FEEDBACK_INBOX_ACCESS_KEY` configured in Supabase function secrets. Its value is not retrievable through this workflow and is not committed.
+- **Troubleshooting:** `l.clone is not a function` was fixed by guarding Response methods in the frontend error handler. PR #19 allows only exact HTTPS eight-hex commit-preview hosts under `cestudy.pages.dev`. Earlier browser attempts have corresponding rows in the feedback table despite errors shown by the form; message bodies and IDs are omitted here. Check the inbox before retrying.
+- **Email status:** Feedback email notification is optional/best-effort, with in-app unread state as primary. Support confirmation email needs verified Resend sender configuration.
+- **Automated verification:** [main CI](https://github.com/justryan-n2d/CEStudy/actions/runs/39069346430), [secret scan](https://github.com/justryan-n2d/CEStudy/actions/runs/39069346426), and [live browser smoke test](https://github.com/justryan-n2d/CEStudy/actions/runs/39069495822) passed. The existing smoke suite does not itself assert feedback form success, owner unlock, or unread-dot clearing.
+
+Detailed architecture, access model, checks, and manual checklist: [feedback inbox rollout record](deployment/feedback-inbox-rollout-2026-10-18.md).
 
 ## Release verification update (2026-10-15)
 
