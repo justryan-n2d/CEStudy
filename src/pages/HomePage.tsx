@@ -29,6 +29,7 @@ export function HomePage() {
             fetchPriority="high"
             decoding="async"
           />
+          <span className="hero-brand-disc" aria-hidden="true" />
           <img
             className="hero-brand-overlay"
             src="/branding/cestudy-master-logo-transparent.svg"
