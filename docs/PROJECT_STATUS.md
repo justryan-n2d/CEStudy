@@ -7,14 +7,26 @@
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
 
+## Owner feedback management update (2026-10-18)
+
+PR #22 is merged to main and adds:
+- Immediate unread-count refresh after feedback submission in the same tab, on focus/visibility changes, and every 15 seconds while the private owner session is unlocked.
+- The unread red dot on the mobile **More** menu button, in addition to the Feedbacks link.
+- A three-dot menu on each owner inbox message with persistent Pin/Unpin and confirmed permanent Delete actions.
+- Server-side ordering of pinned messages first, then newest-first for unpinned messages. Unpinning returns a message to its chronological position.
+- Regression tests for the notification dot, pin/unpin, deletion, and same-session feedback submission.
+
+**Live Supabase verification (project qqmdwltfgpqtcvdbcmto):** migration 20261017224950_feedback_inbox_management is applied; feedback_messages.is_pinned and its ordering index exist; RLS remains enabled; anon/authenticated have no direct SELECT, INSERT, UPDATE, or DELETE privileges on feedback_messages; service_role can delete; feedback-inbox-admin is ACTIVE at version 3. No client-facing policies or privileged browser key were added.
+
+**Automated verification:** [PR CI passed](https://github.com/justryan-n2d/CEStudy/actions/runs/39076019540) including lint, unit tests, production build, and isolated Supabase migration/RLS tests; [secret scan passed](https://github.com/justryan-n2d/CEStudy/actions/runs/39076019549). The latest frontend still needs a manual owner-key smoke test on the live Cloudflare Pages site before the owner-only flow can be marked end-to-end verified.
 ## Feedback inbox rollout update (2026-10-18)
 
 PR #18 (responsive redesign and private anonymous owner inbox) and PR #19 (Cloudflare Pages commit-preview origin handling) are merged to `main`.
 
 - **Live frontend:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 - **Supabase project:** `qqmdwltfgpqtcvdbcmto`
-- **Live Edge Functions:** `submit-public-message` and `feedback-inbox-admin` are ACTIVE, version 2. Both use `verify_jwt=false` for public-form/custom-owner-token handling; server-side validation and table grants/RLS remain required.
-- **Remote migration history:** `20261014170630` `public_catalog_and_practice`, `20261014190554` `client_default_privileges_hardening`, `20261017204914` `private_public_messages`, and `20261017204934` `feedback_inbox_owner_auth`. The documentation follow-up aligns the two recent repository migration filenames with their applied remote versions to avoid future history drift.
+- **Live Edge Functions:** `submit-public-message` is ACTIVE at version 2; `feedback-inbox-admin` is ACTIVE at version 3. Both use `verify_jwt=false` for public-form/custom-owner-token handling; the admin function verifies its own signed owner token, and server-side validation and table grants/RLS remain required.
+- **Remote migration history:** `20261014170630` `public_catalog_and_practice`, `20261014190554` `client_default_privileges_hardening`, `20261017204914` `private_public_messages`, and `20261017204934` `feedback_inbox_owner_auth`, and `20261017224950` `feedback_inbox_management`. Repository migration filenames are aligned to these applied remote versions to avoid future history drift.
 - **Live security check:** RLS is enabled on private feedback/support tables. Anon/authenticated have no direct SELECT or INSERT privilege on `feedback_messages`; anon cannot execute the private rate-limit RPC. The owner inbox uses the server-side Edge Function rather than a client database query.
 - **Owner access secret:** The owner reported `FEEDBACK_INBOX_ACCESS_KEY` configured in Supabase function secrets. Its value is not retrievable through this workflow and is not committed.
 - **Troubleshooting:** `l.clone is not a function` was fixed by guarding Response methods in the frontend error handler. PR #19 allows only exact HTTPS eight-hex commit-preview hosts under `cestudy.pages.dev`. Earlier browser attempts have corresponding rows in the feedback table despite errors shown by the form; message bodies and IDs are omitted here. Check the inbox before retrying.

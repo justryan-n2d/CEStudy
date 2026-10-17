@@ -15,7 +15,7 @@ PR #19 fixed Cloudflare Pages commit-preview origin handling and merged as `119b
 ## Live deployment state
 
 - `submit-public-message`: ACTIVE, version 2, `verify_jwt=false`. This endpoint accepts public anonymous feedback/support forms, validates the payload, applies a database-backed rate limit, and writes submissions with a server-only key.
-- `feedback-inbox-admin`: ACTIVE, version 2, `verify_jwt=false`. This endpoint validates `FEEDBACK_INBOX_ACCESS_KEY` server-side, throttles unlock attempts through the private rate-limit RPC, issues a signed 30-minute HMAC token, and requires that token for list/count/mark-read operations.
+- `feedback-inbox-admin`: ACTIVE, version 3, `verify_jwt=false`. This endpoint validates `FEEDBACK_INBOX_ACCESS_KEY` server-side, throttles unlock attempts through the private rate-limit RPC, issues a signed 30-minute HMAC token, and requires that token for list/count/mark-read/pin/unpin/delete operations. Database mutation calls remain server-side and use the Supabase secret/service role key.
 - The owner reported `FEEDBACK_INBOX_ACCESS_KEY` was configured in Supabase Edge Function secrets. Its value is never retrieved, logged, copied to GitHub, or stored in this document.
 - No verified Resend sender is currently configured. Email alerts are optional/best-effort for feedback; the private inbox and unread dot are the primary feedback notification. Support confirmation email still requires verified sender/API-key configuration.
 - No new npm dependency was added.
@@ -30,10 +30,12 @@ The live Supabase migration registry reports:
 | `20261014190554` | `client_default_privileges_hardening` | Restricts default client privileges |
 | `20261017204914` | `private_public_messages` | Private feedback/support records, rate-limit table and RPC |
 | `20261017204934` | `feedback_inbox_owner_auth` | Read timestamps, unread index and owner unlock rate-limit category |
+| `20261017224950` | `feedback_inbox_management` | Persistent pin state, pinned-first index, service-role-only delete privilege |
 
 The recent repository migration files originally had timestamps different from the live registry. This documentation follow-up renames them to match the already-applied remote versions without changing SQL content:
 - `20261017130000_private_public_messages.sql` → `20261017204914_private_public_messages.sql`
 - `20261018100000_feedback_inbox_owner_auth.sql` → `20261017204934_feedback_inbox_owner_auth.sql`
+- `20261018060000_feedback_inbox_management.sql` → `20261017224950_feedback_inbox_management.sql`
 
 This keeps future `supabase db push` and migration-history checks aligned. CI replays the renamed files against a fresh isolated Supabase stack.
 
@@ -50,7 +52,7 @@ A privileged SQL check on 2026-10-18 confirmed:
 
 Stored feedback records were present following earlier attempts where the UI showed errors. The message bodies, identifiers and other private content are intentionally not copied into the public repository. The practical lesson is that a displayed error does not prove the record was not persisted; check the owner inbox before resubmitting to avoid duplicates.
 
-## Post-origin-fix live submission check (2026-10-18, UTC)
+## Post-origin-fix live submission check (2026-10-18, UTC, initial owner inbox rollout)
 
 The Supabase unified function logs were checked for `2026-10-17T20:40:00Z` through `2026-10-17T21:50:00Z` after PR #19's commit-preview origin fix.
 
@@ -61,6 +63,24 @@ The Supabase unified function logs were checked for `2026-10-17T20:40:00Z` throu
 
 **What this does and does not prove:** the public endpoint accepted requests after the CORS/origin fix, and private feedback rows exist. The checked function-log window showed no request to `feedback-inbox-admin`, so this is **not** proof that the owner unlock, inbox rendering, sent date display, or red-dot-clearing flow has been completed end to end. Those owner UI checks remain on the manual checklist below. Do not infer from a frontend error that a request was not stored; inspect the inbox before sending duplicates.
 
+## Owner notification and feedback actions update (2026-10-18)
+
+PR #22 is merged to main. The owner feedback management release adds:
+
+- The Feedbacks navigation red dot and a second red dot on the mobile **More** menu button whenever the unread count is positive.
+- Immediate unread-count refresh after a successful in-app feedback submission, refresh on tab focus/visibility, and a 15-second polling interval while the owner session is unlocked.
+- Per-message three-dot actions. **Pin** and **Unpin** write the boolean `is_pinned` to Supabase; the server sorts pinned rows first and keeps the remaining messages newest-first. After unpinning, the item returns to its time-based position.
+- **Delete** asks for confirmation and permanently deletes the row from Supabase through the signed owner-only Edge Function. The browser never receives the service-role/secret key.
+
+### Live checks after PR #22
+
+- Supabase project `qqmdwltfgpqtcvdbcmto`: migration `20261017224950_feedback_inbox_management` recorded as applied.
+- `public.feedback_messages.is_pinned` and `feedback_messages_pinned_created_at_idx` exist; RLS is still enabled.
+- SQL privilege checks returned `anon_has_direct_access=false`, `authenticated_has_direct_access=false`, and `service_role_can_delete=true` for `public.feedback_messages`.
+- `feedback-inbox-admin` is ACTIVE at version 3. Its signed owner-token check still gates list/count/read/pin/delete operations.
+- [PR CI](https://github.com/justryan-n2d/CEStudy/actions/runs/39076019540) and [secret scan](https://github.com/justryan-n2d/CEStudy/actions/runs/39076019549) passed. The CI run covers lint, unit tests, production build, isolated Supabase migrations/RLS, red-dot behavior, pin/unpin ordering, and delete handling.
+
+**Still required:** manually unlock the live owner inbox with the configured owner key, submit one new feedback message, confirm the red dot appears on Feedbacks and More, pin/unpin a record, and delete a disposable test message to verify the production UI end-to-end. This workflow did not read or reuse the owner secret, and public browser reachability for the latest Pages bundle was unavailable from the verification environment, so no live browser result is claimed.
 ## Frontend and origin troubleshooting
 
 ### Supabase error-context crash
