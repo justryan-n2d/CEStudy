@@ -58,7 +58,9 @@ function serviceRoleKey(): string {
   throw new Error("server_key_missing");
 }
 
-function notificationConfig() {
+type NotificationConfig = { apiKey: string; from: string; recipients: string[] };
+
+function notificationConfig(): NotificationConfig | null {
   const apiKey = Deno.env.get("RESEND_API_KEY")?.trim() ?? "";
   const from = Deno.env.get("RESEND_FROM_EMAIL")?.trim() ?? "";
   const recipients = (Deno.env.get("ADMIN_NOTIFICATION_RECIPIENTS")?.trim() || "cestudy00@gmail.com")
@@ -66,7 +68,7 @@ function notificationConfig() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!apiKey || !from || recipients.length < 1 || recipients.length > 10 ||
       recipients.some((email) => !emailRegex.test(email))) {
-    throw new Error("notification_config_missing");
+    return null;
   }
   return { apiKey, from, recipients: [...new Set(recipients)] };
 }
@@ -154,7 +156,7 @@ async function createOrGetSubmission(table: string, payload: RecordValue, client
 }
 
 async function sendNotification(
-  config: ReturnType<typeof notificationConfig>,
+  config: NotificationConfig,
   type: SubmissionType,
   row: TableRow,
 ): Promise<void> {
@@ -293,13 +295,18 @@ Deno.serve(async (request: Request) => {
     const validated = validateSubmission(body);
     if (!validated.ok) return jsonResponse(request, 400, { ok: false, message: validated.message }, cors);
 
-    let config: ReturnType<typeof notificationConfig>;
+    let config: NotificationConfig | null;
     try {
       config = notificationConfig();
       serviceRoleKey();
       supabaseBaseUrl();
     } catch {
-      return jsonResponse(request, 503, { ok: false, message: "Secure message notifications are not configured yet. Please try again later." }, cors);
+      return jsonResponse(request, 503, { ok: false, message: "Secure message storage is not configured yet. Please try again later." }, cors);
+    }
+    // Feedback can be saved to the private inbox without email. Support confirmations
+    // still require a configured email notification channel.
+    if (validated.type === "support" && !config) {
+      return jsonResponse(request, 503, { ok: false, message: "Support notifications are not configured yet. Please try again later." }, cors);
     }
 
     const table = validated.type === "feedback" ? "feedback_messages" : "support_confirmations";
@@ -312,14 +319,23 @@ Deno.serve(async (request: Request) => {
     if (row.notification_status === "sent") {
       return jsonResponse(request, 200, { ok: true, message: "Submission was already sent." }, cors);
     }
+    if (validated.type === "feedback" && !config) {
+      // The message is stored privately; the inbox unread badge is the primary alert.
+      return jsonResponse(request, 200, { ok: true, message: "Message sent." }, cors);
+    }
     try {
+      if (!config) throw new Error("notification_config_missing");
       await sendNotification(config, validated.type, row);
       await setNotificationStatus(table, validated.id, "sent");
     } catch {
       await setNotificationStatus(table, validated.id, "failed").catch(() => null);
+      if (validated.type === "feedback") {
+        // Email is a best-effort alert, so do not report failure after private storage succeeded.
+        return jsonResponse(request, 200, { ok: true, message: "Message sent." }, cors);
+      }
       return jsonResponse(request, 502, {
         ok: false,
-        message: "Your message was saved privately, but the authorized inbox could not be notified. Please try again. Your submission has been kept.",
+        message: "Your support confirmation was saved privately, but the authorized inbox could not be notified. Please try again. Your submission has been kept.",
       }, cors);
     }
     return jsonResponse(request, 200, { ok: true, message: "Message sent." }, cors);

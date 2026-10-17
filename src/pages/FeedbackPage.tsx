@@ -77,13 +77,13 @@ export function FeedbackPage() {
         <button className="button button-primary" type="submit" disabled={sending}>
           {sending ? <><span className="loading-spinner" aria-hidden="true" /> Sending message...</> : "Send message"}
         </button>
-        <p className="field-hint">Feedback is not public. Only addresses authorized by CEStudy receive the message notification.</p>
+        <p className="field-hint">Your feedback is private. Only the authorized CEStudy owner can read it, and no name or email is collected.</p>
       </form>
 
       {successOpen && (
         <Modal title="message sent!" onClose={() => setSuccessOpen(false)} className="success-modal">
           <span className="success-mark" aria-hidden="true">✓</span>
-          <p>Your feedback has been delivered to the authorized CEStudy inbox.</p>
+          <p>Your anonymous feedback has been saved to the private CEStudy inbox.</p>
           <button className="button button-primary" type="button" onClick={() => setSuccessOpen(false)}>Close</button>
         </Modal>
       )}

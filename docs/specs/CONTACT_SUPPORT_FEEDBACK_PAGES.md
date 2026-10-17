@@ -20,7 +20,7 @@
 
 ### Feedback: `/feedback`
 - Collect optional name and reply email, a category, and the message.
-- Show sending/loading state, an actionable error if submission or notification fails, and a success dialog whose heading is exactly `message sent!`.
+- Show sending/loading state, an actionable storage failure, and a success dialog whose heading is exactly `message sent!`. Private DB storage is authoritative; email is a best-effort optional alert for feedback, while the unread dot/inbox notifies the owner when their session is active or next unlocked.
 - Public visitors cannot read submission tables. The Edge Function sends the message body only to the server-configured recipient allowlist.
 - The public form has no attachment upload and requires no student account.
 
@@ -31,7 +31,7 @@
 - The Edge Function validates types and length, requires a UUID idempotency key, uses database-backed per-fingerprint rate limits, and returns no message records to the caller.
 - A rate limit stores a keyed SHA-256 fingerprint, not a raw IP address; stale entries are pruned on each rate-limit call.
 - The function sends separate notification emails to each entry in `ADMIN_NOTIFICATION_RECIPIENTS`. The request body cannot set or change recipients.
-- A successful UI dialog appears only after all allowlisted notifications return successfully and the stored status is updated. If notification fails after storage, the error says the private submission was retained.
+- Feedback success appears once the private database submission is stored. Email alerts are best-effort and are not required for feedback delivery; the owner sees unread items in the private inbox. Support confirmations still require a configured email alert.
 - Resend idempotency keys prevent duplicate notices when a user retries the same submission.
 - Support confirmation emails must clearly say the payment is not independently verified.
 
@@ -48,10 +48,10 @@ Set these as Pages environment variables, then rebuild/deploy. These values are 
 
 ### Supabase Edge Function secrets
 
-Set these under the CEStudy Supabase project's Edge Function secrets. Never commit or add these to Vite variables. Resend has no verified sender domain configured yet, so email notifications stay unavailable until a sender domain and API key are set.
+Set these under the CEStudy Supabase project's Edge Function secrets. Never commit or add these to Vite variables. Resend currently has no verified sender domain; the in-app feedback inbox works without email, while support confirmation alerts require a verified sender and API key.
 
 - `FEEDBACK_INBOX_ACCESS_KEY`: a high-entropy private key of at least 32 characters for the owner inbox. It belongs only in Supabase Edge Function secrets, never in `VITE_*` variables.
-- `RESEND_API_KEY`: Resend API key used by the server function.
+- `RESEND_API_KEY`: Optional for feedback email alerts; required for support confirmation email notifications.
 - `RESEND_FROM_EMAIL`: sender identity on a domain verified in Resend.
 - `ADMIN_NOTIFICATION_RECIPIENTS`: optional comma-separated allowlist of authorized feedback/support recipients. If absent, only `cestudy00@gmail.com` is notified.
 - `ALLOWED_ORIGINS`: comma-separated allowlist of CEStudy origins, including production and the stable Cloudflare branch-preview URL. Add a temporary preview URL only if that exact preview needs to submit messages.
@@ -82,4 +82,5 @@ No new npm package is required. The frontend reuses the installed Supabase clien
 - `feedback-inbox-admin` verifies `FEEDBACK_INBOX_ACCESS_KEY` server-side, rate-limits unlock attempts using a separate database bucket, and issues a 30-minute HMAC-signed token. The raw key is not persisted in the browser; the token is held in page memory and disappears on reload.
 - The browser never reads the private feedback table directly. Anonymous/authenticated DB roles still have no table privileges; the Edge Function checks a signed owner token before listing, counting, or updating read state.
 - Before enabling the inbox, add a random key of at least 32 characters as the Supabase Edge Function secret `FEEDBACK_INBOX_ACCESS_KEY`. Never expose it through `VITE_*` variables or source control. The inbox remains disabled until that secret, the migration, and the Edge Function are deployed.
+- The red dot is the in-app feedback notification and clears immediately after an item is marked read; email is optional for feedback but remains required for support-confirmation alerts.
 - This is a temporary owner gate because CEStudy accounts do not exist yet. Replace it with Supabase Auth and a dedicated owner/admin role when accounts are implemented.
