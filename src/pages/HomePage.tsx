@@ -1,12 +1,56 @@
 import { Link } from "react-router-dom";
-import { useCatalog } from "../hooks/useCatalog";
-import { CurriculumNotice } from "../components/CurriculumNotice";
-const years=[{year:1,title:"First year",detail:"Build the foundation"},{year:2,title:"Second year",detail:"Strengthen core concepts"},{year:3,title:"Third year",detail:"Connect engineering subjects"},{year:4,title:"Fourth year",detail:"Prepare for advanced practice"}];
-export function HomePage(){const {subjects,loading}=useCatalog();return <>
-<section className="hero"><div className="hero-copy"><span className="kicker">Built for Civil Engineering students</span><h1>Study smarter, one concept at a time.</h1><p>Find your subjects, revisit the math behind them, and work toward engineering confidence with a reviewer designed for your phone.</p><div className="hero-actions"><Link className="button button-primary" to="/catalog">Browse subject catalog →</Link><Link className="button button-secondary" to="/math-foundations">Review math foundations</Link></div><div className="hero-note"><span className="dot"/>Free-first · Mobile-friendly · Carefully reviewed content</div></div>
-<div className="hero-visual" aria-label="CEStudy subject learning overview"><div className="visual-orbit orbit-one"/><div className="visual-orbit orbit-two"/><div className="visual-core"><span className="visual-ce">CE</span><span>LEARN / PRACTICE / IMPROVE</span></div><div className="floating-card floating-card-top"><span className="mini-icon">∑</span><span><strong>Math refreshers</strong><small>For every year level</small></span></div><div className="floating-card floating-card-bottom"><span className="mini-icon mini-icon-light">✓</span><span><strong>Clear subject paths</strong><small>From Year 1 to Year 4</small></span></div></div></section>
-<section className="section-block"><div className="section-heading"><div><span className="kicker">Your starting point</span><h2>Browse by year level</h2><p>Start with your current subjects, or explore ahead when ready.</p></div><Link className="text-link" to="/catalog">View every subject →</Link></div><div className="year-grid">{years.map(y=><Link className="year-card" to={"/year/"+y.year} key={y.year}><span className="year-number">0{y.year}</span><strong>{y.title}</strong><span>{y.detail}</span><span className="year-arrow">↗</span></Link>)}</div></section>
-<section className="math-banner"><div className="math-symbol">∫</div><div><span className="kicker">Refresh the essentials</span><h2>Math foundations stay with you.</h2><p>Revisit algebra, trigonometry, geometry, vectors, and other prerequisites at any point in your CE journey.</p></div><Link className="button button-dark" to="/math-foundations">Explore math topics →</Link></section>
-<section className="section-block featured-section"><div className="section-heading"><div><span className="kicker">The learning library</span><h2>A catalog that grows carefully</h2><p>Every subject stays discoverable while materials are being prepared.</p></div></div><div className="stat-strip"><div><strong>{loading?"…":subjects.length}</strong><span>catalog subjects and topics</span></div><div><strong>4</strong><span>year levels</span></div><div><strong>5</strong><span>specialization areas</span></div><div><strong>0</strong><span>AI tutor features in MVP</span></div></div><p className="muted-copy">Materials are added gradually. Content is not called verified until its calculations, explanations, and references have been checked.</p></section>
-<section className="section-block"><CurriculumNotice/></section>
-</>}
+import { ScrollReveal } from "../components/ScrollReveal";
+import { YearLevelGrid } from "../components/YearLevelGrid";
+
+const bridgeImage = "https://images.unsplash.com/photo-1637078846596-0efb09c121f2?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=78&w=";
+
+export function HomePage() {
+  return (
+    <>
+      <section className="hero hero-home">
+        <div className="hero-copy">
+          <span className="kicker">Civil Engineering Reviewer</span>
+          <h1>Build your CE foundation.</h1>
+          <p>Find subjects, review math fundamentals, and practice step by step.</p>
+          <div className="hero-actions">
+            <Link className="button button-primary" to="/catalog">Browse subjects <span aria-hidden="true">→</span></Link>
+            <Link className="button button-secondary" to="/math-foundations">Math foundations</Link>
+          </div>
+        </div>
+        <figure className="hero-visual">
+          <img
+            src={`${bridgeImage}1200`}
+            srcSet={`${bridgeImage}640 640w, ${bridgeImage}960 960w, ${bridgeImage}1200 1200w, ${bridgeImage}1600 1600w`}
+            sizes="(max-width: 680px) calc(100vw - 28px), (max-width: 1120px) 48vw, 540px"
+            alt="Aerial view of a bridge crossing a river, illustrating civil engineering infrastructure"
+            width={1600}
+            height={1200}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
+          <figcaption className="visually-hidden">Bridge infrastructure photo by Juan Coronel on Unsplash.</figcaption>
+        </figure>
+      </section>
+      <ScrollReveal className="reveal-section">
+        <section id="year-levels" className="section-block home-years">
+          <div className="section-heading">
+            <div><h2>Explore by year</h2></div>
+            <Link className="text-link" to="/years">View all years <span aria-hidden="true">→</span></Link>
+          </div>
+          <YearLevelGrid />
+        </section>
+      </ScrollReveal>
+      <ScrollReveal className="reveal-section" delayMs={80}>
+        <section className="home-math-entry" aria-label="Math foundations">
+          <span className="math-symbol" aria-hidden="true">∑</span>
+          <div className="home-math-copy">
+            <h2>Math foundations</h2>
+            <p>Refresh algebra, trigonometry, geometry, and other prerequisites.</p>
+          </div>
+          <Link className="text-link" to="/math-foundations">Explore math <span aria-hidden="true">→</span></Link>
+        </section>
+      </ScrollReveal>
+    </>
+  );
+}
