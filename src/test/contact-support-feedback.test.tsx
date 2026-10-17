@@ -90,6 +90,19 @@ describe("contact, support, bug reports, and feedback", () => {
     expect(await screen.findByRole("heading", { name: "message sent!" })).toBeInTheDocument();
   });
 
+  it("handles a non-Response Supabase error context without throwing a clone error", async () => {
+    invokeMock.mockResolvedValue({
+      data: null,
+      error: { message: "Edge Function returned a non-2xx status code", context: { status: 503 } },
+    });
+    const user = userEvent.setup();
+    renderPage(<FeedbackPage />);
+    await user.type(screen.getByLabelText(/Message/), "Please correct the formula shown in the second-year subject.");
+    await user.click(screen.getByRole("button", { name: "Send message" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("We couldn't send this message. Check your connection and try again.");
+    expect(screen.queryByText(/clone is not a function/i)).not.toBeInTheDocument();
+  });
+
   it("shows a failure state when a notification cannot be sent", async () => {
     invokeMock.mockResolvedValue({ data: { ok: false, message: "The authorized inbox could not be notified." }, error: null });
     const user = userEvent.setup();

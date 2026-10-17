@@ -28,7 +28,9 @@ export async function submitPublicMessage(payload: PublicMessageSubmission): Pro
 
   if (error) {
     const context = (error as unknown as { context?: Response }).context;
-    const details = context
+    const details = context &&
+        typeof context.clone === "function" &&
+        typeof context.json === "function"
       ? await context.clone().json().catch(() => null) as FunctionReply | null
       : null;
     if (typeof details?.message === "string" && details.message.trim()) {
