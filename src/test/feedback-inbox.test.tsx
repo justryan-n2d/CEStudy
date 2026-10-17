@@ -8,6 +8,7 @@ vi.mock("../lib/supabase", () => ({ supabase: { functions: { invoke: invokeMock 
 
 import { Layout } from "../components/Layout";
 import { FeedbacksPage } from "../pages/FeedbacksPage";
+import type { FeedbackRecord } from "../data/feedback-inbox";
 import { FeedbackPage } from "../pages/FeedbackPage";
 import { HomePage } from "../pages/HomePage";
 import {
@@ -17,7 +18,7 @@ import {
 } from "../data/feedback-inbox";
 
 let mockUnreadCount = 1;
-const sampleFeedback = [{
+const sampleFeedback: FeedbackRecord[] = [{
   id: "d9b2f95b-5a9c-4ba8-9a8f-bdc2bd7c3c5e",
   category: "content",
   message: "Please add worked examples for the trigonometry section.",
