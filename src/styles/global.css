@@ -366,3 +366,28 @@
 .feedback-inbox-state{margin-top:1rem}
 @media(max-width:680px){.feedback-inbox-heading{flex-direction:column}.feedback-inbox-actions{width:100%}.feedback-inbox-actions .button{flex:1}.feedback-message-summary{padding:.9rem}.feedback-message-detail{padding:.85rem .9rem}}
 @media(prefers-reduced-motion:reduce){.feedback-message-card{transition:none}}
+
+
+/* Homepage brand disc: a soft, low-opacity layer below the transparent logo. */
+.hero-visual .hero-brand-disc{
+  position:absolute;
+  top:50%;
+  left:50%;
+  z-index:1;
+  display:block;
+  width:clamp(160px,56%,270px);
+  aspect-ratio:1;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:50%;
+  background:rgba(255,255,255,.2);
+  box-shadow:0 0 40px rgba(255,255,255,.12);
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  user-select:none;
+}
+
+/* Keep success dialogs balanced and readable on small screens. */
+.success-modal{width:min(100%,420px);padding:clamp(1.25rem,4vw,1.7rem)}
+.success-modal>p{max-width:34ch;margin:.65rem auto 1.25rem;font-size:.95rem;line-height:1.65}
+.success-modal>.button{min-width:150px;min-height:48px}
+.success-mark{width:58px;height:58px;margin:0 auto .85rem;font-size:1.75rem}

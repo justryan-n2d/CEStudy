@@ -23,6 +23,11 @@ describe("homepage and year-level navigation", () => {
     expect(HERO_IMAGE.srcSet).toContain("640 640w");
     expect(HERO_IMAGE.alt).toMatch(/bridge crossing a river/i);
     expect(document.querySelector(".hero-brand-overlay")).toHaveAttribute("src", "/branding/cestudy-master-logo-transparent.svg");
+    const heroDisc = document.querySelector(".hero-brand-disc");
+    expect(heroDisc).toHaveAttribute("aria-hidden", "true");
+    expect(heroDisc?.nextElementSibling).toHaveClass("hero-brand-overlay");
+    expect(stylesheet).toContain(".hero-visual .hero-brand-disc{");
+    expect(stylesheet).toContain("background:rgba(255,255,255,.2)");
     for (const year of ["First year", "Second year", "Third year", "Fourth year"]) {
       expect(screen.getByRole("link", { name: `Browse ${year} subjects` })).toBeInTheDocument();
     }

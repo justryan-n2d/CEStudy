@@ -83,7 +83,7 @@ export function FeedbackPage() {
       {successOpen && (
         <Modal title="message sent!" onClose={() => setSuccessOpen(false)} className="success-modal">
           <span className="success-mark" aria-hidden="true">✓</span>
-          <p>Your anonymous feedback has been saved to the private CEStudy inbox.</p>
+          <p>Thank you for helping us improve CEStudy. Your feedback helps us make the site better for civil engineering students.</p>
           <button className="button button-primary" type="button" onClick={() => setSuccessOpen(false)}>Close</button>
         </Modal>
       )}

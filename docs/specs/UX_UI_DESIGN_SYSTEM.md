@@ -132,7 +132,7 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 
 ## Homepage photo and brand overlay
 - The hero photo is configured centrally in `src/config/hero-image.ts`. Replacing the photograph means updating the photo ID, alternative text, and credit in that file, not changing the homepage component.
-- The transparent master logo is centered above the hero photo without the old translucent circle. The photo and logo remain independently sized responsive layers.
+- The transparent master logo is centered above the hero photo, with a low-opacity white circle behind the logo. Keep the photo, circle, and logo as independently sized responsive layers.
 - Dialogs use short opacity/transform enter and exit transitions; they do not block the close action and honor reduced-motion preferences.
 
 ## About page
