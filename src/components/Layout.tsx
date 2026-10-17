@@ -74,6 +74,7 @@ export function Layout({ children }: { children: ReactNode }) {
           </button>
         </div>
         <nav id="mobile-help-menu" className={`mobile-help-menu${mobileMenuOpen ? " is-open" : ""}`} aria-label="More CEStudy pages" aria-hidden={!mobileMenuOpen}>
+          <Link to="/about" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />About us</Link>
           <Link to="/contact" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Contact CEStudy</Link>
           <Link to="/support" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Support us</Link>
           <Link to="/bug-reports" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Report a bug</Link>
@@ -89,7 +90,7 @@ export function Layout({ children }: { children: ReactNode }) {
             <p className="footer-disclaimer">Independent educational project. Not affiliated with or endorsed by CHED.</p>
           </section>
           <nav className="footer-links" aria-label="Explore CEStudy">
-            <h2>Explore</h2><Link to="/catalog">Subject catalog</Link><Link to="/years">Year levels</Link><Link to="/math-foundations">Math foundations</Link>
+            <h2>Explore</h2><Link to="/about">About us</Link><Link to="/catalog">Subject catalog</Link><Link to="/years">Year levels</Link><Link to="/math-foundations">Math foundations</Link>
           </nav>
           <nav className="footer-links" aria-label="Contact and help">
             <h2>Contact and help</h2><Link to="/contact">Contact CEStudy</Link><Link to="/support">Support us</Link><Link to="/bug-reports">Report a bug</Link><Link to="/feedback">Send feedback</Link>

@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { Layout } from "../components/Layout";
 import { HomePage } from "../pages/HomePage";
+import { HERO_IMAGE } from "../config/hero-image";
 import { YearLevelsPage } from "../pages/YearLevelsPage";
 import stylesheet from "../styles/global.css?raw";
 
@@ -18,6 +19,10 @@ describe("homepage and year-level navigation", () => {
     expect(heroImage).toHaveAttribute("height", "1200");
     expect(heroImage.getAttribute("srcset")).toContain("640 640w");
     expect(heroImage).toHaveAttribute("fetchpriority", "high");
+    expect(heroImage).toHaveAttribute("src", HERO_IMAGE.src);
+    expect(HERO_IMAGE.srcSet).toContain("640 640w");
+    expect(HERO_IMAGE.alt).toMatch(/bridge crossing a river/i);
+    expect(document.querySelector(".hero-brand-overlay")).toHaveAttribute("src", "/branding/cestudy-master-logo-transparent.svg");
     for (const year of ["First year", "Second year", "Third year", "Fourth year"]) {
       expect(screen.getByRole("link", { name: `Browse ${year} subjects` })).toBeInTheDocument();
     }
@@ -67,6 +72,7 @@ describe("homepage and year-level navigation", () => {
     render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
     expect(screen.getByText(`© ${new Date().getFullYear()} CEStudy. All rights reserved.`)).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Contact and help" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "About us" })).toHaveAttribute("href", "/about");
     expect(screen.getByRole("link", { name: "Contact CEStudy" })).toHaveAttribute("href", "/contact");
     expect(screen.getByRole("link", { name: "Support us" })).toHaveAttribute("href", "/support");
     expect(screen.getByRole("link", { name: "Report a bug" })).toHaveAttribute("href", "/bug-reports");

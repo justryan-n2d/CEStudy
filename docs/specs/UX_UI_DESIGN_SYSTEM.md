@@ -129,3 +129,11 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 - Homepage bridge photograph: Juan Coronel on Unsplash, https://unsplash.com/photos/an-aerial-view-of-a-bridge-over-a-river-RFJb724c660. Delivered through Unsplash's image CDN using responsive widths. Browser smoke tests check loading and CSP.
 - PayPal wordmark: public/branding/icons/paypal-wordmark.svg, sourced from SVGL. See docs/branding/svgl-icons.md.
 - Use object-fit: cover and a tested focal point. Never stretch a small thumbnail to fill a large hero.
+
+## Homepage photo and brand overlay
+- The hero photo is configured centrally in `src/config/hero-image.ts`. Replacing the photograph means updating the photo ID, alternative text, and credit in that file, not changing the homepage component.
+- The transparent master logo is centered above the hero photo without the old translucent circle. The photo and logo remain independently sized responsive layers.
+- Dialogs use short opacity/transform enter and exit transitions; they do not block the close action and honor reduced-motion preferences.
+
+## About page
+- The About page explains CEStudy's purpose, navigation approach, publication/review standards, independent relationship to CHED, and ways to contact the maintainer. Avoid claims of official affiliation, accreditation, or comprehensive content coverage.

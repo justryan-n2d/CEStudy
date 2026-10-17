@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { YearLevelGrid } from "../components/YearLevelGrid";
-
-const bridgeImage = "https://images.unsplash.com/photo-1637078846596-0efb09c121f2?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=78&w=";
+import { HERO_IMAGE } from "../config/hero-image";
 
 export function HomePage() {
   return (
@@ -19,17 +18,28 @@ export function HomePage() {
         </div>
         <figure className="hero-visual">
           <img
-            src={`${bridgeImage}1200`}
-            srcSet={`${bridgeImage}640 640w, ${bridgeImage}960 960w, ${bridgeImage}1200 1200w, ${bridgeImage}1600 1600w`}
-            sizes="(max-width: 680px) calc(100vw - 28px), (max-width: 1120px) 48vw, 540px"
-            alt="Aerial view of a bridge crossing a river, illustrating civil engineering infrastructure"
-            width={1600}
-            height={1200}
+            className="hero-photo"
+            src={HERO_IMAGE.src}
+            srcSet={HERO_IMAGE.srcSet}
+            sizes={HERO_IMAGE.sizes}
+            alt={HERO_IMAGE.alt}
+            width={HERO_IMAGE.width}
+            height={HERO_IMAGE.height}
             loading="eager"
             fetchPriority="high"
             decoding="async"
           />
-          <figcaption className="visually-hidden">Bridge infrastructure photo by Juan Coronel on Unsplash.</figcaption>
+          <img
+            className="hero-brand-overlay"
+            src="/branding/cestudy-master-logo-transparent.svg"
+            alt=""
+            aria-hidden="true"
+            width={420}
+            height={420}
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption className="visually-hidden">{HERO_IMAGE.credit}</figcaption>
         </figure>
       </section>
       <ScrollReveal className="reveal-section">

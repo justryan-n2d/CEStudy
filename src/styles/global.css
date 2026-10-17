@@ -271,3 +271,46 @@
   .mobile-help-menu.is-open{animation:none}
   .mobile-menu-toggle .navigation-glyph{transition:none}
 }
+
+
+/* The hero image is intentionally changeable via src/config/hero-image.ts. */
+.hero-visual:before,.hero-visual::before{content:none!important;display:none!important}
+.hero-visual{isolation:isolate}
+.hero-visual .hero-photo{position:relative;z-index:0}
+.hero-brand-overlay{position:absolute;left:50%;top:50%;z-index:2;display:block;width:clamp(140px,34%,230px);height:auto;max-width:46%;object-fit:contain;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 10px rgba(255,255,255,.28));pointer-events:none;user-select:none}
+
+/* Dialogs animate in and out. Closing is handled by the Modal component. */
+.modal-backdrop{animation:ce-modal-backdrop-in 190ms ease-out both}
+.modal-panel{animation:ce-modal-panel-in 220ms cubic-bezier(.2,.7,.2,1) both}
+.modal-backdrop.is-closing{animation:ce-modal-backdrop-out 180ms ease-in both}
+.modal-panel.is-closing{animation:ce-modal-panel-out 180ms ease-in both}
+@keyframes ce-modal-backdrop-in{from{opacity:0}to{opacity:1}}
+@keyframes ce-modal-backdrop-out{from{opacity:1}to{opacity:0}}
+@keyframes ce-modal-panel-in{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes ce-modal-panel-out{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(6px) scale(.99)}}
+
+/* About page layout */
+.about-wrap{max-width:960px}
+.about-intro{max-width:790px}
+.about-purpose{margin:1.8rem 0 2rem;padding:clamp(1.2rem,4vw,2rem);border:1px solid #d8e6f5;border-radius:22px;background:linear-gradient(135deg,#f6f9fe,#edf4fc)}
+.about-purpose h2{margin:.35rem 0 .65rem;font-size:clamp(1.6rem,3.5vw,2.15rem)}
+.about-purpose p{max-width:730px;margin:0;color:#52687b;font-size:1.02rem;line-height:1.8}
+.about-section-heading{margin:2.2rem 0 1rem}
+.about-section-heading h2{margin:.3rem 0;font-size:clamp(1.45rem,3vw,1.9rem)}
+.about-section-heading p{max-width:650px;color:var(--muted);margin:0}
+.about-principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.about-principle{padding:1.2rem;border:1px solid var(--line);border-radius:17px;background:#fff;min-width:0}
+.about-principle-number{display:inline-grid;place-items:center;min-width:36px;height:32px;margin-bottom:.7rem;padding:0 .4rem;border-radius:9px;background:var(--blue-soft);color:var(--brand-blue);font-size:.78rem;font-weight:850}
+.about-principle h3{margin:.2rem 0 .55rem;font-size:1.04rem}
+.about-principle p{margin:0;color:var(--muted);font-size:.87rem;line-height:1.7}
+.about-independence{margin-top:2rem;padding:1.3rem 0;border-top:1px solid var(--line)}
+.about-independence h2{font-size:1.25rem;margin:.25rem 0 .5rem}
+.about-independence p{max-width:760px;color:var(--muted);margin:.4rem 0}
+.about-next{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;margin-top:1rem;padding:1.25rem;border:1px solid var(--line);border-radius:18px;background:#fff}
+.about-next h2{margin:0 0 .35rem;font-size:1.2rem}
+.about-next p{color:var(--muted);margin:0;font-size:.88rem}
+.about-next-links{display:flex;flex-wrap:wrap;gap:.6rem}
+.payment-mark-gcash{overflow:hidden;padding:0;background:#fff;border:1px solid #e6edf4}
+.payment-mark-gcash img{display:block;width:100%;height:100%;object-fit:contain;border-radius:13px}
+@media(max-width:700px){.about-principles{grid-template-columns:1fr}.about-principle{padding:1.05rem}.about-next{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.modal-backdrop,.modal-panel{animation:none!important}}
