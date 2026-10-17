@@ -33,7 +33,7 @@ describe("contact, support, bug reports, and feedback", () => {
   it("shows the configured website contact and four distinct destinations", () => {
     renderPage(<ContactPage />);
     expect(screen.getByRole("link", { name: "cestudy00@gmail.com" })).toHaveAttribute("href", "mailto:cestudy00@gmail.com");
-    expect(screen.getByRole("link", { name: /support ceStudy/i })).toHaveAttribute("href", "/support");
+    expect(screen.getByRole("link", { name: "View support options" })).toHaveAttribute("href", "/support");
     expect(screen.getByRole("link", { name: /report a bug/i })).toHaveAttribute("href", "/bug-reports");
     expect(screen.getByRole("link", { name: /send feedback/i })).toHaveAttribute("href", "/feedback");
   });
@@ -103,7 +103,7 @@ describe("contact, support, bug reports, and feedback", () => {
   it("keeps support completion disabled until GCash details are configured", async () => {
     vi.stubEnv("VITE_GCASH_QR_URL", "");
     const user = userEvent.setup();
-    renderPage(<SupportPage />);
+    renderPage(<SupportPage gcashQrUrl="" />);
     await user.click(screen.getByRole("button", { name: "View GCash details" }));
     expect(screen.getByText("The GCash QR code has not been configured yet.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Complete" })).toBeDisabled();
@@ -111,11 +111,10 @@ describe("contact, support, bug reports, and feedback", () => {
   });
 
   it("records a configured support confirmation and shows the receipt state", async () => {
-    vi.stubEnv("VITE_GCASH_QR_URL", "https://assets.example.com/gcash-qr.png");
     const user = userEvent.setup();
-    renderPage(<SupportPage />);
+    renderPage(<SupportPage gcashQrUrl="/test-gcash-qr.png" />);
     await user.click(screen.getByRole("button", { name: "View GCash details" }));
-    expect(screen.getByRole("img", { name: "GCash payment QR code" })).toHaveAttribute("src", "https://assets.example.com/gcash-qr.png");
+    expect(screen.getByRole("img", { name: "GCash payment QR code" })).toHaveAttribute("src", "/test-gcash-qr.png");
     await user.click(screen.getByRole("checkbox", { name: /I have sent support using GCash/i }));
     await user.click(screen.getByRole("button", { name: "Complete" }));
     expect(await screen.findByRole("heading", { name: "Support confirmation sent" })).toBeInTheDocument();

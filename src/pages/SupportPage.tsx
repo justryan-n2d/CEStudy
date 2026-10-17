@@ -26,9 +26,11 @@ function newSubmissionId() {
   });
 }
 
-export function SupportPage() {
-  const gcashQrUrl = validQrSource(import.meta.env.VITE_GCASH_QR_URL?.trim() ?? "");
-  const paypalUrl = validExternalUrl(import.meta.env.VITE_PAYPAL_SUPPORT_URL?.trim() ?? "");
+type SupportPageConfig = { gcashQrUrl?: string; paypalUrl?: string };
+
+export function SupportPage(config: SupportPageConfig = {}) {
+  const gcashQrUrl = validQrSource(config.gcashQrUrl ?? import.meta.env.VITE_GCASH_QR_URL?.trim() ?? "");
+  const paypalUrl = validExternalUrl(config.paypalUrl ?? import.meta.env.VITE_PAYPAL_SUPPORT_URL?.trim() ?? "");
   const [provider, setProvider] = useState<Provider | null>(null);
   const [note, setNote] = useState("");
   const [confirmed, setConfirmed] = useState(false);
