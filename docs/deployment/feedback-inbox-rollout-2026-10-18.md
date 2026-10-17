@@ -50,6 +50,17 @@ A privileged SQL check on 2026-10-18 confirmed:
 
 Stored feedback records were present following earlier attempts where the UI showed errors. The message bodies, identifiers and other private content are intentionally not copied into the public repository. The practical lesson is that a displayed error does not prove the record was not persisted; check the owner inbox before resubmitting to avoid duplicates.
 
+## Post-origin-fix live submission check (2026-10-18, UTC)
+
+The Supabase unified function logs were checked for `2026-10-17T20:40:00Z` through `2026-10-17T21:50:00Z` after PR #19's commit-preview origin fix.
+
+- Before the fix, `submit-public-message` received `OPTIONS 404` responses at approximately `20:41:27Z` to `20:41:40Z`.
+- After the fix, the same endpoint logged `OPTIONS 200` at `21:08:58Z`, followed by `POST 200` responses at `21:09:00Z` and `21:10:32Z`.
+- The live `feedback_messages` table contained **3 rows** at the time of the check. The row bodies and IDs were not selected or copied into this record.
+- A fresh privilege check confirmed `anon` and `authenticated` still cannot `SELECT` or `INSERT` into `feedback_messages`; `anon` cannot execute `consume_public_submission_rate_limit`, while `service_role` can. The table has RLS enabled and `read_at` exists.
+
+**What this does and does not prove:** the public endpoint accepted requests after the CORS/origin fix, and private feedback rows exist. The checked function-log window showed no request to `feedback-inbox-admin`, so this is **not** proof that the owner unlock, inbox rendering, sent date display, or red-dot-clearing flow has been completed end to end. Those owner UI checks remain on the manual checklist below. Do not infer from a frontend error that a request was not stored; inspect the inbox before sending duplicates.
+
 ## Frontend and origin troubleshooting
 
 ### Supabase error-context crash
