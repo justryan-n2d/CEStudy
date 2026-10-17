@@ -15,3 +15,13 @@ port = 54323
 [inbucket]
 enabled = true
 port = 54324
+
+# Anonymous submissions are intentionally supported. The function validates and
+# rate-limits every request, writes only to private tables, and never accepts client recipients.
+[functions.submit-public-message]
+verify_jwt = false
+
+
+# Owner inbox validates its own access key and short-lived token.
+[functions.feedback-inbox-admin]
+verify_jwt = false
