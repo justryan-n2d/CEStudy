@@ -20,3 +20,8 @@ port = 54324
 # rate-limits every request, writes only to private tables, and never accepts client recipients.
 [functions.submit-public-message]
 verify_jwt = false
+
+
+# Owner inbox validates its own access key and short-lived token.
+[functions.feedback-inbox-admin]
+verify_jwt = false

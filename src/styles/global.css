@@ -314,3 +314,36 @@
 .payment-mark-gcash img{display:block;width:100%;height:100%;object-fit:contain;border-radius:13px}
 @media(max-width:700px){.about-principles{grid-template-columns:1fr}.about-principle{padding:1.05rem}.about-next{align-items:flex-start;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.modal-backdrop,.modal-panel{animation:none!important}}
+
+
+/* Owner-only feedback inbox. Keep the unread indicator tiny and non-distracting. */
+.feedbacks-nav-link{display:inline-flex;align-items:center;gap:.42rem}
+.feedbacks-nav-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:0 0 20px}
+.feedbacks-nav-icon .navigation-glyph{width:18px;height:18px}
+.feedback-unread-dot{position:absolute;top:0;right:-1px;width:7px;height:7px;border:1.5px solid #fff;border-radius:50%;background:#e53935;box-shadow:0 0 0 1px rgba(229,57,53,.08)}
+.mobile-feedbacks-link{display:flex;align-items:center;gap:.65rem}
+.feedback-inbox-wrap{width:min(100%,1000px);margin-inline:auto}
+.feedback-inbox-unlock{max-width:520px}
+.feedback-inbox-unlock h2{font-size:1.25rem;margin:0}
+.feedback-inbox-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.feedback-inbox-heading h1{margin-bottom:.45rem}
+.feedback-inbox-actions{display:flex;gap:.6rem;flex-wrap:wrap;flex-shrink:0}
+.feedback-message-list{display:grid;gap:.7rem}
+.feedback-message-card{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;transition:border-color .16s ease,box-shadow .16s ease}
+.feedback-message-card.unread{border-left:3px solid var(--brand-blue)}
+.feedback-message-card.selected{border-color:#b5cfe7;box-shadow:0 8px 25px rgba(18,52,81,.07)}
+.feedback-message-summary{display:grid;width:100%;gap:.38rem;padding:1rem 1.1rem;text-align:left;background:#fff;color:var(--ink);border:0;cursor:pointer}
+.feedback-message-summary:focus-visible{outline:3px solid rgba(7,84,181,.3);outline-offset:-3px}
+.feedback-message-heading{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.feedback-message-anonymous{font-weight:800;font-size:.92rem;color:var(--navy)}
+.feedback-message-new{font-size:.68rem;color:var(--brand-blue);background:var(--blue-soft);border-radius:999px;padding:.2rem .48rem;font-weight:800}
+.feedback-message-summary>strong{font-size:.84rem;color:#405a70}
+.feedback-message-preview{color:var(--muted);font-size:.86rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.feedback-message-summary time{color:#6a7d8d;font-size:.73rem}
+.feedback-message-detail{padding:.9rem 1.1rem 1.1rem;border-top:1px solid #e8eef3;background:#fbfcfe}
+.feedback-message-detail p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.72;color:#253e52;margin:0 0 .7rem}
+.feedback-message-detail small{color:var(--muted)}
+.feedback-inbox-more{display:flex;justify-content:center;padding:1rem}
+.feedback-inbox-state{margin-top:1rem}
+@media(max-width:680px){.feedback-inbox-heading{flex-direction:column}.feedback-inbox-actions{width:100%}.feedback-inbox-actions .button{flex:1}.feedback-message-summary{padding:.9rem}.feedback-message-detail{padding:.85rem .9rem}}
+@media(prefers-reduced-motion:reduce){.feedback-message-card{transition:none}}

@@ -4,8 +4,6 @@ export type PublicMessageSubmission =
   | {
       type: "feedback";
       clientSubmissionId: string;
-      name: string;
-      email: string;
       category: "general" | "content" | "usability" | "accessibility" | "feature" | "other";
       message: string;
     }

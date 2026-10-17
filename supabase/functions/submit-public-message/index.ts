@@ -219,8 +219,10 @@ function validateSubmission(body: RecordValue):
   if (!validUuid(id)) return { ok: false, message: "This message could not be prepared. Refresh the page and try again." };
 
   if (body.type === "feedback") {
-    const name = cleanString(body.name);
-    const email = cleanString(body.email).toLowerCase();
+    // Feedback remains anonymous until CEStudy accounts or an explicit contact flow exist.
+    // Ignore client-provided identity fields so a modified browser cannot attach them.
+    const name = "";
+    const email = "";
     const category = cleanString(body.category);
     const message = cleanString(body.message);
     const categories = ["general", "content", "usability", "accessibility", "feature", "other"];

@@ -21,8 +21,6 @@ function newSubmissionId() {
 }
 
 export function FeedbackPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [category, setCategory] = useState<(typeof categories)[number]["value"]>("general");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -41,13 +39,9 @@ export function FeedbackPage() {
       await submitPublicMessage({
         type: "feedback",
         clientSubmissionId: submissionId.current,
-        name: name.trim(),
-        email: email.trim(),
         category,
         message: message.trim(),
       });
-      setName("");
-      setEmail("");
       setCategory("general");
       setMessage("");
       submissionId.current = null;
@@ -63,18 +57,10 @@ export function FeedbackPage() {
     <div className="page-wrap form-page-wrap">
       <section className="page-intro">
         <h1>Feedback</h1>
-        <p>Send a message privately to the authorized CEStudy team.</p>
+        <p>Send feedback privately and anonymously. Accounts are not required.</p>
       </section>
 
       <form className="surface-form" onSubmit={handleSubmit}>
-        <label className="form-field">
-          <span>Name <span className="optional-mark">(optional)</span></span>
-          <input value={name} onChange={(event) => setName(event.target.value)} maxLength={80} autoComplete="name" placeholder="Your name" />
-        </label>
-        <label className="form-field">
-          <span>Email <span className="optional-mark">(optional)</span></span>
-          <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} maxLength={254} autoComplete="email" placeholder="So the team can reply if needed" />
-        </label>
         <label className="form-field">
           <span>Feedback type</span>
           <select value={category} onChange={(event) => setCategory(event.target.value as typeof category)}>

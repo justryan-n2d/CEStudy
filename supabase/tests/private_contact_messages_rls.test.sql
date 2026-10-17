@@ -1,9 +1,11 @@
 begin;
-select plan(25);
+select plan(30);
 
 select ok((select relrowsecurity from pg_class where oid='public.feedback_messages'::regclass),'RLS enabled on feedback_messages');
 select ok((select relrowsecurity from pg_class where oid='public.support_confirmations'::regclass),'RLS enabled on support_confirmations');
 select ok((select relrowsecurity from pg_class where oid='public.contact_submission_limits'::regclass),'RLS enabled on contact_submission_limits');
+select ok(exists(select 1 from information_schema.columns where table_schema='public' and table_name='feedback_messages' and column_name='read_at'),'feedback messages have server-maintained read state');
+select ok(to_regclass('public.feedback_messages_unread_created_at_idx') is not null,'unread feedback has a partial index');
 
 select is((select count(*)::integer from pg_policies where schemaname='public' and tablename in ('feedback_messages','support_confirmations','contact_submission_limits')),0,'private submissions have no client-facing RLS policies');
 
@@ -31,7 +33,10 @@ select ok((select allowed from public.consume_public_submission_rate_limit(repea
 select ok((select allowed from public.consume_public_submission_rate_limit(repeat('a',64),'feedback',2,3600)),'second message is allowed');
 select ok(not (select allowed from public.consume_public_submission_rate_limit(repeat('a',64),'feedback',2,3600)),'third message is rate limited');
 select is((select retry_after_seconds > 0 from public.consume_public_submission_rate_limit(repeat('a',64),'feedback',2,3600)),true,'rate-limit response includes a positive retry delay');
-select throws_ok($$select * from public.consume_public_submission_rate_limit(repeat('z',64),'feedback',0,3600)$$,'22023',null,'invalid rate-limit settings are rejected');
+select ok((select allowed from public.consume_public_submission_rate_limit(repeat('b',64),'inbox_auth',1,900)),'first owner unlock attempt is allowed');
+select ok(not (select allowed from public.consume_public_submission_rate_limit(repeat('b',64),'inbox_auth',1,900)),'repeated owner unlock attempt is rate limited');
+select throws_ok($select * from public.consume_public_submission_rate_limit(repeat('z',64),'inbox_auth_invalid',1,900)$,'22023',null,'unsupported rate-limit categories are rejected');
+select throws_ok($select * from public.consume_public_submission_rate_limit(repeat('z',64),'feedback',0,3600)$,'22023',null,'invalid rate-limit settings are rejected');
 
 select * from finish();
 rollback;

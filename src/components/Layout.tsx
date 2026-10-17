@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { FEEDBACK_INBOX_SESSION_EVENT, getFeedbackInboxSessionToken, getUnreadFeedbackCount } from "../data/feedback-inbox";
 
-type GlyphName = "home" | "book" | "layers" | "math" | "menu" | "close" | "help";
+type GlyphName = "home" | "book" | "layers" | "math" | "menu" | "close" | "help" | "messages";
 
 function NavigationGlyph({ name }: { name: GlyphName }) {
   const paths: Record<GlyphName, ReactNode> = {
@@ -13,6 +14,7 @@ function NavigationGlyph({ name }: { name: GlyphName }) {
     menu: <><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></>,
     close: <><path d="m6 6 12 12"/><path d="M18 6 6 18"/></>,
     help: <><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.4 1.3-2 1.7-2 3.4"/><path d="M12 17.5h.01"/></>,
+    messages: <><path d="M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-5 2v-5.5A7.5 7.5 0 1 1 21 11.5Z"/><path d="M7 10h7M7 13h5"/></>,
   };
   return <svg className="navigation-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
 }
@@ -21,6 +23,8 @@ export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const headerRef = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
+  const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
   const links = [
     { to: "/catalog", label: "Subject catalog" },
     { to: "/years", label: "Year levels" },
@@ -34,6 +38,38 @@ export function Layout({ children }: { children: ReactNode }) {
   ];
 
   useEffect(() => setMobileMenuOpen(false), [location.pathname]);
+
+  useEffect(() => {
+    const syncSession = () => setFeedbackInboxUnlocked(Boolean(getFeedbackInboxSessionToken()));
+    window.addEventListener(FEEDBACK_INBOX_SESSION_EVENT, syncSession);
+    syncSession();
+    return () => window.removeEventListener(FEEDBACK_INBOX_SESSION_EVENT, syncSession);
+  }, []);
+
+  useEffect(() => {
+    if (!feedbackInboxUnlocked) {
+      setUnreadFeedbackCount(0);
+      return;
+    }
+    let active = true;
+    const refreshCount = async () => {
+      try {
+        const count = await getUnreadFeedbackCount();
+        if (active) setUnreadFeedbackCount(count);
+      } catch {
+        if (active && !getFeedbackInboxSessionToken()) setFeedbackInboxUnlocked(false);
+      }
+    };
+    void refreshCount();
+    const interval = window.setInterval(() => void refreshCount(), 45_000);
+    const onFocus = () => void refreshCount();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [feedbackInboxUnlocked]);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -67,6 +103,12 @@ export function Layout({ children }: { children: ReactNode }) {
                 {item.label}
               </NavLink>
             ))}
+            {feedbackInboxUnlocked && (
+              <NavLink to="/feedbacks" className={({ isActive }) => isActive ? "nav-link active feedbacks-nav-link" : "nav-link feedbacks-nav-link"}>
+                <span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>
+                <span>Feedbacks</span>
+              </NavLink>
+            )}
           </nav>
           <button className="mobile-menu-toggle" type="button" aria-expanded={mobileMenuOpen} aria-controls="mobile-help-menu"
             aria-label={mobileMenuOpen ? "Close more pages menu" : "Open more pages menu"} onClick={() => setMobileMenuOpen((open) => !open)}>
@@ -79,6 +121,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <Link to="/support" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Support us</Link>
           <Link to="/bug-reports" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Report a bug</Link>
           <Link to="/feedback" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Send feedback</Link>
+          {feedbackInboxUnlocked && <Link to="/feedbacks" onClick={() => setMobileMenuOpen(false)} className="mobile-feedbacks-link"><span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>Feedbacks</Link>}
         </nav>
       </header>
       <main id="main-content" className="main-content">{children}</main>
