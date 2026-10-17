@@ -123,7 +123,7 @@ describe("owner-only feedback inbox", () => {
     expect(screen.getByRole("heading", { name: "Unlock feedback inbox" })).toBeInTheDocument();
     expect(screen.queryByText(sampleFeedback[0].message)).not.toBeInTheDocument();
     await unlockFeedbackInbox("test-owner-access-key-at-least-32-characters");
-    expect(await screen.findByText("Anonymous")).toBeInTheDocument();
+    expect((await screen.findAllByText("Anonymous")).length).toBeGreaterThan(0);
     expect(screen.getByText("Content correction")).toBeInTheDocument();
     expect(screen.getByText(sampleFeedback[0].message)).toBeInTheDocument();
     expect(document.querySelector("time")).toHaveAttribute("dateTime", sampleFeedback[0].created_at);
@@ -135,7 +135,7 @@ describe("owner-only feedback inbox", () => {
     render(<MemoryRouter><Layout><FeedbacksPage /></Layout></MemoryRouter>);
     await screen.findByRole("link", { name: /Feedbacks/ });
     expect(await screen.findByRole("status", { name: "Unread feedback" })).toBeInTheDocument();
-    await user.click(await screen.findByRole("button", { name: /Anonymous/ }));
+    await user.click(await screen.findByRole("button", { name: /Please add worked examples for the trigonometry section/ }));
     await waitFor(() => expect(invokeMock).toHaveBeenCalledWith("feedback-inbox-admin", expect.objectContaining({
       body: { action: "mark-read", id: sampleFeedback[0].id },
       headers: { "x-feedback-inbox-token": "signed-owner-token" },
