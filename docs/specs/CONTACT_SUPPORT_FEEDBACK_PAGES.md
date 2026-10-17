@@ -84,3 +84,7 @@ No new npm package is required. The frontend reuses the installed Supabase clien
 - Before enabling the inbox, add a random key of at least 32 characters as the Supabase Edge Function secret `FEEDBACK_INBOX_ACCESS_KEY`. Never expose it through `VITE_*` variables or source control. The inbox remains disabled until that secret, the migration, and the Edge Function are deployed.
 - The red dot is the in-app feedback notification and clears immediately after an item is marked read; email is optional for feedback but remains required for support-confirmation alerts.
 - This is a temporary owner gate because CEStudy accounts do not exist yet. Replace it with Supabase Auth and a dedicated owner/admin role when accounts are implemented.
+
+
+### Cloudflare Pages preview testing
+- The Edge Functions allow the production URL, the stable redesign branch URL, configured explicit origins, and HTTPS commit-preview hosts matching exactly eight hexadecimal characters under `cestudy.pages.dev`. This allows QA links such as `9cdfab2c.cestudy.pages.dev` while rejecting unrelated Pages hosts and lookalike domains.

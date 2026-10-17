@@ -20,7 +20,7 @@ function jsonResponse(request: Request, status: number, body: RecordValue, extra
     "Vary": "Origin",
     ...extraHeaders,
   };
-  if (origin && allowedOrigins().includes(origin)) headers["Access-Control-Allow-Origin"] = origin;
+  if (isAllowedOrigin(origin)) headers["Access-Control-Allow-Origin"] = origin;
   return new Response(JSON.stringify(body), { status, headers });
 }
 
@@ -28,6 +28,19 @@ function allowedOrigins(): string[] {
   const raw = Deno.env.get("ALLOWED_ORIGINS")?.trim();
   const values = raw ? raw.split(",").map((value) => value.trim()).filter(Boolean) : DEFAULT_ALLOWED_ORIGINS;
   return [...new Set(values)];
+}
+
+function isAllowedOrigin(origin: string | null): origin is string {
+  if (!origin) return false;
+  if (allowedOrigins().includes(origin)) return true;
+  try {
+    const parsed = new URL(origin);
+    return parsed.protocol === "https:"
+      && parsed.origin === origin
+      && /^[a-f0-9]{8}\.cestudy\.pages\.dev$/i.test(parsed.hostname);
+  } catch {
+    return false;
+  }
 }
 
 function isRecord(value: unknown): value is RecordValue {
@@ -266,7 +279,7 @@ function validateSubmission(body: RecordValue):
 
 Deno.serve(async (request: Request) => {
   const origin = request.headers.get("origin");
-  if (!origin || !allowedOrigins().includes(origin)) {
+  if (!isAllowedOrigin(origin)) {
     return new Response(JSON.stringify({ ok: false, message: "This origin is not allowed." }), {
       status: 403,
       headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "Vary": "Origin" },
