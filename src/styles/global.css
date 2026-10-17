@@ -92,3 +92,25 @@
   .home-math-copy{flex-basis:calc(100% - 56px)}
   .home-math-entry .text-link{margin-left:3.1rem}
 }
+
+
+/* Footer: copyright, navigation, and support links */
+.footer-inner{display:grid;grid-template-columns:minmax(0,1.35fr) repeat(2,minmax(0,1fr));align-items:start;gap:2rem;padding-block:2rem 2.2rem;color:var(--muted);font-size:.84rem}
+.footer-brand{min-width:0}
+.footer-brand-name{display:inline-block;color:var(--navy);font-size:1.08rem;font-weight:850;letter-spacing:-.03em}
+.footer-copyright,.footer-disclaimer{margin:.5rem 0 0;font-size:.78rem;line-height:1.55}
+.footer-disclaimer{max-width:310px}
+.footer-links{display:flex;flex-direction:column;align-items:flex-start;gap:.6rem;min-width:0}
+.footer-links h2{margin:0 0 .15rem;color:var(--navy);font-size:.86rem;letter-spacing:0}
+.footer-links a{color:#52687b;font-size:.82rem;line-height:1.45;text-decoration:none;text-underline-offset:3px}
+.footer-links a:hover{color:var(--brand-blue);text-decoration:underline}
+.footer-links a:focus-visible{outline:3px solid var(--brand-blue);outline-offset:3px;border-radius:3px}
+@media(max-width:850px){
+  .footer-inner{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
+  .footer-brand{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .footer-inner{display:grid;grid-template-columns:1fr;gap:1.25rem;padding-block:1.5rem}
+  .footer-brand{grid-column:auto}
+  .footer-disclaimer{max-width:none}
+}

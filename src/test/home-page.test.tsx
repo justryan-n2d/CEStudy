@@ -34,4 +34,13 @@ describe("homepage and year-level navigation", () => {
     expect(stylesheet).toContain("background:var(--blue-soft)");
     expect(stylesheet).not.toContain("backdrop-filter:blur");
   });
+  it("shows copyright, contact, support, and feedback links in the footer", () => {
+    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
+    expect(screen.getByText(`© ${new Date().getFullYear()} CEStudy. All rights reserved.`)).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Contact, support, and feedback" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /contact maintainer/i })).toHaveAttribute("href", "https://github.com/justryan-n2d");
+    expect(screen.getByRole("link", { name: /support & bug reports/i })).toHaveAttribute("href", "https://github.com/justryan-n2d/CEStudy/issues");
+    expect(screen.getByRole("link", { name: /send feedback/i })).toHaveAttribute("href", "https://github.com/justryan-n2d/CEStudy/issues/new");
+  });
+
 });

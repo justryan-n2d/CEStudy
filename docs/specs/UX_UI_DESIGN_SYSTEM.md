@@ -89,3 +89,13 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Hover/focus states work, and reduced-motion is respected.
 - Contrast, 320px layout, keyboard behavior, route refreshes, and catalog/practice behavior remain intact.
 - CI, browser smoke checks, and available accessibility checks pass before merging.
+
+
+## Footer
+
+- Show the current year and `© YEAR CEStudy. All rights reserved.` without adding a long promotional description.
+- Provide compact navigation links to the subject catalog, year-level overview, and math foundations.
+- Provide contact, support/bug-report, and feedback routes through the project's public GitHub profile and issue tracker until a dedicated CEStudy support email or feedback service is configured.
+- Clearly mark external links and open them safely in a new tab.
+- Use a three-column desktop layout that becomes two columns on tablet and one column on phones.
+- Keep the footer white, use the same neutral border and typography tokens, and reserve logo blue for link interaction/focus states.
