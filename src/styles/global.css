@@ -277,7 +277,7 @@
 .hero-visual:before,.hero-visual::before{content:none!important;display:none!important}
 .hero-visual{isolation:isolate}
 .hero-visual .hero-photo{position:relative;z-index:0}
-.hero-brand-overlay{position:absolute;left:50%;top:50%;z-index:2;display:block;width:clamp(140px,34%,230px);height:auto;max-width:46%;object-fit:contain;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 10px rgba(255,255,255,.28));pointer-events:none;user-select:none}
+.hero-visual .hero-brand-overlay{position:absolute;left:50%;top:50%;z-index:2;display:block;width:clamp(140px,34%,230px);height:auto;max-width:46%;object-fit:contain;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 10px rgba(255,255,255,.28));pointer-events:none;user-select:none}
 
 /* Dialogs animate in and out. Closing is handled by the Modal component. */
 .modal-backdrop{animation:ce-modal-backdrop-in 190ms ease-out both}
