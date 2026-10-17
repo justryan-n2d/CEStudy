@@ -67,12 +67,17 @@ async function main() {
   });
 
   const routes = [
-    { path: "/", heading: /Study smarter, one concept at a time\./ },
+    { path: "/", heading: /Find your CE subjects\./ },
     { path: "/catalog", heading: /Subject catalog/ },
+    { path: "/years", heading: /Year levels/ },
     { path: "/year/2", heading: /Second year/ },
-    { path: "/math-foundations", heading: /Math foundations and refreshers/ },
+    { path: "/math-foundations", heading: /Math foundations/ },
     { path: "/subjects/basic-algebra", heading: /Basic and Advanced Algebra/ },
     { path: "/practice/basic-algebra", heading: /Basic algebra practice/ },
+    { path: "/contact", heading: /Contact CEStudy/ },
+    { path: "/support", heading: /Support CEStudy/ },
+    { path: "/bug-reports", heading: /Report a bug/ },
+    { path: "/feedback", heading: /Feedback/ },
   ];
 
   let lastResponse;
@@ -108,6 +113,17 @@ async function main() {
         await page.screenshot({ path: path.join("artifacts", "failure-" + route.path.replace(/[^a-z0-9]+/gi, "-") + ".png"), fullPage: true });
       } catch {}
     }
+  }
+
+
+  for (const [label, href] of [
+    ["Contact CEStudy", "/contact"],
+    ["Support us", "/support"],
+    ["Report a bug", "/bug-reports"],
+    ["Send feedback", "/feedback"],
+  ]) {
+    const count = await page.locator(`footer a[href="${href}"]`).count();
+    check("Footer link exists: " + label, count === 1, "href=" + href + ", count=" + count);
   }
 
   for (const width of [320, 1440]) {

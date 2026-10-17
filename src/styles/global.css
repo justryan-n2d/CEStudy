@@ -114,3 +114,79 @@
   .footer-brand{grid-column:auto}
   .footer-disclaimer{max-width:none}
 }
+
+
+/* Contact, support, bug report, and private feedback pages */
+.form-page-wrap{width:min(100%,760px);margin-inline:auto}
+.contact-wrap{max-width:900px;margin-inline:auto}
+.contact-primary-card,.contact-option-card,.support-method-card,.surface-form{border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 4px 16px rgba(18,52,81,.035)}
+.contact-primary-card{display:flex;align-items:center;gap:1rem;padding:1.3rem;margin-bottom:1rem}
+.contact-icon{display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border-radius:14px;background:var(--blue-soft);color:var(--brand-blue);font-size:1.45rem}
+.contact-card-copy{min-width:0}
+.contact-card-copy h2,.contact-option-card h2,.support-method-copy h2{margin:0 0 .35rem;font-size:1.06rem;letter-spacing:-.02em}
+.contact-card-copy p,.contact-option-card p,.support-method-copy p{margin:0;color:var(--muted);font-size:.88rem;line-height:1.55}
+.contact-card-copy .setup-note{margin-top:.2rem}
+.contact-options-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.contact-option-card{display:flex;flex-direction:column;align-items:flex-start;gap:.65rem;min-width:0;padding:1.2rem}
+.contact-option-card .text-link{margin-top:auto;padding-top:.25rem}
+.surface-form{display:grid;gap:1.15rem;padding:clamp(1rem,3vw,1.6rem)}
+.form-field{display:flex;flex-direction:column;gap:.45rem;min-width:0;color:var(--navy);font-size:.88rem;font-weight:700}
+.form-field>span{line-height:1.4}
+.form-field input,.form-field select,.form-field textarea{width:100%;min-width:0;min-height:46px;border:1px solid #cbd8e1;border-radius:10px;background:#fff;color:#24384b;padding:.7rem .8rem;font:inherit;font-weight:450;line-height:1.5}
+.form-field textarea{min-height:116px;resize:vertical}
+.form-field input:focus-visible,.form-field select:focus-visible,.form-field textarea:focus-visible{outline:3px solid var(--brand-blue);outline-offset:2px;border-color:var(--brand-blue)}
+.form-field input::placeholder,.form-field textarea::placeholder{color:#637487;opacity:1}
+.required-mark{color:#a33c37}
+.optional-mark,.field-hint{color:var(--muted);font-size:.78rem;font-weight:450}
+.field-hint{margin:0;line-height:1.5}
+.field-hint strong{color:var(--navy);font-weight:750}
+.inline-status{margin:0;padding:.8rem .9rem;border-radius:10px;font-size:.84rem;line-height:1.55}
+.inline-status-warning{border:1px solid #efdcae;background:#fff9e9;color:#735419}
+.inline-status-error{border:1px solid #e7c0bf;background:#fff6f5;color:#8c2f2b}
+.inline-status-success{border:1px solid #b9e0ce;background:#f1faf5;color:#206b50}
+.surface-form>.button{justify-self:start;min-width:160px}
+.surface-form>.button:disabled{cursor:not-allowed;opacity:.58}
+.support-method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.support-method-card{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:start;gap:1rem;padding:1.2rem}
+.payment-mark{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;font-size:1.35rem;font-weight:850}
+.payment-mark-gcash{background:#e6f4fd;color:#0079bd}
+.payment-mark-paypal{background:#e9efff;color:#1646a0}
+.support-method-copy{min-width:0}
+.support-method-card>.button{grid-column:1/-1;justify-self:start}
+.support-note{margin:1rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.55}
+.modal-backdrop{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:auto;padding:1rem;background:rgba(11,38,61,.48)}
+.modal-panel{position:relative;width:min(100%,540px);max-height:min(90vh,780px);overflow:auto;border:1px solid rgba(220,229,236,.95);border-radius:20px;background:#fff;padding:1.5rem;box-shadow:0 24px 72px rgba(11,38,61,.24)}
+.modal-panel h2{padding-right:2.2rem;margin:0 0 1rem;font-size:1.4rem;letter-spacing:-.025em}
+.modal-panel>p{color:#52687b;line-height:1.6}
+.modal-close{position:absolute;top:.75rem;right:.75rem;display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--navy);font-size:1.5rem;line-height:1}
+.modal-close:hover{background:var(--blue-soft);border-color:#b7cce0}
+.modal-close:focus-visible{outline:3px solid var(--brand-blue);outline-offset:2px}
+.support-qr-wrap{display:flex;flex-direction:column;align-items:center;gap:.55rem;margin-bottom:1.1rem;text-align:center}
+.support-qr{display:block;width:min(100%,260px);height:auto;aspect-ratio:1;object-fit:contain;padding:.4rem;border:1px solid var(--line);border-radius:14px;background:#fff}
+.support-qr-wrap .field-hint{max-width:360px}
+.support-note-field{margin-top:1rem}
+.confirmation-check{display:flex;align-items:flex-start;gap:.7rem;margin:1rem 0;color:#344d60;font-size:.86rem;line-height:1.5}
+.confirmation-check input{flex:0 0 20px;width:20px;min-width:20px;height:20px;min-height:20px;margin:.05rem 0 0;accent-color:var(--brand-blue)}
+.modal-action{width:100%;margin-top:.3rem}
+.paypal-open-link{margin:.25rem 0 .9rem}
+.success-modal{text-align:center;max-width:420px}
+.success-modal h2{padding:0}
+.success-modal>p{margin:.55rem 0 1.1rem}
+.success-modal>.button{min-width:120px}
+.success-mark{display:grid;place-items:center;width:52px;height:52px;margin:0 auto .75rem;border-radius:50%;background:#e1f3e9;color:#206b50;font-size:1.65rem;font-weight:850}
+.loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:ce-spinner .7s linear infinite}
+@keyframes ce-spinner{to{transform:rotate(360deg)}}
+@media(max-width:850px){
+  .contact-options-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  .contact-primary-card{align-items:flex-start;padding:1rem}
+  .contact-options-grid,.support-method-grid{grid-template-columns:1fr}
+  .contact-option-card{padding:1rem}
+  .support-method-card{padding:1rem}
+  .modal-panel{padding:1.15rem;border-radius:16px}
+  .surface-form>.button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .loading-spinner{animation:none;border-right-color:currentColor}
+}

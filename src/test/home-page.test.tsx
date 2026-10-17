@@ -37,10 +37,11 @@ describe("homepage and year-level navigation", () => {
   it("shows copyright, contact, support, and feedback links in the footer", () => {
     render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
     expect(screen.getByText(`© ${new Date().getFullYear()} CEStudy. All rights reserved.`)).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: "Contact, support, and feedback" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /contact maintainer/i })).toHaveAttribute("href", "https://github.com/justryan-n2d");
-    expect(screen.getByRole("link", { name: /support & bug reports/i })).toHaveAttribute("href", "https://github.com/justryan-n2d/CEStudy/issues");
-    expect(screen.getByRole("link", { name: /send feedback/i })).toHaveAttribute("href", "https://github.com/justryan-n2d/CEStudy/issues/new");
+    expect(screen.getByRole("navigation", { name: "Contact and help" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Contact CEStudy" })).toHaveAttribute("href", "/contact");
+    expect(screen.getByRole("link", { name: "Support us" })).toHaveAttribute("href", "/support");
+    expect(screen.getByRole("link", { name: "Report a bug" })).toHaveAttribute("href", "/bug-reports");
+    expect(screen.getByRole("link", { name: "Send feedback" })).toHaveAttribute("href", "/feedback");
   });
 
 });

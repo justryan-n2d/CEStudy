@@ -44,11 +44,12 @@ export function Layout({ children }: { children: ReactNode }) {
             <Link to="/years">Year levels</Link>
             <Link to="/math-foundations">Math foundations</Link>
           </nav>
-          <nav className="footer-links" aria-label="Contact, support, and feedback">
-            <h2>Contact &amp; support</h2>
-            <a href="https://github.com/justryan-n2d" target="_blank" rel="noopener noreferrer">Contact maintainer <span aria-hidden="true">↗</span></a>
-            <a href="https://github.com/justryan-n2d/CEStudy/issues" target="_blank" rel="noopener noreferrer">Support &amp; bug reports <span aria-hidden="true">↗</span></a>
-            <a href="https://github.com/justryan-n2d/CEStudy/issues/new" target="_blank" rel="noopener noreferrer">Send feedback <span aria-hidden="true">↗</span></a>
+          <nav className="footer-links" aria-label="Contact and help">
+            <h2>Contact and help</h2>
+            <Link to="/contact">Contact CEStudy</Link>
+            <Link to="/support">Support us</Link>
+            <Link to="/bug-reports">Report a bug</Link>
+            <Link to="/feedback">Send feedback</Link>
           </nav>
         </div>
       </footer>
