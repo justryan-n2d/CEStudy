@@ -1,6 +1,7 @@
 import { supabase } from "../lib/supabase";
 
 export const FEEDBACK_INBOX_SESSION_EVENT = "cestudy-feedback-inbox-session";
+export const FEEDBACK_INBOX_UNREAD_EVENT = "cestudy-feedback-inbox-unread";
 export type FeedbackCategory = "general" | "content" | "usability" | "accessibility" | "feature" | "other";
 export type FeedbackRecord = { id: string; category: FeedbackCategory; message: string; created_at: string; read_at: string | null };
 type InboxReply = { ok?: boolean; message?: string; token?: string; expiresAt?: string; messages?: FeedbackRecord[]; unreadCount?: number; hasMore?: boolean };
@@ -66,4 +67,5 @@ export async function getUnreadFeedbackCount(): Promise<number> {
 }
 export async function markFeedbackMessageRead(id: string): Promise<void> {
   await invokeInbox({ action: "mark-read", id }, true);
+  if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(FEEDBACK_INBOX_UNREAD_EVENT));
 }

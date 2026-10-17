@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { FEEDBACK_INBOX_SESSION_EVENT, getFeedbackInboxSessionToken, getUnreadFeedbackCount } from "../data/feedback-inbox";
+import { FEEDBACK_INBOX_SESSION_EVENT, FEEDBACK_INBOX_UNREAD_EVENT, getFeedbackInboxSessionToken, getUnreadFeedbackCount } from "../data/feedback-inbox";
 
 type GlyphName = "home" | "book" | "layers" | "math" | "menu" | "close" | "help" | "messages";
 
@@ -64,10 +64,12 @@ export function Layout({ children }: { children: ReactNode }) {
     const interval = window.setInterval(() => void refreshCount(), 45_000);
     const onFocus = () => void refreshCount();
     window.addEventListener("focus", onFocus);
+    window.addEventListener(FEEDBACK_INBOX_UNREAD_EVENT, onFocus);
     return () => {
       active = false;
       window.clearInterval(interval);
       window.removeEventListener("focus", onFocus);
+      window.removeEventListener(FEEDBACK_INBOX_UNREAD_EVENT, onFocus);
     };
   }, [feedbackInboxUnlocked]);
 
