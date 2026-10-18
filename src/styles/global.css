@@ -589,3 +589,21 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .learning-streak-main strong{color:#713d00;font-size:1.08rem;font-variant-numeric:tabular-nums}
 .learning-streak-main span:last-child{font-size:.8rem;font-weight:800}
 .learning-streak small{color:#5f4930;font-size:.72rem;line-height:1.4}
+
+
+/* Google-only account access and authenticated streak gate */
+.learning-streak-locked .learning-streak-main strong{color:var(--navy);font-size:.88rem;letter-spacing:0}
+.learning-streak-locked .text-link{margin-top:.18rem;font-size:.8rem}
+.login-page{display:grid;place-items:center;min-height:min(68vh,760px);padding-block:2rem}
+.login-panel{width:min(100%,560px);padding:clamp(1.4rem,4vw,2.4rem);border:1px solid var(--line);border-radius:24px;background:#fff;box-shadow:var(--shadow)}
+.login-panel h1{font-size:clamp(2rem,4.5vw,3rem);margin:.55rem 0 .75rem}
+.login-description{margin:.35rem 0 1.3rem;color:var(--muted);font-size:.98rem}
+.login-account{padding:.8rem 1rem;border:1px solid var(--line);border-radius:12px;background:#f7f9fc;overflow-wrap:anywhere}
+.login-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin:1rem 0}
+.google-signin-button{width:100%;min-height:50px;gap:.7rem}
+.google-signin-button:disabled{cursor:not-allowed;opacity:.55;transform:none}
+.google-signin-mark{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#fff;color:#4285f4;font-size:1rem;font-weight:900}
+.login-setup-note,.login-footnote{color:var(--muted);font-size:.8rem;line-height:1.6}
+.login-setup-note{padding:.8rem;border:1px solid #e9c88d;border-radius:12px;background:#fff8e9;color:#6e4a16}
+.login-error{padding:.75rem;border:1px solid #efc2bf;border-radius:12px;background:#fff1f0;color:#8b2b24;font-size:.85rem}
+.login-panel>.text-link{display:inline-block;margin-top:.6rem}
