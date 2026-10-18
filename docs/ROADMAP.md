@@ -17,7 +17,7 @@ The canonical roadmap is [PHASE_PLAN.md](PHASE_PLAN.md). It records each project
 
 **CEStudy is both a comprehensive engineering knowledge library and an interactive learning platform.** Students can freely browse subjects and topics, or optionally follow guided learning paths and track progress. See the [learning model decision](product/COMBINED_LEARNING_MODEL.md) for the locked scope, implementation order, acceptance criteria, and constraints.
 
-The first implementation slice is device-local progress for published lessons only. It must not add accounts, cross-device sync, new Supabase writes, or unpublished content exposure. Existing Phase 7 release gates remain active; this direction does not approve a broad launch.
+The first implementation slice is device-local progress plus a flame streak for published lessons only. One or more completions on the same local calendar day count as one streak day. It must not add accounts, cross-device sync, new Supabase writes, or unpublished content exposure. Existing Phase 7 release gates remain active; this direction does not approve a broad launch.
 
 ## Ordered priorities
 
