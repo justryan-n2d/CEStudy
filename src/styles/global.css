@@ -825,3 +825,9 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 :root[data-theme="dark"] .answer-correct{background:#14372e;border-color:#27684d}
 :root[data-theme="dark"] .answer-incorrect{background:#422c1f;border-color:#855b35}
 :root[data-theme="dark"] .payment-mark-gcash,:root[data-theme="dark"] .payment-mark-paypal{background:#fff}
+
+.mobile-tab{position:relative}
+.mobile-tab-icon{position:relative;display:grid;place-items:center;width:21px;height:21px}
+.mobile-tab-icon .navigation-glyph{width:19px;height:19px}
+.mobile-menu-unread-dot{top:0;right:0;border-color:#fff}
+:root[data-theme="dark"] .mobile-menu-unread-dot{border-color:#101c2b}
