@@ -157,7 +157,7 @@ The core browsing flow works, the deployed app does not expose draft questions, 
 - [x] Build command is `npm run build`; output directory is `dist`.
 - [x] Production browser variables are the CEStudy Supabase URL and publishable key.
 - [x] Legacy failed Cloudflare Worker named `cestudy` was removed; a separate Worker is not required for the current architecture.
-- [x] Live Chromium check [38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed 70/70 checks, including six routes, 320 px/1440 px overflow checks, the live catalog API, security headers, and the CHED PDF link.
+- [x] Latest production Chromium check [39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824) passed 135/135 checks after the publication-status correction and Privacy notice release, including direct routes, 320 px/1440 px overflow checks, live Supabase API/key validation, security headers, the published-only practice endpoint, and the CHED PDF link.
 
 ### Boundary
 The site is technically deployed, but deployment is not the same as approval for a broad student launch.
@@ -168,11 +168,11 @@ The site is technically deployed, but deployment is not the same as approval for
 
 ### Evidence already recorded
 - [x] Earlier main CI run [38627053630](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053630) passed lint, tests, dependency audit, build, and isolated Supabase migration/RLS tests.
-- [x] Live browser smoke test [38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed 70/70 checks.
+- [x] Earlier live browser smoke test [38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed 70/70 checks. The latest post-correction and post-Privacy run [39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824) passed 135/135 checks.
 - [x] Full-history Gitleaks scan [38627053653](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053653) passed at the time it ran.
 
 ### Remaining QA tasks
-- [ ] Re-run CI and the secret scan on the latest phase-plan commit and any final code changes; use the latest run result, not a previous green run, as release evidence.
+- [x] Current main CI [run 39142266631](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266631) and full-history secret scan [run 39142266706](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266706) passed after the privacy release. This documentation update is also subject to the required PR checks.
 - [ ] Test catalog search and filter combinations, clearing filters, no-result states, and aliases.
 - [ ] Complete a keyboard-only and screen-reader/accessibility review of the main pages.
 - [ ] Test on the actual target Android phone and at desktop/tablet sizes.
