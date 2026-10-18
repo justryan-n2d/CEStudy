@@ -149,7 +149,9 @@ export function LearningStreakBadge() {
                 onClick={() => void handleGoogleSignIn()}
                 disabled={!configured || signInPending}
               >
-                <span className="google-signin-mark" aria-hidden="true">G</span>
+                <span className="google-signin-icon-wrap" aria-hidden="true">
+                <img className="google-signin-icon" src="/branding/icons/google.svg" alt="" width={20} height={20} />
+              </span>
                 {signInPending ? "Opening Google…" : "Continue with Google"}
               </button>
               {!configured && (

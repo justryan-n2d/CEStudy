@@ -26,7 +26,10 @@ describe("Google sign-in page", () => {
     render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
     expect(screen.getByRole("heading", { name: /sign in to cestudy/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /continue with google/i })).toBeInTheDocument();
+    const googleButton = screen.getByRole("button", { name: /continue with google/i });
+    expect(googleButton).toBeInTheDocument();
+    expect(googleButton.querySelector("img.google-signin-icon")).toHaveAttribute("src", "/branding/icons/google.svg");
+    expect(googleButton.querySelector("img.google-signin-icon")).toHaveAttribute("alt", "");
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });
 

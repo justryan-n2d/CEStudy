@@ -2,6 +2,13 @@
 
 Use [SVGL](https://svgl.app/) as the first lookup for recognizable service/brand SVGs. SVGL was checked for GCash, but the current library/repository tree did not contain a GCash asset.
 
+## Brand and identity icons
+
+- **Google sign-in mark**: `public/branding/icons/google.svg`
+  - Source: [SVGL Google directory](https://svgl.app/directory/google), original asset [`static/library/google.svg`](https://github.com/pheralb/svgl/blob/main/static/library/google.svg).
+  - Use only beside a clearly labelled Google sign-in action. Keep the multicolor mark unchanged and store it locally so the page makes no runtime request to SVGL.
+  - Keep the mark on a white tile in both light and dark button themes. Follow the [Google Identity branding guidance](https://developers.google.com/identity/branding-guidelines): retain the standard-color G, use an explicit action label, and never recolor or distort the mark.
+
 ## Local payment icons
 
 - **PayPal wordmark**: `public/branding/icons/paypal-wordmark.svg`

@@ -40,7 +40,7 @@ A phase can be partially complete even when a later phase has already been built
 | 4 | Frontend MVP implementation | **Complete for the current MVP** | The main browsing and practice UI is built and deployed. Remaining design/accessibility polish is tracked in Phase 7. |
 | 5 | Cloudflare Pages and Supabase integration | **Complete for initial deployment** | The live site uses the dedicated CEStudy Supabase project and the Pages deployment is active. |
 | 6 | Automated and manual technical QA | **Partially complete** | Initial CI and 70/70 live Chromium checks passed; full accessibility and physical-device review plus some search/filter edge cases remain. |
-| 7 | Pre-launch hardening and release gates | **CURRENT** | Actual encrypted backup restore into isolated local PostgreSQL is proven and documented. Managed-Supabase-target recovery, branch protection, manual QA, and current CI/security reruns remain. Future question content stays out of public source. |
+| 7 | Pre-launch hardening and release gates | **CURRENT** | The actual encrypted backup has been restored into isolated local PostgreSQL. Managed-Supabase-target recovery, B2 lifecycle cleanup, GitHub failure email verification, manual QA, independent question review, and the student pilot remain. The active main-branch ruleset is verified. Future question content stays out of public source. |
 | 8 | Human content review and approved question publishing | **Not started** | Have a qualified human review each question and only publish content that passes the review process. |
 | 9 | Controlled student pilot | **Not started** | Run the planned 5–8-student usability pilot after blocking release gates pass. |
 | 10 | Final polish and broad public launch | **Not started** | Fix pilot findings, complete sign-off, and then announce the wider release. |
@@ -211,13 +211,13 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [x] Add a CI guard that fails if practice-question INSERTs, `practice_seed`, `correct_answer`, or `solution_steps` return to the public seed.
 - [x] Document the Supabase-only workflow for future drafts in [unpublished question authoring and publication](content-authoring-and-publication.md).
 - [ ] After merge, confirm the CI guard passes, the Cloudflare Pages production deployment succeeds, and the live site still loads the catalog and published-only practice review gate.
-- [ ] Configure a `main` branch ruleset requiring PRs and successful CI plus full-history secret scan. Branch protection is a separate release gate.
+- [x] Verify the active `main` branch ruleset requires pull requests and successful CI plus full-history secret scan: [Protect main ruleset](https://github.com/justryan-n2d/CEStudy/rules/25242389).
 - [ ] Continue to require human review before changing any future question to `published`.
 
 ### 7.3 Protect the main branch and rerun security checks
-- [ ] Configure a `main` ruleset that requires a pull request and passing CI checks.
-- [ ] Require the relevant CI app/database checks and full-history secret scan. Do not require an approval count that a single maintainer cannot meet.
-- [ ] Block force-pushes and verify the rule with a small documentation pull request.
+- [x] Configure a `main` ruleset that requires a pull request and passing CI checks.
+- [x] Require the relevant CI, Supabase migration/RLS, and full-history secret-scan checks without a required approval count that a single maintainer cannot meet.
+- [x] Block branch deletion and force-pushes; verify the ruleset through the merged documentation verification PR [#13](https://github.com/justryan-n2d/CEStudy/pull/13).
 - [ ] Re-run dependency audit, CI, and secret scanning after repository and code changes.
 - [ ] Verify Cloudflare browser variables contain only the CEStudy Supabase URL and publishable key.
 - [ ] Record the final security review and any accepted limitations.

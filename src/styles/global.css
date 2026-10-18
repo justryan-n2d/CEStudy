@@ -600,9 +600,14 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .login-description{margin:.35rem 0 1.3rem;color:var(--muted);font-size:.98rem}
 .login-account{padding:.8rem 1rem;border:1px solid var(--line);border-radius:12px;background:#f7f9fc;overflow-wrap:anywhere}
 .login-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin:1rem 0}
-.google-signin-button{width:100%;min-height:50px;gap:.7rem}
+.google-signin-button{width:100%;min-height:50px;gap:.7rem;background:#fff;color:#1f1f1f;border:1px solid #747775;box-shadow:none;font-weight:650;transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease}
+.google-signin-button:hover{background:#f8f9fa;border-color:#5f6368;box-shadow:0 1px 2px rgba(60,64,67,.16)}
+.google-signin-button:active{background:#f1f3f4;transform:none}
+.google-signin-button:focus-visible{outline:3px solid rgba(7,84,181,.34);outline-offset:2px}
+.google-signin-icon-wrap{display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;padding:2px;border-radius:4px;background:#fff}
+.google-signin-icon{display:block;width:20px;height:20px;object-fit:contain}
 .google-signin-button:disabled{cursor:not-allowed;opacity:.55;transform:none}
-.google-signin-mark{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#fff;color:#4285f4;font-size:1rem;font-weight:900}
+
 .login-setup-note,.login-footnote{color:var(--muted);font-size:.8rem;line-height:1.6}
 .login-setup-note{padding:.8rem;border:1px solid #e9c88d;border-radius:12px;background:#fff8e9;color:#6e4a16}
 .login-error{padding:.75rem;border:1px solid #efc2bf;border-radius:12px;background:#fff1f0;color:#8b2b24;font-size:.85rem}
@@ -768,7 +773,10 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 :root[data-theme="dark"] .streak-summary-card.is-active strong{color:#ffd18a}
 :root[data-theme="dark"] .streak-unlock-overlay{background:rgba(0,0,0,.7)}
 :root[data-theme="dark"] .streak-unlock-dialog h2,:root[data-theme="dark"] .streak-unlock-dialog p{color:#e5edf6}
-:root[data-theme="dark"] .google-signin-mark{background:#fff}
+:root[data-theme="dark"] .google-signin-icon-wrap{background:#fff}
+:root[data-theme="dark"] .google-signin-button{background:#131314;border-color:#8e918f;color:#e3e3e3;box-shadow:none}
+:root[data-theme="dark"] .google-signin-button:hover{background:#242428;border-color:#c4c7c5}
+:root[data-theme="dark"] .google-signin-button:active{background:#303034}
 :root[data-theme="dark"] .learning-streak-locked{background:#202a37;border-color:#3b4655;color:#abb7c5}
 :root[data-theme="dark"] .learning-streak-locked .learning-streak-main strong,:root[data-theme="dark"] .learning-streak-locked .learning-streak-main span:last-child{color:#abb7c5!important}
 :root[data-theme="dark"] .streak-locked-panel,:root[data-theme="dark"] .history-empty{background:#121f30;border-color:#2b3d51}
