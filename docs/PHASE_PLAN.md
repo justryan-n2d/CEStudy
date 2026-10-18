@@ -9,7 +9,7 @@ This is the canonical phase plan for CEStudy. Use this file for the overall orde
 
 ## Where we are now
 
-CEStudy is **past initial frontend development and is now in release hardening**. The live site has a 72-subject catalog, year-level routes, Mathematics Foundations, subject detail pages, a practice area, and a public Privacy notice at `/privacy`. The dedicated Supabase database currently has 52 practice questions and 13 lesson records, all `needs-review`; there are zero published questions and zero published lessons. On 2026-10-18, two lesson records that were marked published despite draft notes were returned to `needs-review`, and the catalog now marks Algebra Foundations as `in-preparation`. After the correction and Privacy notice release, the latest production Chromium smoke test [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed **135/135 checks** with no failures, including direct routes, security headers, privacy route, responsive widths, the live Supabase connection and zero published practice questions. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
+CEStudy is **past initial frontend development and is now in release hardening**. The live site has a 72-subject catalog, year-level routes, Mathematics Foundations, subject detail pages, a practice area, and a public Privacy notice at `/privacy`. The dedicated Supabase database currently has 52 practice questions and 13 lesson records, all `needs-review`; there are zero published questions and zero published lessons. On 2026-10-18, two lesson records that were marked published despite draft notes were returned to `needs-review`, and the catalog now marks Algebra Foundations as `in-preparation`. After the correction and Privacy notice release, the latest production Chromium smoke test [run 39145884002](https://github.com/justryan-n2d/CEStudy/actions/runs/39145884002) passed **135/135 checks** with no failures, including direct routes, security headers, privacy route, responsive widths, the live Supabase connection and zero published practice questions. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
 
 The current job is to make the deployed MVP safe and reliable enough for a controlled student pilot. Do not describe the site as fully launch-ready until the remaining release gates pass.
 
@@ -17,7 +17,7 @@ The current job is to make the deployed MVP safe and reliable enough for a contr
 
 - **Supabase database:** In use. The 72 catalog subjects, 52 practice questions, and 13 lesson records are stored in PostgreSQL. All 52 questions and all 13 lessons are currently `needs-review`; no questions or lessons are published. Student-facing RLS checks returned zero published lessons and zero published questions to the anonymous role.
 - **Supabase Storage buckets:** **Not configured, and not needed for the current MVP.** The app currently has no user-uploaded files or private media. Do not add a bucket unless an approved feature requires file/object storage.
-- **Database backup storage:** One real encrypted database backup was successfully uploaded and read-back verified in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), under private Backblaze B2 bucket `cestudy-db-backup/termux/weekly/`. Its real decryption and isolated local PostgreSQL restore are now proven; a separate managed-Supabase-target restore, B2 lifecycle cleanup, and GitHub failure-email preferences remain unverified. See [restore-drill evidence](deployment/restore-drill-2026-10-16.md).
+- **Database backup storage:** The actual encrypted October 15 backup was decrypted and restored into isolated local PostgreSQL. A fresh backup of the current database after the October 18 publication correction then passed on attempt 2 of [run 38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088): archive and checksum uploaded to private Backblaze B2, archive read back through SHA-256 verification, and retention completed with three verified sets kept and no stale/incomplete artifacts pruned. A managed-Supabase-target restore, B2 lifecycle cleanup, and GitHub failure-email preferences remain unverified. See [restore-drill evidence](deployment/restore-drill-2026-10-16.md).
 
 ## Status meanings
 
@@ -39,8 +39,8 @@ A phase can be partially complete even when a later phase has already been built
 | 3 | Database, backend access, and security baseline | **Complete for the current MVP** | Supabase schema, catalog, draft-question states, grants, RLS, and database tests are implemented. Backup operations remain a Phase 7 release gate. |
 | 4 | Frontend MVP implementation | **Complete for the current MVP** | The main browsing and practice UI is built and deployed. Remaining design/accessibility polish is tracked in Phase 7. |
 | 5 | Cloudflare Pages and Supabase integration | **Complete for initial deployment** | The live site uses the dedicated CEStudy Supabase project and the Pages deployment is active. |
-| 6 | Automated and manual technical QA | **Partially complete** | The latest production Chromium smoke test [39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed 135/135 checks after the Privacy notice release. Physical-device/accessibility review and some search/filter edge cases remain. |
-| 7 | Pre-launch hardening and release gates | **CURRENT** | The local restore of the actual encrypted backup is proven, and the main-branch ruleset is active. The Privacy notice is live and the latest production Chromium smoke test passed 135/135 checks. A fresh backup after the 2026-10-18 publication correction, managed-Supabase-target recovery, B2 lifecycle cleanup, GitHub failure-email verification, physical-device QA, independent content review, and student pilot remain. Future question content stays out of public source. |
+| 6 | Automated and manual technical QA | **Partially complete** | The latest production Chromium smoke test [39145884002](https://github.com/justryan-n2d/CEStudy/actions/runs/39145884002) passed 135/135 checks after the Privacy notice release. Physical-device/accessibility review and some search/filter edge cases remain. |
+| 7 | Pre-launch hardening and release gates | **CURRENT** | The local restore of the older encrypted backup is proven, and the main-branch ruleset is active. A fresh current-state encrypted backup passed on [run 38773249088, attempt 2](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088); production Chromium passed 135/135 checks. Managed-Supabase-target recovery, B2 lifecycle cleanup, GitHub failure-email verification, physical-device QA, independent content review, and the student pilot remain. Future question content stays out of public source. |
 | 8 | Human content review and approved question publishing | **Not started** | Have a qualified human review each question and only publish content that passes the review process. |
 | 9 | Controlled student pilot | **Not started** | Run the planned 5–8-student usability pilot after blocking release gates pass. |
 | 10 | Final polish and broad public launch | **Not started** | Fix pilot findings, complete sign-off, and then announce the wider release. |
@@ -157,7 +157,7 @@ The core browsing flow works, the deployed app does not expose draft questions, 
 - [x] Build command is `npm run build`; output directory is `dist`.
 - [x] Production browser variables are the CEStudy Supabase URL and publishable key.
 - [x] Legacy failed Cloudflare Worker named `cestudy` was removed; a separate Worker is not required for the current architecture.
-- [x] Latest production Chromium check [39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed 135/135 checks after the publication-status correction and Privacy notice release, including direct routes, 320 px/1440 px overflow checks, live Supabase API/key validation, security headers, the published-only practice endpoint, and the CHED PDF link.
+- [x] Latest production Chromium check [39145884002](https://github.com/justryan-n2d/CEStudy/actions/runs/39145884002) passed 135/135 checks after the publication-status correction and Privacy notice release, including direct routes, 320 px/1440 px overflow checks, live Supabase API/key validation, security headers, the published-only practice endpoint, and the CHED PDF link.
 
 ### Boundary
 The site is technically deployed, but deployment is not the same as approval for a broad student launch.
@@ -168,7 +168,7 @@ The site is technically deployed, but deployment is not the same as approval for
 
 ### Evidence already recorded
 - [x] Earlier main CI run [38627053630](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053630) passed lint, tests, dependency audit, build, and isolated Supabase migration/RLS tests.
-- [x] Earlier live browser smoke test [38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed 70/70 checks. The latest post-correction and post-Privacy run [39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed 135/135 checks.
+- [x] Earlier live browser smoke test [38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed 70/70 checks. The latest post-correction and post-Privacy run [39145884002](https://github.com/justryan-n2d/CEStudy/actions/runs/39145884002) passed 135/135 checks.
 - [x] Full-history Gitleaks scan [38627053653](https://github.com/justryan-n2d/CEStudy/actions/runs/38627053653) passed at the time it ran.
 
 ### Remaining QA tasks
@@ -194,7 +194,7 @@ Work through these in order. Do not move to the student pilot until the blocking
 - [x] Successful live backup run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) verified uploaded encrypted bytes, checksum, verification marker, and retention.
 - [x] CI tests exercise encryption, decryption, corrupted-tag rejection, backup syntax, and retention behavior. This uses a temporary test key and test data, not the actual production backup.
 - [ ] Confirm the Backblaze lifecycle rule deletes hidden old versions without hiding current backups.
-- [ ] Run or verify a fresh encrypted off-site backup after the 2026-10-18 live publication correction. The known successful backup predates this correction, so do not assume it contains the latest live content state.
+- [x] Fresh encrypted off-site backup run after the 2026-10-18 live publication correction: [workflow run 38773249088, attempt 2](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). The encrypted archive and checksum were uploaded to private B2, the archive was read back and SHA-256 verified, and retention completed with three verified sets kept and no stale/incomplete artifacts pruned.
 - [ ] Confirm GitHub Actions failure email notifications are enabled in account settings.
 - [ ] Keep the private decryption key and passphrase securely outside GitHub, with a protected recovery copy.
 - [x] Decrypt the real B2 backup in Termux; checksum and marker hashes matched, AES-GCM authentication succeeded, and `pg_restore --list` read the PostgreSQL 17.11 custom-format archive.
@@ -211,7 +211,7 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [x] Replace educational-looking test question examples with synthetic placeholders and make the RLS test create generic published/unpublished fixtures inside a rolled-back transaction.
 - [x] Add a CI guard that fails if practice-question INSERTs, `practice_seed`, `correct_answer`, or `solution_steps` return to the public seed.
 - [x] Document the Supabase-only workflow for future drafts in [unpublished question authoring and publication](content-authoring-and-publication.md).
-- [x] Confirm the CI guard and Cloudflare Pages production deployment succeeded; the latest production smoke test [39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) confirmed the catalog loads and the published-only practice API returns zero questions.
+- [x] Confirm the CI guard and Cloudflare Pages production deployment succeeded; the latest production smoke test [39145884002](https://github.com/justryan-n2d/CEStudy/actions/runs/39145884002) confirmed the catalog loads and the published-only practice API returns zero questions.
 - [x] Verify the active `main` branch ruleset requires PRs and successful CI plus full-history secret scan: [Protect main ruleset](https://github.com/justryan-n2d/CEStudy/rules/25242389).
 - [ ] Continue to require human review before changing any future question to `published`.
 
@@ -230,15 +230,15 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [ ] Confirm the current MVP does not require student accounts, private uploads, or extra personal-data collection.
 
 ### 7.5 Final production QA
-- [x] Run the production Chromium checklist after the publication-status correction and Privacy notice release: [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), 135/135 checks passed. Physical-device accessibility QA remains open.
+- [x] Run the production Chromium checklist after the publication-status correction and Privacy notice release: [run 39145884002](https://github.com/justryan-n2d/CEStudy/actions/runs/39145884002), 135/135 checks passed. Physical-device accessibility QA remains open.
 - [x] Confirm zero draft lesson or question rows are visible via the public API: post-correction anonymous SQL checks returned zero rows from both content tables, and the live Chromium test verified the published-only practice endpoint returned zero questions.
-- [x] Confirm required response headers, direct routes, responsive widths, and the official CHED curriculum PDF using [production Chromium run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), which passed 135/135 checks.
+- [x] Confirm required response headers, direct routes, responsive widths, and the official CHED curriculum PDF using [production Chromium run 39145884002](https://github.com/justryan-n2d/CEStudy/actions/runs/39145884002), which passed 135/135 checks.
 - [ ] Finish the full search/filter edge-case matrix and no-results recovery checks; earlier browser tests covered only key paths and combinations.
 - [ ] Check the site from a signed-out/private browser and the actual Android phone.
 - [x] Update project status, README, phase plan, launch checklist, and audit record with the latest main CI/secret scan and production Chromium smoke evidence in this documentation change.
 
 ### Phase 7 exit criteria
-The older encrypted backup has been restored into isolated local PostgreSQL, but it predates the 2026-10-18 publication correction. A fresh backup and managed-target restore, B2 lifecycle and GitHub failure-email confirmation, physical-device/accessibility QA, human content approval, and student pilot remain before broad release. Latest production smoke evidence is [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), with 135/135 checks passed.
+The older encrypted backup has been restored into isolated local PostgreSQL, but it predates the 2026-10-18 publication correction. The current-state encrypted backup then passed on [run 38773249088, attempt 2](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), but it has not yet been restored into a managed Supabase target. B2 lifecycle and GitHub failure-email confirmation, physical-device/accessibility QA, human content approval, and the student pilot remain before broad release. Latest production smoke evidence is [run 39145884002](https://github.com/justryan-n2d/CEStudy/actions/runs/39145884002), with 135/135 checks passed.
 
 ## Phase 8: Human content review and approved question publishing
 
