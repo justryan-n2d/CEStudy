@@ -29,7 +29,8 @@ function AuthHarness() {
     <section>
       <span>{loading ? "Auth loading" : "Auth ready"}</span>
       <span>{user ? "Google account active" : "No Google account"}</span>
-      <button type="button" onClick={() => void signInWithGoogle()}>Start Google sign-in</button>
+      <button type="button" onClick={() => void signInWithGoogle("/streak")}>Start Google sign-in</button>
+      <button type="button" onClick={() => void signInWithGoogle("https://evil.example/steal")}>Start unsafe Google sign-in</button>
       <button type="button" onClick={() => void signOut()}>Sign out</button>
     </section>
   );
@@ -46,7 +47,7 @@ beforeEach(() => {
 });
 
 describe("Supabase Google authentication", () => {
-  it("starts Google OAuth and returns to the CEStudy login page", async () => {
+  it("starts Google OAuth and preserves the intended same-origin destination", async () => {
     const user = userEvent.setup();
     render(<AuthProvider><AuthHarness /></AuthProvider>);
 
@@ -56,10 +57,24 @@ describe("Supabase Google authentication", () => {
     expect(authMocks.signInWithOAuth).toHaveBeenCalledWith({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${window.location.origin}/login?next=%2Fstreak`,
         queryParams: { prompt: "select_account" },
       },
     });
+  });
+
+  it("rejects an external return destination and falls back to Profile", async () => {
+    const user = userEvent.setup();
+    render(<AuthProvider><AuthHarness /></AuthProvider>);
+
+    expect(await screen.findByText("Auth ready")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Start unsafe Google sign-in" }));
+
+    const [, options] = authMocks.signInWithOAuth.mock.calls[0];
+    const callback = new URL(options.redirectTo);
+    expect(callback.origin).toBe(window.location.origin);
+    expect(callback.pathname).toBe("/login");
+    expect(callback.searchParams.get("next")).toBe("/profile");
   });
 
   it("does not unlock a streak for a non-Google Supabase session", async () => {
