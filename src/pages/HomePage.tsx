@@ -52,6 +52,16 @@ export function HomePage() {
           <YearLevelGrid />
         </section>
       </ScrollReveal>
+      <ScrollReveal className="reveal-section" delayMs={45}>
+        <section className="home-progress-entry" aria-label="Learning progress">
+          <div className="home-progress-copy">
+            <span className="kicker">Optional guided learning</span>
+            <h2>Mark lessons as you finish them</h2>
+            <p>Follow published topics in order, or explore freely. Completed lessons are saved on this device.</p>
+          </div>
+          <Link className="button button-secondary" to="/progress">View my progress</Link>
+        </section>
+      </ScrollReveal>
       <ScrollReveal className="reveal-section" delayMs={80}>
         <section className="home-math-entry" aria-label="Math foundations">
           <span className="math-symbol" aria-hidden="true">∑</span>
