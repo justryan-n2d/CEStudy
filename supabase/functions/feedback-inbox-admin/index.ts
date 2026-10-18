@@ -98,7 +98,7 @@ async function verifyToken(token: string, key: string): Promise<boolean> {
   const [payload, signature, ...extra] = token.split(".");
   if (!payload || !signature || extra.length) return false;
   try {
-    if (!await crypto.subtle.verify("HMAC", await hmacKey(key), fromB64url(signature), new TextEncoder().encode(payload))) return false;
+    if (!await crypto.subtle.verify("HMAC", await hmacKey(key), new Uint8Array(fromB64url(signature)), new TextEncoder().encode(payload))) return false;
     const claims = JSON.parse(new TextDecoder().decode(fromB64url(payload))) as RecordValue, now = Math.floor(Date.now() / 1000);
     return claims.sub === "cestudy-feedback-owner" && typeof claims.exp === "number" && claims.exp > now && claims.exp <= now + TOKEN_TTL_SECONDS + 60 && typeof claims.nonce === "string";
   } catch { return false; }
