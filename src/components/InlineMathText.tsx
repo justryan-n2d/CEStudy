@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from "react";
 import { LazyLatexMath } from "./LazyLatexMath";
 
 const INLINE_TOKEN_PATTERN = /(\*\*[^*]+\*\*|\x60[^\x60]+\x60|\\\([\s\S]+?\\\)|(?<!\\)\$(?!\$)[^$\n]+(?<!\\)\$(?!\$))/g;
-const MATH_EVIDENCE_PATTERN = /[\d²³⁰¹⁴⁵⁶⁷⁸⁹√^±×÷*\/]/u;
+const MATH_EVIDENCE_PATTERN = /[\d²³⁰¹⁴⁵⁶⁷⁸⁹√^±×÷*/]/u;
 const SHORT_IDENTIFIER_PATTERN = /^[\p{L}]{1,2}$/u;
 const STOP_WORDS = new Set([
   "and", "or", "then", "not", "because", "since", "the", "an", "for",
@@ -158,7 +158,7 @@ function looksLikeDollarMath(expression: string): boolean {
   const value = expression.trim();
   if (!value || /\n/u.test(value)) return false;
   // Do not interpret paired currency amounts with intervening prose as an equation.
-  if (/\s+[\p{L}]{2,}\s+/u.test(value) && !/[=+\-−*\/^_{}\\±√×÷]/u.test(value)) return false;
+  if (/\s+[\p{L}]{2,}\s+/u.test(value) && !/[=+\-−*/^_{}\\±√×÷]/u.test(value)) return false;
   return true;
 }
 
