@@ -48,7 +48,7 @@ describe("student lesson reader",()=>{
     fetchPublishedLessonsMock.mockResolvedValue([publishedLesson]);
     renderStudy("/study/basic-algebra/1");
     expect(await screen.findByRole("heading",{name:"Published Test Lesson"})).toBeInTheDocument();
-    expect(screen.getByText("Identify a test objective")).toBeInTheDocument();
+    expect(screen.queryByText("Identify a test objective")).not.toBeInTheDocument();
     expect(screen.getByRole("article")).toHaveTextContent("This lesson is published.");
   });
 
@@ -64,5 +64,7 @@ describe("student lesson reader",()=>{
     await user.click(screen.getByRole("link",{name:/Polynomials and Factoring/}));
     expect(await screen.findByRole("heading",{name:"Polynomials and Factoring"})).toBeInTheDocument();
     expect(screen.getByRole("article")).toHaveTextContent("Practice factoring polynomial expressions");
+    expect(screen.getByRole("searchbox",{name:"Find a topic"})).toHaveValue("");
+    expect(screen.getByText(/Browse topics/).closest("details")).not.toHaveAttribute("open");
   });
 });
