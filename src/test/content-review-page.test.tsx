@@ -28,7 +28,7 @@ const reviewBundle = {
     unitNumber: 0,
     slug: "readiness-diagnostic",
     title: "Readiness Diagnostic Test",
-    learningObjectives: ["Identify prerequisite gaps"],
+    learningObjectives: ["Identify prerequisite gaps", "Check prerequisite skills"],
     lessonMarkdown: "# TEST DRAFT BODY\n\nPrivate lesson test content.",
     sourceNote: "Synthetic test fixture.",
     status: "needs-review" as const,
@@ -144,4 +144,74 @@ describe("owner content review", () => {
     expect(screen.getByText("Correct answer:")).toBeVisible();
     expect(screen.getByText("TEST ANSWER EXPLANATION", { selector: "p" })).toBeVisible();
   });
+
+  it("loads lesson objectives, choices, and solution steps with real line breaks", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
+    await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
+    await user.click(screen.getByRole("button", { name: "Unlock review" }));
+    await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
+
+    expect(screen.getByLabelText(/Learning objectives/)).toHaveValue(
+      "Identify prerequisite gaps\nCheck prerequisite skills",
+    );
+    await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
+    expect(screen.getByLabelText(/Answer choices/)).toHaveValue("TEST OPTION A\nTEST OPTION B");
+    expect(screen.getByLabelText(/Worked solution steps/)).toHaveValue("TEST STEP ONE\nTEST STEP TWO");
+  });
+
+  it("saves each edited multiline objective as a separate item", async () => {
+    const user = userEvent.setup();
+    mocks.updateContentReviewStatus.mockResolvedValue({ status: "needs-review", catalogAvailabilitySync: true });
+    render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
+    await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
+    await user.click(screen.getByRole("button", { name: "Unlock review" }));
+    await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
+
+    const objectives = screen.getByLabelText(/Learning objectives/);
+    await user.clear(objectives);
+    await user.type(objectives, "First revised objective{enter}Second revised objective");
+    await user.click(screen.getByRole("button", { name: "Save edits, keep unpublished" }));
+
+    await waitFor(() => expect(mocks.updateContentReviewStatus).toHaveBeenCalledWith(
+      "lesson",
+      "algebra-foundations-unit-00",
+      "save-edits",
+      "",
+      expect.objectContaining({ learningObjectives: ["First revised objective", "Second revised objective"] }),
+    ));
+  });
+
+  it("saves multiline question choices and solution steps as arrays", async () => {
+    const user = userEvent.setup();
+    mocks.updateContentReviewStatus.mockResolvedValue({ status: "needs-review", catalogAvailabilitySync: true });
+    render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
+    await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
+    await user.click(screen.getByRole("button", { name: "Unlock review" }));
+    await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
+    await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
+
+    const choices = screen.getByLabelText(/Answer choices/);
+    await user.clear(choices);
+    await user.type(choices, "Revised choice A{enter}Revised choice B");
+    const answer = screen.getByLabelText(/Correct answer/);
+    await user.clear(answer);
+    await user.type(answer, "Revised choice B");
+    const steps = screen.getByLabelText(/Worked solution steps/);
+    await user.clear(steps);
+    await user.type(steps, "Revised step one{enter}Revised step two");
+    await user.click(screen.getByRole("button", { name: "Save edits, keep unpublished" }));
+
+    await waitFor(() => expect(mocks.updateContentReviewStatus).toHaveBeenCalledWith(
+      "question",
+      "algebra-foundations-u00-q01",
+      "save-edits",
+      "",
+      expect.objectContaining({
+        choices: ["Revised choice A", "Revised choice B"],
+        solutionSteps: ["Revised step one", "Revised step two"],
+      }),
+    ));
+  });
+
 });
