@@ -136,6 +136,16 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelectorAll(".latex-math-error")).toHaveLength(0);
   });
 
+  it("keeps instruction words outside equations with bare fractions",async()=>{
+    const equation = String.raw`Simplify x = \\frac{2x}{3}.`;
+    render(<MarkdownContent markdown={equation} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
+    const renderedMath = document.querySelector(".katex");
+    expect(renderedMath?.textContent?.toLowerCase()).not.toContain("simplify");
+    expect(document.querySelector(".markdown-content")?.textContent).toContain("Simplify");
+    expect(document.querySelector(".katex .mfrac")).toBeInTheDocument();
+  });
+
   it("does not render bare fraction commands inside inline code",()=>{
     const tick = String.fromCharCode(96);
     const markdown = "Type " + tick + String.raw`\frac{2x}{3}` + tick + " literally.";
