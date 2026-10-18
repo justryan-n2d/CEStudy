@@ -8,6 +8,7 @@ const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function StreakPage() {
   const { user } = useAuth();
+  const [selectedDayKey, setSelectedDayKey] = useState<string | null>(null);
   const [visibleMonth, setVisibleMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
@@ -28,6 +29,7 @@ export function StreakPage() {
 
   const shiftMonth = (offset: number) => {
     setVisibleMonth((current) => new Date(current.getFullYear(), current.getMonth() + offset, 1));
+    setSelectedDayKey(null);
   };
 
   return (
@@ -81,10 +83,11 @@ export function StreakPage() {
             const fullDate = date.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
             return (
               <button type="button" key={dateKey}
-                className={"streak-calendar-day" + (hasActivity ? " is-active" : "") + (isToday ? " is-today" : "")}
+                className={"streak-calendar-day" + (hasActivity ? " is-active" : "") + (isToday ? " is-today" : "") + (selectedDayKey === dateKey ? " is-selected" : "")}
                 aria-label={fullDate + ", " + (hasActivity ? "study day" : "no study recorded")}
-                aria-pressed={hasActivity}
-                title={fullDate + ": " + (hasActivity ? "study day" : "no study recorded")}>
+                aria-pressed={selectedDayKey === dateKey}
+                onClick={() => setSelectedDayKey(dateKey)}
+                title={"Show study status for " + fullDate}>
                 {day}
               </button>
             );
@@ -92,6 +95,13 @@ export function StreakPage() {
         </div>
         {user && activityDays.length === 0 && <p className="streak-calendar-empty">No study days recorded this month. Open a lesson and mark it complete to start your streak.</p>}
         {!user && <p className="streak-calendar-empty">Sign in to view your streak history. Dates stay blank until your account has recorded study days.</p>}
+        {selectedDayKey && <p className="streak-day-detail" role="status">{(() => {
+          const [selectedYear, selectedMonth, selectedDay] = selectedDayKey.split("-").map(Number);
+          const selectedLabel = new Date(selectedYear, selectedMonth - 1, selectedDay).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
+          return activitySet.has(selectedDayKey) && user
+            ? "Study activity recorded for " + selectedLabel + "."
+            : "No study activity recorded for " + selectedLabel + ".";
+        })()}</p>}
       </section>
 
       <section className="streak-calendar-legend" aria-label="Calendar legend">
