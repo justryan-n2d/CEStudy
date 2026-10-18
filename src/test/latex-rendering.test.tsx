@@ -117,4 +117,30 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
     expect(document.querySelector(".markdown-content p")?.textContent).toContain("Fees are $5 + $6.");
   });
+
+  it("renders a bare LaTeX fraction without requiring extra delimiters",async()=>{
+    const lesson = String.raw`The fraction is \frac{2x}{3}.`;
+    render(<MarkdownContent markdown={lesson} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
+    expect(document.querySelector(".katex .mfrac")).toBeInTheDocument();
+    expect(document.querySelector(".markdown-content")?.textContent).toContain("The fraction is ");
+    expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
+  });
+
+  it("renders nested bare fractions and fraction equations",async()=>{
+    const nested = String.raw`Nested: \frac{2x}{\frac{3}{4}}.`;
+    const equation = String.raw`Simplify x = \frac{2x}{3}.`;
+    render(<><MarkdownContent markdown={nested} /><MarkdownContent markdown={equation} /></>);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(2));
+    expect(document.querySelectorAll(".katex .mfrac").length).toBeGreaterThanOrEqual(3);
+    expect(document.querySelectorAll(".latex-math-error")).toHaveLength(0);
+  });
+
+  it("does not render bare fraction commands inside inline code",()=>{
+    const tick = String.fromCharCode(96);
+    const markdown = "Type " + tick + String.raw`\frac{2x}{3}` + tick + " literally.";
+    render(<MarkdownContent markdown={markdown} />);
+    expect(document.querySelectorAll(".katex")).toHaveLength(0);
+    expect(document.querySelector("code")?.textContent).toBe(String.raw`\frac{2x}{3}`);
+  });
 });
