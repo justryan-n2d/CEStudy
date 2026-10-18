@@ -73,7 +73,7 @@ describe("authenticated learning streak", () => {
     await user.click(screen.getByRole("button", { name: /learning streak, zero days/i }));
     await user.click(screen.getByRole("button", { name: /continue with google/i }));
 
-    expect(signInWithGoogle).toHaveBeenCalledOnce();
+    expect(signInWithGoogle).toHaveBeenCalledWith("/streak");
   });
 
   it("explains missing OAuth configuration and disables the login action", async () => {
