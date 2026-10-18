@@ -47,7 +47,7 @@ describe("student progress page", () => {
     vi.stubGlobal("confirm", vi.fn(() => false));
 
     render(<MemoryRouter><ProgressPage /></MemoryRouter>);
-    await user.click(screen.getByRole("button", { name: "Clear progress" }));
+    await user.click(screen.getByRole("button", { name: "Clear progress and streak" }));
 
     expect(screen.getByRole("heading", { name: "Algebra Foundations" })).toBeInTheDocument();
     expect(localStorage.getItem("cestudy:completed-lessons:v1")).not.toBeNull();
@@ -64,7 +64,7 @@ describe("student progress page", () => {
     vi.stubGlobal("confirm", vi.fn(() => true));
 
     render(<MemoryRouter><ProgressPage /></MemoryRouter>);
-    await user.click(screen.getByRole("button", { name: "Clear progress" }));
+    await user.click(screen.getByRole("button", { name: "Clear progress and streak" }));
 
     expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
     expect(localStorage.getItem("cestudy:completed-lessons:v1")).toBeNull();
