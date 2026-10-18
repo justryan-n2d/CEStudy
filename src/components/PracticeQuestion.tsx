@@ -1,5 +1,5 @@
 import type { PracticeQuestion as PracticeQuestionData } from "../types/study-content";
-import { InlineMathText } from "./MarkdownContent";
+import { InlineMathText } from "./InlineMathText";
 interface Props { question: PracticeQuestionData; index: number; total: number; selectedAnswer: string | null; submitted: boolean; onSelect: (answer: string) => void; onSubmit: () => void; onNext: () => void }
 export function PracticeQuestion({question,index,total,selectedAnswer,submitted,onSelect,onSubmit,onNext}:Props) {
   const isCorrect=selectedAnswer===question.correctAnswer;
