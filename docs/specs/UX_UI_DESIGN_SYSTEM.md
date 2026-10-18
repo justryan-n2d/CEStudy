@@ -39,6 +39,14 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Never redraw, stretch, rotate, independently recolor, or replace the canonical artwork with generated substitute artwork.
 - Keep sufficient contrast around the blue-background master logo and preserve its proportions.
 
+## Authentication and account access
+
+- Browsing the engineering library never requires sign-in. Google sign-in is optional and is currently limited to activating/account-separating the streak feature; it does not turn local history or progress into cloud sync.
+- Keep `/login` as the authentication route and `/profile` as the account destination. A guest sees a clear Google sign-in action on Profile. A signed-in user sees account status, study shortcuts, and a sign-out action.
+- After OAuth, return students to the destination they were trying to open when safe; otherwise use Profile. Show a useful retryable error if sign-in fails. Never interrupt lesson browsing with a forced registration wall.
+- Use a local copy of the multicolor Google G sourced from SVGL at `public/branding/icons/google.svg`; do not use a typed letter, emoji, monochrome mark, or an external runtime image URL.
+- Use a plainly labelled `Continue with Google` button. Keep the G at its original proportions and on a white tile. The button uses a light outlined treatment in light mode and a dark neutral treatment in dark mode, aligned with [Google Identity branding guidance](https://developers.google.com/identity/branding-guidelines).
+
 ## Shared components
 
 - **Header:** canonical logo, wordmark, concise navigation, white surface, thin border. Year levels opens the overview page, not Year 1.
@@ -113,8 +121,11 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 
 ### Website-specific structure
 - Desktop: compact top navigation and multi-column subject lists.
-- Mobile web: persistent four-item quick navigation (Home, Subjects, Years, Math) plus a More menu for Contact, Support, Bug reports, and Feedback.
-- The mobile quick bar must not cover final content; allow room for safe-area insets on gesture-navigation devices.
+- Mobile web: persistent five-item quick navigation (Home, Subjects, Years, Math, Menu), with safe-area spacing for gesture-navigation devices.
+- The Menu page contains Profile, History (recently opened lessons), Streak (study-day calendar), Progress, Community, About, Contact, Support, Feedback, and bug reporting, plus a persistent light/dark appearance switch. The retired More popover must not return.
+- Place a compact global streak shortcut at the header's right edge. Show the consecutive-day count before the flame. Use gray for zero/inactive and warm animated flame styling only for a signed-in active streak; honor reduced-motion preferences. Active signed-in streaks link to their calendar; signed-out inactive streaks prompt for Google sign-in.
+- Keep the flame movement subtle: a small sway (about -3° to +3°) with a very small scale change, plus a soft low-amplitude glow. The motion should feel like gentle feedback, not an attention-grabbing notification. Do not animate a zero/locked streak, do not change layout while animating, and disable the flame and glow animations when `prefers-reduced-motion: reduce` is active.
+- History and appearance preferences are device-local at this stage; do not imply cross-device sync. The mobile quick bar must not cover final content; allow room for safe-area insets on gesture-navigation devices.
 - The homepage uses a responsive hero photograph with appropriate srcset widths and reserved dimensions. Only the primary hero is loaded eagerly.
 - Scroll reveal applies only to major content sections. Use IntersectionObserver, unobserve after the first reveal, animate only opacity/transform, and show content immediately if reduced motion is requested or the API is unavailable. See MDN: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API.
 
