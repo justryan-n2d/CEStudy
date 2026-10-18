@@ -4,7 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 const { invokeMock } = vi.hoisted(() => ({ invokeMock: vi.fn() }));
-vi.mock("../lib/supabase", () => ({ supabase: { functions: { invoke: invokeMock } } }));
+vi.mock("../lib/supabase", () => ({
+  hasSupabaseConfig: false,
+  supabase: { functions: { invoke: invokeMock } },
+}));
 
 import { Layout } from "../components/Layout";
 import { FeedbacksPage } from "../pages/FeedbacksPage";
