@@ -68,7 +68,7 @@ describe("learning streak calendar", () => {
 
     render(<MemoryRouter><StreakPage /></MemoryRouter>);
 
-    expect(screen.getByRole("link", { name: /sign in with google/i })).toHaveAttribute("href", "/profile");
+    expect(screen.getByRole("link", { name: /sign in with google/i })).toHaveAttribute("href", "/login?next=%2Fstreak");
     expect(screen.getByText(/dates stay blank until your account has recorded study days/i)).toBeInTheDocument();
   });
 });
