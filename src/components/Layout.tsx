@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { FEEDBACK_INBOX_SESSION_EVENT, FEEDBACK_INBOX_UNREAD_EVENT, getFeedbackInboxSessionToken, getUnreadFeedbackCount } from "../data/feedback-inbox";
+import { useAuth } from "../contexts/AuthContext";
 
 type GlyphName = "home" | "book" | "layers" | "math" | "menu" | "close" | "help" | "messages";
 
@@ -21,6 +22,7 @@ function NavigationGlyph({ name }: { name: GlyphName }) {
 
 export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const { user } = useAuth();
   const headerRef = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
@@ -108,6 +110,9 @@ export function Layout({ children }: { children: ReactNode }) {
                 {item.label}
               </NavLink>
             ))}
+            <NavLink to="/login" className={({ isActive }) => isActive ? "nav-link active account-nav-link" : "nav-link account-nav-link"}>
+              {user ? "Account" : "Sign in"}
+            </NavLink>
             {feedbackInboxUnlocked && (
               <NavLink to="/feedbacks" className={({ isActive }) => isActive ? "nav-link active feedbacks-nav-link" : "nav-link feedbacks-nav-link"}>
                 <span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>
@@ -121,6 +126,7 @@ export function Layout({ children }: { children: ReactNode }) {
           </button>
         </div>
         <nav id="mobile-help-menu" className={`mobile-help-menu${mobileMenuOpen ? " is-open" : ""}`} aria-label="More CEStudy pages" aria-hidden={!mobileMenuOpen}>
+          <Link to="/login" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />{user ? "Your account" : "Sign in with Google"}</Link>
           <Link to="/about" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />About us</Link>
           <Link to="/contact" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Contact CEStudy</Link>
           <Link to="/support" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Support us</Link>
