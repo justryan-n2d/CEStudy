@@ -12,11 +12,11 @@ describe("catalog pages",()=>{
     expect(await screen.findByRole("link",{name:/read the ched reference/i})).toHaveAttribute("href","https://legacy.ched.gov.ph/wp-content/uploads/2018/04/CMO-92-s.-2017-BS-Civil-Engineering.pdf");
     const search=screen.getByRole("searchbox",{name:/search subjects/i});
     await user.type(search,"statics");
-    expect(await screen.findByRole("link",{name:"Statics of Rigid Bodies"})).toBeInTheDocument();
-    expect(screen.queryByRole("link",{name:"Calculus 1"})).not.toBeInTheDocument();
+    expect(await screen.findByRole("link",{name:/Statics of Rigid Bodies/})).toBeInTheDocument();
+    expect(screen.queryByRole("link",{name:/Calculus 1/})).not.toBeInTheDocument();
     expect(screen.queryByText("View subject →")).not.toBeInTheDocument();
     await user.clear(search);
-    expect(await screen.findByRole("link",{name:"Calculus 1"})).toBeInTheDocument();
+    expect(await screen.findByRole("link",{name:/Calculus 1/})).toBeInTheDocument();
   });
 
   it("keeps advanced filters collapsed until requested",async()=>{
@@ -36,7 +36,7 @@ describe("catalog pages",()=>{
     await user.type(screen.getByRole("searchbox",{name:/search subjects/i}),"no-such-subject");
     expect(await screen.findByRole("heading",{name:/no subjects found/i})).toBeInTheDocument();
     await user.click(screen.getByRole("button",{name:/reset search and filters/i}));
-    expect(await screen.findByRole("link",{name:"Calculus 1"})).toBeInTheDocument();
+    expect(await screen.findByRole("link",{name:/Calculus 1/})).toBeInTheDocument();
   });
 
   it("renders all four year-level routes",async()=>{
@@ -61,8 +61,8 @@ describe("catalog pages",()=>{
     const count=await screen.findByText("1 result");
     expect(count).toHaveAttribute("role","status");
     expect(count).toHaveAttribute("aria-atomic","true");
-    expect(await screen.findByRole("link",{name:"Statics of Rigid Bodies"})).toBeInTheDocument();
-    expect(screen.queryByRole("link",{name:"Calculus 1"})).not.toBeInTheDocument();
+    expect(await screen.findByRole("link",{name:/Statics of Rigid Bodies/})).toBeInTheDocument();
+    expect(screen.queryByRole("link",{name:/Calculus 1/})).not.toBeInTheDocument();
   });
 
   it("filters unassigned math foundations and clears all filter values",async()=>{
@@ -73,11 +73,11 @@ describe("catalog pages",()=>{
     await user.selectOptions(screen.getByLabelText("Subject family"),"math-foundation");
     await user.selectOptions(screen.getByLabelText("Classification"),"supplementary-math-foundation");
     await user.selectOptions(screen.getByLabelText("Content status"),"in-preparation");
-    expect(await screen.findByRole("link",{name:"Basic and Advanced Algebra"})).toBeInTheDocument();
+    expect(await screen.findByRole("link",{name:/Basic and Advanced Algebra/})).toHaveAttribute("href","/study/basic-algebra");
     expect(screen.getByText("1 result")).toBeInTheDocument();
     await user.click(screen.getByRole("button",{name:/clear filters/i}));
     expect(await screen.findByText("72 results")).toBeInTheDocument();
-    expect(await screen.findByRole("link",{name:"Calculus 1"})).toBeInTheDocument();
+    expect(await screen.findByRole("link",{name:/Calculus 1/})).toBeInTheDocument();
     expect(screen.getByRole("searchbox",{name:/search subjects/i})).toHaveValue("");
   });
 });
