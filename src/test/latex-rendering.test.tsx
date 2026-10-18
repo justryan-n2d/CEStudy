@@ -28,7 +28,9 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelectorAll(".katex")).toHaveLength(2);
     expect(document.querySelector(".katex-display")).toBeInTheDocument();
     expect(screen.getByText(/The formula is/)).toBeInTheDocument();
-    expect(screen.queryByText(/\\\(|\\\[|frac\{a\}/)).not.toBeInTheDocument();
+    const visibleText = document.querySelector(".markdown-content")?.cloneNode(true) as HTMLElement;
+    visibleText.querySelectorAll(".katex").forEach((node) => node.remove());
+    expect(visibleText.textContent).not.toMatch(/\\\(|\\\[|frac\{a\}/);
   });
 
   it("does not treat prices or inline-code examples as math",()=>{
