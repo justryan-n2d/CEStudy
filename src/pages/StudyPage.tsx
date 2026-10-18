@@ -85,19 +85,23 @@ export function StudyPage() {
               <span>Find a topic</span>
               <input type="search" value={topicQuery} onChange={event=>setTopicQuery(event.target.value)} placeholder="e.g. factoring, logarithms" />
             </label>
-            <nav aria-label="Topic results">
-              {visibleLessons.map((lesson) => (
-                <Link key={lesson.id} className={activeLesson?.id === lesson.id ? "study-outline-item active" : "study-outline-item"}
-                  to={`/study/${subjectSlug}/${lesson.unitNumber}`} aria-current={activeLesson?.id === lesson.id ? "page" : undefined}>
-                  <span className="study-outline-number">{lesson.unitNumber}</span>
-                  <span className="study-outline-copy">
-                    <span>{lesson.title}</span>
-                    {normalizedQuery&&<small>{topicSnippet(lesson,normalizedQuery)}</small>}
-                  </span>
-                </Link>
-              ))}
-            </nav>
-            {normalizedQuery&&visibleLessons.length===0&&<p className="study-no-results">No matching topics. Try another keyword.</p>}
+            <details className="reviewer-topic-disclosure" open={!activeLesson || Boolean(normalizedQuery)}>
+              <summary>Browse topics ({visibleLessons.length})</summary>
+              <nav aria-label="Topic results">
+                {visibleLessons.map((lesson) => (
+                  <Link key={lesson.id} className={activeLesson?.id === lesson.id ? "study-outline-item active" : "study-outline-item"}
+                    to={`/study/${subjectSlug}/${lesson.unitNumber}`} onClick={() => setTopicQuery("")}
+                    aria-current={activeLesson?.id === lesson.id ? "page" : undefined}>
+                    <span className="study-outline-number">{lesson.unitNumber}</span>
+                    <span className="study-outline-copy">
+                      <span>{lesson.title}</span>
+                      {normalizedQuery&&<small>{topicSnippet(lesson,normalizedQuery)}</small>}
+                    </span>
+                  </Link>
+                ))}
+              </nav>
+              {normalizedQuery&&visibleLessons.length===0&&<p className="study-no-results">No matching topics. Try another keyword.</p>}
+            </details>
             {subjectSlug === "basic-algebra" && <Link className="study-practice-link text-link" to="/practice/basic-algebra">Practice problems →</Link>}
           </aside>
 
@@ -105,7 +109,6 @@ export function StudyPage() {
             <article className="study-lesson">
               <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
               <h2>{activeLesson.title}</h2>
-              <section className="study-objectives"><h3>Quick review</h3><ul>{activeLesson.learningObjectives.map((objective, index) => <li key={index}>{objective}</li>)}</ul></section>
               <MarkdownContent markdown={activeLesson.lessonMarkdown} />
               <div className="study-lesson-navigation">
                 {lessonIndex > 0 ? <Link className="button button-secondary" to={`/study/${subjectSlug}/${lessons[lessonIndex - 1].unitNumber}`}>← Previous</Link> : <span />}
