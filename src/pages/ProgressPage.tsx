@@ -4,6 +4,7 @@ import { LearningStreakBadge } from "../components/LearningStreakBadge";
 import {
   clearLessonProgress,
   readCompletedLessons,
+  readLearningActivityDays,
   type CompletedLesson,
 } from "../data/learning-progress";
 
@@ -13,11 +14,13 @@ function subjectLabel(slug: string): string {
 
 export function ProgressPage() {
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
+  const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
 
   const clearProgress = () => {
-    if (!window.confirm("Clear all CEStudy lesson progress saved on this device?")) return;
+    if (!window.confirm("Clear all CEStudy lesson progress and streak saved on this device?")) return;
     clearLessonProgress();
     setCompletedLessons([]);
+    setActivityDays([]);
   };
 
   const sortedLessons = [...completedLessons].sort(
@@ -33,7 +36,7 @@ export function ProgressPage() {
         <p>Review the published lessons you have completed. Progress is saved in this browser on this device only, not synced to an account.</p>
       </section>
 
-      <LearningStreakBadge completedLessons={completedLessons} />
+      <LearningStreakBadge activityDays={activityDays} />
 
       {sortedLessons.length === 0 ? (
         <section className="state-panel progress-empty">
@@ -48,7 +51,7 @@ export function ProgressPage() {
               <strong>{sortedLessons.length}</strong>
               <span>{sortedLessons.length === 1 ? "completed lesson" : "completed lessons"}</span>
             </div>
-            <button type="button" className="button button-secondary" onClick={clearProgress}>Clear progress</button>
+            <button type="button" className="button button-secondary" onClick={clearProgress}>Clear progress and streak</button>
           </div>
           <ul className="progress-list">
             {sortedLessons.map((lesson) => (
