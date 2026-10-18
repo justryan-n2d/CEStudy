@@ -27,7 +27,7 @@ const SIMPLE_SLASH_FRACTION_PATTERN = new RegExp(
 function stackSimpleSlashFractions(expression: string): string {
   const protectedSegments: string[] = [];
   const protectedExpression = expression.replace(
-    /\\\\(?:text|textrm|textnormal|mathrm)\{(?:[^{}]|\{[^{}]*\})*\}/gu,
+    /\\(?:text|textrm|textnormal|mathrm)\{(?:[^{}]|\{[^{}]*\})*\}/gu,
     (segment) => {
       const index = protectedSegments.push(segment) - 1;
       return String.fromCharCode(0xe000) + index + String.fromCharCode(0xe001);
