@@ -5,7 +5,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 ## Dependency and build
 
 - [x] `package-lock.json` is committed and `npm ci` succeeds.
-- [x] Latest-main CI passed lint, tests, dependency audit, build/header packaging, backup crypto/retention checks, and isolated Supabase RLS tests in [run 38909521705](https://github.com/justryan-n2d/CEStudy/actions/runs/38909521705) on commit `e66b95a`.
+- [x] Latest main CI after the Stage 1 audit and Privacy notice merge passed lint, tests, dependency audit, build/header packaging, backup crypto/retention checks, and isolated Supabase RLS tests in [run 39142266631](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266631) on commit `97d6e8d`.
 - [x] `npm audit --audit-level=high` reports no high or critical dependency vulnerabilities; the successful audit reported 0 vulnerabilities after upgrading Vitest to 4.1.11.
 - [x] Review `.gitignore` and current source-code search results: `.env` files, key files, `secrets/`, and `credentials/` are excluded, and searches found no common Supabase service-role key or database-URL patterns.
 - [x] Latest-main full-history Gitleaks scan passed on commit `e66b95a`: [workflow run 38909521941](https://github.com/justryan-n2d/CEStudy/actions/runs/38909521941). The scheduled workflow lives at [secret-scan.yml](../../.github/workflows/secret-scan.yml) and also runs on pushes, pull requests, and manual dispatch.
@@ -31,16 +31,16 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 ## Cloudflare Pages deployment
 
 - [x] GitHub repository linked to Pages; build command is `npm run build`, output directory is `dist`.
-- [x] Pages preview deployment succeeded in CI; `public/_redirects` and `public/_headers` are included in the production build.
+- [x] Pages deployment for the public Privacy notice succeeded, and `public/_redirects` and `public/_headers` are included in the production build. The live route is [https://cestudy.pages.dev/privacy](https://cestudy.pages.dev/privacy).
 - [x] Live Chromium captured real catalog requests to the dedicated CEStudy Supabase URL; all returned HTTP 200 and the API returned 72 subjects. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
 - [x] Chromium responsive checks at 320 px and 1440 px passed with no horizontal overflow. A separate physical-device and accessibility check remains advisable.
-- [x] Fresh direct navigation to six routes returned HTTP 200 with the expected page heading: home, catalog, Year 2, math foundations, subject detail, and practice. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
+- [x] Post-correction Chromium smoke test [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824) passed 135/135 checks. Direct navigation and heading checks include the `/privacy` route, as well as the existing catalog, year-level, math, subject, practice, contact, support, bug-report, and feedback routes.
 - [x] The rendered catalog source link matches the [official CHED 2017 memorandum archive](https://legacy.ched.gov.ph/2017-ched-memorandum-orders/); the linked PDF returned HTTP 200 and `application/pdf` in Chromium. Catalog search/filters are user-reported as working, but a full automated matrix of search/filter empty states remains pending.
-- [x] Live Chromium recorded no browser console, page, request, or same-origin HTTP errors. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
+- [x] Post-correction Chromium [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824) reported no browser console, page, request, or same-origin HTTP errors.
 - [x] PR #14 adds a regression test for the six identified small-text selectors to stay at or above 4.5:1 contrast, an accessible live status for catalog result counts, and combined search/year/category/classification/content-status filters. This is source/test coverage, not a substitute for full rendered WCAG or device testing.
-- [x] Live Pages responses included CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy; CSP allowed the expected Supabase host and no browser errors were observed. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
+- [x] Latest live Pages responses included CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy. CSP allowed the expected Supabase host. The `/privacy` route was checked for those headers too in [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824).
 - [x] Post-correction database checks confirm the anonymous role receives zero rows from `subject_lessons` and `practice_questions`; both tables still expose only published records through RLS.
-- [ ] Re-run the production Chromium smoke suite after the 2026-10-18 publication-status correction. The last documented run [39069495822](https://github.com/justryan-n2d/CEStudy/actions/runs/39069495822) predates that live change.
+- [x] Re-run the production Chromium smoke suite after the 2026-10-18 publication-status correction and Privacy notice release: [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824), 135/135 checks passed with zero failures.
 
 - [ ] On a physical Android phone, test portrait/landscape, keyboard-only navigation, TalkBack, 200% text zoom, touch targets, all five catalog filters in combinations, no-results recovery, and direct-route refresh. Record device/browser and findings before launch.
 
@@ -51,6 +51,6 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [ ] Every proposed published question and lesson is checked for correctness, clear steps, source/attribution, originality, and permission to use. No lessons or questions are currently published.
 - [x] Proposed measures and session procedure documented in the [controlled student pilot plan](../plans/2026-10-15-student-pilot-plan.md).
 - [ ] Recruit volunteers and run the pilot only after blocking release checks and human review are complete.
-- [ ] Add a short privacy notice that accurately describes optional Google sign-in, local study data, and the public feedback/support forms before recruiting pilot students.
+- [x] Add the public [Privacy notice](https://cestudy.pages.dev/privacy) describing the currently deployed no-account site, browser-local study history/progress, feedback and support confirmations, bug-report email drafts, and service providers. The separate Google sign-in/Profile feature remains in draft PR #38; the notice does not claim that login is live.
 - [ ] A feedback/contact path and correction/removal process are ready.
 - [ ] Production promotion is explicitly approved only after all blocking items pass.
