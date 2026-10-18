@@ -17,14 +17,14 @@ Never commit an unpublished question bank to `supabase/seed.sql`, application so
 1. Open the official Supabase Dashboard and select the dedicated **CEStudy** project (`qqmdwltfgpqtcvdbcmto`).
 2. Open **SQL Editor** using your authorized project account. Do not place database passwords, secret/service-role keys, or other credentials into application code or public logs.
 3. Insert real lesson content directly into `public.subject_lessons` with `status = 'needs-review'`, and actual practice-question fields into `public.practice_questions` with the same status. Use unique IDs and existing constraints; do not put real lesson or question bodies, answers, or solutions into files committed to GitHub.
-4. Keep content unpublished while review is pending. Both tables use RLS policies that permit client-role reads only for rows marked `published`; anon/authenticated roles have no write privileges. A privileged dashboard or approved server-side maintainer path is used for edits.
+4. Keep content unpublished while review is pending. Both tables use RLS policies that permit client-role reads only for rows marked `published`; anon/authenticated roles have no write privileges. Browser roles also cannot read the private `review_notes` and `reviewed_at` columns. Use the owner-only content review screen at `/owner/content-review`; its `content-review-admin` Edge Function validates the same private `FEEDBACK_INBOX_ACCESS_KEY` used by the feedback inbox, issues a short-lived in-memory token, and uses server-side privileges for the approved edit/review actions.
 5. If local development needs example data, use placeholders such as `TEST LESSON BODY`, `TEST PROMPT`, `TEST OPTION A`, and `TEST STEP`, not the real draft.
 
 ## Human review and publish
 
-Before publishing, a human reviewer must check the prompt, all choices, correct answer, each solution step, explanation, math, clarity, originality, and source/attribution or usage permission. An automated arithmetic check is not academic approval.
+Before publishing, the maintainer-reviewer must check a lesson's alignment with the approved syllabus, clarity, examples and mathematics, or a question's prompt, all choices, correct answer, every solution step, explanation, originality, and source/attribution or usage permission. Automated arithmetic checks are useful but are not academic approval.
 
-Only an authorized maintainer may update an approved row from `needs-review` to `published` through the privileged Supabase dashboard. After the change, run the live published-only API/UI checks and confirm the intended question is the only newly exposed content. If there is an error, return the row to `needs-review` promptly and verify the public API no longer returns it.
+The owner-only review screen supports direct edits that save the item as `needs-review`, a separate explicit transition to `verified`, and a separate, confirmed publish action available only from `verified`. A published item can be returned to review or marked correction-required, which removes it from the student-facing query. After publishing or unpublishing, confirm the catalog availability and published-only API/UI behavior. Content approval is per item, not a blanket approval for an entire unit.
 
 ## Automated guard and current state
 
@@ -34,6 +34,7 @@ Only an authorized maintainer may update an approved row from `needs-review` to 
 - GitHub Actions rejects a public seed that contains an INSERT into `public.practice_questions` or the key fields commonly used to embed question answers and solutions.
 - RLS tests create generic synthetic published and unpublished fixtures inside a rolled-back transaction. They verify that anon/authenticated clients see only the published fixture.
 - The eight existing draft rows remain in Supabase with `needs-review`; the decision does not publish or delete them. They are no longer recreated from the current public seed file.
+- The initial Algebra Foundations bank consists of 13 lessons and 44 new questions in `needs-review`. None are published automatically. The owner-only review function must be deployed with the PR before the review screen works in the deployed site.
 - The project must continue to keep student-facing publication deliberately separate from question authoring. Do not add a public client path that can create, read, or publish drafts.
 
 ## Cloudflare Pages
