@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(hasSupabaseConfig);
 
   useEffect(() => {
-    if (!supabase) return;
+    if (!hasSupabaseConfig || !supabase) return;
 
     let active = true;
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
