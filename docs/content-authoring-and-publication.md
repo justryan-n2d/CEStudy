@@ -48,14 +48,14 @@ The shared math pipeline applies across every subject and future topic. All stud
 
 Use explicit delimiters for formulas in new content. They give every KaTeX expression a clear start and end, especially for calculus, summations, matrices, vectors, structural equilibrium, mechanics of materials, fluids, surveying, and future engineering subjects.
 
-- Inline formula: `\\(a^2 + b^2 = c^2\\)`
+- Inline formula: `\(a^2 + b^2 = c^2\)`
 - Display formula on separate lines:
 
-  `\\[`
+  `\[`
 
-  `\\frac{a}{b} = c`
+  `\frac{a}{b} = c`
 
-  `\\]`
+  `\]`
 
 KaTeX also accepts single-dollar inline and double-dollar display delimiters. The shared renderer recognizes common complete grouped commands such as a bare fraction or square root without delimiters, but that automatic detection is intentionally limited. Use explicit delimiters for commands such as integrals, summations, matrices, piecewise functions, or any complex expression.
 
