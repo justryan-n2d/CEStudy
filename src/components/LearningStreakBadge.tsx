@@ -117,8 +117,7 @@ export function LearningStreakBadge() {
               <span className="streak-unlock-flame" aria-hidden="true">🔥</span>
               <h2 id="streak-unlock-title">Unlock your learning streak</h2>
               <p id="streak-unlock-description">
-                Sign in with Google to track consecutive study days, save your streak history, and keep track of the last lessons you opened.
-                Your progress is currently stored in this browser. You can still browse the full engineering library without signing in.
+                Sign in with Google to activate your streak and keep track of your study days. Your recent lessons will be available in History on this device, so you can return to where you left off. You can still browse the full engineering library without signing in.
               </p>
               <button
                 className="button button-primary google-signin-button"
