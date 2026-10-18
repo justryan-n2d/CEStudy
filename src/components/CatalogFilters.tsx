@@ -13,7 +13,7 @@ export function CatalogFilters(p:Props){
   const activeFilterCount=[p.year,p.category,p.classification,p.availability].filter(Boolean).length;
   return <section className="filters-panel" aria-label="Filter subject catalog">
     <label className="search-field">
-      <span>Search subjects or topics</span>
+      <span>Search subjects or keywords</span>
       <input type="search" value={p.query} onChange={e=>p.onQueryChange(e.target.value)} placeholder="Try logarithms, statics, or fluids"/>
     </label>
     <details className="catalog-extra-filters">
