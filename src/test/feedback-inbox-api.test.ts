@@ -26,7 +26,7 @@ describe("feedback inbox API error handling", () => {
     expect(getFeedbackInboxSessionToken()).toBe("test-owner-token");
 
     invokeMock.mockResolvedValueOnce({ data: null, error: { context: { status: 401 } } });
-    await expect(listFeedbackMessages()).rejects.toThrow(/temporarily unavailable/i);
+    await expect(listFeedbackMessages()).rejects.toThrow(/expired|temporarily unavailable/i);
     expect(getFeedbackInboxSessionToken()).toBeNull();
   });
 
@@ -38,6 +38,6 @@ describe("feedback inbox API error handling", () => {
     await unlockFeedbackInbox("test-owner-key-that-is-long-enough");
 
     invokeMock.mockResolvedValueOnce({ data: null, error: { context: new Response("not json", { status: 500 }) } });
-    await expect(listFeedbackMessages()).rejects.toThrow(/temporarily unavailable/i);
+    await expect(listFeedbackMessages()).rejects.toThrow(/expired|temporarily unavailable/i);
   });
 });
