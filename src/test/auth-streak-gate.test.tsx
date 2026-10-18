@@ -46,6 +46,18 @@ describe("authenticated learning streak", () => {
     expect(screen.getByRole("button", { name: /continue with google/i })).toBeInTheDocument();
   });
 
+  it("uses the local SVGL Google logo in the sign-in prompt", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><LearningStreakBadge /></MemoryRouter>);
+
+    await user.click(screen.getByRole("button", { name: /learning streak, zero days/i }));
+    const googleButton = screen.getByRole("button", { name: /continue with google/i });
+    const icon = googleButton.querySelector("img.google-signin-icon");
+
+    expect(icon).toHaveAttribute("src", "/branding/icons/google.svg");
+    expect(icon).toHaveAttribute("alt", "");
+  });
+
   it("starts Google login from the prompt", async () => {
     const signInWithGoogle = vi.fn().mockResolvedValue(undefined);
     mockUseAuth.mockReturnValue({
