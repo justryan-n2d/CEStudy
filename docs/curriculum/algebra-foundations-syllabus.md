@@ -158,7 +158,7 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Polynomial equations of degree three and higher
 - Equations that can be rewritten in quadratic form
 - Solving higher-degree equations by factoring
-- Rational Root Theorem for identifying candidate rational zeros of polynomials with integer coefficients
+- Rational Root Theorem for nonzero-constant polynomials with integer coefficients, identifying candidate rational zeros
 - Using polynomial division, synthetic division, the Factor Theorem, and known factors to reduce suitable equations
 - Applying the complex-number notation and basic operations introduced in Unit 7 when checking selected higher-degree polynomial equations
 - Checking candidate roots and factors in the original equation
@@ -273,6 +273,7 @@ The scope was compared with these publicly available records, but their wording,
 2. **CHED CMO No. 92, Series of 2017, BS Civil Engineering Program.** Used for national BSCE program context. This CEStudy learning syllabus does not claim to be an approved CHED course or curriculum. [CHED listing](https://legacy.ched.gov.ph/2017-ched-memorandum-orders/) · [PDF](https://legacy.ched.gov.ph/wp-content/uploads/2018/04/CMO-92-s.-2017-BS-Civil-Engineering.pdf)
 3. **CHED CMO No. 29, Series of 2007, BS Civil Engineering Policies and Standards.** A historical source showing that older BSCE curriculum structures listed College Algebra and Advanced Algebra separately. It is not treated as the current national course-title mandate. [PDF](https://legacy.ched.gov.ph/wp-content/uploads/2017/10/CMO-No.29-s2007.pdf)
 4. **Lippman, David, and Melonie Rasmussen. _Precalculus: An Investigation of Functions_, 2nd edition.** Optional reference for students and topic cross-checking. The LibreCommons record identifies the book as CC BY-SA 4.0. CEStudy must still write original explanations, diagrams, worked examples, questions, and solutions; any intentional reuse must be reviewed for the precise license obligations. [LibreCommons record](https://commons.libretexts.org/book/math-13825) · [Open Textbook Library record](https://open.umn.edu/opentextbooks/textbooks/97)
+5. **Siena College, _Preparation for College Mathematics_, Section 5.4, “Roots of Polynomial Functions.”** Verification-only reference for the placement of the Rational Root Theorem with polynomial division and higher-degree roots. Its exact reuse license was not established in this review, so do not copy its prose, examples, or exercises. [Source page](https://math.libretexts.org/Courses/Siena_College/Preparation_for_College_Mathematics/Chapter_5%3A_Polynomial_Functions/5.4_Roots_of_Polynomial_Functions)
 
 **Copyright note:** Reading, citing, or linking a resource does not grant permission to copy its original text, diagrams, questions, answers, or distinctive arrangement. CEStudy content should be written independently unless specific content is deliberately reused under a license that permits the intended use and all its conditions are met.
 
