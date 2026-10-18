@@ -72,8 +72,8 @@ async function main() {
     { path: "/years", heading: /Year levels/ },
     { path: "/year/2", heading: /Second year/ },
     { path: "/math-foundations", heading: /Math foundations/ },
-    { path: "/subjects/basic-algebra", heading: /Basic and Advanced Algebra/ },
-    { path: "/practice/basic-algebra", heading: /Basic algebra practice/ },
+    { path: "/subjects/basic-algebra", heading: /Algebra Foundations/ },
+    { path: "/practice/basic-algebra", heading: /Algebra Foundations practice/ },
     { path: "/contact", heading: /Contact CEStudy/ },
     { path: "/support", heading: /Support CEStudy/ },
     { path: "/bug-reports", heading: /Report a bug/ },
@@ -231,7 +231,7 @@ async function main() {
   if (expectedPublishedCount === 0) {
     check(
       "Practice page shows review gate and no seed draft prompt",
-      practiceText.includes("Practice questions are being reviewed") && !practiceText.includes("Solve for x: 3x + 5 = 20."),
+      practiceText.includes("Questions coming soon") && practiceText.includes("We're reviewing these questions.") && !practiceText.includes("Solve for x: 3x + 5 = 20."),
       "draft prompt absent from rendered page"
     );
   }
