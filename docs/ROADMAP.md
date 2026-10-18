@@ -1,6 +1,6 @@
 # CEStudy Roadmap
 
-**Last reviewed:** 2026-10-16  
+**Last reviewed:** 2026-10-18  
 **Current phase:** Phase 7, pre-launch hardening and release gates.  
 **Live website:** https://cestudy.pages.dev
 
