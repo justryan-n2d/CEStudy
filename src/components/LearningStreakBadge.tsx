@@ -84,7 +84,7 @@ export function LearningStreakBadge() {
     setSignInError(null);
     setSignInPending(true);
     try {
-      await signInWithGoogle();
+      await signInWithGoogle("/streak");
     } catch (reason) {
       setSignInError(reason instanceof Error
         ? reason.message
