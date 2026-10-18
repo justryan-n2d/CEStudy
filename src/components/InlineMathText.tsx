@@ -14,9 +14,9 @@ const STOP_WORDS = new Set([
 
 interface MathRange { start: number; end: number }
 
-const SIMPLE_FRACTION_ATOM = String.raw\`(?:\\\\[A-Za-z]+(?:\\{[^{}]*\\})?(?:[_^](?:\\{[^{}]+\\}|[A-Za-z0-9]+))*|[A-Za-z0-9]+(?:\\.[0-9]+)?(?:[_^](?:\\{[^{}]+\\}|[A-Za-z0-9]+))*|\\((?:[^()]|\\([^()]*\\))*\\))\`;
+const SIMPLE_FRACTION_ATOM = String.raw`(?:\\[A-Za-z]+(?:\{[^{}]*\})?(?:[_^](?:\{[^{}]+\}|[A-Za-z0-9]+))*|[A-Za-z0-9]+(?:\.[0-9]+)?(?:[_^](?:\{[^{}]+\}|[A-Za-z0-9]+))*|\((?:[^()]|\([^()]*\))*\))`;
 const SIMPLE_SLASH_FRACTION_PATTERN = new RegExp(
-  String.raw\`(?<![A-Za-z0-9\\\\])(\${SIMPLE_FRACTION_ATOM})\\s*\\/\\s*(\${SIMPLE_FRACTION_ATOM})(?![A-Za-z0-9])\`,
+  String.raw`(?<![A-Za-z0-9\\])(${SIMPLE_FRACTION_ATOM})\s*\/\s*(${SIMPLE_FRACTION_ATOM})(?![A-Za-z0-9])`,
   "gu",
 );
 
@@ -27,7 +27,7 @@ const SIMPLE_SLASH_FRACTION_PATTERN = new RegExp(
 function stackSimpleSlashFractions(expression: string): string {
   const protectedSegments: string[] = [];
   const protectedExpression = expression.replace(
-    /\\\\(?:text|textrm|textnormal|mathrm)\\{(?:[^{}]|\\{[^{}]*\\})*\\}/gu,
+    /\\\\(?:text|textrm|textnormal|mathrm)\{(?:[^{}]|\{[^{}]*\})*\}/gu,
     (segment) => {
       const index = protectedSegments.push(segment) - 1;
       return String.fromCharCode(0) + index + String.fromCharCode(0);
@@ -37,15 +37,14 @@ function stackSimpleSlashFractions(expression: string): string {
   const converted = protectedExpression.replace(
     SIMPLE_SLASH_FRACTION_PATTERN,
     (_match, numerator: string, denominator: string) =>
-      String.raw\`\\frac{\${numerator.trim()}}{\${denominator.trim()}}\`,
+      String.raw`\frac{${numerator.trim()}}{${denominator.trim()}}`,
   );
 
   return converted.replace(
-    /\\u0000(\\d+)\\u0000/gu,
+    /\u0000(\d+)\u0000/gu,
     (placeholder, index: string) => protectedSegments[Number(index)] ?? placeholder,
   );
 }
-
 
 function isOperator(char: string | undefined): boolean {
   return Boolean(char && "+-−±×÷*/^=≠<>≤≥".includes(char));
