@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { LearningStreakBadge } from "../components/LearningStreakBadge";
 import {
   clearLessonProgress,
   readCompletedLessons,
@@ -31,6 +32,8 @@ export function ProgressPage() {
         <h1>Your learning progress</h1>
         <p>Review the published lessons you have completed. Progress is saved in this browser on this device only, not synced to an account.</p>
       </section>
+
+      <LearningStreakBadge completedLessons={completedLessons} />
 
       {sortedLessons.length === 0 ? (
         <section className="state-panel progress-empty">
