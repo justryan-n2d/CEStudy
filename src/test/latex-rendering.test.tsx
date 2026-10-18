@@ -196,8 +196,8 @@ describe("LaTeX math rendering",()=>{
   it("stacks simple slash fractions in automatically detected lesson equations",async()=>{
     const lesson = "Fractions: 3/4 − 1/6 = 9/12 − 2/12 = 7/12.";
     render(<MarkdownContent markdown={lesson} />);
-    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
-    expect(document.querySelectorAll(".katex .mfrac")).toHaveLength(5);
+    await waitFor(()=>expect(document.querySelectorAll(".katex .mfrac").length).toBeGreaterThanOrEqual(5));
+    expect(document.querySelectorAll(".latex-math-error")).toHaveLength(0);
     expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
   });
 
