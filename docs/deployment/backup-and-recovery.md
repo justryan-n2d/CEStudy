@@ -1,17 +1,17 @@
 # CEStudy database backup and recovery plan
 
-**Status:** Automated weekly backup is active. The first successful live database backup passed in [GitHub Actions run 38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). Its encrypted archive and checksum were read back and verified in Backblaze B2, and retention completed with one verified set. On 2026-10-16 the actual backup was decrypted and restored into an isolated local PostgreSQL 18.2 database; application rows, RLS policies, and client privileges passed validation. A restore into a separate managed Supabase project remains untested. Backblaze hidden-version lifecycle cleanup and GitHub failure email settings also need manual confirmation. See [restore-drill evidence](restore-drill-2026-10-16.md).
+**Status:** Automated weekly backup is active. The first successful live backup passed in [GitHub Actions run 38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), and its encrypted archive/checksum were verified in private Backblaze B2. The actual October 15 snapshot was decrypted and restored into isolated local PostgreSQL 18.2 on 2026-10-16; see [restore-drill evidence](restore-drill-2026-10-16.md). That snapshot predates the live database's current 52-question/13-lesson state and the 2026-10-18 publication-status correction. A fresh encrypted backup and a managed-Supabase-target restore remain required. Backblaze hidden-version lifecycle cleanup and GitHub failure-email settings also need manual confirmation.
 **Scope:** Current seeded-only MVP, before student accounts, submissions, or other mutable user data are introduced.
 
 ## Current recovery position
 
-The app currently stores 72 catalog subjects and eight Basic Algebra questions marked `needs-review`. No question is published. Migrations and `supabase/seed.sql` are committed in the CEStudy repository, so the current baseline can be recreated in a fresh, isolated Supabase project and tested through CI.
+The live database currently stores 72 catalog subjects, 52 practice questions, and 13 lesson records. All 52 questions and all 13 lessons are `needs-review`; none are published. Migrations and `supabase/seed.sql` are committed, but the seed contains catalog metadata only. Actual unpublished question and lesson content is maintained in the private CEStudy database and must be recovered from a current encrypted backup.
 
 This is a reproducible baseline, not a point-in-time backup of the live database. The remote database is authoritative for its current state. Do not assume source control contains any future edits made directly in Supabase.
 
 ## Minimum backup policy
 
-1. Keep schema changes in reviewed migrations. **Do not commit unreleased question text to a public repository or public build artifact.** The current public `supabase/seed.sql` contains the existing draft question text; treat those eight items as already disclosed rather than as confidential assessment questions. See [repository privacy and branch protection](github-privacy-and-branch-protection.md).
+1. Keep schema changes in reviewed migrations. **Do not commit unreleased question text to a public repository or public build artifact.** Prior public Git history contains the original eight draft questions, and that past exposure is accepted. The current public `supabase/seed.sql` contains catalog metadata only; future unpublished lesson and question content must remain in the private database. See [repository privacy and branch protection](github-privacy-and-branch-protection.md).
 2. Before introducing published questions or other content maintained outside the seed, export the database before and after each publication batch.
 3. Before adding accounts, student progress, public submissions, or other mutable user data, configure at least weekly logical exports to private off-site storage and retain the most recent four weekly exports. Use a shorter interval if the acceptable amount of lost data is lower.
 4. Keep export files, database connection strings, database passwords, access tokens, and encryption keys out of Git, public artifacts, chat, and application build variables. Store backups in private, encrypted storage with restricted access.
@@ -19,7 +19,7 @@ The CEStudy Supabase organization is on the Free plan. Supabase documents automa
 
 ## Automated weekly Backblaze workflow
 
-A scheduled workflow is active at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It runs Sundays at 02:00 UTC (10:00 AM Philippine time) and can also be run manually. It exports the database with PostgreSQL 17, validates the archive and expected tables, encrypts with RSA-OAEP/SHA-256 plus streaming AES-256-GCM, uploads to the private `cestudy-db-backup/termux/weekly/` prefix, reads the archive and checksum back, verifies the `.verified` marker, and retains the latest four complete verified sets. The first successful live run is recorded above. The scheduled backup process is automated; B2 lifecycle cleanup, GitHub failure email preferences, and the full restore drill are separate manual release checks.
+A scheduled workflow is active at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It runs Sundays at 02:00 UTC (10:00 AM Philippine time) and can also be run manually. It exports the database with PostgreSQL 17, validates the archive and expected tables, encrypts with RSA-OAEP/SHA-256 plus streaming AES-256-GCM, uploads to the private `cestudy-db-backup/termux/weekly/` prefix, reads the archive and checksum back, verifies the `.verified` marker, and retains the latest four complete verified sets. The first successful live run is recorded above. The scheduled backup process is automated and one older backup was restored into isolated local PostgreSQL. A fresh backup after the 2026-10-18 content-status correction, B2 lifecycle cleanup, GitHub failure-email preferences, and a managed-Supabase restore are still manual release checks.
 
 ## Creating a logical export
 
@@ -49,7 +49,7 @@ supabase db dump --db-url "$CESTUDY_DB_URL" -f schema.sql
 supabase db dump --db-url "$CESTUDY_DB_URL" -f data.sql --use-copy --data-only -x "storage.buckets_vectors" -x "storage.vector_indexes"
 ```
 
-After the export, verify that the archive exists and the checksum file is present. Copy the backup to encrypted private off-site storage and keep the checksum with it. Database dumps do not include Storage object files; the current CEStudy project has no Storage buckets or student uploads. The script has been added to the repository, but **it has not yet been run against the live database**.
+After the export, verify that the archive exists and the checksum file is present. Copy the backup to encrypted private off-site storage and keep the checksum with it. Database dumps do not include Storage object files; the current CEStudy project has no Storage buckets or student uploads. The one-off `scripts/backup-supabase.sh` helper has not been verified against the live database; the separate weekly GitHub Actions workflow is the verified backup path. Do not treat the helper as a recovery proof.
 
 ## Safe restore drill
 
@@ -61,7 +61,7 @@ For a managed-Supabase-target recovery rehearsal (still outstanding), perform th
 2. Follow the restore procedure in the official guide for the exported `roles.sql`, `schema.sql`, and `data.sql`, adapting the documented connection string to the new temporary project only.
 3. Never restore over the production project as a first test. Never run `supabase db reset --linked` against the live/shared project.
 4. Run read-only checks in the temporary project: catalog count, question count and statuses, RLS enabled on both app tables, published-question count, client grants, and the Supabase security advisor.
-5. Confirm the restored project has 72 catalog records, 8 questions, 0 published questions, only SELECT grants for client roles, and policies that only return published questions. Investigate any difference before declaring the drill successful.
+5. For a refreshed snapshot, confirm 72 catalog records, 52 questions, 13 lessons, zero published questions and lessons, client write restrictions, and policies that only return explicitly published content. Investigate any difference before declaring the drill successful.
 6. Record the date, tool/CLI version, backup filenames (not their contents or connection details), restore result, validation output, and corrective actions in a new Git-tracked verification note.
 7. Remove the temporary project only after the test has passed and any needed evidence is recorded. Check billing before creating it.
 
@@ -77,8 +77,9 @@ For a managed-Supabase-target recovery rehearsal (still outstanding), perform th
 - [ ] Configure and confirm the B2 lifecycle rule for `termux/weekly/` and GitHub failed-workflow email notifications.
 - [x] Complete a successful live weekly-workflow run; run 38773249088 verified the encrypted archive, checksum, and `.verified` marker in B2.
 - [x] Decrypt the actual B2 backup in Termux, verify its checksum and AES-GCM authentication, restore its `public` application schema into isolated local PostgreSQL 18.2, and validate counts, RLS, and client permissions. Evidence: [restore drill](restore-drill-2026-10-16.md).
-- [ ] Restore/rehearse the actual backup into a separate managed Supabase project and validate platform-target behavior; the local restore does not cover Supabase-managed roles/system schemas/settings.
+- [ ] Run/verify a fresh encrypted backup after the 2026-10-18 content-status correction.
+- [ ] Restore/rehearse the refreshed backup into a separate managed Supabase project and validate platform-target behavior; the local restore does not cover Supabase-managed roles/system schemas/settings.
 - [ ] Backup cadence and retention owner agreed before mutable data or student accounts launch.
 - [ ] Recovery steps and latest export location are known to the maintainer.
 
-The weekly backup automation is active and has completed one successful live backup. The real encrypted backup has also been decrypted and restored into isolated local PostgreSQL, with the application schema and tested security behavior validated. Remaining recovery gates include the B2 hidden-version lifecycle rule, failure-email preferences, and the separate managed-Supabase-target restore. Do not treat recovery into a managed Supabase project as proven until that target-specific test passes.
+The weekly backup automation is active and has completed a successful live backup from an earlier database state. That real encrypted snapshot was decrypted and restored to isolated local PostgreSQL. On 2026-10-18, production publication statuses were corrected, so the current database must be backed up again before the recovery evidence is considered current. Remaining gates are a fresh encrypted backup, the B2 hidden-version lifecycle rule, GitHub failure-email preferences, and a separate managed-Supabase-target restore. Do not treat current-state recovery as proven until the refreshed snapshot and target-specific test pass.
