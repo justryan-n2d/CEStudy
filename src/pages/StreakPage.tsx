@@ -56,7 +56,7 @@ export function StreakPage() {
         <section className="state-panel streak-locked-panel">
           <h2>Unlock your streak</h2>
           <p>Sign in with Google to save study days and view your streak history on this device. Cross-device syncing is not available yet.</p>
-          <Link className="button button-primary" to="/profile">Sign in with Google</Link>
+          <Link className="button button-primary" to="/login?next=%2Fstreak">Sign in with Google</Link>
         </section>
       )}
 
