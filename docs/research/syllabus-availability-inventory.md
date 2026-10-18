@@ -1,7 +1,7 @@
 # CEStudy Foundation Subject Syllabus Availability Inventory
 
 **Checked:** 2026-10-18  
-**Status:** Research inventory only. No syllabus has been drafted, combined, or represented as official.  
+**Status:** Research inventory only. No syllabus has been drafted or represented as official. For CEStudy planning, Algebra Readiness and College Algebra are grouped into one pathway provisionally named **Algebra Foundations**; the source evidence for them remains distinguished below.  
 **Scope:** Public CHED documents and Philippine university curriculum/course-description pages.
 
 ## How to read this inventory
@@ -15,8 +15,7 @@
 
 | CEStudy subject | Result | What was actually found | What was not verified |
 |---|---|---|---|
-| **Algebra Readiness** | **No standalone syllabus found** | Samar State University's official BSCE curriculum lists a bridging program with PREP College Algebra for non-STEM entrants. This is a curriculum/bridging entry, not a subject syllabus titled Algebra Readiness. | No standalone public BSCE syllabus named Algebra Readiness or an equivalent diagnostic syllabus was located. |
-| **College Algebra** | **Course description and curriculum listings found; full current syllabus not found** | De La Salle University's public course-description page describes College Algebra, including algebraic expressions, equations, functions, inequalities, polynomial/rational/radical equations, exponential/logarithmic equations, and systems. CHED CMO No. 29, s. 2007 and the University of the Assumption BSCE curriculum also list the subject. | No dated, complete, current BSCE syllabus with a full teaching schedule and assessment plan was verified. |
+| **Algebra Foundations (CEStudy grouping of readiness + College Algebra)** | **No standalone readiness syllabus found; College Algebra course descriptions/listings found; full current syllabus not verified** | Samar State University's BSCE curriculum lists a bridging program with PREP College Algebra for non-STEM entrants, but not a standalone Algebra Readiness syllabus. DLSU's course-description page describes College Algebra topics, and CHED CMO No. 29, s. 2007 plus the University of the Assumption curriculum list College Algebra. | No dated, complete, current syllabus for this combined CEStudy pathway was found. The grouping is a CEStudy planning choice, not an official university course title. |
 | **Advanced Algebra** | **Course description and historical curriculum listings found; full current syllabus not found** | DLSU's course description covers matrices, determinants, sequences, counting, permutations/combinations, the binomial theorem, systems of linear equations, and partial fractions. CHED CMO No. 29, s. 2007 lists Advanced Algebra as a separate course. | No dated, complete, current BSCE syllabus was verified. |
 | **Plane and Spherical Trigonometry** | **Course description and historical curriculum listings found; full current BSCE syllabus not found** | DLSU's course description discusses angle measurement, trigonometric functions and graphs, identities/equations, inverse trigonometric functions, solving right and oblique triangles using the Laws of Sines and Cosines, and spherical triangles. CHED CMO No. 29, s. 2007 and older university curriculum listings name the course. | No dated, complete, current BSCE syllabus with a full topic calendar was verified. |
 | **Analytic Geometry** | **Course description and curriculum listings found; full current syllabus not found** | DLSU describes equations of lines and conic sections and curve-tracing in rectangular and polar coordinates. CHED CMO No. 29, s. 2007 and the University of the Assumption BSCE curriculum list the subject. | No dated, complete, current BSCE syllabus was verified. |
@@ -38,11 +37,11 @@
 
 ## Conclusion
 
-- **A separate public Algebra Readiness syllabus was not found.** A bridging College Algebra curriculum entry was found.
-- **For College Algebra, Advanced Algebra, Plane and Spherical Trigonometry, and Analytic Geometry, course descriptions and/or older curriculum listings were found, but a full current BSCE syllabus was not verified.**
+- **Algebra Foundations (CEStudy grouping):** no standalone public Algebra Readiness syllabus was found; a bridging College Algebra entry and College Algebra course descriptions/curriculum listings were found. No complete current syllabus for CEStudy's combined pathway was verified.
+- **For Advanced Algebra, Plane and Spherical Trigonometry, and Analytic Geometry, course descriptions and/or older curriculum listings were found, but a full current BSCE syllabus was not verified.**
 - **For Solid Mensuration, a detailed course description and a historical 2013 syllabus copy were found, but no current official complete syllabus was verified.**
 - This is a record of what surfaced in public sources during this search, not proof that other universities do not have syllabi that are unpublished or not indexed.
-- Keep all subjects separate. Do not turn this inventory into a CEStudy syllabus until the subject scope and target curriculum approach are approved.
+- Keep Advanced Algebra, Trigonometry, Analytic Geometry, and Solid Mensuration separate. Algebra Readiness and College Algebra are grouped as one CEStudy planning pathway, with readiness/review first and College Algebra next. This decision does not claim that a combined official syllabus exists. Do not draft the syllabus until the scope and target curriculum approach are approved.
 
 ## Use and copyright note
 
