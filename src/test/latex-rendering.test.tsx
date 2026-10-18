@@ -1,4 +1,4 @@
-import { render,screen } from "@testing-library/react";
+import { render,screen,waitFor } from "@testing-library/react";
 import { describe,expect,it } from "vitest";
 import { MarkdownContent } from "../components/MarkdownContent";
 import { PracticeQuestion } from "../components/PracticeQuestion";
@@ -18,14 +18,14 @@ const syntheticQuestion:PracticeQuestionData={
 };
 
 describe("LaTeX math rendering",()=>{
-  it("renders inline and display expressions in lesson Markdown",()=>{
+  it("renders inline and display expressions in lesson Markdown",async()=>{
     render(<MarkdownContent markdown={String.raw`The formula is \(a^2 + b^2 = c^2\).
 
 \[
 \frac{a}{b} = c
 \]`} />);
 
-    expect(document.querySelectorAll(".katex")).toHaveLength(2);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(2));
     expect(document.querySelector(".katex-display")).toBeInTheDocument();
     expect(document.querySelector(".katex [style]")).toBeInTheDocument();
     expect(screen.getByText(/The formula is/)).toBeInTheDocument();
@@ -42,11 +42,11 @@ describe("LaTeX math rendering",()=>{
     expect(screen.getByText(String.raw`\(x+2\)`)).toBeInTheDocument();
   });
 
-  it("renders math in practice prompts, choices, and worked explanations",()=>{
+  it("renders math in practice prompts, choices, and worked explanations",async()=>{
     render(<PracticeQuestion question={syntheticQuestion} index={0} total={1} selectedAnswer={String.raw`\(x = 3\)`} submitted={true}
       onSelect={()=>{}} onSubmit={()=>{}} onNext={()=>{}} />);
 
-    expect(document.querySelectorAll(".katex")).toHaveLength(5);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(5));
     expect(document.querySelector(".practice-question-card h2")?.textContent).toContain("Solve");
     expect(screen.getByText(/Subtract 2/)).toBeInTheDocument();
   });
@@ -57,9 +57,9 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
   });
 
-  it("shows malformed LaTeX as readable source",()=>{
+  it("shows malformed LaTeX as readable source",async()=>{
     render(<MarkdownContent markdown={"Invalid formula: \\(\\notARealCommand{x}\\)"} />);
-    expect(screen.getByText("\\notARealCommand{x}")).toHaveClass("latex-math-error");
+    await waitFor(()=>expect(screen.getByText("\\notARealCommand{x}")).toHaveClass("latex-math-error"));
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
   });
 
