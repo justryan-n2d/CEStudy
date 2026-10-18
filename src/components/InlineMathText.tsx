@@ -124,6 +124,23 @@ function findPlainMathRanges(text: string): MathRange[] {
     ranges.push({ start, end });
   }
 
+  // Also render clear mathematical expressions that have no equality sign,
+  // such as a × 10^n, 3 + 2i, and a standalone square root.
+  const expressionAnchors = /[+×÷√^⁰¹²³⁴⁵⁶⁷⁸⁹±]/gu;
+  while ((match = expressionAnchors.exec(text)) !== null) {
+    const anchorStart = match.index;
+    if (isInsideRawHtmlTag(text, anchorStart)) continue;
+
+    const anchorEnd = anchorStart + match[0].length;
+    const start = match[0] === "√" ? anchorStart : findLeftBound(text, anchorStart);
+    const end = findRightBound(text, anchorEnd);
+    if (start > anchorStart || end <= anchorEnd) continue;
+
+    const candidate = text.slice(start, end).trim();
+    if (!MATH_EVIDENCE_PATTERN.test(candidate)) continue;
+    ranges.push({ start, end });
+  }
+
   ranges.sort((a, b) => a.start - b.start || a.end - b.end);
   const merged: MathRange[] = [];
   for (const range of ranges) {
