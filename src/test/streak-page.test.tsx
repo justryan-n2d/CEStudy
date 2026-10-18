@@ -31,7 +31,7 @@ describe("learning streak calendar", () => {
 
     render(<MemoryRouter><StreakPage /></MemoryRouter>);
 
-    expect(screen.getByRole("heading", { name: /streak calendar/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: /streak calendar/i })).toBeInTheDocument();
     expect(screen.getByText(/current streak/i)).toBeInTheDocument();
     const studyDay = screen.getByRole("button", { name: /study day/i });
     expect(studyDay).toHaveClass("is-active");
@@ -69,6 +69,6 @@ describe("learning streak calendar", () => {
     render(<MemoryRouter><StreakPage /></MemoryRouter>);
 
     expect(screen.getByRole("link", { name: /sign in with google/i })).toHaveAttribute("href", "/profile");
-    expect(screen.getByText(/sign in to view your streak history/i)).toBeInTheDocument();
+    expect(screen.getByText(/dates stay blank until your account has recorded study days/i)).toBeInTheDocument();
   });
 });
