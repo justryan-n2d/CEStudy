@@ -74,7 +74,8 @@ function findRightBound(text: string, position: number): number {
       end++;
       continue;
     }
-    if (depth === 0 && (char === "," || char === ";" || char === ":" || (char === "." && !(/\d/u.test(text[end - 1] ?? "") && /\d/u.test(text[end + 1] ?? "")))) break;
+    const decimalPoint = char === "." && /\d/u.test(text[end - 1] ?? "") && /\d/u.test(text[end + 1] ?? "");
+    if (depth === 0 && ([",", ";", ":"].includes(char) || (char === "." && !decimalPoint))) break;
     if (isMathCharacter(text, end)) {
       end++;
       continue;
