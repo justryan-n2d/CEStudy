@@ -1,5 +1,5 @@
 begin;
-select plan(22);
+select plan(20);
 
 select ok(
   (select relrowsecurity from pg_class where oid = 'public.subject_lessons'::regclass),
