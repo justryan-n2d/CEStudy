@@ -10,7 +10,14 @@ import { fetchPublishedTopicIndex } from "../data/topic-search-api";
 import type { PublishedTopicIndexEntry } from "../data/topic-search-api";
 
 function topicSearchText(topic:PublishedTopicIndexEntry,subjectTitle:string):string {
-  return [topic.title,topic.slug,subjectTitle,...topic.learningObjectives].join(" ").normalize("NFKC").toLowerCase();
+  const topicDetails=topic.kind==="lesson"
+    ? [topic.title,topic.slug,...topic.learningObjectives]
+    : [topic.title,topic.topic];
+  return [...topicDetails,subjectTitle].join(" ").normalize("NFKC").toLowerCase();
+}
+
+function topicTitleText(topic:PublishedTopicIndexEntry):string {
+  return topic.kind==="lesson" ? [topic.title,topic.slug].join(" ").normalize("NFKC").toLowerCase() : topic.title.normalize("NFKC").toLowerCase();
 }
 
 export function CatalogPage(){
@@ -48,10 +55,25 @@ export function CatalogPage(){
 
   const matchingTopics=useMemo(()=>{
     if(!normalizedQuery)return [];
-    return publishedTopics.filter(topic=>{
+    const matched=publishedTopics.filter(topic=>{
       const parent=eligibleSubjects.find(subject=>subject.slug===topic.subjectSlug);
       return Boolean(parent)&&queryTerms.every(term=>topicSearchText(topic,parent?.title??"").includes(term));
-    }).slice(0,8);
+    });
+    const uniqueTopics=new Map<string,PublishedTopicIndexEntry>();
+    for(const topic of matched){
+      const key=topic.subjectSlug+":"+topic.title.normalize("NFKC").trim().toLowerCase();
+      const current=uniqueTopics.get(key);
+      if(!current||(topic.kind==="practice"&&current.kind==="lesson"))uniqueTopics.set(key,topic);
+    }
+    return [...uniqueTopics.values()]
+      .sort((a,b)=>{
+        const aTitleMatches=queryTerms.every(term=>topicTitleText(a).includes(term));
+        const bTitleMatches=queryTerms.every(term=>topicTitleText(b).includes(term));
+        if(aTitleMatches!==bTitleMatches)return aTitleMatches?-1:1;
+        if(a.kind!==b.kind)return a.kind==="practice"?-1:1;
+        return a.title.localeCompare(b.title);
+      })
+      .slice(0,8);
   },[publishedTopics,eligibleSubjects,normalizedQuery]);
 
   const clearFilters=()=>{setYear("");setCategory("");setClassification("");setAvailability("");};
@@ -77,8 +99,15 @@ export function CatalogPage(){
           <div className="topic-search-results">
             {matchingTopics.map(topic=>{
               const parent=subjects.find(subject=>subject.slug===topic.subjectSlug);
-              return <Link className="topic-search-result" key={topic.subjectSlug+":"+topic.unitNumber} to={`/study/${topic.subjectSlug}/${topic.unitNumber}`}>
-                <span><strong>{topic.title}</strong><small>{parent?.title??topic.subjectSlug} · Unit {topic.unitNumber}</small></span>
+              const isPractice=topic.kind==="practice";
+              const destination=isPractice
+                ? `/practice/${topic.subjectSlug}?topic=${encodeURIComponent(topic.topic)}`
+                : `/study/${topic.subjectSlug}/${topic.unitNumber}`;
+              const meta=isPractice
+                ? `${parent?.title??topic.subjectSlug} · ${topic.questionCount} practice question${topic.questionCount===1?"":"s"}`
+                : `${parent?.title??topic.subjectSlug} · Quick review · Unit ${topic.unitNumber}`;
+              return <Link className="topic-search-result" key={topic.subjectSlug+":"+topic.kind+":"+topic.title.toLowerCase()} to={destination}>
+                <span><strong>{topic.title}</strong><small>{meta}</small></span>
                 <span aria-hidden="true">→</span>
               </Link>;
             })}
