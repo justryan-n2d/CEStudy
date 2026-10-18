@@ -30,7 +30,7 @@ function stackSimpleSlashFractions(expression: string): string {
     /\\\\(?:text|textrm|textnormal|mathrm)\{(?:[^{}]|\{[^{}]*\})*\}/gu,
     (segment) => {
       const index = protectedSegments.push(segment) - 1;
-      return String.fromCharCode(0) + index + String.fromCharCode(0);
+      return String.fromCharCode(0xe000) + index + String.fromCharCode(0xe001);
     },
   );
 
@@ -41,7 +41,7 @@ function stackSimpleSlashFractions(expression: string): string {
   );
 
   return converted.replace(
-    /\u0000(\d+)\u0000/gu,
+    /\uE000(\d+)\uE001/gu,
     (placeholder, index: string) => protectedSegments[Number(index)] ?? placeholder,
   );
 }
