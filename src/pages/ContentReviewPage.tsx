@@ -10,6 +10,7 @@ import {
   lockContentReview,
   unlockContentReview,
   updateContentReviewStatus,
+  type ContentEdits,
   type ContentReviewBundle,
   type ReviewAction,
 } from "../data/content-review-api";
@@ -36,6 +37,9 @@ function activeLesson(bundle: ContentReviewBundle | null, id: string | null): Su
 function activeQuestion(bundle: ContentReviewBundle | null, id: string | null): ReviewPracticeQuestion | null {
   return bundle?.questions.find((question) => question.id === id) ?? null;
 }
+function splitLines(value: string): string[] {
+  return value.split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);
+}
 
 export function ContentReviewPage() {
   const [unlocked, setUnlocked] = useState(() => Boolean(getContentReviewSessionToken()));
@@ -52,6 +56,17 @@ export function ContentReviewPage() {
   const [notice, setNotice] = useState("");
   const [reviewNotes, setReviewNotes] = useState("");
   const [reviewConfirmed, setReviewConfirmed] = useState(false);
+  const [editLessonTitle, setEditLessonTitle] = useState("");
+  const [editLessonObjectives, setEditLessonObjectives] = useState("");
+  const [editLessonMarkdown, setEditLessonMarkdown] = useState("");
+  const [editLessonSourceNote, setEditLessonSourceNote] = useState("");
+  const [editQuestionTopic, setEditQuestionTopic] = useState("");
+  const [editQuestionPrompt, setEditQuestionPrompt] = useState("");
+  const [editQuestionChoices, setEditQuestionChoices] = useState("");
+  const [editQuestionAnswer, setEditQuestionAnswer] = useState("");
+  const [editQuestionSteps, setEditQuestionSteps] = useState("");
+  const [editQuestionExplanation, setEditQuestionExplanation] = useState("");
+  const [editQuestionSourceNote, setEditQuestionSourceNote] = useState("");
 
   const lesson = activeLesson(bundle, selectedLessonId);
   const question = activeQuestion(bundle, selectedQuestionId);
@@ -98,7 +113,22 @@ export function ContentReviewPage() {
     setReviewNotes(current?.reviewNotes ?? "");
     setReviewConfirmed(false);
     setNotice("");
-  }, [tab, current?.id, current?.reviewNotes]);
+    if (tab === "lessons" && current && "lessonMarkdown" in current) {
+      setEditLessonTitle(current.title);
+      setEditLessonObjectives(current.learningObjectives.join("\\n"));
+      setEditLessonMarkdown(current.lessonMarkdown);
+      setEditLessonSourceNote(current.sourceNote);
+    }
+    if (tab === "questions" && current && "correctAnswer" in current) {
+      setEditQuestionTopic(current.topic);
+      setEditQuestionPrompt(current.prompt);
+      setEditQuestionChoices(current.choices.join("\\n"));
+      setEditQuestionAnswer(current.correctAnswer);
+      setEditQuestionSteps(current.solutionSteps.join("\\n"));
+      setEditQuestionExplanation(current.explanation);
+      setEditQuestionSourceNote(current.sourceNote);
+    }
+  }, [tab, current]);
 
   async function handleUnlock(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -122,6 +152,26 @@ export function ContentReviewPage() {
     setUnlocked(false);
     setNotice("");
     setError("");
+  }
+
+  function buildContentEdits(): ContentEdits {
+    if (tab === "lessons") {
+      return {
+        title: editLessonTitle.trim(),
+        learningObjectives: splitLines(editLessonObjectives),
+        lessonMarkdown: editLessonMarkdown,
+        sourceNote: editLessonSourceNote.trim(),
+      };
+    }
+    return {
+      topic: editQuestionTopic.trim(),
+      prompt: editQuestionPrompt.trim(),
+      choices: splitLines(editQuestionChoices),
+      correctAnswer: editQuestionAnswer.trim(),
+      solutionSteps: splitLines(editQuestionSteps),
+      explanation: editQuestionExplanation.trim(),
+      sourceNote: editQuestionSourceNote.trim(),
+    };
   }
 
   async function runAction(action: ReviewAction) {
@@ -149,6 +199,7 @@ export function ContentReviewPage() {
         current.id,
         action,
         reviewNotes,
+        action === "save-edits" ? buildContentEdits() : undefined,
       );
       await loadBundle();
       setReviewConfirmed(false);
@@ -254,12 +305,34 @@ export function ContentReviewPage() {
             </div>
 
             {lesson && tab === "lessons" ? <>
-              <section className="review-detail-card"><h3>Learning objectives</h3><ul>{lesson.learningObjectives.map((objective, index) => <li key={index}>{objective}</li>)}</ul></section>
-              <section className="review-detail-card"><h3>Lesson preview</h3><MarkdownContent markdown={lesson.lessonMarkdown} /></section>
+              <section className="review-detail-card"><h3>Lesson preview</h3><MarkdownContent markdown={editLessonMarkdown || lesson.lessonMarkdown} /></section>
+              {(current.status === "needs-review" || current.status === "correction-required") && (
+                <section className="review-edit-fields">
+                  <h3>Edit lesson content</h3>
+                  <p className="field-hint">You can correct the title, objectives, lesson text, and source note. Save keeps the lesson private and in review.</p>
+                  <label className="form-field"><span>Lesson title</span><input value={editLessonTitle} onChange={(event) => setEditLessonTitle(event.target.value)} maxLength={180} disabled={busy} /></label>
+                  <label className="form-field"><span>Learning objectives <small>One objective per line, 1 to 8</small></span><textarea value={editLessonObjectives} onChange={(event) => setEditLessonObjectives(event.target.value)} rows={4} maxLength={3200} disabled={busy} /></label>
+                  <label className="form-field"><span>Lesson text <small>Markdown subset supported in the preview</small></span><textarea value={editLessonMarkdown} onChange={(event) => setEditLessonMarkdown(event.target.value)} rows={18} maxLength={20000} disabled={busy} /></label>
+                  <label className="form-field"><span>Source / attribution note</span><textarea value={editLessonSourceNote} onChange={(event) => setEditLessonSourceNote(event.target.value)} rows={3} maxLength={1200} disabled={busy} /></label>
+                </section>
+              )}
               <p className="review-source-note"><strong>Source / review note:</strong> {lesson.sourceNote}</p>
             </> : question && tab === "questions" ? <>
               <section className="review-detail-card"><h3>Question prompt</h3><p>{question.prompt}</p></section>
               <section className="review-detail-card"><h3>Choices</h3><ol type="A">{question.choices.map((choice, index) => <li key={index}>{choice}</li>)}</ol></section>
+              {(current.status === "needs-review" || current.status === "correction-required") && (
+                <section className="review-edit-fields">
+                  <h3>Edit practice question</h3>
+                  <p className="field-hint">Use one choice per line. The correct answer must exactly match one of the choices. Save keeps the question private and in review.</p>
+                  <label className="form-field"><span>Topic</span><input value={editQuestionTopic} onChange={(event) => setEditQuestionTopic(event.target.value)} maxLength={120} disabled={busy} /></label>
+                  <label className="form-field"><span>Question prompt</span><textarea value={editQuestionPrompt} onChange={(event) => setEditQuestionPrompt(event.target.value)} rows={4} maxLength={1200} disabled={busy} /></label>
+                  <label className="form-field"><span>Answer choices <small>One per line, 2 to 8 unique choices</small></span><textarea value={editQuestionChoices} onChange={(event) => setEditQuestionChoices(event.target.value)} rows={6} maxLength={2500} disabled={busy} /></label>
+                  <label className="form-field"><span>Correct answer <small>Must match a choice exactly</small></span><input value={editQuestionAnswer} onChange={(event) => setEditQuestionAnswer(event.target.value)} maxLength={240} disabled={busy} /></label>
+                  <label className="form-field"><span>Worked solution steps <small>One step per line, 1 to 12</small></span><textarea value={editQuestionSteps} onChange={(event) => setEditQuestionSteps(event.target.value)} rows={6} maxLength={12000} disabled={busy} /></label>
+                  <label className="form-field"><span>Explanation</span><textarea value={editQuestionExplanation} onChange={(event) => setEditQuestionExplanation(event.target.value)} rows={4} maxLength={1000} disabled={busy} /></label>
+                  <label className="form-field"><span>Source / attribution note</span><textarea value={editQuestionSourceNote} onChange={(event) => setEditQuestionSourceNote(event.target.value)} rows={3} maxLength={500} disabled={busy} /></label>
+                </section>
+              )}
               <details className="review-answer-details">
                 <summary>Show answer key and solution</summary>
                 <div className="review-answer-body">
@@ -277,6 +350,11 @@ export function ContentReviewPage() {
                   placeholder="Add corrections or notes for your next review." disabled={busy} />
               </label>
               {current.status === "draft" && <button className="button button-secondary" type="button" onClick={() => void runAction("return-to-review")} disabled={busy}>Move to review queue</button>}
+              {(current.status === "needs-review" || current.status === "correction-required") && <>
+                <button className="button button-secondary" type="button" onClick={() => void runAction("save-edits")} disabled={busy}>
+                  {busy ? "Saving edits…" : "Save edits, keep unpublished"}
+                </button>
+              </>}
               {current.status === "needs-review" && <>
                 <label className="review-confirm-check"><input type="checkbox" checked={reviewConfirmed} onChange={(event) => setReviewConfirmed(event.target.checked)} disabled={busy} />
                   <span>{tab === "lessons" ? "I reviewed this lesson against the approved syllabus." : "I checked the prompt, choices, correct answer, and worked solution."}</span>
@@ -286,7 +364,7 @@ export function ContentReviewPage() {
                   <button className="button button-secondary" type="button" onClick={() => void runAction("request-correction")} disabled={busy || reviewNotes.trim().length < 8}>Request corrections</button>
                 </div>
               </>}
-              {current.status === "correction-required" && <button className="button button-secondary" type="button" onClick={() => void runAction("return-to-review")} disabled={busy}>Return to review after edits</button>}
+
               {current.status === "verified" && <>
                 <p className="field-hint">Verified means you reviewed this item. It is still private until you publish it.</p>
                 <div className="review-action-buttons">
