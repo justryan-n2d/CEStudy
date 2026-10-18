@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
-import { LearningStreakBadge } from "../components/LearningStreakBadge";
 import {
   clearLessonProgress,
   readCompletedLessons,
@@ -39,8 +38,6 @@ export function ProgressPage() {
         <h1>Your learning progress</h1>
         <p>Review completed lessons saved in this browser. Your streak is available only while signed in and is kept separately for your Google account on this device.</p>
       </section>
-
-      <LearningStreakBadge />
 
       {sortedLessons.length === 0 ? (
         <section className="state-panel progress-empty">
