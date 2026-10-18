@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 
 const { invokeMock } = vi.hoisted(() => ({ invokeMock: vi.fn() }));
 vi.mock("../lib/supabase", () => ({
+  hasSupabaseConfig: false,
   supabase: { functions: { invoke: invokeMock } },
 }));
 
