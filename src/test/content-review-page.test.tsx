@@ -7,8 +7,8 @@ const mocks = vi.hoisted(() => ({
   token: null as string | null,
   fetchContentReviewBundle: vi.fn(),
   updateContentReviewStatus: vi.fn(),
-  unlockContentReview: vi.fn(async () => { mocks.token = "test-owner-token"; }),
-  lockContentReview: vi.fn(() => { mocks.token = null; }),
+  unlockContentReview: vi.fn(),
+  lockContentReview: vi.fn(),
 }));
 vi.mock("../data/content-review-api", () => ({
   CONTENT_REVIEW_SESSION_EVENT: "test-content-review-session",
@@ -56,8 +56,8 @@ const reviewBundle = {
 
 beforeEach(() => {
   mocks.token = null;
-  mocks.unlockContentReview.mockClear();
-  mocks.lockContentReview.mockClear();
+  mocks.unlockContentReview.mockReset().mockImplementation(async () => { mocks.token = "test-owner-token"; });
+  mocks.lockContentReview.mockReset().mockImplementation(() => { mocks.token = null; });
   mocks.updateContentReviewStatus.mockReset();
   mocks.fetchContentReviewBundle.mockReset().mockResolvedValue(structuredClone(reviewBundle));
 });
@@ -95,8 +95,8 @@ describe("owner content review", () => {
     await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
 
     expect(await screen.findByText("TEST QUESTION PROMPT")).toBeInTheDocument();
-    expect(screen.queryByText("Correct answer:")).not.toBeInTheDocument();
+    expect(screen.getByText("TEST ANSWER EXPLANATION")).not.toBeVisible();
     await user.click(screen.getByText("Show answer key and solution"));
-    expect(screen.getByText("TEST ANSWER EXPLANATION")).toBeInTheDocument();
+    expect(screen.getByText("TEST ANSWER EXPLANATION")).toBeVisible();
   });
 });
