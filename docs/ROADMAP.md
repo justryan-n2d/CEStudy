@@ -17,7 +17,7 @@ The canonical roadmap is [PHASE_PLAN.md](PHASE_PLAN.md). It records each project
 
 **CEStudy is both a comprehensive engineering knowledge library and an interactive learning platform.** Students can freely browse subjects and topics, or optionally follow guided learning paths and track progress. See the [learning model decision](product/COMBINED_LEARNING_MODEL.md) for the locked scope, implementation order, acceptance criteria, and constraints.
 
-The first implementation slice is device-local progress plus a flame streak for published lessons only. One or more completions on the same local calendar day count as one streak day. It must not add accounts, cross-device sync, new Supabase writes, or unpublished content exposure. Existing Phase 7 release gates remain active; this direction does not approve a broad launch.
+The first implementation slice is device-local progress plus a flame streak for published lessons only. The flame count is visible only to Google-authenticated users and activity days are isolated by Supabase user ID in browser storage. Signed-out lesson completions do not count. No server-side progress writes or cross-device sync are added. Google OAuth credentials and redirect allowlists must be configured and tested in Supabase before live sign-in can be considered ready. Existing Phase 7 release gates remain active; this direction does not approve a broad launch.
 
 ## Ordered priorities
 
@@ -32,7 +32,7 @@ The first implementation slice is device-local progress plus a flame streak for 
 - Start with a low-cost, mobile-first web MVP. Keep the current Cloudflare Pages URL `cestudy.pages.dev` for now; custom domain setup is deferred.
 - Use React + TypeScript + Vite + Tailwind, Cloudflare Pages, Supabase PostgreSQL/RLS, and GitHub for source control and CI.
 - Do not introduce Supabase Storage unless a feature needs uploaded files or private objects. The current structured content lives in PostgreSQL, while off-site database backups target the existing private Backblaze B2 bucket.
-- Keep student-facing AI, student accounts, public submissions, cross-device progress, and native Android/iOS apps out of the MVP unless user evidence justifies a later decision. Device-local progress for published lessons is the approved first learning-platform increment.
+- Keep student-facing AI, broader account/profile features, public submissions, cross-device progress, and native Android/iOS apps out of the MVP unless user evidence justifies a later decision. Google sign-in is approved solely to gate and scope the local flame streak; the streak is not synced between devices.
 - Prioritize reviewed engineering content, database-enforced authorization, minimal personal-data collection, transparent sourcing, and reproducible checks.
 
 ## Supporting documentation
