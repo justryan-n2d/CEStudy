@@ -154,11 +154,11 @@ async function main() {
         await page.goto(baseUrl + "/", { waitUntil: "networkidle", timeout: 45000 });
         const bottomTabs = page.getByRole("navigation", { name: "Quick navigation" });
         check("Mobile quick navigation is visible at 320px", await bottomTabs.isVisible().catch(() => false), "viewport=320");
-        check("Mobile navigation has four destinations", await bottomTabs.locator("a").count() === 4, "expected=4 tabs");
-        await page.getByRole("button", { name: "Open more pages menu" }).click();
-        const helpMenu = page.getByRole("navigation", { name: "More CEStudy pages" });
-        check("More menu opens by tap", await helpMenu.isVisible().catch(() => false), "menu opened");
-        check("More menu includes support and feedback", await helpMenu.getByRole("link", { name: "Support us" }).count() === 1 && await helpMenu.getByRole("link", { name: "Send feedback" }).count() === 1, "routes present");
+        check("Mobile navigation has five destinations", await bottomTabs.locator("a").count() === 5, "expected=5 tabs");
+        await page.getByRole("link", { name: "Menu" }).click();
+        const menuPage = page.getByRole("navigation", { name: "Account and help pages" });
+        check("Menu page opens from mobile navigation", await page.getByRole("heading", { name: "Menu", exact: true }).isVisible().catch(() => false), "Menu page loaded");
+        check("Menu includes support and feedback", await menuPage.getByRole("link", { name: /Support us/ }).count() === 1 && await menuPage.getByRole("link", { name: /Send feedback/ }).count() === 1, "routes present");
       }
     } catch (error) {
       check("Responsive check at " + width + "px", false, error.message);
