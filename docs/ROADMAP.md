@@ -10,8 +10,8 @@ The canonical roadmap is [PHASE_PLAN.md](PHASE_PLAN.md). It records each project
 
 - The React + TypeScript + Vite + Tailwind frontend is built and deployed on Cloudflare Pages.
 - The app connects to the dedicated CEStudy Supabase project. The catalog contains 72 subjects. The live database currently holds 52 practice questions and 13 lesson records, all `needs-review`, with zero published in either content table after the 2026-10-18 release audit.
-- Automated CI and Supabase migration/RLS tests are passing on the latest feature branch, and a full-history secret scan passed. The latest documented production Chromium smoke test is from 2026-10-17, before the 2026-10-18 publication-status correction, so a new production smoke run is still required.
-- This is a working deployed MVP, not yet a broadly launched student product. A fresh backup and managed-target restore, B2 lifecycle and GitHub email settings, post-correction production smoke test, manual accessibility/device testing, independent content approval, and the student pilot remain. Main-branch protection is active and verified; the public-repository question-content policy is documented and guarded by CI.
+- Main CI [run 39142266631](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266631), full-history secret scan [run 39142266706](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266706), and post-correction production Chromium smoke test [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824) passed. The latest production smoke suite passed 135/135 checks, including the new `/privacy` page.
+- This is a working deployed MVP, not yet a broadly launched student product. A fresh backup after the 2026-10-18 database correction and managed-target restore, B2 lifecycle and GitHub email settings, manual accessibility/device testing, independent content approval, and the student pilot remain. Main-branch protection is active and verified; the public-repository question-content policy is documented and guarded by CI. Google OAuth/profile work remains in draft PR #38 and is not part of the live deployment.
 
 ## Locked product direction (2026-10-18)
 
@@ -21,8 +21,8 @@ The first implementation slice is device-local progress plus a flame streak for 
 
 ## Ordered priorities
 
-1. **Finish release hardening (current):** create and verify a fresh encrypted backup after the latest database correction, complete a managed-target restore rehearsal, confirm B2 lifecycle and GitHub failure notifications, keep unpublished content out of public source, and re-run production smoke/security checks.
-2. **Finish manual quality checks:** test search/filter edge cases, accessibility, direct routes, mobile and desktop behavior, published-only question visibility, and the feedback/correction path.
+1. **Finish release hardening (current):** create and verify a fresh encrypted backup after the latest database correction, complete a managed-target restore rehearsal, confirm B2 lifecycle and GitHub failure notifications, and keep unpublished content out of public source. The latest CI/security and production smoke checks now pass; fresh backup and target-specific recovery proof remain.
+2. **Finish manual quality checks:** test search/filter edge cases, accessibility on the actual Android phone, direct routes, touch targets, and the feedback/correction path. Automated Chromium checks have passed for direct routes, security headers, published-only question visibility, privacy route, and 320 px/1440 px viewport widths.
 3. **Prepare content:** have a human reviewer check every question, source, answer, and explanation. Keep unreviewed content unpublished.
 4. **Run the controlled pilot:** use the documented 5–8-student plan, record anonymous task results, fix priority problems, and make a go/no-go decision.
 5. **Polish and launch:** complete metadata and visual/content review, verify the production deployment, then announce broadly only after the release checklist is complete.

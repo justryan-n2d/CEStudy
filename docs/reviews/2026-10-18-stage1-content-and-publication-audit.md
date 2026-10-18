@@ -40,13 +40,14 @@ The mathematical/solution consistency pass did not identify a definite arithmeti
 
 The original eight question review remains in [the 2026-10-15 pre-review](2026-10-15-basic-algebra-draft-review.md); it is a historical review of that original subset, not evidence that the current 52-question bank has human approval.
 
-## CI, security, and backup evidence
+## CI, security, backup, and live-site evidence
 
-- The latest feature-branch CI run [39139905163](https://github.com/justryan-n2d/CEStudy/actions/runs/39139905163) passed lint, tests, build, backup-crypto/retention checks, and isolated Supabase migration/RLS tests on commit `6394bc1`.
-- The matching full-history secret scan [39139905065](https://github.com/justryan-n2d/CEStudy/actions/runs/39139905065) passed.
+- Main CI after the audit documentation merge passed lint, tests, dependency audit, build/header packaging, backup-crypto/retention checks, and isolated Supabase migration/RLS tests: [run 39142266631](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266631). The matching full-history secret scan passed: [run 39142266706](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266706).
 - The active [Protect main ruleset](https://github.com/justryan-n2d/CEStudy/rules/25242389) requires PRs and successful CI, migration/RLS tests, and full-history secret scanning. Force-pushes and branch deletion are blocked.
-- The latest documented production Chromium smoke run before this database audit is [39069495822](https://github.com/justryan-n2d/CEStudy/actions/runs/39069495822), dated 2026-10-17. A new production smoke run is still required after the 2026-10-18 database correction.
-- The actual encrypted 2026-10-15 backup was checksum-verified, decrypted, and restored into isolated local PostgreSQL 18.2, as recorded in [the restore drill](../deployment/restore-drill-2026-10-16.md). It predates the current 52-question/13-lesson live database state and the status correction documented here. The current state needs a fresh encrypted backup. A restore into a separate managed Supabase project remains untested.
+- After the 2026-10-18 publication correction and Privacy notice merge, production Chromium smoke test [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824) passed **135/135 checks**, zero failures. It verified direct routes including `/privacy`, all required response headers, the privacy footer link, live Supabase host/publishable key, published-only practice API returning zero rows, 320 px and 1440 px layouts, and no captured browser/runtime errors.
+- The public [Privacy notice](https://cestudy.pages.dev/privacy) was shipped through [PR #42](https://github.com/justryan-n2d/CEStudy/pull/42); its CI and secret scan passed.
+- The Google sign-in/Profile/Menu feature remains in draft [PR #38](https://github.com/justryan-n2d/CEStudy/pull/38). OAuth client/provider/redirect configuration and end-to-end testing have not been completed. The latest commit at the time of this record has a successful Cloudflare preview deploy, but a fresh CI run after the last test adjustment had not yet been observed; keep this PR in draft until checks pass and manual OAuth verification is complete.
+- The actual encrypted 2026-10-15 backup was checksum-verified, decrypted, and restored into isolated local PostgreSQL 18.2, as recorded in [the restore drill](../deployment/restore-drill-2026-10-16.md). It predates the current 52-question/13-lesson live database state and the status correction documented here. A fresh encrypted backup is required. A restore into a separate managed Supabase project remains untested.
 
 ## Remaining Stage 1 release gates
 
@@ -54,10 +55,10 @@ The original eight question review remains in [the 2026-10-15 pre-review](2026-1
 2. Restore that refreshed backup into a separate managed Supabase test project after explicit cost approval, then verify table counts, content statuses, RLS, and grants.
 3. In Backblaze B2, confirm lifecycle cleanup handles old hidden versions without hiding current verified backups.
 4. Confirm GitHub Actions failure-email notifications are enabled.
-5. Run a fresh live Chromium smoke test after the database correction, including direct routes, headers, live Supabase host/key, and published-only API behavior.
+5. [x] Run a live Chromium smoke test after the database correction and Privacy notice release, including direct routes, headers, live Supabase host/key, and published-only API behavior. [Run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824) passed 135/135 checks with zero failures.
 6. Complete manual accessibility and physical-device checks, including Android, keyboard, screen-reader/TalkBack, zoom, touch targets, and search/filter no-results recovery.
 7. Configure Google OAuth in Google Cloud and Supabase, then test sign-in, sign-out, safe return destinations, and the profile/streak journey end to end. The new Profile and safe return-path implementation is in draft [PR #38](https://github.com/justryan-n2d/CEStudy/pull/38), not in production.
 8. Have a qualified human reviewer approve the specific questions and lessons intended for release.
 9. Run the documented 5–8 student pilot only after the blocking safety gates and content review pass. Record results and a go/no-go decision.
 
-**Release decision:** Stage 1 is not complete yet. The app is deployed and core security/CI checks are strong, but a fresh backup, managed-target restore, post-correction production smoke, physical-device QA, human content approval, OAuth end-to-end check, and student pilot remain necessary before broad launch.
+**Release decision:** Stage 1 is not complete yet. The app is deployed, the Privacy notice is live, and main CI/security plus 135/135 production Chromium checks pass. A fresh backup of current database state, managed-target restore, B2 lifecycle and GitHub failure-email confirmation, physical-device QA, human content approval, Google OAuth end-to-end testing if PR #38 remains in scope, and the student pilot remain necessary before broad launch.
