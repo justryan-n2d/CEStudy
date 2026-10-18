@@ -75,6 +75,7 @@ The MVP may launch without accounts if accounts are not essential to the validat
 - Do not rely on CORS, obscured endpoints, API keys, hidden UI controls, or client-side checks as authorization.
 - Treat reviewer text, user submissions, imported files, Markdown, URLs, and AI-generated output as untrusted until validated. Avoid rendering raw HTML from untrusted content; prevent cross-site scripting.
 - Configure appropriate browser security headers, including a considered Content Security Policy, for the deployed site. Test changes so needed assets continue to work.
+- **KaTeX rendering exception:** the math renderer uses `trust: false`, bounded `maxExpand`/`maxSize`, and HTML + MathML output. The CSP uses `style-src-attr 'unsafe-inline'` so KaTeX's generated formula-layout attributes work; this directive permits inline style attributes generally, not just KaTeX attributes. Keep `script-src 'self'`, never render raw lesson HTML, and do not enable KaTeX trusted commands without a separate security review.
 - Keep dependencies maintained, commit the lockfile, review security advisories, and avoid unnecessary packages.
 - If custom server-side code is added, keep it small and focused. Verify caller identity and permission inside the server-side operation instead of assuming the frontend has already checked.
 
