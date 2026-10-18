@@ -51,11 +51,10 @@ export function StudyPage() {
   const lessonIndex = activeLesson ? lessons.findIndex((lesson) => lesson.id === activeLesson.id) : -1;
   const title = subjectSlug === "basic-algebra" ? "Algebra Foundations" : subjectSlug.replace(/-/g, " ");
   const normalizedQuery=topicQuery.trim().normalize("NFKC").toLowerCase();
-  const queryTerms=normalizedQuery.split(/\s+/).filter(Boolean);
-  const visibleLessons=useMemo(
-    () => queryTerms.length===0 ? lessons : lessons.filter(lesson=>queryTerms.every(term=>searchText(lesson).includes(term))),
-    [lessons,normalizedQuery],
-  );
+  const visibleLessons=useMemo(() => {
+    const queryTerms=normalizedQuery.split(/\s+/).filter(Boolean);
+    return queryTerms.length===0 ? lessons : lessons.filter(lesson=>queryTerms.every(term=>searchText(lesson).includes(term)));
+  }, [lessons,normalizedQuery]);
 
   return (
     <div className="page-wrap study-page">
