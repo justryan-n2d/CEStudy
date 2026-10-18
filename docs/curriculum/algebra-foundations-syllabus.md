@@ -1,8 +1,9 @@
 # CEStudy Syllabus: Algebra Foundations
 
 **Document status:** Original CEStudy syllabus draft for maintainer and academic review  
-**Version:** 0.1  
+**Version:** 0.2 (academic desk review revision)  
 **Scope approved:** 2026-10-18  
+**Academic desk review:** 2026-10-18 (AI-assisted; independent faculty review not yet completed)  
 **Delivery model:** Self-paced learning pathway  
 **Credit units/contact hours:** Not assigned. This is a CEStudy learning syllabus, not an official or accredited university course syllabus.
 
@@ -27,12 +28,13 @@ By the end of Algebra Foundations, students should be able to:
 
 1. Perform arithmetic with real numbers, fractions, ratios, proportions, exponents, and radicals accurately.
 2. Simplify algebraic expressions and rearrange formulas while preserving equality and identifying restrictions.
-3. Solve linear equations and inequalities, quadratic equations, polynomial equations, and selected rational and radical equations, checking solutions for invalid or extraneous results.
+3. Solve linear equations and inequalities, quadratic equations, selected higher-degree polynomial equations, and selected rational and radical equations; verify candidate solutions in the original equations.
 4. Use function notation and interpret the domain, range, values, and basic graphs of functions.
-5. Factor and manipulate polynomials and apply polynomial division, remainder, and factor relationships to solve equations.
-6. Solve systems of linear equations in two or three variables using substitution and elimination.
-7. Work with exponential and logarithmic expressions and solve basic exponential and logarithmic equations.
-8. Translate practical word problems into algebraic models, explain the steps used, check results, and interpret whether answers are reasonable.
+5. Factor and manipulate polynomials and use polynomial division, the Remainder Theorem, the Factor Theorem, and the Rational Root Theorem in suitable problems.
+6. Represent complex numbers in the form a + bi and perform basic operations needed to interpret quadratic roots.
+7. Solve systems of linear equations in two or three variables using substitution and elimination.
+8. Work with exponential and logarithmic expressions and solve basic exponential and logarithmic equations while respecting domain restrictions.
+9. Translate practical word problems into algebraic models, explain the steps used, check results, and interpret whether answers are reasonable.
 
 ## 4. Scope and teaching sequence
 
@@ -141,8 +143,9 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Quadratic equations and quadratic functions
 - Solving by factoring and the square-root method
 - Completing the square
-- Quadratic formula and discriminant
-- Real and complex roots at an introductory level
+- Quadratic formula
+- Introductory complex numbers: the imaginary unit i, a + bi notation, powers of i, and basic operations; introduce these before interpreting a negative discriminant
+- Discriminant and classification of quadratic roots as two distinct real roots, one repeated real root, or a pair of nonreal complex roots
 - Basic graph and key features of a quadratic function
 - Word problems that produce quadratic equations
 - Verification of roots in the original equation
@@ -155,9 +158,10 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Polynomial equations of degree three and higher
 - Equations that can be rewritten in quadratic form
 - Solving higher-degree equations by factoring
-- Using polynomial division and known factors to reduce an equation
-- Introductory complex-number notation and operations needed for polynomial roots
-- Checking candidate roots and factors
+- Rational Root Theorem for identifying candidate rational zeros of polynomials with integer coefficients
+- Using polynomial division, synthetic division, the Factor Theorem, and known factors to reduce suitable equations
+- Applying the complex-number notation and basic operations introduced in Unit 7 when checking selected higher-degree polynomial equations
+- Checking candidate roots and factors in the original equation
 
 **Unit outcome:** Apply factoring and polynomial relationships to solve suitable higher-degree equations.
 
@@ -169,7 +173,8 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Solving rational equations by clearing denominators carefully
 - Radical equations and isolating a radical
 - Checking for extraneous solutions introduced by algebraic operations
-- Basic behavior of rational functions, including where expressions are undefined and how values change
+- Evaluating rational functions at allowed inputs and identifying excluded inputs and zeros where defined
+- Reading simple value tables or graphs for rational functions without studying asymptotes or advanced curve behavior
 
 **Unit outcome:** Solve selected rational and radical equations while stating restrictions and checking answers in the original equation.
 
@@ -195,7 +200,7 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Common and natural logarithms as notation and concepts
 - Laws of logarithms and their restrictions
 - Solving exponential equations
-- Solving logarithmic equations and checking the domain of every logarithm
+- Solving logarithmic equations, requiring every logarithm's argument to be positive and checking candidate solutions in the original equation
 - Simple growth and decay applications
 
 **Unit outcome:** Transform between exponential and logarithmic forms and solve basic exponential and logarithmic equations.
@@ -242,7 +247,7 @@ Use civil-engineering-flavored contexts only when the needed mathematics has alr
 ## 7. Scope boundaries
 
 ### Included
-Arithmetic readiness, algebraic expressions, formula rearrangement, exponents and radicals, scientific notation, equations and inequalities, functions and their basic graphs, polynomial operations and factoring, quadratic and selected higher-degree equations, rational and radical equations, linear systems, exponential and logarithmic equations, and integrated algebra applications.
+Arithmetic readiness, algebraic expressions, formula rearrangement, exponents and radicals, scientific notation, equations and inequalities, functions and their basic graphs, polynomial operations and factoring, quadratic and selected higher-degree equations, introductory complex-number notation and operations, rational and radical equations, linear systems, exponential and logarithmic equations, and integrated algebra applications.
 
 ### Excluded from this subject
 - **Advanced Algebra:** matrices, determinant methods, Cramer's Rule, sequences and series, permutations and combinations, the general binomial theorem, mathematical induction, and partial-fraction decomposition.
@@ -250,7 +255,7 @@ Arithmetic readiness, algebraic expressions, formula rearrangement, exponents an
 - **Analytic Geometry:** the full study of lines as geometric objects, circles, and conic sections.
 - **Solid Mensuration:** geometric solids, surface areas, volumes, frustums, and related theorems.
 - **Calculus:** limits, derivatives, and integrals.
-- **Other methods not included in the approved scope:** nonlinear systems and advanced polynomial-root techniques.
+- **Other methods not included in the approved scope:** nonlinear systems, numerical root approximation, and advanced complex-root theory.
 
 Basic coordinate graphs used to understand functions remain included. Their use does not make this an Analytic Geometry syllabus.
 
@@ -264,7 +269,7 @@ The syllabus uses a CEStudy-specific sequence. Published university course descr
 
 The scope was compared with these publicly available records, but their wording, examples, and assessments have not been copied into CEStudy.
 
-1. **De La Salle University, Civil Engineering Course Descriptions.** The College Algebra description lists algebraic expressions, equations, inequalities, functions, polynomial, fractional, and radical equations, exponential/logarithmic equations, and systems up to three variables. The page also lists Advance Algebra for Engineering separately. It is a course-description page, not a complete current weekly syllabus. [Source page](https://old.dlsu.edu.ph/colleges/gcoe/academic-departments/civil-engineering/course-description/)
+1. **De La Salle University, Civil Engineering Course Descriptions.** The College Algebra description lists algebraic expressions, equations, inequalities, functions, polynomial, fractional, and radical equations, exponential/logarithmic equations, and systems up to three variables; its description also includes determinant use. The page separately lists Advance Algebra for Engineering, including matrix/determinant methods, sequences, counting, the binomial theorem, induction, and partial fractions. CEStudy intentionally excludes matrix/determinant methods and partial fractions from Algebra Foundations to preserve its approved boundary, so this syllabus is not an exact reproduction of DLSU's course outline. The page is a course-description source, not a complete current weekly syllabus. [Source page](https://old.dlsu.edu.ph/colleges/gcoe/academic-departments/civil-engineering/course-description/)
 2. **CHED CMO No. 92, Series of 2017, BS Civil Engineering Program.** Used for national BSCE program context. This CEStudy learning syllabus does not claim to be an approved CHED course or curriculum. [CHED listing](https://legacy.ched.gov.ph/2017-ched-memorandum-orders/) · [PDF](https://legacy.ched.gov.ph/wp-content/uploads/2018/04/CMO-92-s.-2017-BS-Civil-Engineering.pdf)
 3. **CHED CMO No. 29, Series of 2007, BS Civil Engineering Policies and Standards.** A historical source showing that older BSCE curriculum structures listed College Algebra and Advanced Algebra separately. It is not treated as the current national course-title mandate. [PDF](https://legacy.ched.gov.ph/wp-content/uploads/2017/10/CMO-No.29-s2007.pdf)
 4. **Lippman, David, and Melonie Rasmussen. _Precalculus: An Investigation of Functions_, 2nd edition.** Optional reference for students and topic cross-checking. The LibreCommons record identifies the book as CC BY-SA 4.0. CEStudy must still write original explanations, diagrams, worked examples, questions, and solutions; any intentional reuse must be reviewed for the precise license obligations. [LibreCommons record](https://commons.libretexts.org/book/math-13825) · [Open Textbook Library record](https://open.umn.edu/opentextbooks/textbooks/97)
@@ -273,4 +278,6 @@ The scope was compared with these publicly available records, but their wording,
 
 ## 10. Review status
 
-This is the first original CEStudy syllabus draft based on the scope and sequence approved on 2026-10-18. Before it is treated as ready for student release, a subject-matter reviewer should check the scope, mathematical precision, learning-outcome alignment, and assessment design. It should not be presented as an official university or CHED-issued syllabus.
+This is the revised original CEStudy syllabus draft based on the scope and sequence approved on 2026-10-18. An AI-assisted academic desk review corrected the sequence of complex-number content, made the higher-degree polynomial methods more explicit, tightened the rational-function and logarithm scope, and documented a known difference from one university's course packaging. The findings are recorded in [Algebra Foundations academic review](../reviews/algebra-foundations-academic-review.md).
+
+This desk review is not independent faculty sign-off. Before the syllabus is treated as ready for student release, a mathematics or engineering-mathematics instructor should review the scope, mathematical precision, learning-outcome alignment, examples to be developed later, and assessment design. It should not be presented as an official university or CHED-issued syllabus.
