@@ -11,19 +11,19 @@ function normalizeMathNotation(source: string): string {
   return source
     .replace(/([A-Za-z0-9)])([⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]+)/gu, (_match, base: string, power: string) =>
       base + "^{" + [...power].map((digit) => SUPERSCRIPT_DIGITS[digit] ?? digit).join("") + "}")
-    .replace(/√\(([^()]*)\)/gu, "\\\\sqrt{$1}")
-    .replace(/√([A-Za-z0-9]+)/gu, "\\\\sqrt{$1}")
-    .replace(/\(([^()]+)\)\s*\/\s*\(([^()]+)\)/gu, "\\\\frac{$1}{$2}")
-    .replace(/×/gu, "\\\\times ")
-    .replace(/÷/gu, "\\\\div ")
-    .replace(/±/gu, "\\\\pm ")
-    .replace(/≠/gu, "\\\\ne ")
-    .replace(/≤/gu, "\\\\le ")
-    .replace(/≥/gu, "\\\\ge ")
+    .replace(/√\(([^()]*)\)/gu, "\\sqrt{$1}")
+    .replace(/√([A-Za-z0-9]+)/gu, "\\sqrt{$1}")
+    .replace(/\(([^()]+)\)\s*\/\s*\(([^()]+)\)/gu, "\\frac{$1}{$2}")
+    .replace(/×/gu, "\\times ")
+    .replace(/÷/gu, "\\div ")
+    .replace(/±/gu, "\\pm ")
+    .replace(/≠/gu, "\\ne ")
+    .replace(/≤/gu, "\\le ")
+    .replace(/≥/gu, "\\ge ")
     .replace(/−/gu, "-")
-    .replace(/!=/gu, "\\\\ne ")
-    .replace(/<=/gu, "\\\\le ")
-    .replace(/>=/gu, "\\\\ge ");
+    .replace(/!=/gu, "\\ne ")
+    .replace(/<=/gu, "\\le ")
+    .replace(/>=/gu, "\\ge ");
 }
 
 export function LatexMath({ latex, displayMode = false }: { latex: string; displayMode?: boolean }) {
