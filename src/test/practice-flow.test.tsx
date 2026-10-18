@@ -38,9 +38,14 @@ describe("practice flow",()=>{
     expect(screen.getByText("You answered 1 out of 2 questions correctly.")).toBeInTheDocument();
   });
 
-  it("keeps questions hidden when none have been published",async()=>{
+  it("keeps questions hidden and uses concise copy when none have been published",async()=>{
     vi.mocked(fetchPublishedPracticeQuestions).mockResolvedValueOnce([]);
     render(<MemoryRouter><PracticePage/></MemoryRouter>);
-    expect(await screen.findByRole("heading",{name:/practice questions are being reviewed/i})).toBeInTheDocument();
+    expect(await screen.findByRole("heading",{name:"Questions coming soon"})).toBeInTheDocument();
+    expect(screen.getByText("We're checking these questions before publishing them.")).toBeInTheDocument();
+    expect(screen.queryByText(/session is not saved between visits/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/student-facing AI tutor/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Draft questions are kept private/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("link",{name:"Browse subjects"})).toBeInTheDocument();
   });
 });
