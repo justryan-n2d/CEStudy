@@ -74,6 +74,25 @@ jobs:
           bash scripts/tests/backup-encryption.test.sh
           bash scripts/tests/weekly-backup-retention.test.sh
 
+
+  edge-function-security:
+    name: Supabase Edge Function security tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check Edge Function security test imports
+        run: deno check supabase/functions/security_test.ts
+      - name: Test Edge Function origin and owner-token boundaries
+        run: deno test --allow-env=ALLOWED_ORIGINS,FEEDBACK_INBOX_ACCESS_KEY,SUPABASE_SERVICE_ROLE_KEY,SUPABASE_URL supabase/functions/security_test.ts
+
   database-security:
     name: Supabase migration and RLS tests
     runs-on: ubuntu-latest
