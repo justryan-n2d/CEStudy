@@ -32,7 +32,7 @@ describe("student progress page", () => {
     render(<MemoryRouter><ProgressPage /></MemoryRouter>);
 
     expect(screen.getByRole("heading", { name: "Factorization" })).toBeInTheDocument();
-    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("1", { selector: ".progress-list-heading strong" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /open lesson/i })).toHaveAttribute("href", "/study/basic-algebra/3");
   });
 
