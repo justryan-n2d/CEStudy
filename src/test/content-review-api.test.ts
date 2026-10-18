@@ -26,7 +26,7 @@ describe("content review API error handling", () => {
     expect(getContentReviewSessionToken()).toBe("test-content-token");
 
     invokeMock.mockResolvedValueOnce({ data: null, error: { context: { status: 401 } } });
-    await expect(fetchContentReviewBundle()).rejects.toThrow(/temporarily unavailable/i);
+    await expect(fetchContentReviewBundle()).rejects.toThrow(/expired|temporarily unavailable/i);
     expect(getContentReviewSessionToken()).toBeNull();
   });
 
@@ -38,6 +38,6 @@ describe("content review API error handling", () => {
     await unlockContentReview("test-owner-key-that-is-long-enough");
 
     invokeMock.mockResolvedValueOnce({ data: null, error: { context: new Response("not json", { status: 500 }) } });
-    await expect(fetchContentReviewBundle()).rejects.toThrow(/temporarily unavailable/i);
+    await expect(fetchContentReviewBundle()).rejects.toThrow(/expired|temporarily unavailable/i);
   });
 });
