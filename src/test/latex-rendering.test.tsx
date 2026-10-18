@@ -109,4 +109,12 @@ describe("LaTeX math rendering",()=>{
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(2));
     expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
   });
+
+  it("keeps paired currency amounts as text",()=>{
+    const dollar = String.fromCharCode(36);
+    const lesson = "Fees are " + dollar + "5 + " + dollar + "6.";
+    render(<MarkdownContent markdown={lesson} />);
+    expect(document.querySelectorAll(".katex")).toHaveLength(0);
+    expect(document.querySelector(".markdown-content p")?.textContent).toContain("Fees are $5 + $6.");
+  });
 });
