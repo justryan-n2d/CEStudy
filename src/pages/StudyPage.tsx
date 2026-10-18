@@ -5,8 +5,8 @@ import { MarkdownContent } from "../components/MarkdownContent";
 import { fetchPublishedLessons } from "../data/lesson-api";
 import type { SubjectLesson } from "../types/lesson-content";
 import { readCompletedLessons, setLessonCompleted, type CompletedLesson } from "../data/learning-progress";
+import { recordOpenedLesson } from "../data/learning-history";
 import { useAuth } from "../contexts/AuthContext";
-import { LearningStreakBadge } from "../components/LearningStreakBadge";
 
 function searchText(lesson:SubjectLesson):string {
   return [lesson.title,lesson.slug,...lesson.learningObjectives,lesson.lessonMarkdown].join(" ").normalize("NFKC").toLowerCase();
@@ -62,6 +62,16 @@ export function StudyPage() {
     return queryTerms.length===0 ? lessons : lessons.filter(lesson=>queryTerms.every(term=>searchText(lesson).includes(term)));
   }, [lessons,normalizedQuery]);
   const showActiveLesson=activeLesson!==null&&(!normalizedQuery||visibleLessons.some(lesson=>lesson.id===activeLesson.id));
+
+  useEffect(() => {
+    if (!activeLesson || !showActiveLesson) return;
+    recordOpenedLesson({
+      lessonId: activeLesson.id,
+      subjectSlug: activeLesson.subjectSlug,
+      unitNumber: activeLesson.unitNumber,
+      title: activeLesson.title,
+    });
+  }, [activeLesson, showActiveLesson]);
   const activeLessonCompleted = Boolean(activeLesson && completedLessons.some((item) => item.lessonId === activeLesson.id));
   const toggleLessonCompletion = () => {
     if (!activeLesson) return;
@@ -127,7 +137,6 @@ export function StudyPage() {
               <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
               <h2>{activeLesson.title}</h2>
               <MarkdownContent markdown={activeLesson.lessonMarkdown} />
-              <LearningStreakBadge />
               <div className="study-lesson-completion">
                 <button
                   type="button"
