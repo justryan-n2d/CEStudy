@@ -24,10 +24,11 @@ vi.mock("../lib/supabase", () => ({
 }));
 
 function AuthHarness() {
-  const { loading, signInWithGoogle, signOut } = useAuth();
+  const { user, loading, signInWithGoogle, signOut } = useAuth();
   return (
     <section>
       <span>{loading ? "Auth loading" : "Auth ready"}</span>
+      <span>{user ? "Google account active" : "No Google account"}</span>
       <button type="button" onClick={() => void signInWithGoogle()}>Start Google sign-in</button>
       <button type="button" onClick={() => void signOut()}>Sign out</button>
     </section>
@@ -59,6 +60,44 @@ describe("Supabase Google authentication", () => {
         queryParams: { prompt: "select_account" },
       },
     });
+  });
+
+  it("does not unlock a streak for a non-Google Supabase session", async () => {
+    authMocks.getSession.mockResolvedValue({
+      data: {
+        session: {
+          user: {
+            id: "email-user",
+            app_metadata: { provider: "email" },
+            identities: [{ provider: "email" }],
+          },
+        },
+      },
+      error: null,
+    });
+    render(<AuthProvider><AuthHarness /></AuthProvider>);
+
+    expect(await screen.findByText("Auth ready")).toBeInTheDocument();
+    expect(screen.getByText("No Google account")).toBeInTheDocument();
+  });
+
+  it("recognizes an authenticated Google identity", async () => {
+    authMocks.getSession.mockResolvedValue({
+      data: {
+        session: {
+          user: {
+            id: "google-user",
+            app_metadata: { provider: "google" },
+            identities: [{ provider: "google" }],
+          },
+        },
+      },
+      error: null,
+    });
+    render(<AuthProvider><AuthHarness /></AuthProvider>);
+
+    expect(await screen.findByText("Auth ready")).toBeInTheDocument();
+    expect(screen.getByText("Google account active")).toBeInTheDocument();
   });
 
   it("signs out through Supabase Auth", async () => {
