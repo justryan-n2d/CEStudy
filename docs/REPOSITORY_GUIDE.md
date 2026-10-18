@@ -127,8 +127,8 @@ A successful CI job validates only the checks it runs. Report database/RLS tests
 
 `src/components/MarkdownContent.tsx` deliberately supports a small safe subset of Markdown and does not interpret raw HTML. Math notation should be explicit:
 
-- Inline math: `\\(x^2 + y^2 = r^2\\)`
-- Display math on separate lines: `\\[\\frac{a}{b} = c\\]`
+- Inline math: `\(x^2 + y^2 = r^2\)`
+- Display math on separate lines: `\[\frac{a}{b} = c\]`
 
 The dedicated KaTeX integration uses shared inline/display rendering components when present. Keep this path consistent across lessons, practice prompts, choices, answer feedback, and worked steps. Do not infer math from single dollar signs: prices such as `$5` are plain text, and math-like text inside inline code remains literal.
 
