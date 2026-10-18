@@ -11,7 +11,7 @@
 
 CEStudy will combine free browsing of the engineering knowledge library with optional guided learning paths and personal progress tracking. The decision is recorded in [the combined learning model](product/COMBINED_LEARNING_MODEL.md) and reflected in [the roadmap](ROADMAP.md) and [phase plan](PHASE_PLAN.md).
 
-The first feature increment is device-local progress for published lessons plus a flame streak based on consecutive local calendar days with at least one completion. The streak is gated by Google sign-in and stored locally under the authenticated Supabase user ID. Signed-out completions do not count. No server-side student-progress writes or cross-device sync are added. Google OAuth provider credentials and redirect settings still require manual Supabase/Google configuration and end-to-end verification. Current Phase 7 release gates still apply. Product direction approval does not approve a broad public launch.
+The first feature increment is device-local progress for published lessons plus a flame streak based on consecutive local calendar days with at least one completion. The real streak count is gated by Google sign-in and stored locally under the authenticated Supabase user ID. Signed-out visitors see a gray flame and placeholder zero; clicking it opens the Google sign-in unlock dialog. Signed-out completions do not count. No server-side student-progress writes or cross-device sync are added. Google OAuth provider credentials and redirect settings still require manual Supabase/Google configuration and end-to-end verification. Current Phase 7 release gates still apply. Product direction approval does not approve a broad public launch.
 
 
 ## Owner feedback management update (2026-10-18)
