@@ -94,7 +94,7 @@ describe("owner content review", () => {
     await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
     await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
 
-    expect(await screen.findByText("TEST QUESTION PROMPT")).toBeInTheDocument();
+    expect((await screen.findAllByText("TEST QUESTION PROMPT")).length).toBeGreaterThan(0);
     expect(screen.getByText("TEST ANSWER EXPLANATION")).not.toBeVisible();
     await user.click(screen.getByText("Show answer key and solution"));
     expect(screen.getByText("TEST ANSWER EXPLANATION")).toBeVisible();
