@@ -19,7 +19,7 @@ function respond(request: Request, status: number, body: RecordValue) {
   }
   return new Response(JSON.stringify(body), { status, headers });
 }
-function isAllowedOrigin(origin: string | null): origin is string {
+export function isAllowedOrigin(origin: string | null): origin is string {
   if (!origin) return false;
   if (allowedOrigins().includes(origin)) return true;
   try {
@@ -98,7 +98,7 @@ async function verifyToken(token: string, key: string): Promise<boolean> {
   const [payload, signature, ...extra] = token.split(".");
   if (!payload || !signature || extra.length) return false;
   try {
-    if (!await crypto.subtle.verify("HMAC", await hmacKey(key), fromB64url(signature), new TextEncoder().encode(payload))) return false;
+    if (!await crypto.subtle.verify("HMAC", await hmacKey(key), new Uint8Array(fromB64url(signature)), new TextEncoder().encode(payload))) return false;
     const claims = JSON.parse(new TextDecoder().decode(fromB64url(payload))) as RecordValue, now = Math.floor(Date.now() / 1000);
     return claims.sub === "cestudy-feedback-owner" && typeof claims.exp === "number" && claims.exp > now && claims.exp <= now + TOKEN_TTL_SECONDS + 60 && typeof claims.nonce === "string";
   } catch { return false; }
@@ -146,7 +146,7 @@ async function markRead(id: string) {
   if (!res.ok) throw new Error("feedback_read_update_failed");
 }
 
-Deno.serve(async (req: Request) => {
+export async function handleRequest(req: Request) {
   const origin = req.headers.get("origin");
   if (!isAllowedOrigin(origin)) return respond(req, 403, { ok: false, message: "This origin is not allowed." });
   if (req.method === "OPTIONS") return new Response("ok", { headers: respond(req, 200, { ok: true }).headers });
@@ -202,4 +202,6 @@ Deno.serve(async (req: Request) => {
   } catch {
     return respond(req, 503, { ok: false, message: "The private feedback inbox is temporarily unavailable." });
   }
-});
+}
+
+if (import.meta.main) Deno.serve(handleRequest);
