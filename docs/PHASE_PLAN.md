@@ -9,13 +9,13 @@ This is the canonical phase plan for CEStudy. Use this file for the overall orde
 
 ## Where we are now
 
-CEStudy is **past the storage setup stage and past initial frontend development**. The deployed app already has a React frontend, a 72-subject catalog, year-level routes, Mathematics Foundations, subject detail pages, and a Basic Algebra practice screen. It connects to the dedicated Supabase database. The deployment passed an automated Chromium check with 70/70 checks, and an earlier CI run passed lint, tests, dependency audit, build, and database security tests.
+CEStudy is **past initial frontend development and is now in release hardening**. The live site has a 72-subject catalog, year-level routes, Mathematics Foundations, subject detail pages, and a Basic Algebra practice area. The dedicated Supabase database currently has 52 practice questions and 13 lesson records, all held at `needs-review`; there are zero published questions and zero published lessons. On 2026-10-18, two lesson records that were marked published despite draft notes were returned to `needs-review`, and the catalog now marks Algebra Foundations as `in-preparation`. Historical Chromium smoke checks have passed, but a fresh production smoke test is required after this database correction. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
 
 The current job is to make the deployed MVP safe and reliable enough for a controlled student pilot. Do not describe the site as fully launch-ready until the remaining release gates pass.
 
 ### What “storage” means for CEStudy
 
-- **Supabase database:** In use. The 72 catalog subjects and eight draft practice questions are stored in PostgreSQL tables. RLS and read-only public access have been tested.
+- **Supabase database:** In use. The 72 catalog subjects, 52 practice questions, and 13 lesson records are stored in PostgreSQL. All 52 questions and all 13 lessons are currently `needs-review`; no questions or lessons are published. Student-facing RLS checks returned zero published lessons and zero published questions to the anonymous role.
 - **Supabase Storage buckets:** **Not configured, and not needed for the current MVP.** The app currently has no user-uploaded files or private media. Do not add a bucket unless an approved feature requires file/object storage.
 - **Database backup storage:** One real encrypted database backup was successfully uploaded and read-back verified in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), under private Backblaze B2 bucket `cestudy-db-backup/termux/weekly/`. Its real decryption and isolated local PostgreSQL restore are now proven; a separate managed-Supabase-target restore, B2 lifecycle cleanup, and GitHub failure-email preferences remain unverified. See [restore-drill evidence](deployment/restore-drill-2026-10-16.md).
 
@@ -40,7 +40,7 @@ A phase can be partially complete even when a later phase has already been built
 | 4 | Frontend MVP implementation | **Complete for the current MVP** | The main browsing and practice UI is built and deployed. Remaining design/accessibility polish is tracked in Phase 7. |
 | 5 | Cloudflare Pages and Supabase integration | **Complete for initial deployment** | The live site uses the dedicated CEStudy Supabase project and the Pages deployment is active. |
 | 6 | Automated and manual technical QA | **Partially complete** | Initial CI and 70/70 live Chromium checks passed; full accessibility and physical-device review plus some search/filter edge cases remain. |
-| 7 | Pre-launch hardening and release gates | **CURRENT** | Actual encrypted backup restore into isolated local PostgreSQL is proven and documented. Managed-Supabase-target recovery, branch protection, manual QA, and current CI/security reruns remain. Future question content stays out of public source. |
+| 7 | Pre-launch hardening and release gates | **CURRENT** | The local restore of the actual encrypted backup is proven, and the main-branch ruleset is active. A fresh backup after the 2026-10-18 publication correction, managed-Supabase-target recovery, B2 lifecycle cleanup, GitHub failure-email verification, post-correction production smoke test, physical-device QA, independent content review, and student pilot remain. Future question content stays out of public source. |
 | 8 | Human content review and approved question publishing | **Not started** | Have a qualified human review each question and only publish content that passes the review process. |
 | 9 | Controlled student pilot | **Not started** | Run the planned 5–8-student usability pilot after blocking release gates pass. |
 | 10 | Final polish and broad public launch | **Not started** | Fix pilot findings, complete sign-off, and then announce the wider release. |
@@ -109,11 +109,11 @@ The main user journey, included/excluded features, feedback path, and pilot meas
 
 ### Implemented and tested
 - [x] Dedicated CEStudy Supabase project is active.
-- [x] 72 catalog subjects and eight draft Basic Algebra questions are seeded.
+- [x] 72 catalog subjects are seeded. The live database currently contains 52 private practice-question records and 13 private lesson records, not public seed content.
 - [x] Both exposed tables have RLS and explicit client grants.
 - [x] Public clients can read the catalog but cannot insert, update, delete, or publish questions.
 - [x] The practice-question read policy only exposes rows marked published.
-- [x] All eight draft questions remain `needs-review`; the published count is zero.
+- [x] All 52 practice questions and all 13 lessons are currently `needs-review`; published count is zero for both content tables.
 - [x] Database migration and RLS tests are included in CI.
 - [x] Default-permission hardening for new objects created by the standard migration owner is applied and tested.
 - [x] Live browser checks confirmed the site uses the dedicated Supabase endpoint and a publishable key, not a privileged browser key.
@@ -194,6 +194,7 @@ Work through these in order. Do not move to the student pilot until the blocking
 - [x] Successful live backup run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) verified uploaded encrypted bytes, checksum, verification marker, and retention.
 - [x] CI tests exercise encryption, decryption, corrupted-tag rejection, backup syntax, and retention behavior. This uses a temporary test key and test data, not the actual production backup.
 - [ ] Confirm the Backblaze lifecycle rule deletes hidden old versions without hiding current backups.
+- [ ] Run or verify a fresh encrypted off-site backup after the 2026-10-18 live publication correction. The known successful backup predates this correction, so do not assume it contains the latest live content state.
 - [ ] Confirm GitHub Actions failure email notifications are enabled in account settings.
 - [ ] Keep the private decryption key and passphrase securely outside GitHub, with a protected recovery copy.
 - [x] Decrypt the real B2 backup in Termux; checksum and marker hashes matched, AES-GCM authentication succeeded, and `pg_restore --list` read the PostgreSQL 17.11 custom-format archive.
@@ -211,13 +212,13 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [x] Add a CI guard that fails if practice-question INSERTs, `practice_seed`, `correct_answer`, or `solution_steps` return to the public seed.
 - [x] Document the Supabase-only workflow for future drafts in [unpublished question authoring and publication](content-authoring-and-publication.md).
 - [ ] After merge, confirm the CI guard passes, the Cloudflare Pages production deployment succeeds, and the live site still loads the catalog and published-only practice review gate.
-- [ ] Configure a `main` branch ruleset requiring PRs and successful CI plus full-history secret scan. Branch protection is a separate release gate.
+- [x] Verify the active `main` branch ruleset requires PRs and successful CI plus full-history secret scan: [Protect main ruleset](https://github.com/justryan-n2d/CEStudy/rules/25242389).
 - [ ] Continue to require human review before changing any future question to `published`.
 
 ### 7.3 Protect the main branch and rerun security checks
-- [ ] Configure a `main` ruleset that requires a pull request and passing CI checks.
-- [ ] Require the relevant CI app/database checks and full-history secret scan. Do not require an approval count that a single maintainer cannot meet.
-- [ ] Block force-pushes and verify the rule with a small documentation pull request.
+- [x] The `main` ruleset requires a pull request and passing CI checks.
+- [x] CI, Supabase migration/RLS tests, and full-history secret scan are required without a required approval count that a single maintainer cannot meet.
+- [x] Branch deletion and force-pushes are blocked; verification PR [#13](https://github.com/justryan-n2d/CEStudy/pull/13) passed its required checks.
 - [ ] Re-run dependency audit, CI, and secret scanning after repository and code changes.
 - [ ] Verify Cloudflare browser variables contain only the CEStudy Supabase URL and publishable key.
 - [ ] Record the final security review and any accepted limitations.
@@ -242,7 +243,7 @@ Backup and restore have been proven; future-question content is kept out of publ
 
 **Status: NOT STARTED**
 
-The eight Basic Algebra questions have an initial mathematical consistency pre-review, but that is not independent academic approval. All eight remain unpublished.
+The original eight questions have a separate initial pre-review record. On 2026-10-18, a first-pass AI-assisted mathematical and option-structure consistency audit covered the current 52-question bank. No definite arithmetic/answer mismatch was identified in that pass, and database checks confirmed all 52 records have unique options and the stored correct answer appears exactly once. This is not independent academic approval. All 52 questions and all 13 lessons remain `needs-review` and unpublished. See the [2026-10-18 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
 
 ### Tasks
 - [ ] Identify a qualified human reviewer familiar with the relevant mathematics.
