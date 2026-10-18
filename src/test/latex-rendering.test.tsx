@@ -202,7 +202,7 @@ describe("LaTeX math rendering",()=>{
   });
 
   it("stacks simple slash fractions in explicit math and preserves unit notation",async()=>{
-    const lesson = String.raw\`Inline formula: \\(p = F/A\\); unit notation: \\(v = \\mathrm{m/s}\\).\`;
+    const lesson = "Inline formula: \\(p = F/A\\); unit notation: \\(v = \\mathrm{m/s}\\).";
     render(<MarkdownContent markdown={lesson} />);
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(2));
     expect(document.querySelectorAll(".katex .mfrac")).toHaveLength(1);
