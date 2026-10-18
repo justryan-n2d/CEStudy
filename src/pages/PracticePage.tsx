@@ -28,10 +28,10 @@ export function PracticePage() {
   function restart(){setIndex(0);setSelectedAnswer(null);setSubmitted(false);setScore(0)}
 
   return <div className="page-wrap practice-wrap"><Link className="back-link" to="/math-foundations">← Math foundations</Link>
-    <section className="page-intro"><span className="kicker">Mathematics foundations</span><h1>Algebra Foundations practice</h1><p>Answer each question, check your work, and read the worked steps. This session is not saved between visits.</p></section>
-    {loading?<div className="state-panel"><BrandLoader label="Checking for published questions…"/></div>
-    :error?<div className="state-panel state-error" role="alert"><h2>Practice set unavailable</h2><p>{error}</p></div>
-    :questions.length===0?<div className="state-panel review-gate"><span className="review-gate-icon" aria-hidden="true">✓</span><h2>Practice questions are being reviewed</h2><p>Draft questions are kept private. They appear here only after the CEStudy maintainer reviews the prompt, choices, answer, calculations, solution steps, and source notes, then deliberately publishes them.</p><p>No student progress is saved in this version, and there is no student-facing AI tutor.</p><Link className="button button-secondary" to="/catalog">Browse the subject catalog</Link></div>
+    <section className="page-intro"><span className="kicker">Mathematics foundations</span><h1>Algebra Foundations practice</h1></section>
+    {loading?<div className="state-panel"><BrandLoader label="Loading practice…"/></div>
+    :error?<div className="state-panel state-error" role="alert"><h2>Practice unavailable</h2><p>{error}</p></div>
+    :questions.length===0?<div className="state-panel review-gate"><h2>Questions coming soon</h2><p>We're reviewing these questions.</p><Link className="button button-secondary" to="/catalog">Browse subjects</Link></div>
     :complete?<div className="state-panel review-gate" role="status"><span className="review-gate-icon" aria-hidden="true">✓</span><h2>Practice session complete</h2><p>You answered {score} out of {questions.length} questions correctly.</p><button className="button button-primary" type="button" onClick={restart}>Try again</button><Link className="button button-secondary" to="/math-foundations">Explore more math topics</Link></div>
     :current?<PracticeQuestion question={current} index={index} total={questions.length} selectedAnswer={selectedAnswer} submitted={submitted} onSelect={setSelectedAnswer} onSubmit={submitAnswer} onNext={nextQuestion}/>:null}
   </div>;
