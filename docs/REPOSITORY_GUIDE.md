@@ -125,15 +125,17 @@ A successful CI job validates only the checks it runs. Report database/RLS tests
 
 ## 7. Math and content rendering contract
 
-At the main-branch baseline, `src/components/MarkdownContent.tsx` implements a small safe Markdown subset and intentionally does not render raw HTML. Practice prompts, choices, solution steps, and explanations are rendered by `src/components/PracticeQuestion.tsx`.
+`src/components/MarkdownContent.tsx` deliberately supports a small safe subset of Markdown and does not interpret raw HTML. Math notation should be explicit:
 
-For mathematical content, the intended explicit notation is:
+- Inline math: `\\(x^2 + y^2 = r^2\\)`
+- Display math on separate lines: `\\[\\frac{a}{b} = c\\]`
 
-- Inline mathematics: `\\(x^2 + y^2 = r^2\\)`
-- Display mathematics on separate lines: `\\[\\frac{a}{b} = c\\]`
+The dedicated KaTeX integration uses shared inline/display rendering components when present. Keep this path consistent across lessons, practice prompts, choices, answer feedback, and worked steps. Do not infer math from single dollar signs: prices such as `$5` are plain text, and math-like text inside inline code remains literal.
 
-Do not assume LaTeX support is released merely because the source contains these delimiters. The KaTeX renderer change is being developed separately; merge it only after the same build and behavioral tests pass. A correct math implementation must preserve ordinary prose and prices such as `$5`, keep inline-code examples as code, handle malformed delimiters without breaking the page, keep renderer trust disabled, and render consistently in lessons and practice content. Do not auto-render the entire document or interpret raw HTML from lesson data.
+When using KaTeX, keep `trust: false`, bounded `maxExpand` and `maxSize`, and HTML + MathML output. Keep raw HTML unsupported. The CSP's `style-src-attr 'unsafe-inline'` allowance is needed for KaTeX's formula-layout attributes, but applies to inline style attributes generally. Keep `script-src 'self'` and do not enable trusted KaTeX commands without a separate security review.
 
+For any release containing math rendering, verify the exact Pages preview commit, valid inline and display equations, malformed-formula fallback, currency, inline code, raw-HTML handling, mobile overflow, and the CSP response header. A passing build alone does not prove formulas render in the learner's browser.
+ 
 ## 8. Making a change safely
 
 1. Read this guide plus the relevant focused design, security, content, or deployment documents.
