@@ -1,12 +1,10 @@
 import { getLearningStreak } from "../data/learning-streak";
-import type { CompletedLesson } from "../data/learning-progress";
-
 interface LearningStreakBadgeProps {
-  completedLessons: readonly CompletedLesson[];
+  activityDays: readonly string[];
 }
 
-export function LearningStreakBadge({ completedLessons }: LearningStreakBadgeProps) {
-  const { currentStreak, completedToday } = getLearningStreak(completedLessons);
+export function LearningStreakBadge({ activityDays }: LearningStreakBadgeProps) {
+  const { currentStreak, completedToday } = getLearningStreak(activityDays);
   const dayLabel = currentStreak === 1 ? "day" : "days";
   const prompt = currentStreak === 0
     ? "Complete a lesson today to start your streak."
