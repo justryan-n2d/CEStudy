@@ -8,8 +8,8 @@ describe("Privacy notice", () => {
     render(<MemoryRouter><PrivacyPage /></MemoryRouter>);
 
     expect(screen.getByRole("heading", { name: "Privacy notice" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /study progress and browser storage/i })).toBeInTheDocument();
-    expect(screen.getByText(/stays in your browser on this device/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /browsing and study progress/i })).toBeInTheDocument();
+    expect(screen.getByText(/stay in your browser on this device/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /feedback and support confirmations/i })).toBeInTheDocument();
     expect(screen.getByText(/only the authorized cestudy maintainer can read/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "cestudy00@gmail.com" })).toHaveAttribute("href", "mailto:cestudy00@gmail.com");
@@ -18,7 +18,7 @@ describe("Privacy notice", () => {
   it("clarifies that a bug report is only sent if the visitor sends the Gmail draft", () => {
     render(<MemoryRouter><PrivacyPage /></MemoryRouter>);
 
-    expect(screen.getByText(/bug reports open a prepared gmail draft/i)).toBeInTheDocument();
+    expect(screen.getByText(/report a bug opens a prepared gmail draft/i)).toBeInTheDocument();
     expect(screen.getByText(/nothing is sent until you choose to send that email/i)).toBeInTheDocument();
   });
 
