@@ -152,12 +152,14 @@ describe("owner content review", () => {
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
     await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
 
-    expect(screen.getByLabelText(/Learning objectives/)).toHaveValue(
+    await waitFor(() => expect(screen.getByLabelText(/Learning objectives/)).toHaveValue(
       "Identify prerequisite gaps\nCheck prerequisite skills",
-    );
+    ));
     await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
-    expect(screen.getByLabelText(/Answer choices/)).toHaveValue("TEST OPTION A\nTEST OPTION B");
-    expect(screen.getByLabelText(/Worked solution steps/)).toHaveValue("TEST STEP ONE\nTEST STEP TWO");
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Answer choices/)).toHaveValue("TEST OPTION A\nTEST OPTION B");
+      expect(screen.getByLabelText(/Worked solution steps/)).toHaveValue("TEST STEP ONE\nTEST STEP TWO");
+    });
   });
 
   it("saves each edited multiline objective as a separate item", async () => {
