@@ -53,6 +53,29 @@ describe("student progress page", () => {
     expect(localStorage.getItem("cestudy:completed-lessons:v1")).not.toBeNull();
   });
 
+  it("allows clearing streak history even when no lesson remains checked", async () => {
+    const user = userEvent.setup();
+    setLessonCompleted({
+      lessonId: "lesson-3",
+      subjectSlug: "basic-algebra",
+      unitNumber: 3,
+      title: "Factoring",
+    }, true);
+    setLessonCompleted({
+      lessonId: "lesson-3",
+      subjectSlug: "basic-algebra",
+      unitNumber: 3,
+      title: "Factoring",
+    }, false);
+    vi.stubGlobal("confirm", vi.fn(() => true));
+
+    render(<MemoryRouter><ProgressPage /></MemoryRouter>);
+    expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Clear progress and streak" }));
+
+    expect(localStorage.getItem("cestudy:learning-activity-days:v1")).toBeNull();
+  });
+
   it("clears local progress after confirmation", async () => {
     const user = userEvent.setup();
     setLessonCompleted({
