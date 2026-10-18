@@ -163,7 +163,15 @@ function looksLikeDollarMath(expression: string): boolean {
   return true;
 }
 
+function hasUnmatchedTexDelimiters(text: string): boolean {
+  const delimiterPairs: Array<[string, string]> = [["\\(", "\\)"], ["\\[", "\\]"]];
+  return delimiterPairs.some(([open, close]) =>
+    text.split(open).length - 1 !== text.split(close).length - 1
+  );
+}
+
 function renderPlainText(text: string): ReactNode {
+  if (hasUnmatchedTexDelimiters(text)) return text;
   const ranges = findPlainMathRanges(text);
   if (!ranges.length) return text;
 
