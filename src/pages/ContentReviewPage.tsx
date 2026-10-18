@@ -72,6 +72,23 @@ export function ContentReviewPage() {
   const question = activeQuestion(bundle, selectedQuestionId);
   const current = tab === "lessons" ? lesson : question;
   const items = tab === "lessons" ? bundle?.lessons ?? [] : bundle?.questions ?? [];
+  const hasUnsavedEdits = Boolean(
+    current && (current.status === "needs-review" || current.status === "correction-required")
+      && (tab === "lessons" && "lessonMarkdown" in current
+        ? editLessonTitle.trim() !== current.title
+          || JSON.stringify(splitLines(editLessonObjectives)) !== JSON.stringify(current.learningObjectives)
+          || editLessonMarkdown !== current.lessonMarkdown
+          || editLessonSourceNote.trim() !== current.sourceNote
+        : tab === "questions" && "correctAnswer" in current
+          ? editQuestionTopic.trim() !== current.topic
+            || editQuestionPrompt.trim() !== current.prompt
+            || JSON.stringify(splitLines(editQuestionChoices)) !== JSON.stringify(current.choices)
+            || editQuestionAnswer.trim() !== current.correctAnswer
+            || JSON.stringify(splitLines(editQuestionSteps)) !== JSON.stringify(current.solutionSteps)
+            || editQuestionExplanation.trim() !== current.explanation
+            || editQuestionSourceNote.trim() !== current.sourceNote
+          : false),
+  );
 
   const counts = useMemo(() => {
     const all = [...(bundle?.lessons ?? []), ...(bundle?.questions ?? [])];
@@ -176,6 +193,10 @@ export function ContentReviewPage() {
 
   async function runAction(action: ReviewAction) {
     if (!current || busy) return;
+    if (action !== "save-edits" && hasUnsavedEdits) {
+      setError("Save your edits before changing this item's review status.");
+      return;
+    }
     if (action === "verify" && !reviewConfirmed) {
       setError(tab === "lessons"
         ? "Confirm that you reviewed the lesson before marking it verified."
@@ -357,12 +378,13 @@ export function ContentReviewPage() {
                 </button>
               </>}
               {current.status === "needs-review" && <>
+                {hasUnsavedEdits && <p className="field-hint" role="status">You have unsaved changes. Save edits before marking this item verified or requesting corrections.</p>}
                 <label className="review-confirm-check"><input type="checkbox" checked={reviewConfirmed} onChange={(event) => setReviewConfirmed(event.target.checked)} disabled={busy} />
                   <span>{tab === "lessons" ? "I reviewed this lesson against the approved syllabus." : "I checked the prompt, choices, correct answer, and worked solution."}</span>
                 </label>
                 <div className="review-action-buttons">
-                  <button className="button button-primary" type="button" onClick={() => void runAction("verify")} disabled={busy || !reviewConfirmed}>Mark verified</button>
-                  <button className="button button-secondary" type="button" onClick={() => void runAction("request-correction")} disabled={busy || reviewNotes.trim().length < 8}>Request corrections</button>
+                  <button className="button button-primary" type="button" onClick={() => void runAction("verify")} disabled={busy || !reviewConfirmed || hasUnsavedEdits}>Mark verified</button>
+                  <button className="button button-secondary" type="button" onClick={() => void runAction("request-correction")} disabled={busy || hasUnsavedEdits || reviewNotes.trim().length < 8}>Request corrections</button>
                 </div>
               </>}
 
