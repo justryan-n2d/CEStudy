@@ -153,4 +153,43 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
     expect(document.querySelector("code")?.textContent).toBe(String.raw`\frac{2x}{3}`);
   });
+
+  it("renders math patterns used across different engineering subjects through the shared lesson renderer",async()=>{
+    const examples = [
+      { subject:"Algebra", markdown:"Quadratic formula: \\(x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}\\)." },
+      { subject:"Trigonometry", markdown:"Identity: \\(\\sin^2\\theta + \\cos^2\\theta = 1\\)." },
+      { subject:"Calculus", markdown:"Derivative: \\(\\frac{d}{dx}x^3 = 3x^2\\)." },
+      { subject:"Integral calculus", markdown:"Integral:\n\\[\n\\int_0^L w(x)\\,dx = F(L)-F(0)\n\\]" },
+      { subject:"Series", markdown:"Summation:\n$$\n\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}\n$$" },
+      { subject:"Linear algebra", markdown:"Matrix:\n\\[\nA = \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}\n\\]" },
+      { subject:"Structural analysis", markdown:"Equilibrium: \\(\\sum F_x = 0,\\quad \\sum M_A = 0\\)." },
+      { subject:"Mechanics of materials", markdown:"Normal stress: \\(\\sigma = \\frac{P}{A}\\)." },
+      { subject:"Fluid mechanics", markdown:"Hydrostatic pressure: \\(p = \\rho g h\\)." },
+      { subject:"Surveying", markdown:"Traverse components: \\(\\Delta E = L\\sin\\theta,\\quad \\Delta N = L\\cos\\theta\\)." },
+      { subject:"Piecewise equations", markdown:"\\(f(x) = \\begin{cases} x^2 & x \\ge 0 \\\\ -x & x < 0 \\end{cases}\\)" },
+    ];
+    render(<>{examples.map((example)=><MarkdownContent key={example.subject} markdown={example.markdown} />)}</>);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(examples.length));
+    expect(document.querySelectorAll(".katex-display")).toHaveLength(3);
+    expect(document.querySelectorAll(".latex-math-error")).toHaveLength(0);
+  });
+
+  it("renders math across all student-facing practice question fields for any subject",async()=>{
+    const question:PracticeQuestionData = {
+      ...syntheticQuestion,
+      subjectSlug:"fluid-mechanics",
+      topic:"Hydrostatics: \\(p = \\rho g h\\)",
+      prompt:"Calculate pressure: \\(p = \\frac{F}{A}\\).",
+      choices:["\\(p = \\frac{F}{A}\\)","\\(p = FA\\)"],
+      correctAnswer:"\\(p = \\frac{F}{A}\\)",
+      solutionSteps:["Use \\(p = \\frac{F}{A}\\).","Substitute the force and area into \\(F/A\\)."],
+      explanation:"Pressure is force divided by area: \\(p = \\frac{F}{A}\\).",
+      sourceNote:"Synthetic fixture: \\(p = \\rho g h\\).",
+    };
+    render(<PracticeQuestion question={question} index={0} total={1} selectedAnswer={"\\(p = FA\\)"} submitted={true}
+      onSelect={()=>{}} onSubmit={()=>{}} onNext={()=>{}} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(9));
+    expect(document.querySelectorAll(".katex .mfrac").length).toBeGreaterThanOrEqual(4);
+    expect(document.querySelectorAll(".latex-math-error")).toHaveLength(0);
+  });
 });
