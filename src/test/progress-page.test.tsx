@@ -26,7 +26,7 @@ describe("student progress page", () => {
     render(<MemoryRouter><ProgressPage /></MemoryRouter>);
 
     expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
-    expect(screen.getByRole("region", { name: "Learning streak" })).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Learning streak" })).not.toBeInTheDocument();
     expect(screen.getByText(/saved in this browser/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Browse the library" })).toHaveAttribute("href", "/catalog");
   });
