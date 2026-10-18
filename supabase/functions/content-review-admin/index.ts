@@ -21,7 +21,7 @@ function isAllowedOrigin(origin: string | null): origin is string {
   try {
     const parsed = new URL(origin);
     return parsed.protocol === "https:" && parsed.port === "" && parsed.origin === origin
-      && /^[a-f0-9]{8}\.cestudy\.pages\.dev$/i.test(parsed.hostname);
+      && /^[a-z0-9-]+\.cestudy\.pages\.dev$/i.test(parsed.hostname);
   } catch { return false; }
 }
 function respond(req: Request, status: number, body: RecordValue) {
