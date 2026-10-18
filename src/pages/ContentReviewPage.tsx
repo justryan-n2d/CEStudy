@@ -98,7 +98,7 @@ export function ContentReviewPage() {
     setReviewNotes(current?.reviewNotes ?? "");
     setReviewConfirmed(false);
     setNotice("");
-  }, [tab, current?.id]);
+  }, [tab, current?.id, current?.reviewNotes]);
 
   async function handleUnlock(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
