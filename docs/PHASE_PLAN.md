@@ -1,6 +1,6 @@
 # CEStudy: Organized Project Phases and Release Plan
 
-**Last reviewed:** 2026-10-16  
+**Last reviewed:** 2026-10-18  
 **Live website:** https://cestudy.pages.dev  
 **Current phase:** **Phase 7, Pre-launch hardening and release gates**  
 **Launch status:** The web MVP is deployed, but the broad student launch is not approved.
@@ -309,6 +309,19 @@ This is the formal public-launch stage. The site is already reachable at its Pag
 ### Exit criteria
 The go/no-go checklist is complete, the launch decision is documented, and the public announcement has been made.
 
+## Locked product direction: combined library + guided learning (2026-10-18)
+
+CEStudy will combine free browsing of a comprehensive engineering knowledge library with optional guided learning paths and personal progress tracking. This decision is approved for incremental implementation without replacing the current MVP or weakening the launch gates above.
+
+- Free browsing of catalog subjects, year levels, mathematics foundations, and any published topic remains available without enrollment or an account.
+- Guided learning is optional. Published lessons may be followed in sequence, with previous/next navigation and practice activities when approved content exists.
+- The first progress feature records completed published lessons locally in the browser only and shows a flame streak for consecutive local calendar days with at least one completion. Multiple lessons in one day count once. It does not add student accounts, server-side progress writes, analytics, or cross-device sync.
+- The progress page must be clear about local-only storage and allow students to delete their progress.
+- Future lesson content must be original, technically reviewed, and properly attributed. Only published material can appear to students.
+- Expand the library and guided paths gradually, based on content readiness and student feedback. Evaluate account syncing and native Android/iOS apps as separate later decisions with privacy, security, cost, and UX reviews.
+
+The approved first slice and its acceptance criteria are maintained in [the combined learning model decision](product/COMBINED_LEARNING_MODEL.md). The current Phase 7 production, content, backup, accessibility, and pilot gates still apply.
+
 ## Phase 11: Ongoing operations and future expansion
 
 **Status: DEFERRED UNTIL AFTER LAUNCH**
@@ -321,8 +334,9 @@ The go/no-go checklist is complete, the launch decision is documented, and the p
 - Monitor only the minimum information needed to operate the service, and explain any collection clearly.
 
 ### Future features, only after evidence supports them
-- Bookmarks or progress tracking.
-- Accounts and synced study progress.
+- Local-only progress tracking for published lessons is approved as the first incremental implementation.
+- Optional bookmarks and review queues may follow if student feedback supports them.
+- Accounts and synced study progress remain deferred pending student research and a separate privacy/security review.
 - Trusted content-management tools or moderated submissions.
 - Offline-friendly reviewer sets.
 - More verified practice content.

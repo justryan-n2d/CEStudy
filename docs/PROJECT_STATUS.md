@@ -7,6 +7,13 @@
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
 
+## Product direction locked (2026-10-18)
+
+CEStudy will combine free browsing of the engineering knowledge library with optional guided learning paths and personal progress tracking. The decision is recorded in [the combined learning model](product/COMBINED_LEARNING_MODEL.md) and reflected in [the roadmap](ROADMAP.md) and [phase plan](PHASE_PLAN.md).
+
+The first feature increment is device-local progress for published lessons plus a flame streak based on consecutive local calendar days with at least one completion. It must not add accounts, server-side student-progress writes, or cross-device sync. Current Phase 7 release gates still apply. Product direction approval does not approve a broad public launch.
+
+
 ## Owner feedback management update (2026-10-18)
 
 PR #22 is merged to main and adds:

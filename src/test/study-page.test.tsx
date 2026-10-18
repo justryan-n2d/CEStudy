@@ -31,7 +31,7 @@ function renderStudy(path:string) {
   </Routes></MemoryRouter>);
 }
 
-beforeEach(()=>fetchPublishedLessonsMock.mockReset());
+beforeEach(()=>{fetchPublishedLessonsMock.mockReset();localStorage.clear();});
 afterEach(()=>cleanup());
 
 describe("student lesson reader",()=>{
@@ -67,4 +67,19 @@ describe("student lesson reader",()=>{
     expect(screen.getByRole("searchbox",{name:"Find a topic"})).toHaveValue("");
     expect(screen.getByText(/Browse topics/).closest("details")).not.toHaveAttribute("open");
   });
+  it("lets students mark a published lesson complete and undo completion", async () => {
+    const user = userEvent.setup();
+    fetchPublishedLessonsMock.mockResolvedValue([publishedLesson]);
+    renderStudy("/study/basic-algebra/1");
+
+    expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Mark as complete" }));
+    expect(screen.getByRole("button", { name: "Mark as incomplete" })).toHaveAttribute("aria-pressed", "true");
+    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toContain("public-test-lesson");
+
+    await user.click(screen.getByRole("button", { name: "Mark as incomplete" }));
+    expect(screen.getByRole("button", { name: "Mark as complete" })).toHaveAttribute("aria-pressed", "false");
+    expect(JSON.parse(localStorage.getItem("cestudy:completed-lessons:v1") ?? "[]")).toEqual([]);
+  });
+
 });

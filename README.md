@@ -47,7 +47,7 @@ Post-PR #19 Supabase function logs later showed an accepted `OPTIONS 200` and tw
 - Free-first, responsive web app designed for mobile screens.
 - Four year levels, Mathematics Foundations and Refreshers, and five specialization areas.
 - CHED placements are reference examples and may differ by university.
-- No student-facing AI tutor, AI-generated questions, live AI API calls, student account registration, public academic-content submissions, or cross-device progress in the MVP. Anonymous private feedback and support-confirmation forms are implemented.
+- No student-facing AI tutor, AI-generated questions, live AI API calls, student accounts, public academic-content submissions, or cross-device progress in the MVP. Published lesson completion and the flame streak are stored locally in the current browser; this is not sent to the server or synced. Anonymous private feedback and support-confirmation forms are implemented.
 - Only deliberately published questions are returned to public clients.
 - No question is marked verified merely because it was generated or seeded.
 
@@ -58,7 +58,7 @@ Post-PR #19 Supabase function logs later showed an accepted `OPTIONS 200` and tw
 - Supabase PostgreSQL with explicit grants and Row Level Security
 - GitHub for source control, tests, and CI
 
-Start with the [organized phase plan](docs/PHASE_PLAN.md) for the current phase, detailed statuses, and ordered route to launch. See the docs folder for project scope, security requirements, catalog design, architecture decisions, development workflow, Supabase setup, Cloudflare Pages deployment, [question-content protection](docs/content-authoring-and-publication.md), and release checklists.
+The locked product direction is documented in the [combined learning model decision](docs/product/COMBINED_LEARNING_MODEL.md): CEStudy combines free browsing, optional guided learning, and personal progress. The first progress increment is local to the browser and supports published lessons only. Start with the [organized phase plan](docs/PHASE_PLAN.md) for the current phase, detailed statuses, and ordered route to launch. See the docs folder for project scope, security requirements, catalog design, architecture decisions, development workflow, Supabase setup, Cloudflare Pages deployment, [question-content protection](docs/content-authoring-and-publication.md), and release checklists.
 
 ## Local development
 

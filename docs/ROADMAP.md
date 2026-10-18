@@ -1,6 +1,6 @@
 # CEStudy Roadmap
 
-**Last reviewed:** 2026-10-16  
+**Last reviewed:** 2026-10-18  
 **Current phase:** Phase 7, pre-launch hardening and release gates.  
 **Live website:** https://cestudy.pages.dev
 
@@ -12,6 +12,12 @@ The canonical roadmap is [PHASE_PLAN.md](PHASE_PLAN.md). It records each project
 - The app connects to the dedicated CEStudy Supabase project. The catalog contains 72 subjects; eight Basic Algebra questions are still marked `needs-review`, with zero published.
 - Automated CI, database RLS testing, and a live Chromium test have passed in the documented runs. The live smoke test recorded 70/70 passing checks.
 - This is a working deployed MVP, not yet a broadly launched student product. Release hardening, backup/restore proof, branch protection, manual accessibility/device testing, human question approval, and the student pilot remain. The public-repository question-content policy is documented and guarded by CI.
+
+## Locked product direction (2026-10-18)
+
+**CEStudy is both a comprehensive engineering knowledge library and an interactive learning platform.** Students can freely browse subjects and topics, or optionally follow guided learning paths and track progress. See the [learning model decision](product/COMBINED_LEARNING_MODEL.md) for the locked scope, implementation order, acceptance criteria, and constraints.
+
+The first implementation slice is device-local progress plus a flame streak for published lessons only. One or more completions on the same local calendar day count as one streak day. It must not add accounts, cross-device sync, new Supabase writes, or unpublished content exposure. Existing Phase 7 release gates remain active; this direction does not approve a broad launch.
 
 ## Ordered priorities
 
@@ -26,7 +32,7 @@ The canonical roadmap is [PHASE_PLAN.md](PHASE_PLAN.md). It records each project
 - Start with a low-cost, mobile-first web MVP. Keep the current Cloudflare Pages URL `cestudy.pages.dev` for now; custom domain setup is deferred.
 - Use React + TypeScript + Vite + Tailwind, Cloudflare Pages, Supabase PostgreSQL/RLS, and GitHub for source control and CI.
 - Do not introduce Supabase Storage unless a feature needs uploaded files or private objects. The current structured content lives in PostgreSQL, while off-site database backups target the existing private Backblaze B2 bucket.
-- Keep student-facing AI, user accounts, public submissions, cross-device progress, and native Android/iOS apps out of the MVP unless user evidence justifies a later decision.
+- Keep student-facing AI, student accounts, public submissions, cross-device progress, and native Android/iOS apps out of the MVP unless user evidence justifies a later decision. Device-local progress for published lessons is the approved first learning-platform increment.
 - Prioritize reviewed engineering content, database-enforced authorization, minimal personal-data collection, transparent sourcing, and reproducible checks.
 
 ## Supporting documentation
