@@ -44,25 +44,21 @@ Repository visibility is unchanged. Cloudflare Pages remains configured to build
 
 ## Author mathematical notation
 
-The shared lesson and practice renderer supports LaTeX and also detects obvious equations already saved as plain Unicode text.
+The shared math pipeline applies across every subject and future topic. All student lesson text goes through `MarkdownContent`; practice topics, prompts, choices, correct answers, solution steps, explanations, and source notes go through `InlineMathText`. Do not create subject-specific math renderers.
 
-- Inline math: `\(a^2 + b^2 = c^2\)` or `$a^2 + b^2 = c^2$`
-- Display math on its own lines, using either delimiter style:
+Use explicit delimiters for formulas in new content. They give every KaTeX expression a clear start and end, especially for calculus, summations, matrices, vectors, structural equilibrium, mechanics of materials, fluids, surveying, and future engineering subjects.
 
-  ```text
-  \[
-  \frac{a}{b} = c
-  \]
-  ```
+- Inline formula: `\(a^2 + b^2 = c^2\)`
+- Display formula on separate lines:
 
-  ```text
-  $$
-  \frac{a}{b} = c
-  $$
-  ```
+  `\[`
 
-Explicit delimiters are preferred for new or ambiguous formulas. Common complete grouped LaTeX commands such as `\frac{2x}{3}`, `\sqrt{x}`, and nested fractions are also recognized without extra delimiters. For an equation containing a fraction, use explicit delimiters when possible, for example `\(x = \\frac{2x}{3}\)`. Legacy expressions with clear equality/inequality structure and Unicode math symbols are automatically rendered in lesson prose, headings, lists, practice prompts, answer choices, solutions, explanations, and source notes. Unicode superscripts, square roots, and common math operators are normalized before rendering.
+  `\frac{a}{b} = c`
 
-Single currency values such as `$5`, ordinary prose, and inline-code examples remain literal. Raw HTML is not supported. If automatic detection could change the meaning of a sentence, wrap the exact expression in explicit math delimiters.
+  `\]`
 
-KaTeX output is rendered with HTML + MathML, trusted commands disabled, and bounded expansion/size options. The site's CSP allows inline style attributes for KaTeX formula layout; because that CSP directive applies to inline style attributes generally, keep the no-raw-HTML rule and KaTeX's `trust: false` setting in place.
+KaTeX also accepts single-dollar inline and double-dollar display delimiters. The shared renderer recognizes common complete grouped commands such as a bare fraction or square root without delimiters, but that automatic detection is intentionally limited. Use explicit delimiters for commands such as integrals, summations, matrices, piecewise functions, or any complex expression.
+
+KaTeX supports a broad LaTeX-like math syntax, not every LaTeX package or custom command. Unsupported or malformed expressions remain visible as readable source instead of breaking the page. Existing plain Unicode equations are also auto-detected when their mathematical structure is clear.
+
+Single currency values, ordinary prose, and inline-code examples remain literal. Raw HTML is not supported. Keep KaTeX's `trust: false` setting and bounded expansion/size options in place.
