@@ -580,3 +580,12 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
  .progress-list-heading{align-items:flex-start;flex-direction:column}
  .study-lesson-completion{align-items:stretch;flex-direction:column}
 }
+
+
+/* Daily learning streak: local calendar-day count, no account or remote activity log. */
+.learning-streak{display:flex;flex-direction:column;align-items:flex-start;gap:.16rem;width:fit-content;max-width:100%;margin-top:.85rem;padding:.6rem .8rem;border:1px solid #e9c88d;border-radius:13px;background:#fff8e9;color:#573500}
+.learning-streak-main{display:flex;align-items:center;gap:.38rem;line-height:1.2}
+.learning-streak-flame{font-size:1.22rem;line-height:1}
+.learning-streak-main strong{color:#713d00;font-size:1.08rem;font-variant-numeric:tabular-nums}
+.learning-streak-main span:last-child{font-size:.8rem;font-weight:800}
+.learning-streak small{color:#5f4930;font-size:.72rem;line-height:1.4}
