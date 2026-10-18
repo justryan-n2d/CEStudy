@@ -26,7 +26,7 @@ CEStudy will combine a comprehensive, freely browsable Civil Engineering knowled
 ### 1. First implementation slice
 - Add an optional local progress tracker for published lessons.
 - Show a flame streak based on consecutive local calendar days on which the student completes at least one published lesson.
-- Save only lesson ID, subject slug, unit number, title, completion timestamp, and local completion day in browser local storage.
+- Keep lesson completion status and the distinct local activity-day list in browser local storage; record no server-side student activity.
 - Provide a progress page with links back to completed lessons and a clear-all action.
 - State plainly that progress is stored on this device and is not synced.
 - Do not add sign-in, new Supabase tables, database writes, analytics, or cross-device tracking for this slice.
@@ -59,6 +59,7 @@ CEStudy will combine a comprehensive, freely browsable Civil Engineering knowled
 - A student can mark a published lesson complete and reverse that action.
 - The flame shows the number of consecutive active calendar days; multiple lessons on the same day count as one day.
 - A streak completed yesterday remains current until today ends; a missed day resets the active streak to zero.
+- Changing a lesson's current completion checkbox later does not erase an activity day when the completion event already happened.
 - The local date is stored separately from the timestamp to avoid UTC midnight shifting the activity day.
 - The progress page displays only records saved in the current browser.
 - Completed lesson links return to the correct subject and unit.
