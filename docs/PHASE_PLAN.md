@@ -315,7 +315,7 @@ CEStudy will combine free browsing of a comprehensive engineering knowledge libr
 
 - Free browsing of catalog subjects, year levels, mathematics foundations, and any published topic remains available without enrollment or an account.
 - Guided learning is optional. Published lessons may be followed in sequence, with previous/next navigation and practice activities when approved content exists.
-- The first progress feature records completed published lessons locally in the browser only. It does not add student accounts, server-side progress writes, analytics, or cross-device sync.
+- The first progress feature records completed published lessons locally in the browser only and shows a flame streak for consecutive local calendar days with at least one completion. Multiple lessons in one day count once. It does not add student accounts, server-side progress writes, analytics, or cross-device sync.
 - The progress page must be clear about local-only storage and allow students to delete their progress.
 - Future lesson content must be original, technically reviewed, and properly attributed. Only published material can appear to students.
 - Expand the library and guided paths gradually, based on content readiness and student feedback. Evaluate account syncing and native Android/iOS apps as separate later decisions with privacy, security, cost, and UX reviews.
