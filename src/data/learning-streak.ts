@@ -1,7 +1,6 @@
 import {
   formatLocalDateKey,
   isValidCalendarDateKey,
-  type CompletedLesson,
 } from "./learning-progress";
 
 export interface LearningStreakSummary {
@@ -16,23 +15,17 @@ function shiftLocalDay(date: Date, offset: number): string {
 }
 
 /**
- * Counts consecutive local calendar days on which at least one lesson was completed.
- * If the learner completed a lesson yesterday but not yet today, the current streak
- * remains active for the rest of today.
+ * Counts consecutive local calendar days with at least one completed lesson.
+ * Yesterday's activity keeps the streak alive until the current day ends.
  */
 export function getLearningStreak(
-  completedLessons: readonly CompletedLesson[],
+  activityDays: readonly string[],
   now: Date = new Date(),
 ): LearningStreakSummary {
   const today = formatLocalDateKey(now);
   if (!today) return { currentStreak: 0, completedToday: false };
 
-  const activeDays = new Set(
-    completedLessons
-      .map((lesson) => lesson.completedOn)
-      .filter((day): day is string => isValidCalendarDateKey(day)),
-  );
-
+  const activeDays = new Set(activityDays.filter(isValidCalendarDateKey));
   const completedToday = activeDays.has(today);
   const yesterday = shiftLocalDay(now, -1);
   const startOffset = completedToday ? 0 : activeDays.has(yesterday) ? 1 : null;
