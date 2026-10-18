@@ -14,6 +14,38 @@ const STOP_WORDS = new Set([
 
 interface MathRange { start: number; end: number }
 
+const SIMPLE_FRACTION_ATOM = String.raw`(?:\\[A-Za-z]+(?:\{[^{}]*\})?(?:[_^](?:\{[^{}]+\}|[A-Za-z0-9]+))*|[A-Za-z0-9]+(?:\.[0-9]+)?(?:[_^](?:\{[^{}]+\}|[A-Za-z0-9]+))*|\((?:[^()]|\([^()]*\))*\))`;
+const SIMPLE_SLASH_FRACTION_PATTERN = new RegExp(
+  String.raw`(?<![A-Za-z0-9\\])(${SIMPLE_FRACTION_ATOM})\s*\/\s*(${SIMPLE_FRACTION_ATOM})(?![A-Za-z0-9])`,
+  "gu",
+);
+
+/**
+ * Stack clear single-term divisions as fractions. Keep unit/text notation such
+ * as \\mathrm{m/s} literal, and leave more complex or ambiguous divisions alone.
+ */
+function stackSimpleSlashFractions(expression: string): string {
+  const protectedSegments: string[] = [];
+  const protectedExpression = expression.replace(
+    /\\(?:text|textrm|textnormal|mathrm)\{(?:[^{}]|\{[^{}]*\})*\}/gu,
+    (segment) => {
+      const index = protectedSegments.push(segment) - 1;
+      return String.fromCharCode(0xe000) + index + String.fromCharCode(0xe001);
+    },
+  );
+
+  const converted = protectedExpression.replace(
+    SIMPLE_SLASH_FRACTION_PATTERN,
+    (_match, numerator: string, denominator: string) =>
+      String.raw`\frac{${numerator.trim()}}{${denominator.trim()}}`,
+  );
+
+  return converted.replace(
+    /\uE000(\d+)\uE001/gu,
+    (placeholder, index: string) => protectedSegments[Number(index)] ?? placeholder,
+  );
+}
+
 function isOperator(char: string | undefined): boolean {
   return Boolean(char && "+-−±×÷*/^=≠<>≤≥".includes(char));
 }
@@ -253,7 +285,7 @@ function renderPlainText(text: string): ReactNode {
   let cursor = 0;
   for (const range of merged) {
     if (range.start > cursor) parts.push(text.slice(cursor, range.start));
-    parts.push(<LazyLatexMath key={"auto-math-" + range.start} latex={text.slice(range.start, range.end).trim()} />);
+    parts.push(<LazyLatexMath key={"auto-math-" + range.start} latex={stackSimpleSlashFractions(text.slice(range.start, range.end).trim())} />);
     cursor = range.end;
   }
   if (cursor < text.length) parts.push(text.slice(cursor));
@@ -270,9 +302,9 @@ export function InlineMathText({ text }: { text: string }) {
       return <code key={index}>{piece.slice(1, -1)}</code>;
     }
     const parenthesizedMath = piece.match(/^\\\(([\s\S]+)\\\)$/);
-    if (parenthesizedMath) return <LazyLatexMath key={index} latex={parenthesizedMath[1]} />;
+    if (parenthesizedMath) return <LazyLatexMath key={index} latex={stackSimpleSlashFractions(parenthesizedMath[1])} />;
     if (piece.startsWith("$") && piece.endsWith("$") && !piece.startsWith("$$") && looksLikeDollarMath(piece.slice(1, -1))) {
-      return <LazyLatexMath key={index} latex={piece.slice(1, -1)} />;
+      return <LazyLatexMath key={index} latex={stackSimpleSlashFractions(piece.slice(1, -1))} />;
     }
     return <Fragment key={index}>{renderPlainText(piece)}</Fragment>;
   })}</>;
