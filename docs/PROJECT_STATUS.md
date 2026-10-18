@@ -189,3 +189,12 @@ Do not create Supabase Storage buckets for the current MVP unless an approved fe
 ## Documentation practice
 
 Keep significant decisions, migrations, security changes, deployment settings, test evidence, known limitations, and launch approvals documented in Git. Do **not** put credentials, API secrets, database passwords, access tokens, private account data, or real student data in the public repository. This status page is a summary, not a substitute for the linked detailed verification records.
+
+
+## Mobile menu and streak navigation update (2026-10-18, feature branch)
+
+PR #38 is being expanded to include a responsive mobile Menu page and a global streak shortcut. The mobile bottom bar has five items: Home, Subjects, Years, Math, and Menu. The prior header More popover is removed. The Menu links to Profile, History, Streak, Community, Support us, Send feedback, and Report a bug, with a persistent light/dark display switch.
+
+The global top-right streak badge shows the consecutive-day count before a flame. Zero is muted gray; an active streak has a warm animated flame, with reduced-motion handling. An active badge opens the streak calendar; a signed-out zero badge opens the existing Google sign-in prompt. Streak days are read from the activity history for the current signed-in user on this device. The month calendar highlights recorded lesson-completion days. The History page records recently opened published lessons in local browser storage and links back to each route. History and theme preferences are device-local, with no cross-device sync or database migration.
+
+The Community page is an honest placeholder because interactive community features are not implemented yet. These changes remain on draft PR #38 and are not live on the production branch until merged. CI and secret-scan results must be checked again against the final PR head before requesting review; live Google OAuth setup and end-to-end sign-in remain separate manual gates.
