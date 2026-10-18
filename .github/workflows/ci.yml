@@ -45,6 +45,9 @@ jobs:
           test -f dist/_headers
           grep -q "Content-Security-Policy" dist/_headers
           grep -q "X-Content-Type-Options: nosniff" dist/_headers
+          grep -Fq "style-src 'self'" dist/_headers
+          grep -Fq "style-src-attr 'unsafe-inline'" dist/_headers
+          grep -Fq "script-src 'self'" dist/_headers
       - name: Set up Python for backup encryption tests
         uses: actions/setup-python@v5
         with:
