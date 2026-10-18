@@ -24,6 +24,7 @@ describe("device-local learning progress", () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchObject(lesson);
     expect(result[0].completedAt).toBeTruthy();
+    expect(result[0].completedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(readCompletedLessons()).toEqual(result);
   });
 
@@ -46,6 +47,15 @@ describe("device-local learning progress", () => {
     localStorage.setItem(LEARNING_PROGRESS_STORAGE_KEY, "{not json");
 
     expect(readCompletedLessons()).toEqual([]);
+  });
+
+  it("migrates older local records by deriving their local completion day", () => {
+    localStorage.setItem(LEARNING_PROGRESS_STORAGE_KEY, JSON.stringify([{
+      ...lesson,
+      completedAt: "2026-10-17T17:00:00.000Z",
+    }]));
+
+    expect(readCompletedLessons()[0].completedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
   it("ignores invalid records without crashing", () => {
