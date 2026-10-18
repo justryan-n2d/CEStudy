@@ -27,6 +27,7 @@ describe("LaTeX math rendering",()=>{
 
     expect(document.querySelectorAll(".katex")).toHaveLength(2);
     expect(document.querySelector(".katex-display")).toBeInTheDocument();
+    expect(document.querySelector(".katex [style]")).toBeInTheDocument();
     expect(screen.getByText(/The formula is/)).toBeInTheDocument();
     const visibleText = document.querySelector(".markdown-content")?.cloneNode(true) as HTMLElement;
     visibleText.querySelectorAll(".katex").forEach((node) => node.remove());
