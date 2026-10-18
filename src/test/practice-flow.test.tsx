@@ -9,8 +9,8 @@ import type { PracticeQuestion } from "../types/study-content";
 vi.mock("../data/practice-api",()=>({fetchPublishedPracticeQuestions:vi.fn()}));
 
 const demo:PracticeQuestion[]=[
-  {id:"q1",subjectSlug:"basic-algebra",topic:"Test topic",prompt:"TEST PROMPT ONE",choices:["TEST OPTION A","TEST OPTION B"],correctAnswer:"TEST OPTION B",solutionSteps:["TEST STEP ONE","TEST STEP TWO"],explanation:"TEST EXPLANATION ONE",sourceNote:"Synthetic test fixture only.",displayOrder:1},
-  {id:"q2",subjectSlug:"basic-algebra",topic:"Test topic",prompt:"TEST PROMPT TWO",choices:["TEST OPTION A","TEST OPTION B"],correctAnswer:"TEST OPTION B",solutionSteps:["TEST STEP ONE","TEST STEP TWO"],explanation:"TEST EXPLANATION TWO",sourceNote:"Synthetic test fixture only.",displayOrder:2}
+  {id:"q1",subjectSlug:"basic-algebra",topic:"Factoring",prompt:"TEST PROMPT ONE",choices:["TEST OPTION A","TEST OPTION B"],correctAnswer:"TEST OPTION B",solutionSteps:["TEST STEP ONE","TEST STEP TWO"],explanation:"TEST EXPLANATION ONE",sourceNote:"Synthetic test fixture only.",displayOrder:1},
+  {id:"q2",subjectSlug:"basic-algebra",topic:"Exponents",prompt:"TEST PROMPT TWO",choices:["TEST OPTION A","TEST OPTION B"],correctAnswer:"TEST OPTION B",solutionSteps:["TEST STEP ONE","TEST STEP TWO"],explanation:"TEST EXPLANATION TWO",sourceNote:"Synthetic test fixture only.",displayOrder:2}
 ];
 
 describe("practice flow",()=>{
@@ -46,6 +46,20 @@ describe("practice flow",()=>{
     expect(screen.queryByText(/session is not saved between visits/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/student-facing AI tutor/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Draft questions are kept private/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("link",{name:"Browse subjects"})).toBeInTheDocument();
+    expect(screen.queryByRole("link",{name:/Browse subjects/i})).not.toBeInTheDocument();
+  });
+
+  it("filters the practice session to the selected topic",async()=>{
+    const user=userEvent.setup();
+    vi.mocked(fetchPublishedPracticeQuestions).mockResolvedValue(demo);
+    render(<MemoryRouter initialEntries={["/practice/basic-algebra?topic=Factoring"]}><Routes><Route path="/practice/:slug" element={<PracticePage/>}/></Routes></MemoryRouter>);
+    expect(await screen.findByRole("heading",{name:"TEST PROMPT ONE"})).toBeInTheDocument();
+    expect(screen.getByText("Factoring")).toBeInTheDocument();
+    expect(screen.queryByRole("heading",{name:"TEST PROMPT TWO"})).not.toBeInTheDocument();
+    expect(fetchPublishedPracticeQuestions).toHaveBeenCalledWith("basic-algebra");
+    await user.click(screen.getByRole("radio",{name:"TEST OPTION B"}));
+    await user.click(screen.getByRole("button",{name:/check answer/i}));
+    expect(screen.getByRole("status")).toHaveTextContent("Correct.");
+    expect(screen.getByRole("button",{name:/see results/i})).toBeInTheDocument();
   });
 });
