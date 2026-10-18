@@ -1,5 +1,5 @@
 import { InlineMathText } from "./InlineMathText";
-import { LatexMath } from "./LatexMath";
+import { LazyLatexMath } from "./LazyLatexMath";
 
 type Block =
   | { type: "heading"; level: 1 | 2 | 3; text: string }
@@ -98,7 +98,7 @@ export function MarkdownContent({ markdown }: { markdown: string }) {
   const blocks = parseBlocks(markdown);
   return <div className="markdown-content">{blocks.map((block, index) => {
     if (block.type === "display-math") {
-      return <LatexMath key={index} latex={block.latex} displayMode />;
+      return <LazyLatexMath key={index} latex={block.latex} displayMode />;
     }
     if (block.type === "heading") {
       if (block.level === 1) return <h2 key={index}><InlineMathText text={block.text} /></h2>;
