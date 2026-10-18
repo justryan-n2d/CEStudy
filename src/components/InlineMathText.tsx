@@ -5,7 +5,7 @@ const INLINE_TOKEN_PATTERN = /(\*\*[^*]+\*\*|\x60[^\x60]+\x60|\\\([\s\S]+?\\\)|(
 const MATH_EVIDENCE_PATTERN = /[\d²³⁰¹⁴⁵⁶⁷⁸⁹√^±×÷*\/]/u;
 const SHORT_IDENTIFIER_PATTERN = /^[\p{L}]{1,2}$/u;
 const STOP_WORDS = new Set([
-  "and", "or", "then", "not", "because", "since", "the", "a", "an", "for",
+  "and", "or", "then", "not", "because", "since", "the", "an", "for",
   "when", "where", "which", "it", "as", "from", "so", "while", "this", "that",
   "by", "to", "if", "is", "are", "was", "were", "be", "with", "gives", "means",
   "shows", "describes", "produces", "correspond", "matching", "has", "have",
@@ -28,7 +28,7 @@ function isMathCharacter(text: string, index: number): boolean {
 
 function stripLastStopWord(value: string, from: number): number {
   const suffix = value.slice(from);
-  const pattern = /\b(?:and|or|then|not|because|since|the|a|an|for|when|where|which|it|as|from|so|while|this|that|by|to|if|is|are|was|were|be|with|gives|means|shows|describes|produces|correspond|matching|has|have|can|must|write|solve|example|formula|equation|discriminant)\b\s+/giu;
+  const pattern = /\b(?:and|or|then|not|because|since|the|an|for|when|where|which|it|as|from|so|while|this|that|by|to|if|is|are|was|were|be|with|gives|means|shows|describes|produces|correspond|matching|has|have|can|must|write|solve|example|formula|equation|discriminant)\b\s+/giu;
   let match: RegExpExecArray | null;
   let nextStart = from;
   while ((match = pattern.exec(suffix)) !== null) {
@@ -47,7 +47,7 @@ function findLeftBound(text: string, position: number): number {
     }
     break;
   }
-  start = stripLastStopWord(text, start);
+  start = stripLastStopWord(text.slice(0, position), start);
   while (start < position && /\s/u.test(text[start])) start++;
   return start;
 }
