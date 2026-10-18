@@ -39,8 +39,7 @@ describe("published topic search index",()=>{
     await expect(fetchPublishedTopicIndex()).resolves.toEqual([]);
   });
 
-  it("returns no topics when Supabase is unavailable",async()=>{
-    // The null-client case is covered by the app's offline mode; keep the current test scoped to query results.
+  it("returns an empty list when no topics have been published",async()=>{
     mocks.order.mockResolvedValueOnce({data:[],error:null});
     await expect(fetchPublishedTopicIndex()).resolves.toEqual([]);
   });
