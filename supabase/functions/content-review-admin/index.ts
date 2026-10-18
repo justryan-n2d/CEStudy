@@ -4,7 +4,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
   "https://design-white-blue-responsive.cestudy.pages.dev",
   "http://localhost:5173",
 ];
-const MAX_BODY_BYTES = 24_000;
+const MAX_BODY_BYTES = 32_000;
 const TOKEN_TTL_SECONDS = 30 * 60;
 const TOKEN_HEADER = "x-cestudy-content-token";
 type RecordValue = Record<string, unknown>;
