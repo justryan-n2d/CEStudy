@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
-import { LearningStreakBadge } from "../components/LearningStreakBadge";
 import {
   clearLessonProgress,
   readCompletedLessons,
@@ -13,14 +13,17 @@ function subjectLabel(slug: string): string {
 }
 
 export function ProgressPage() {
+  const { user } = useAuth();
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
-  const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
+  const activityDays = readLearningActivityDays(user?.id);
 
   const clearProgress = () => {
-    if (!window.confirm("Clear all CEStudy lesson progress and streak saved on this device?")) return;
-    clearLessonProgress();
+    const confirmation = user
+      ? "Clear all CEStudy lesson progress and your streak saved on this device?"
+      : "Clear CEStudy lesson progress saved on this device?";
+    if (!window.confirm(confirmation)) return;
+    clearLessonProgress(user?.id);
     setCompletedLessons([]);
-    setActivityDays([]);
   };
 
   const sortedLessons = [...completedLessons].sort(
@@ -33,10 +36,8 @@ export function ProgressPage() {
       <section className="page-intro">
         <span className="kicker">My progress</span>
         <h1>Your learning progress</h1>
-        <p>Review the published lessons you have completed. Progress is saved in this browser on this device only, not synced to an account.</p>
+        <p>Review completed lessons saved in this browser. Your streak is available only while signed in and is kept separately for your Google account on this device.</p>
       </section>
-
-      <LearningStreakBadge activityDays={activityDays} />
 
       {sortedLessons.length === 0 ? (
         <section className="state-panel progress-empty">
@@ -44,7 +45,7 @@ export function ProgressPage() {
           <p>Open a published lesson and mark it complete to keep track of your learning.</p>
           <Link className="button button-primary" to="/catalog">Browse the library</Link>
           {activityDays.length > 0 && (
-            <button type="button" className="button button-secondary" onClick={clearProgress}>Clear progress and streak</button>
+            <button type="button" className="button button-secondary" onClick={clearProgress}>{user ? "Clear progress and streak" : "Clear progress"}</button>
           )}
         </section>
       ) : (
