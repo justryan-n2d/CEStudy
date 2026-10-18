@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { LearningStreakBadge } from "../components/LearningStreakBadge";
 import {
@@ -13,14 +14,17 @@ function subjectLabel(slug: string): string {
 }
 
 export function ProgressPage() {
+  const { user } = useAuth();
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
-  const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
+  const activityDays = readLearningActivityDays(user?.id);
 
   const clearProgress = () => {
-    if (!window.confirm("Clear all CEStudy lesson progress and streak saved on this device?")) return;
-    clearLessonProgress();
+    const confirmation = user
+      ? "Clear all CEStudy lesson progress and your streak saved on this device?"
+      : "Clear CEStudy lesson progress saved on this device?";
+    if (!window.confirm(confirmation)) return;
+    clearLessonProgress(user?.id);
     setCompletedLessons([]);
-    setActivityDays([]);
   };
 
   const sortedLessons = [...completedLessons].sort(
@@ -44,7 +48,7 @@ export function ProgressPage() {
           <p>Open a published lesson and mark it complete to keep track of your learning.</p>
           <Link className="button button-primary" to="/catalog">Browse the library</Link>
           {activityDays.length > 0 && (
-            <button type="button" className="button button-secondary" onClick={clearProgress}>Clear progress and streak</button>
+            <button type="button" className="button button-secondary" onClick={clearProgress}>{user ? "Clear progress and streak" : "Clear progress"}</button>
           )}
         </section>
       ) : (
