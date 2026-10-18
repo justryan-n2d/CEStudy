@@ -5,7 +5,7 @@ export async function fetchPublishedLessons(subjectSlug: string): Promise<Subjec
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("subject_lessons")
-    .select("id,subject_slug,unit_number,slug,title,learning_objectives,lesson_markdown,source_note,status,review_notes,reviewed_at,updated_at")
+    .select("id,subject_slug,unit_number,slug,title,learning_objectives,lesson_markdown,source_note,status,updated_at")
     .eq("subject_slug", subjectSlug)
     .eq("status", "published")
     .order("unit_number", { ascending: true });
