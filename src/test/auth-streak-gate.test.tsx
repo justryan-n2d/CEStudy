@@ -110,6 +110,23 @@ describe("authenticated learning streak", () => {
     expect(closeButton).toHaveFocus();
   });
 
+  it("sends an active streak badge to its calendar", () => {
+    const userId = "student-active-streak";
+    mockUseAuth.mockReturnValue({
+      user: { id: userId },
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+    localStorage.setItem(learningActivityStorageKey(userId), JSON.stringify([formatLocalDateKey(new Date())]));
+
+    render(<MemoryRouter><LearningStreakBadge /></MemoryRouter>);
+
+    expect(screen.getByRole("link", { name: /learning streak, 1 day. view streak calendar/i })).toHaveAttribute("href", "/streak");
+    expect(screen.getByRole("link", { name: /learning streak, 1 day/i })).toHaveClass("learning-streak-active");
+  });
+
   it("shows a per-account streak when a Supabase Google user is signed in", () => {
     const userId = "student-1";
     mockUseAuth.mockReturnValue({
