@@ -31,7 +31,7 @@ By the end of Algebra Foundations, students should be able to:
 3. Solve linear equations and inequalities, quadratic equations, selected higher-degree polynomial equations, and selected rational and radical equations; verify candidate solutions in the original equations.
 4. Use function notation and interpret the domain, range, values, and basic graphs of functions.
 5. Factor and manipulate polynomials and use polynomial division, the Remainder Theorem, the Factor Theorem, and the Rational Root Theorem in suitable problems.
-6. Represent complex numbers in the form a + bi and perform basic operations needed to interpret quadratic roots.
+6. Represent complex numbers in the form a + bi, where a and b are real and i² = -1, and perform basic operations needed to interpret quadratic roots.
 7. Solve systems of linear equations in two or three variables using substitution and elimination.
 8. Work with exponential and logarithmic expressions and solve basic exponential and logarithmic equations while respecting domain restrictions.
 9. Translate practical word problems into algebraic models, explain the steps used, check results, and interpret whether answers are reasonable.
@@ -144,7 +144,7 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Solving by factoring and the square-root method
 - Completing the square
 - Quadratic formula
-- Introductory complex numbers: the imaginary unit i, a + bi notation, powers of i, and basic operations; introduce these before interpreting a negative discriminant
+- Introductory complex numbers: define i by i² = -1; use a + bi notation with real a and b, powers of i, and basic operations. Introduce these before interpreting a negative discriminant.
 - Discriminant and classification of quadratic roots as two distinct real roots, one repeated real root, or a pair of nonreal complex roots
 - Basic graph and key features of a quadratic function
 - Word problems that produce quadratic equations
