@@ -1,9 +1,14 @@
 import { render,screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter,Route,Routes } from "react-router-dom";
-import { describe,expect,it } from "vitest";
+import { beforeEach,describe,expect,it,vi } from "vitest";
+
+const topicSearchMocks=vi.hoisted(()=>({fetchPublishedTopicIndex:vi.fn()}));
+vi.mock("../data/topic-search-api",()=>({fetchPublishedTopicIndex:topicSearchMocks.fetchPublishedTopicIndex}));
 import { CatalogPage } from "../pages/CatalogPage";
 import { YearLevelPage } from "../pages/YearLevelPage";
+
+beforeEach(()=>topicSearchMocks.fetchPublishedTopicIndex.mockReset().mockResolvedValue([]));
 
 describe("catalog pages",()=>{
   it("shows curriculum transparency and searches titles and aliases",async()=>{
@@ -79,5 +84,24 @@ describe("catalog pages",()=>{
     expect(await screen.findByText("72 results")).toBeInTheDocument();
     expect(await screen.findByRole("link",{name:/Calculus 1/})).toBeInTheDocument();
     expect(screen.getByRole("searchbox",{name:/search subjects/i})).toHaveValue("");
+  });
+
+  it("finds a published topic from the main catalog search",async()=>{
+    const user=userEvent.setup();
+    topicSearchMocks.fetchPublishedTopicIndex.mockResolvedValue([{
+      subjectSlug:"basic-algebra",
+      unitNumber:4,
+      slug:"polynomials-and-factoring",
+      title:"Polynomials and Factoring",
+      learningObjectives:["Factor polynomial expressions"],
+      status:"published",
+    }]);
+    render(<MemoryRouter><CatalogPage/></MemoryRouter>);
+    const search=screen.getByRole("searchbox",{name:/search subjects/i});
+    await user.type(search,"factoring");
+    const topic=await screen.findByRole("link",{name:/Polynomials and Factoring/});
+    expect(topic).toHaveAttribute("href","/study/basic-algebra/4");
+    expect(screen.getByRole("heading",{name:"Matching topics"})).toBeInTheDocument();
+    expect(screen.queryByRole("heading",{name:/No subjects found/i})).not.toBeInTheDocument();
   });
 });
