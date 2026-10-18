@@ -38,7 +38,7 @@ function activeQuestion(bundle: ContentReviewBundle | null, id: string | null): 
   return bundle?.questions.find((question) => question.id === id) ?? null;
 }
 function splitLines(value: string): string[] {
-  return value.split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);
+  return value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
 }
 
 export function ContentReviewPage() {
@@ -132,16 +132,16 @@ export function ContentReviewPage() {
     setNotice("");
     if (tab === "lessons" && current && "lessonMarkdown" in current) {
       setEditLessonTitle(current.title);
-      setEditLessonObjectives(current.learningObjectives.join("\\n"));
+      setEditLessonObjectives(current.learningObjectives.join("\n"));
       setEditLessonMarkdown(current.lessonMarkdown);
       setEditLessonSourceNote(current.sourceNote);
     }
     if (tab === "questions" && current && "correctAnswer" in current) {
       setEditQuestionTopic(current.topic);
       setEditQuestionPrompt(current.prompt);
-      setEditQuestionChoices(current.choices.join("\\n"));
+      setEditQuestionChoices(current.choices.join("\n"));
       setEditQuestionAnswer(current.correctAnswer);
-      setEditQuestionSteps(current.solutionSteps.join("\\n"));
+      setEditQuestionSteps(current.solutionSteps.join("\n"));
       setEditQuestionExplanation(current.explanation);
       setEditQuestionSourceNote(current.sourceNote);
     }
