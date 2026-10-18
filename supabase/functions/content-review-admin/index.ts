@@ -200,9 +200,10 @@ function currentStatus(value: unknown): value is ContentStatus {
 }
 const ACTIONS: Record<string, { from: ContentStatus[]; to: ContentStatus; needsNote?: boolean }> = {
   verify: { from: ["needs-review"], to: "verified" },
-  request-correction: { from: ["needs-review", "verified", "published"], to: "correction-required", needsNote: true },
+  "request-correction": { from: ["needs-review", "verified", "published"], to: "correction-required", needsNote: true },
   publish: { from: ["verified"], to: "published" },
-  return-to-review: { from: ["verified", "published", "correction-required", "draft"], to: "needs-review" },
+  "return-to-review": { from: ["verified", "published", "correction-required", "draft"], to: "needs-review" },
+  "save-edits": { from: ["needs-review", "correction-required"], to: "needs-review" },
 };
 async function listReviewContent() {
   const lessonQuery = new URLSearchParams({
