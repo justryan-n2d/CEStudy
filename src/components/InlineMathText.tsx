@@ -163,6 +163,68 @@ function looksLikeDollarMath(expression: string): boolean {
   return true;
 }
 
+function readLatexGroupEnd(text: string, openIndex: number): number | null {
+  if (text[openIndex] !== "{") return null;
+  let depth = 0;
+  for (let index = openIndex; index < text.length; index++) {
+    if (text[index] === "\\") {
+      index++;
+      continue;
+    }
+    if (text[index] === "{") depth++;
+    if (text[index] === "}") {
+      depth--;
+      if (depth === 0) return index + 1;
+    }
+  }
+  return null;
+}
+
+function findBareLatexRanges(text: string): MathRange[] {
+  const ranges: MathRange[] = [];
+  const commandPattern = /(?<!\\)\\(frac|dfrac|tfrac|binom|dbinom|tbinom|sqrt|text|mathrm|mathbf|mathit|overline|underline|vec|hat|bar|tilde)\b/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = commandPattern.exec(text)) !== null) {
+    const startAt = match.index;
+    if (isInsideRawHtmlTag(text, startAt)) continue;
+
+    const command = match[1];
+    const groupCount = ["frac", "dfrac", "tfrac", "binom", "dbinom", "tbinom"].includes(command) ? 2 : 1;
+    let cursor = startAt + match[0].length;
+    while (cursor < text.length && /\s/u.test(text[cursor])) cursor++;
+
+    // KaTeX supports indexed roots, for example \sqrt[3]{x}.
+    if (command === "sqrt" && text[cursor] === "[") {
+      const indexEnd = text.indexOf("]", cursor + 1);
+      if (indexEnd < 0) continue;
+      cursor = indexEnd + 1;
+      while (cursor < text.length && /\s/u.test(text[cursor])) cursor++;
+    }
+
+    let complete = true;
+    for (let group = 0; group < groupCount; group++) {
+      const groupEnd = readLatexGroupEnd(text, cursor);
+      if (groupEnd === null) {
+        complete = false;
+        break;
+      }
+      cursor = groupEnd;
+      while (cursor < text.length && /\s/u.test(text[cursor])) cursor++;
+    }
+    if (!complete) continue;
+
+    // If this is the right-hand side of a plain-text equation, render the
+    // equation as one expression. Otherwise, render only the LaTeX command.
+    const leftStart = findLeftBound(text, startAt);
+    const prefix = text.slice(leftStart, startAt).trimEnd();
+    const start = /[=≠<>≤≥]$/u.test(prefix) ? leftStart : startAt;
+    ranges.push({ start, end: cursor });
+  }
+
+  return ranges;
+}
+
 function hasUnmatchedTexDelimiters(text: string): boolean {
   const delimiterPairs: Array<[string, string]> = [["\\(", "\\)"], ["\\[", "\\]"]];
   return delimiterPairs.some(([open, close]) =>
@@ -172,12 +234,24 @@ function hasUnmatchedTexDelimiters(text: string): boolean {
 
 function renderPlainText(text: string): ReactNode {
   if (hasUnmatchedTexDelimiters(text)) return text;
-  const ranges = findPlainMathRanges(text);
+  const ranges = [...findPlainMathRanges(text), ...findBareLatexRanges(text)]
+    .sort((a, b) => a.start - b.start || a.end - b.end);
+
   if (!ranges.length) return text;
+
+  const merged: MathRange[] = [];
+  for (const range of ranges) {
+    const previous = merged[merged.length - 1];
+    if (previous && range.start <= previous.end) {
+      previous.end = Math.max(previous.end, range.end);
+    } else {
+      merged.push({ ...range });
+    }
+  }
 
   const parts: ReactNode[] = [];
   let cursor = 0;
-  for (const range of ranges) {
+  for (const range of merged) {
     if (range.start > cursor) parts.push(text.slice(cursor, range.start));
     parts.push(<LazyLatexMath key={"auto-math-" + range.start} latex={text.slice(range.start, range.end).trim()} />);
     cursor = range.end;
