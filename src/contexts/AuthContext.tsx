@@ -12,7 +12,7 @@ interface AuthContextValue {
   signOut: () => Promise<void>;
 }
 
-const unavailableAuthAction = async (_returnTo?: string): Promise<void> => {
+const unavailableAuthAction: AuthContextValue["signInWithGoogle"] = async () => {
   throw new Error("Supabase configuration is required for Google sign-in.");
 };
 
