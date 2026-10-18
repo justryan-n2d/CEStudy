@@ -1,6 +1,6 @@
 # CEStudy automated weekly database backups
 
-**Status:** The weekly encrypted backup workflow is active, and the first real run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) uploaded an encrypted archive and checksum to private Backblaze B2, verified both by read-back, wrote the `.verified` marker, and completed retention. The October 15 snapshot was restored into isolated local PostgreSQL 18.2 on 2026-10-16. **That snapshot predates the 2026-10-18 live publication-status correction and the current 52-question/13-lesson bank. A fresh backup must be run and verified before Stage 1 can be signed off.** The managed-Supabase-target restore remains untested; see [restore-drill evidence](restore-drill-2026-10-16.md).
+**Status:** The weekly encrypted backup workflow is active. The original October 15 encrypted backup was restored into isolated local PostgreSQL 18.2 on 2026-10-16. After the 2026-10-18 live publication-status correction, [run 38773249088, attempt 2](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) created a fresh encrypted backup of the current database, read back and SHA-256 verified the archive/checksum, confirmed the `.verified` marker, and completed retention with three verified sets kept. The fresh-backup gate is complete. Restoring this refreshed snapshot into a separate managed Supabase project remains untested; see [restore-drill evidence](restore-drill-2026-10-16.md).
 
 ## Schedule and destination
 
