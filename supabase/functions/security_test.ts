@@ -39,6 +39,7 @@ Deno.test("content review only accepts trusted origins and eight-hex Pages previ
   assertEquals(isContentReviewOriginAllowed("https://design-white-blue-responsive.cestudy.pages.dev"), true);
   assertEquals(isContentReviewOriginAllowed("https://deadbeef.cestudy.pages.dev"), true);
   assertEquals(isContentReviewOriginAllowed("https://review-feature.cestudy.pages.dev"), false);
+  assertEquals(isContentReviewOriginAllowed("https://deadbeef.cestudy.pages.dev:444"), false);
   assertEquals(isContentReviewOriginAllowed("https://deadbeef.cestudy.pages.dev.attacker.example"), false);
   assertEquals(isContentReviewOriginAllowed("http://deadbeef.cestudy.pages.dev"), false);
   assertEquals(isContentReviewOriginAllowed(null), false);
@@ -67,6 +68,7 @@ Deno.test("content review rejects unauthenticated requests before database acces
 Deno.test("feedback inbox rejects non-trusted preview origins", () => {
   assertEquals(isFeedbackInboxOriginAllowed("https://deadbeef.cestudy.pages.dev"), true);
   assertEquals(isFeedbackInboxOriginAllowed("https://review-feature.cestudy.pages.dev"), false);
+  assertEquals(isFeedbackInboxOriginAllowed("https://deadbeef.cestudy.pages.dev:444"), false);
   assertEquals(isFeedbackInboxOriginAllowed("https://deadbeef.cestudy.pages.dev.attacker.example"), false);
   assertEquals(isFeedbackInboxOriginAllowed("http://deadbeef.cestudy.pages.dev"), false);
 });
@@ -85,6 +87,7 @@ Deno.test("feedback inbox validates the owner token before private operations", 
 Deno.test("public message form rejects arbitrary preview origins and accepts approved previews", async () => {
   assertEquals(isPublicMessageOriginAllowed("https://deadbeef.cestudy.pages.dev"), true);
   assertEquals(isPublicMessageOriginAllowed("https://review-feature.cestudy.pages.dev"), false);
+  assertEquals(isPublicMessageOriginAllowed("https://deadbeef.cestudy.pages.dev:444"), false);
   assertEquals(isPublicMessageOriginAllowed("https://deadbeef.cestudy.pages.dev.attacker.example"), false);
 
   const rejected = await publicMessageHandler(new Request("https://unit-test.supabase.co/functions/v1/submit-public-message", {
