@@ -93,7 +93,7 @@ return (
                 {item.label}
               </NavLink>
             ))}
-            <NavLink to="/login" className={({ isActive }) => isActive ? "nav-link active account-nav-link" : "nav-link account-nav-link"}>
+            <NavLink to={user ? "/profile" : "/login"} className={({ isActive }) => isActive || (user && location.pathname === "/profile") ? "nav-link active account-nav-link" : "nav-link account-nav-link"}>
               {user ? "Account" : "Sign in"}
             </NavLink>
             {feedbackInboxUnlocked && (
