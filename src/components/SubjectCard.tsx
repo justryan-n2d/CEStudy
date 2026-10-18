@@ -4,8 +4,8 @@ import type { CatalogSubject } from "../types/catalog";
 const labels={"coming-soon":"Coming soon","in-preparation":"In preparation","has-published-content":"Study content available"} as const;
 
 export function SubjectCard({subject}:{subject:CatalogSubject}){
-  const destination=subject.slug==="basic-algebra"||subject.availability==="has-published-content"
-    ? "/study/"+subject.slug
+  const destination=subject.slug==="basic-algebra"
+    ? "/study/basic-algebra"
     : "/subjects/"+subject.slug;
   return <Link className="subject-card" to={destination} aria-label={subject.title+", "+labels[subject.availability]}>
     <div className="card-topline">
