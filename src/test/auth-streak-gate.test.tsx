@@ -94,6 +94,22 @@ describe("authenticated learning streak", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("keeps keyboard focus inside the unlock dialog", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><LearningStreakBadge /></MemoryRouter>);
+    await user.click(screen.getByRole("button", { name: /learning streak, zero days/i }));
+
+    const closeButton = screen.getByRole("button", { name: "Close streak sign-in prompt" });
+    const googleButton = screen.getByRole("button", { name: /continue with google/i });
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(googleButton).toHaveFocus();
+
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+  });
+
   it("shows a per-account streak when a Supabase Google user is signed in", () => {
     const userId = "student-1";
     mockUseAuth.mockReturnValue({
