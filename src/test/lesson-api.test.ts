@@ -6,7 +6,10 @@ const mocks = vi.hoisted(() => ({
   eq: vi.fn(),
   order: vi.fn(),
 }));
-vi.mock("../lib/supabase", () => ({ supabase: { from: mocks.from } }));
+vi.mock("../lib/supabase", () => ({
+  hasSupabaseConfig: false,
+  supabase: { from: mocks.from },
+}));
 
 import { fetchPublishedLessons } from "../data/lesson-api";
 
