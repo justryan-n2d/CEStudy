@@ -206,11 +206,12 @@ export function ContentReviewPage() {
       setNotice(
         action === "verify" ? "Marked verified. It is still private until you publish it."
           : action === "request-correction" ? "Sent back for correction. It remains unpublished."
-            : action === "publish"
-              ? result.catalogAvailabilitySync
-                ? "Published. The public catalog status was refreshed."
-                : "Published, but the public catalog status could not be refreshed. Check the catalog before announcing availability."
-              : "Returned to review. It is no longer visible to learners.",
+            : action === "save-edits" ? "Edits saved. The item remains unpublished and in the review queue."
+              : action === "publish"
+                ? result.catalogAvailabilitySync
+                  ? "Published. The public catalog status was refreshed."
+                  : "Published, but the public catalog status could not be refreshed. Check the catalog before announcing availability."
+                : "Returned to review. It is no longer visible to learners.",
       );
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "The review action failed.");
