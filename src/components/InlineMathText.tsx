@@ -15,7 +15,7 @@ const STOP_WORDS = new Set([
 interface MathRange { start: number; end: number }
 
 function isOperator(char: string | undefined): boolean {
-  return Boolean(char && "+−±×÷*/^=≠<>≤≥".includes(char));
+  return Boolean(char && "+-−±×÷*/^=≠<>≤≥".includes(char));
 }
 
 function isMathCharacter(text: string, index: number): boolean {
