@@ -11,7 +11,7 @@ The canonical roadmap is [PHASE_PLAN.md](PHASE_PLAN.md). It records each project
 - The React + TypeScript + Vite + Tailwind frontend is built and deployed on Cloudflare Pages.
 - The app connects to the dedicated CEStudy Supabase project. The catalog contains 72 subjects. The live database currently holds 52 practice questions and 13 lesson records, all `needs-review`, with zero published in either content table after the 2026-10-18 release audit.
 - Automated CI and Supabase migration/RLS tests are passing on the latest feature branch, and a full-history secret scan passed. The latest documented production Chromium smoke test is from 2026-10-17, before the 2026-10-18 publication-status correction, so a new production smoke run is still required.
-- This is a working deployed MVP, not yet a broadly launched student product. Release hardening, backup/restore proof, branch protection, manual accessibility/device testing, human question approval, and the student pilot remain. The public-repository question-content policy is documented and guarded by CI.
+- This is a working deployed MVP, not yet a broadly launched student product. A fresh backup and managed-target restore, B2 lifecycle and GitHub email settings, post-correction production smoke test, manual accessibility/device testing, independent content approval, and the student pilot remain. Main-branch protection is active and verified; the public-repository question-content policy is documented and guarded by CI.
 
 ## Locked product direction (2026-10-18)
 
