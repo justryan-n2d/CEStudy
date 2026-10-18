@@ -117,8 +117,9 @@ describe("owner content review", () => {
     await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
 
     expect((await screen.findAllByText("TEST QUESTION PROMPT")).length).toBeGreaterThan(0);
-    expect(screen.getByText("TEST ANSWER EXPLANATION")).not.toBeVisible();
+    expect(screen.queryByText("Correct answer:")).not.toBeInTheDocument();
     await user.click(screen.getByText("Show answer key and solution"));
-    expect(screen.getByText("TEST ANSWER EXPLANATION")).toBeVisible();
+    expect(screen.getByText("Correct answer:")).toBeVisible();
+    expect(screen.getByText("TEST ANSWER EXPLANATION", { selector: "p" })).toBeVisible();
   });
 });
