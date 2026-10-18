@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import type { FormEvent } from "react";
 import {
   FEEDBACK_INBOX_SESSION_EVENT, getFeedbackInboxSessionToken, getUnreadFeedbackCount,
@@ -138,6 +139,7 @@ export function FeedbacksPage() {
       <section className="page-intro feedback-inbox-heading">
         <div><span className="kicker">Owner-only</span><h1>Feedbacks</h1><p>{unreadCount} unread {unreadCount === 1 ? "message" : "messages"}. Visitors appear as Anonymous until CEStudy accounts exist.</p></div>
         <div className="feedback-inbox-actions">
+          <Link className="button button-secondary" to="/owner/content-review">Review lessons and questions</Link>
           <button className="button button-secondary" type="button" onClick={() => void loadInbox()} disabled={loading}>{loading ? "Refreshing..." : "Refresh"}</button>
           <button className="button button-secondary" type="button" onClick={handleLock}>Lock inbox</button>
         </div>

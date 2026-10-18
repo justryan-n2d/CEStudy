@@ -25,3 +25,7 @@ verify_jwt = false
 # Owner inbox validates its own access key and short-lived token.
 [functions.feedback-inbox-admin]
 verify_jwt = false
+
+# Content review validates its own domain-separated owner token and rate-limits unlock attempts.
+[functions.content-review-admin]
+verify_jwt = false
