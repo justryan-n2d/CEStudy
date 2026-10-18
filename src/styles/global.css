@@ -839,3 +839,52 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .mobile-tab-icon .navigation-glyph{width:19px;height:19px}
 .mobile-menu-unread-dot{top:0;right:0;border-color:#fff}
 :root[data-theme="dark"] .mobile-menu-unread-dot{border-color:#101c2b}
+
+
+/* Profile page separates account management from the Google OAuth entry route. */
+.profile-page{max-width:780px;margin-inline:auto}
+.profile-account-card{display:flex;align-items:center;gap:.9rem;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:18px;background:#fff}
+.profile-avatar{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;border-radius:50%;background:var(--blue-soft);color:var(--brand-blue);font-size:1.2rem;font-weight:850}
+.profile-account-copy{display:flex;flex:1;flex-direction:column;gap:.2rem;min-width:0}
+.profile-account-copy strong{overflow-wrap:anywhere;color:var(--navy);font-size:.98rem}
+.profile-account-copy span{color:var(--muted);font-size:.8rem}
+.profile-connected-status{display:inline-flex;align-items:center;gap:.32rem;color:#236c62;font-size:.78rem;font-weight:800;white-space:nowrap}
+.profile-connected-status span{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#dff3e9}
+.profile-data-note{margin-top:1rem;padding:1rem 1.1rem;border:1px solid #d3e7e0;border-radius:16px;background:#f0f8f5}
+.profile-data-note strong{color:#174d45;font-size:.92rem}
+.profile-data-note p{margin:.3rem 0 0;color:#496c66;font-size:.84rem;line-height:1.6}
+.profile-shortcuts-section{margin-top:1.7rem}
+.profile-shortcuts-section>h2{margin-bottom:.7rem;font-size:1.25rem;color:var(--navy)}
+.profile-shortcut-list{display:grid;gap:.65rem}
+.profile-shortcut{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:70px;padding:.9rem 1rem;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--navy);transition:border-color .15s ease,background-color .15s ease,transform .15s ease}
+.profile-shortcut>span:first-child{display:flex;flex-direction:column;gap:.22rem}
+.profile-shortcut strong{font-size:.9rem}
+.profile-shortcut small{color:var(--muted);font-size:.8rem;line-height:1.45}
+.profile-shortcut>span:last-child{color:var(--brand-blue);font-size:1.25rem}
+.profile-shortcut:hover{border-color:#aac9e9;background:#f8fbff}
+.profile-shortcut:focus-visible{outline:3px solid rgba(7,84,181,.34);outline-offset:2px}
+.profile-signout-section{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--line)}
+.profile-signout-section>div{min-width:0}
+.profile-signout-section strong{color:var(--navy);font-size:.9rem}
+.profile-signout-section p{margin:.25rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.5}
+.profile-guest-panel{margin-top:.5rem}
+.profile-guest-panel p{line-height:1.65}
+.profile-guest-actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem}
+:root[data-theme="dark"] .profile-account-card,:root[data-theme="dark"] .profile-shortcut{background:#121f30;border-color:#2b3d51;color:#e5edf6}
+:root[data-theme="dark"] .profile-account-copy strong,:root[data-theme="dark"] .profile-shortcuts-section>h2,:root[data-theme="dark"] .profile-signout-section strong{color:#e5edf6}
+:root[data-theme="dark"] .profile-data-note{background:#142a28;border-color:#235247}
+:root[data-theme="dark"] .profile-data-note strong,:root[data-theme="dark"] .profile-data-note p{color:#c2e7db}
+:root[data-theme="dark"] .profile-connected-status{color:#9fe2c8}
+:root[data-theme="dark"] .profile-connected-status span{background:#1d4339}
+:root[data-theme="dark"] .profile-shortcut:hover{background:#1b2b40;border-color:#365a80}
+@media(max-width:560px){
+  .profile-account-card{align-items:flex-start;gap:.7rem;padding:.85rem}
+  .profile-avatar{flex-basis:40px;width:40px;height:40px}
+  .profile-connected-status{align-self:center;font-size:0}
+  .profile-connected-status span{font-size:.75rem}
+  .profile-signout-section{align-items:stretch;flex-direction:column}
+  .profile-signout-section .button{width:100%}
+  .profile-guest-actions{flex-direction:column}
+  .profile-guest-actions .button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.profile-shortcut{transition:none}}
