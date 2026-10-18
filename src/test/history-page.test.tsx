@@ -27,7 +27,7 @@ describe("recently opened lesson history", () => {
     const lessons = screen.getAllByRole("heading", { level: 2 });
     expect(lessons[0]).toHaveTextContent("Linear Equations");
     expect(lessons[1]).toHaveTextContent("Algebra Foundations");
-    expect(screen.getByRole("link", { name: /open lesson/i })).toHaveAttribute("href", "/study/basic-algebra/2");
+    expect(screen.getAllByRole("link", { name: /open lesson/i })[0]).toHaveAttribute("href", "/study/basic-algebra/2");
   });
 
   it("clears history only after confirmation", async () => {
