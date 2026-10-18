@@ -34,7 +34,7 @@ Post-PR #19 Supabase function logs later showed an accepted `OPTIONS 200` and tw
 
 ## Deployment and verification evidence
 
-The latest post-correction production browser run is [39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824), which passed 135/135 checks on 2026-10-18. The runs linked below document earlier deployment behavior and remain historical context.
+The latest post-correction production browser run is [39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), which passed 135/135 checks on 2026-10-18. The older runs linked below are historical context.
 
 - **Live URL:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 - **Hosting:** Cloudflare Pages connected to `justryan-n2d/CEStudy`; production branch `main`, build command `npm run build`, output directory `dist`.
