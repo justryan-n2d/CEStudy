@@ -544,3 +544,11 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .reviewer-topic-disclosure summary::-webkit-details-marker{display:none}
 .reviewer-topic-disclosure summary::after{content:"+";font-size:1rem;font-weight:650}
 .reviewer-topic-disclosure[open] summary::after{content:"−"}
+
+
+/* KaTeX formulas stay readable without causing page-wide horizontal overflow. */
+.latex-math-inline{display:inline-block;max-width:100%;vertical-align:middle}
+.latex-math-block{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:.4rem 0;text-align:center}
+.latex-math-block .katex-display{margin:.25rem 0}
+.latex-math-error{color:#8b2b24;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:560px){.latex-math-block{margin-inline:-.25rem;padding:.5rem .25rem}}
