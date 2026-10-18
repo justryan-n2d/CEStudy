@@ -99,7 +99,7 @@ describe("LaTeX math rendering",()=>{
     const lesson = "If A = lw and l ≠ 0, divide both sides by l to get w = A/l.";
     render(<MarkdownContent markdown={lesson} />);
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(3));
-    expect(screen.getByText((_content,element)=>element?.textContent?.includes("divide both sides by l to get") ?? false)).toBeInTheDocument();
+    expect(document.querySelector(".markdown-content")?.textContent).toContain("divide both sides by l to get");
     expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
   });
 });
