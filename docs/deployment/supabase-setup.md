@@ -42,7 +42,7 @@ Google OAuth needs one-time setup in Google Cloud and the dedicated CEStudy Supa
    - `https://cestudy.pages.dev`
    - `http://localhost:5173` for local development only.
 3. Add this **Authorized redirect URI** in Google Cloud: `https://qqmdwltfgpqtcvdbcmto.supabase.co/auth/v1/callback`.
-4. In the [CEStudy Supabase dashboard](https://supabase.com/dashboard/project/qqmdwltfgpqtcvdbcmto/auth/providers), enable **Google** and enter the Google OAuth client ID and client secret. Keep the client secret in Supabase's provider configuration, never in GitHub, Vite variables, frontend source, or this chat.
+4. In the [CEStudy Supabase dashboard](https://supabase.com/dashboard/project/qqmdwltfgpqtcvdbcmto/auth/providers), enable **Google** and enter the Google OAuth client ID and client secret. If Google is to remain CEStudy's only login method, disable unused sign-in providers such as Email and Phone in Supabase Auth. Keep the client secret in Supabase's provider configuration, never in GitHub, Vite variables, frontend source, or this chat.
 5. In Supabase **Authentication → URL Configuration**, set the Site URL to `https://cestudy.pages.dev` and add these app redirect URLs:
    - `https://cestudy.pages.dev/login`
    - `http://localhost:5173/login` for local development.
