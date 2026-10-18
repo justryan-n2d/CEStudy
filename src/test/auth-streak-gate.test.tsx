@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { LearningStreakBadge } from "../components/LearningStreakBadge";
-import { formatLocalDateKey, learningActivityStorageKey } from "../data/learning-progress";
+import { formatLocalDateKey, learningActivityStorageKey, setLessonCompleted } from "../data/learning-progress";
 
 const mockUseAuth = vi.hoisted(() => vi.fn());
 
@@ -108,6 +108,30 @@ describe("authenticated learning streak", () => {
 
     await user.tab();
     expect(closeButton).toHaveFocus();
+  });
+
+  it("updates the global badge immediately when a lesson starts today's streak", () => {
+    const userId = "student-live-streak";
+    mockUseAuth.mockReturnValue({
+      user: { id: userId },
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+    render(<MemoryRouter><LearningStreakBadge /></MemoryRouter>);
+
+    expect(screen.getByRole("link", { name: /learning streak, 0 days/i })).toHaveClass("learning-streak-locked");
+    act(() => {
+      setLessonCompleted({
+        lessonId: "live-lesson",
+        subjectSlug: "basic-algebra",
+        unitNumber: 1,
+        title: "Algebra Foundations",
+      }, true, userId);
+    });
+
+    expect(screen.getByRole("link", { name: /learning streak, 1 day/i })).toHaveClass("learning-streak-active");
   });
 
   it("sends an active streak badge to its calendar", () => {
