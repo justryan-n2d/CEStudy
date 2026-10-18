@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   clearLessonProgress,
+  LEARNING_ACTIVITY_DAYS_STORAGE_KEY,
   LEARNING_PROGRESS_STORAGE_KEY,
   readCompletedLessons,
+  readLearningActivityDays,
   setLessonCompleted,
 } from "../data/learning-progress";
 
@@ -26,6 +28,29 @@ describe("device-local learning progress", () => {
     expect(result[0].completedAt).toBeTruthy();
     expect(result[0].completedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(readCompletedLessons()).toEqual(result);
+  });
+
+  it("records a local activity day when a published lesson is completed", () => {
+    setLessonCompleted(lesson, true);
+    const now = new Date();
+    const expectedDay = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+    expect(readLearningActivityDays()).toEqual([expectedDay]);
+  });
+
+  it("records one activity day when multiple lessons are completed that day", () => {
+    setLessonCompleted(lesson, true);
+    setLessonCompleted({ ...lesson, lessonId: "lesson-2", title: "Second lesson" }, true);
+
+    expect(readLearningActivityDays()).toHaveLength(1);
+  });
+
+  it("keeps the activity day if the lesson is later marked incomplete", () => {
+    setLessonCompleted(lesson, true);
+    setLessonCompleted(lesson, false);
+
+    expect(readCompletedLessons()).toEqual([]);
+    expect(readLearningActivityDays()).toHaveLength(1);
   });
 
   it("does not create duplicate records when a lesson is marked complete twice", () => {
@@ -73,6 +98,8 @@ describe("device-local learning progress", () => {
     clearLessonProgress();
 
     expect(readCompletedLessons()).toEqual([]);
+    expect(readLearningActivityDays()).toEqual([]);
+    expect(localStorage.getItem(LEARNING_ACTIVITY_DAYS_STORAGE_KEY)).toBeNull();
     expect(localStorage.getItem("unrelated-app-data")).toBe("keep");
   });
 });
