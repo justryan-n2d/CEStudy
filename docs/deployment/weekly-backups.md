@@ -1,6 +1,6 @@
 # CEStudy automated weekly database backups
 
-**Status:** The first real weekly backup succeeded in GitHub Actions run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). The run exported the live database, encrypted it, uploaded the archive and checksum to the correct private B2 bucket, read both back for verification, wrote and re-read the `.verified` marker, and completed retention. On 2026-10-16 the actual backup was checksum-checked, decrypted, restored into isolated local PostgreSQL 18.2, and validated for app data, RLS, and client permissions. The managed-Supabase-target restore remains untested; see [restore-drill evidence](restore-drill-2026-10-16.md).
+**Status:** The weekly encrypted backup workflow is active, and the first real run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) uploaded an encrypted archive and checksum to private Backblaze B2, verified both by read-back, wrote the `.verified` marker, and completed retention. The October 15 snapshot was restored into isolated local PostgreSQL 18.2 on 2026-10-16. **That snapshot predates the 2026-10-18 live publication-status correction and the current 52-question/13-lesson bank. A fresh backup must be run and verified before Stage 1 can be signed off.** The managed-Supabase-target restore remains untested; see [restore-drill evidence](restore-drill-2026-10-16.md).
 
 ## Schedule and destination
 
@@ -15,7 +15,7 @@
 
 **Automatic in GitHub Actions:** the weekly schedule; B2 access preflight; PostgreSQL export; archive and expected-table checks; encryption using the public certificate; upload of the encrypted archive and checksum; remote read-back checks; creation and verification of the `.verified` marker; retention pruning after successful verification; failure summary; and CI tests for encrypt/decrypt, corrupted-tag rejection, retention, migrations, RLS, lint, and build.
 
-**Still manual:** Backblaze's lifecycle rule for deleting hidden old versions; GitHub account email notification settings; keeping protected copies of the private key and passphrase; downloading and decrypting a real backup; restoring the decrypted dump into a separate Supabase test database; validating restored counts, grants, RLS, and published-only question visibility; and recording the restore evidence. A successful upload is not proof that a full restore works.
+**Still manual:** immediately after any critical live data correction, run a fresh backup manually in GitHub Actions and confirm the archive/checksum/verified marker by read-back; Backblaze lifecycle cleanup; GitHub failure-email settings; protected copies of the private key and passphrase; restoring the refreshed dump into a separate Supabase test database; validating counts, grants, RLS, and published-only visibility; and recording restore evidence. A successful upload is not proof that a full restore works.
 
 ## 1. Generate a private key and public certificate in Termux
 
