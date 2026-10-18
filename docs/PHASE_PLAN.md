@@ -237,7 +237,7 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [ ] Update the status page with links to the latest successful run evidence.
 
 ### Phase 7 exit criteria
-Backup and restore have been proven; future-question content is kept out of public source and branch protection is checked; latest CI/security checks pass; the privacy/feedback path exists; and manual accessibility/device/production QA is recorded.
+The latest live database state has a verified encrypted backup and managed-target restore; future-question content is kept out of public source; the main-branch ruleset is active; current CI/security checks pass; the privacy/feedback path exists; and manual accessibility/device/production QA is recorded. The 2026-10-18 publication correction still needs a new backup and managed-target restore before this exit criterion is met.
 
 ## Phase 8: Human content review and approved question publishing
 
@@ -348,11 +348,11 @@ These are not blockers for the current no-account web MVP and should not distrac
 
 ## Immediate next actions
 
-1. If managed-Supabase-target recovery proof is still required, restore the verified backup into a separate temporary Supabase project only after explicit cost approval; the local application-schema restore is already proven. A Supabase branch has an estimated usage cost of $0.01344 per hour while active.
-2. Keep the repository public by decision. After the question-content protection changes merge, verify the CI guard and confirm Cloudflare Pages deploys successfully. Future unpublished question text stays in Supabase, not public source.
-3. Configure main-branch protection and rerun CI plus the full-history secret scan.
-4. Complete the physical-device, accessibility, route, search/filter, and privacy review.
-5. Identify a human question reviewer, approve a small set, and publish only approved content.
+1. Run and verify a fresh encrypted database backup after the 2026-10-18 publication-status correction. The known October 15 snapshot predates the current 52-question/13-lesson state.
+2. Restore that refreshed backup into a separate temporary Supabase project only after explicit cost approval; the local application-schema restore does not test managed Supabase roles/system settings. A Supabase branch has an estimated usage cost of $0.01344 per hour while active.
+3. Confirm the Backblaze B2 lifecycle rule and GitHub failure-email notifications, then run a fresh live Chromium smoke test after the database correction.
+4. Complete physical-device accessibility QA, direct-route/refresh checks, search/filter edge cases, and privacy notice review. Configure and test Google OAuth end to end before the account features leave draft.
+5. Identify a qualified human reviewer, review and approve specific lessons/questions, and publish only approved items.
 6. Run the controlled student pilot, fix high-impact issues, and record the go/no-go decision.
 7. Complete final polish and only then make a broad launch announcement.
 
