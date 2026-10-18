@@ -29,12 +29,12 @@ The owner-only review screen supports direct edits that save the item as `needs-
 ## Automated guard and current state
 
 - `supabase/seed.sql` seeds the public subject catalog only. It does not insert lesson bodies or actual practice-question rows.
-- `public.subject_lessons` holds the Algebra Foundations unit lessons; all 13 initial lessons were inserted as `needs-review`.
-- `public.practice_questions` holds the matching new practice set; all 44 new questions were inserted as `needs-review`. The existing eight draft questions were left unchanged.
+- `public.subject_lessons` holds 13 Algebra Foundations lesson records. As of the 2026-10-18 Stage 1 audit, all 13 are `needs-review`; two that had been marked published despite draft notes were returned to review. Their review timestamps were cleared and the audit reason was recorded in private `review_notes`.
+- `public.practice_questions` holds 52 practice-question records: the 44-question newer set plus the original eight draft records. All 52 are `needs-review` and none is published.
 - GitHub Actions rejects a public seed that contains an INSERT into `public.practice_questions` or the key fields commonly used to embed question answers and solutions.
 - RLS tests create generic synthetic published and unpublished fixtures inside a rolled-back transaction. They verify that anon/authenticated clients see only the published fixture.
-- The eight existing draft rows remain in Supabase with `needs-review`; the decision does not publish or delete them. They are no longer recreated from the current public seed file.
-- The initial Algebra Foundations bank consists of 13 lessons and 44 new questions in `needs-review`. None are published automatically. The owner-only review function must be deployed with the PR before the review screen works in the deployed site.
+- The original eight draft rows remain in Supabase with `needs-review`; they are no longer recreated from the current public seed file. The remaining 44 questions also remain private and unreviewed.
+- The live Algebra Foundations bank currently consists of 13 lesson records and 52 practice questions, all `needs-review`. A 2026-10-18 audit returned two draft-marked lessons to review; the catalog entry is `in-preparation`, and anonymous access now returns zero rows from both lesson and question tables. `content-review-admin` is active, but every publication still requires explicit human review and approval.
 - The project must continue to keep student-facing publication deliberately separate from question authoring. Do not add a public client path that can create, read, or publish drafts.
 
 ## Cloudflare Pages
