@@ -69,4 +69,32 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelector("img")).not.toBeInTheDocument();
     expect(screen.getByText("Literal text " + html)).toBeInTheDocument();
   });
+
+  it("auto-renders equations already stored as plain Unicode text",async()=>{
+    render(<MarkdownContent markdown={"The quadratic formula is x = (-b ± √(b² - 4ac))/(2a)."} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
+    expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
+    expect(screen.getByText(/The quadratic formula is/)).toBeInTheDocument();
+  });
+
+  it("renders multi-part equations and keeps explanatory prose",async()=>{
+    const lesson = "For 2x² + 4x + 5 = 0, the discriminant is D = 4² - 4(2)(5) = 16 - 40 = -24. Since D < 0, the roots are nonreal.";
+    render(<MarkdownContent markdown={lesson} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(3));
+    expect(screen.getByText(/Since/)).toBeInTheDocument();
+    expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
+  });
+
+  it("renders double-dollar display math",async()=>{
+    render(<MarkdownContent markdown={["Displayed formula:", "$", "\\frac{a}{b} = c", "$"].join("\n")} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
+    expect(document.querySelector(".katex-display")).toBeInTheDocument();
+  });
+
+  it("supports single-dollar inline math without converting currency",async()=>{
+    render(<MarkdownContent markdown={"Area is $x^2$ and the fee is $5."} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
+    expect(screen.getByText(/fee is \\$5/)).toBeInTheDocument();
+  });
+
 });
