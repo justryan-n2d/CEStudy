@@ -9,11 +9,11 @@ import { useCatalog } from "../hooks/useCatalog";
 import { fetchPublishedTopicIndex } from "../data/topic-search-api";
 import type { PublishedTopicIndexEntry } from "../data/topic-search-api";
 
-function topicSearchText(topic:PublishedTopicIndexEntry,subjectTitle:string):string {
+function topicSearchText(topic:PublishedTopicIndexEntry):string {
   const topicDetails=topic.kind==="lesson"
     ? [topic.title,topic.slug,...topic.learningObjectives]
     : [topic.title,topic.topic];
-  return [...topicDetails,subjectTitle].join(" ").normalize("NFKC").toLowerCase();
+  return topicDetails.join(" ").normalize("NFKC").toLowerCase();
 }
 
 function topicTitleText(topic:PublishedTopicIndexEntry):string {
@@ -58,7 +58,7 @@ export function CatalogPage(){
     if(!normalizedQuery)return [];
     const matched=publishedTopics.filter(topic=>{
       const parent=eligibleSubjects.find(subject=>subject.slug===topic.subjectSlug);
-      return Boolean(parent)&&queryTerms.every(term=>topicSearchText(topic,parent?.title??"").includes(term));
+      return Boolean(parent)&&queryTerms.every(term=>topicSearchText(topic).includes(term));
     });
     const uniqueTopics=new Map<string,PublishedTopicIndexEntry>();
     for(const topic of matched){
