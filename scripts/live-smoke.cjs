@@ -28,6 +28,7 @@ function recordApiResponse(kind, response) {
     pathname: url.pathname,
     status: response.status(),
     filterStatus: url.searchParams.get("status"),
+    selectFields: url.searchParams.get("select"),
     apikeyIsPublishable: key.startsWith("sb_publishable_"),
     apikeyIsPrivileged: key.startsWith("sb_secret_") ||
       (key.startsWith("eyJ") && key.toLowerCase().includes("service_role")),
@@ -60,6 +61,9 @@ async function main() {
     }
     if (url.hostname.endsWith(".supabase.co") && url.pathname.startsWith("/rest/v1/practice_questions")) {
       recordApiResponse("practice", response);
+    }
+    if (url.hostname.endsWith(".supabase.co") && url.pathname.startsWith("/rest/v1/subject_lessons")) {
+      recordApiResponse("lessons", response);
     }
     if (url.hostname === new URL(baseUrl).hostname && response.status() >= 400) {
       runtimeErrors.push("same-origin HTTP " + response.status() + " at " + activeRoute + ": " + url.pathname);
@@ -205,6 +209,30 @@ async function main() {
     "Practice API uses the dedicated host and only a publishable key",
     practice.length > 0 && practice.every((item) => item.host === expectedSupabaseHost && item.apikeyIsPublishable && !item.apikeyIsPrivileged),
     "key contents are not logged"
+  );
+
+  const lessons = apiResponses.filter((item) => item.kind === "lessons");
+  check("Browser made a published lesson/topic API request", lessons.length > 0, "responses=" + lessons.length);
+  check(
+    "Lesson and topic API requests filter status to published",
+    lessons.length > 0 && lessons.every((item) => item.filterStatus === "eq.published"),
+    "status filter checked"
+  );
+  check(
+    "Lesson and topic API uses the dedicated host and only a publishable key",
+    lessons.length > 0 && lessons.every((item) => item.host === expectedSupabaseHost && item.apikeyIsPublishable && !item.apikeyIsPrivileged),
+    "key contents are not logged"
+  );
+  check(
+    "Topic index requests only lightweight topic fields",
+    lessons.some((item) => {
+      const fields = (item.selectFields || "").split(",");
+      return fields.includes("learning_objectives") && fields.includes("title")
+        && !fields.includes("lesson_markdown") && !fields.includes("review_notes")
+        && !fields.includes("reviewed_at") && !fields.includes("prompt")
+        && !fields.includes("correct_answer") && !fields.includes("solution_steps");
+    }),
+    "topic index excludes lesson bodies, answers, and review metadata"
   );
 
   const practiceCounts = [];
