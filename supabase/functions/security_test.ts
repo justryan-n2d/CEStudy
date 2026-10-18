@@ -20,7 +20,7 @@ function assertEquals<T>(actual: T, expected: T, message = "") {
 async function withSecrets(run: () => Promise<void>) {
   const names = ["FEEDBACK_INBOX_ACCESS_KEY", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_URL"];
   const previous = new Map(names.map((name) => [name, Deno.env.get(name)]));
-  Deno.env.set("FEEDBACK_INBOX_ACCESS_KEY", "test-owner-key-that-is-at-least-32-characters");
+  Deno.env.set("FEEDBACK_INBOX_ACCESS_KEY", "x".repeat(40));
   Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", "test-only-server-key");
   Deno.env.set("SUPABASE_URL", "https://unit-test.supabase.co");
   try {
