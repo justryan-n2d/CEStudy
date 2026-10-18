@@ -31,7 +31,7 @@ export function Layout({ children }: { children: ReactNode }) {
     { to: "/years", label: "Year levels" },
     { to: "/math-foundations", label: "Math foundations" },
   ];
-  const menuPaths = ["/profile", "/login", "/history", "/streak", "/progress", "/community", "/support", "/feedback", "/feedbacks", "/bug-reports", "/contact", "/about"];
+  const menuPaths = ["/profile", "/login", "/history", "/streak", "/progress", "/community", "/support", "/feedback", "/feedbacks", "/bug-reports", "/contact", "/about", "/privacy"];
   const mobileLinks = [
     { to: "/", label: "Home", name: "home" as const, active: location.pathname === "/" },
     { to: "/catalog", label: "Subjects", name: "book" as const, active: location.pathname === "/catalog" || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/practice/") || location.pathname.startsWith("/study/") },
@@ -118,7 +118,7 @@ return (
             <h2>Explore</h2><Link to="/about">About us</Link><Link to="/catalog">Subject catalog</Link><Link to="/years">Year levels</Link><Link to="/math-foundations">Math foundations</Link>
           </nav>
           <nav className="footer-links" aria-label="Contact and help">
-            <h2>Contact and help</h2><Link to="/contact">Contact CEStudy</Link><Link to="/support">Support us</Link><Link to="/bug-reports">Report a bug</Link><Link to="/feedback">Send feedback</Link>
+            <h2>Contact and help</h2><Link to="/contact">Contact CEStudy</Link><Link to="/support">Support us</Link><Link to="/bug-reports">Report a bug</Link><Link to="/feedback">Send feedback</Link><Link to="/privacy">Privacy notice</Link>
           </nav>
         </div>
       </footer>
