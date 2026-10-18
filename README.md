@@ -47,7 +47,7 @@ Post-PR #19 Supabase function logs later showed an accepted `OPTIONS 200` and tw
 - Free-first, responsive web app designed for mobile screens.
 - Four year levels, Mathematics Foundations and Refreshers, and five specialization areas.
 - CHED placements are reference examples and may differ by university.
-- No student-facing AI tutor, AI-generated questions, live AI API calls, student accounts, public academic-content submissions, or cross-device progress in the MVP. Published lesson completion may be stored locally in the current browser; it is not sent to the server or synced. Anonymous private feedback and support-confirmation forms are implemented.
+- No student-facing AI tutor, AI-generated questions, live AI API calls, student accounts, public academic-content submissions, or cross-device progress in the MVP. Published lesson completion and the flame streak are stored locally in the current browser; this is not sent to the server or synced. Anonymous private feedback and support-confirmation forms are implemented.
 - Only deliberately published questions are returned to public clients.
 - No question is marked verified merely because it was generated or seeded.
 
