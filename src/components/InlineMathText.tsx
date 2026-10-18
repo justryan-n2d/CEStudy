@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { LatexMath } from "./LatexMath";
+import { LazyLatexMath } from "./LazyLatexMath";
 
 const INLINE_TOKEN_PATTERN = /(\*\*[^*]+\*\*|[\x60][^\x60]+[\x60]|\\\([\s\S]+?\\\))/g;
 
@@ -13,7 +13,7 @@ export function InlineMathText({ text }: { text: string }) {
       return <code key={index}>{piece.slice(1, -1)}</code>;
     }
     const math = piece.match(/^\\\(([\s\S]+)\\\)$/);
-    if (math) return <LatexMath key={index} latex={math[1]} />;
+    if (math) return <LazyLatexMath key={index} latex={math[1]} />;
     return piece;
   })}</>;
 }
