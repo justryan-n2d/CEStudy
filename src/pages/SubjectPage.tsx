@@ -109,6 +109,22 @@ export function SubjectPage() {
 
       <CurriculumNotice />
 
+      {subject.slug === "basic-algebra" && (
+        <ScrollReveal className="reveal-section" delayMs={40}>
+          <section className="study-entry-panel" aria-labelledby="algebra-study-heading">
+            <div>
+              <span className="kicker">Study path</span>
+              <h2 id="algebra-study-heading">Algebra Foundations lessons</h2>
+              <p>Start with the readiness review, then follow the College Algebra lessons in order. Only lessons and questions you have reviewed and published appear to students.</p>
+            </div>
+            <div className="study-entry-actions">
+              <Link className="button button-primary" to="/study/basic-algebra">Open lessons →</Link>
+              <Link className="button button-secondary" to="/practice/basic-algebra">Practice questions</Link>
+            </div>
+          </section>
+        </ScrollReveal>
+      )}
+
       {related.length > 0 && (
         <ScrollReveal className="reveal-section" delayMs={60}>
           <section className="section-block">
