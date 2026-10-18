@@ -32,6 +32,9 @@ export interface ReviewPracticeQuestion {
   explanation: string;
   sourceNote: string;
   status: ContentStatus;
+  reviewNotes: string;
+  reviewedAt: string | null;
+  updatedAt: string;
   displayOrder: number;
 }
 
@@ -97,6 +100,9 @@ export function parseReviewPracticeQuestion(row: unknown): ReviewPracticeQuestio
     || typeof row.explanation !== "string" || !row.explanation.trim()
     || typeof row.source_note !== "string"
     || !contentStatus(row.status)
+    || (row.review_notes !== undefined && typeof row.review_notes !== "string")
+    || (row.reviewed_at !== null && row.reviewed_at !== undefined && typeof row.reviewed_at !== "string")
+    || (row.updated_at !== undefined && typeof row.updated_at !== "string")
     || typeof row.display_order !== "number" || !Number.isInteger(row.display_order)) return null;
 
   const choices = stringList(row.choices);
@@ -114,6 +120,9 @@ export function parseReviewPracticeQuestion(row: unknown): ReviewPracticeQuestio
     explanation: row.explanation,
     sourceNote: row.source_note,
     status: row.status,
+    reviewNotes: typeof row.review_notes === "string" ? row.review_notes : "",
+    reviewedAt: typeof row.reviewed_at === "string" ? row.reviewed_at : null,
+    updatedAt: typeof row.updated_at === "string" ? row.updated_at : "",
     displayOrder: row.display_order,
   };
 }
