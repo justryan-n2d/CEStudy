@@ -54,7 +54,7 @@ describe("practice flow",()=>{
     vi.mocked(fetchPublishedPracticeQuestions).mockResolvedValue(demo);
     render(<MemoryRouter initialEntries={["/practice/basic-algebra?topic=Factoring"]}><Routes><Route path="/practice/:slug" element={<PracticePage/>}/></Routes></MemoryRouter>);
     expect(await screen.findByRole("heading",{name:"TEST PROMPT ONE"})).toBeInTheDocument();
-    expect(screen.getByText("Factoring")).toBeInTheDocument();
+    expect(screen.getByText("Factoring",{selector:"p"})).toBeInTheDocument();
     expect(screen.queryByRole("heading",{name:"TEST PROMPT TWO"})).not.toBeInTheDocument();
     expect(fetchPublishedPracticeQuestions).toHaveBeenCalledWith("basic-algebra");
     await user.click(screen.getByRole("radio",{name:"TEST OPTION B"}));
