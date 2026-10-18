@@ -39,7 +39,7 @@ describe("catalog pages",()=>{
     const user=userEvent.setup();
     render(<MemoryRouter><CatalogPage/></MemoryRouter>);
     await user.type(screen.getByRole("searchbox",{name:/search subjects/i}),"no-such-subject");
-    expect(await screen.findByRole("heading",{name:/no subjects found/i})).toBeInTheDocument();
+    expect(await screen.findByRole("heading",{name:/no results found/i})).toBeInTheDocument();
     await user.click(screen.getByRole("button",{name:/clear search/i}));
     expect(await screen.findByRole("link",{name:/Calculus 1/})).toBeInTheDocument();
   });
