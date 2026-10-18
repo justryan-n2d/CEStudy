@@ -89,12 +89,12 @@ describe("catalog pages",()=>{
   it("finds a published topic from the main catalog search",async()=>{
     const user=userEvent.setup();
     topicSearchMocks.fetchPublishedTopicIndex.mockResolvedValue([{
+      kind:"lesson",
       subjectSlug:"basic-algebra",
       unitNumber:4,
       slug:"polynomials-and-factoring",
       title:"Polynomials and Factoring",
       learningObjectives:["Factor polynomial expressions"],
-      status:"published",
     }]);
     render(<MemoryRouter><CatalogPage/></MemoryRouter>);
     const search=screen.getByRole("searchbox",{name:/search subjects/i});
@@ -103,5 +103,21 @@ describe("catalog pages",()=>{
     expect(topic).toHaveAttribute("href","/study/basic-algebra/4");
     expect(screen.getByRole("heading",{name:"Matching topics"})).toBeInTheDocument();
     expect(screen.queryByRole("heading",{name:/No results found/i})).not.toBeInTheDocument();
+  });
+
+  it("opens only the published practice questions for a matching topic",async()=>{
+    const user=userEvent.setup();
+    topicSearchMocks.fetchPublishedTopicIndex.mockResolvedValue([{
+      kind:"practice",
+      subjectSlug:"basic-algebra",
+      topic:"Factoring",
+      title:"Factoring",
+      questionCount:2,
+    }]);
+    render(<MemoryRouter><CatalogPage/></MemoryRouter>);
+    await user.type(screen.getByRole("searchbox",{name:/search subjects/i}),"factoring");
+    const topic=await screen.findByRole("link",{name:/Factoring/});
+    expect(topic).toHaveAttribute("href","/practice/basic-algebra?topic=Factoring");
+    expect(screen.getByText(/2 practice questions/i)).toBeInTheDocument();
   });
 });
