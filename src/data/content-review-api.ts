@@ -4,7 +4,26 @@ import { parseReviewPracticeQuestion, parseSubjectLesson } from "../types/lesson
 
 const SESSION_TTL_FALLBACK = 30 * 60 * 1000;
 export const CONTENT_REVIEW_SESSION_EVENT = "cestudy-content-review-session";
-export type ReviewAction = "verify" | "request-correction" | "publish" | "return-to-review";
+export type ReviewAction = "verify" | "request-correction" | "publish" | "return-to-review" | "save-edits";
+
+export type LessonEdits = {
+  title: string;
+  learningObjectives: string[];
+  lessonMarkdown: string;
+  sourceNote: string;
+};
+
+export type QuestionEdits = {
+  topic: string;
+  prompt: string;
+  choices: string[];
+  correctAnswer: string;
+  solutionSteps: string[];
+  explanation: string;
+  sourceNote: string;
+};
+
+export type ContentEdits = LessonEdits | QuestionEdits;
 
 type ApiReply = {
   ok?: boolean;
@@ -98,8 +117,16 @@ export async function updateContentReviewStatus(
   id: string,
   actionName: ReviewAction,
   reviewNotes?: string,
+  edits?: ContentEdits,
 ): Promise<{ status: ContentStatus; catalogAvailabilitySync: boolean }> {
-  const result = await invokeReview({ action: "review", entity, id, actionName, ...(reviewNotes !== undefined ? { reviewNotes } : {}) }, true);
+  const result = await invokeReview({
+    action: "review",
+    entity,
+    id,
+    actionName,
+    ...(reviewNotes !== undefined ? { reviewNotes } : {}),
+    ...(edits !== undefined ? { contentEdits: edits } : {}),
+  }, true);
   if (!result.status) throw new Error("The content review service returned an invalid status.");
   return { status: result.status, catalogAvailabilitySync: result.catalogAvailabilitySync !== false };
 }
