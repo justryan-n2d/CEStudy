@@ -544,3 +544,16 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .reviewer-topic-disclosure summary::-webkit-details-marker{display:none}
 .reviewer-topic-disclosure summary::after{content:"+";font-size:1rem;font-weight:650}
 .reviewer-topic-disclosure[open] summary::after{content:"−"}
+
+
+/* Search topics inline with subjects so students can open a match directly. */
+.catalog-topic-results{margin:1.25rem 0 1.5rem}
+.catalog-topic-results h3,.catalog-subheading{margin:0 0 .7rem;font-size:1.08rem;letter-spacing:-.015em}
+.topic-search-results{display:grid;gap:.55rem}
+.topic-search-result{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-width:0;padding:.9rem 1rem;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--navy);transition:border-color .15s ease,background .15s ease}
+.topic-search-result:hover{border-color:#9db9c9;background:#f7fafc}
+.topic-search-result>span:first-child{display:flex;flex-direction:column;gap:.2rem;min-width:0}
+.topic-search-result strong{font-size:.9rem;line-height:1.35}
+.topic-search-result small{color:var(--muted);font-size:.76rem;line-height:1.4}
+.topic-search-result>span:last-child{flex:0 0 auto;color:var(--blue);font-size:1.1rem}
+.catalog-subheading{margin-top:1.4rem}
