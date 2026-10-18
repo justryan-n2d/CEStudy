@@ -40,7 +40,6 @@ export function CatalogPage(){
   },[]);
 
   const normalizedQuery=query.trim().normalize("NFKC").toLowerCase();
-  const queryTerms=normalizedQuery.split(/\s+/).filter(Boolean);
   const eligibleSubjects=useMemo(()=>subjects.filter(subject=>{
     const matchesYear=!year||(year==="none"?subject.yearLevel===null:String(subject.yearLevel)===year);
     return matchesYear
@@ -56,6 +55,7 @@ export function CatalogPage(){
 
   const matchingTopics=useMemo(()=>{
     if(!normalizedQuery)return [];
+    const queryTerms=normalizedQuery.split(/\s+/).filter(Boolean);
     const matched=publishedTopics.filter(topic=>{
       const parent=eligibleSubjects.find(subject=>subject.slug===topic.subjectSlug);
       return Boolean(parent)&&queryTerms.every(term=>topicSearchText(topic).includes(term));
