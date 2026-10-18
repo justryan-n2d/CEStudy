@@ -9,8 +9,8 @@ The canonical roadmap is [PHASE_PLAN.md](PHASE_PLAN.md). It records each project
 ## Current state
 
 - The React + TypeScript + Vite + Tailwind frontend is built and deployed on Cloudflare Pages.
-- The app connects to the dedicated CEStudy Supabase project. The catalog contains 72 subjects; eight Basic Algebra questions are still marked `needs-review`, with zero published.
-- Automated CI, database RLS testing, and a live Chromium test have passed in the documented runs. The live smoke test recorded 70/70 passing checks.
+- The app connects to the dedicated CEStudy Supabase project. The catalog contains 72 subjects. The live database currently holds 52 practice questions and 13 lesson records, all `needs-review`, with zero published in either content table after the 2026-10-18 release audit.
+- Automated CI and Supabase migration/RLS tests are passing on the latest feature branch, and a full-history secret scan passed. The latest documented production Chromium smoke test is from 2026-10-17, before the 2026-10-18 publication-status correction, so a new production smoke run is still required.
 - This is a working deployed MVP, not yet a broadly launched student product. Release hardening, backup/restore proof, branch protection, manual accessibility/device testing, human question approval, and the student pilot remain. The public-repository question-content policy is documented and guarded by CI.
 
 ## Locked product direction (2026-10-18)
@@ -21,7 +21,7 @@ The first implementation slice is device-local progress plus a flame streak for 
 
 ## Ordered priorities
 
-1. **Finish release hardening (current):** verify the corrected encrypted Backblaze B2 backup workflow, do a separate-project restore drill, keep future unpublished questions out of public source, protect `main`, and repeat current CI/security checks.
+1. **Finish release hardening (current):** create and verify a fresh encrypted backup after the latest database correction, complete a managed-target restore rehearsal, confirm B2 lifecycle and GitHub failure notifications, keep unpublished content out of public source, and re-run production smoke/security checks.
 2. **Finish manual quality checks:** test search/filter edge cases, accessibility, direct routes, mobile and desktop behavior, published-only question visibility, and the feedback/correction path.
 3. **Prepare content:** have a human reviewer check every question, source, answer, and explanation. Keep unreviewed content unpublished.
 4. **Run the controlled pilot:** use the documented 5–8-student plan, record anonymous task results, fix priority problems, and make a go/no-go decision.
