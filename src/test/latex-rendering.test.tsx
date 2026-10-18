@@ -34,7 +34,7 @@ describe("LaTeX math rendering",()=>{
     const markdown = "The fee is $5 and the example is " + tick + "\\(x+2\\)" + tick + ".";
     render(<MarkdownContent markdown={markdown} />);
 
-    expect(screen.getByText(/The fee is \\$5/)).toBeInTheDocument();
+    expect(screen.getByText((_content,element)=>element?.textContent?.includes("The fee is $5") ?? false)).toBeInTheDocument();
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
     expect(screen.getByText("\\(x+2\\)")).toBeInTheDocument();
   });
@@ -93,6 +93,6 @@ describe("LaTeX math rendering",()=>{
     const dollar = String.fromCharCode(36);
     render(<MarkdownContent markdown={"Area is " + dollar + "x^2" + dollar + " and the fee is " + dollar + "5."} />);
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
-    expect(screen.getByText(/fee is \\$5/)).toBeInTheDocument();
+    expect(screen.getByText((_content,element)=>element?.textContent?.includes("fee is $5") ?? false)).toBeInTheDocument();
   });
 });
