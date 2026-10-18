@@ -219,22 +219,23 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [x] The `main` ruleset requires a pull request and passing CI checks.
 - [x] CI, Supabase migration/RLS tests, and full-history secret scan are required without a required approval count that a single maintainer cannot meet.
 - [x] Branch deletion and force-pushes are blocked; verification PR [#13](https://github.com/justryan-n2d/CEStudy/pull/13) passed its required checks.
-- [ ] Re-run dependency audit, CI, and secret scanning after repository and code changes.
+- [x] Main CI passed lint, tests, dependency audit, build/header packaging, backup crypto/retention checks, and isolated Supabase migration/RLS tests after the audit and Privacy notice changes: [run 39142266631](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266631). The matching full-history secret scan passed: [run 39142266706](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266706).
 - [ ] Verify Cloudflare browser variables contain only the CEStudy Supabase URL and publishable key.
 - [ ] Record the final security review and any accepted limitations.
 
 ### 7.4 Finish launch documentation and user safeguards
-- [ ] Provide a clear feedback/contact route.
-- [ ] Document how users report a wrong question, broken CHED link, or copyright concern, and how the maintainer corrects or removes content.
+- [x] Provide clear Contact, Feedback, and Report a bug routes.
+- [x] Document how users report a wrong question, broken CHED link, or copyright concern, and how the maintainer reviews/corrects/removes content in the [content authoring and publication policy](content-authoring-and-publication.md) and [public Privacy notice](https://cestudy.pages.dev/privacy).
 - [x] Add the public [Privacy notice](https://cestudy.pages.dev/privacy) describing browser-local study data, feedback/support messages, bug-report email drafts, and service providers without claiming analytics or account features that are not currently in production.
 - [ ] Confirm the current MVP does not require student accounts, private uploads, or extra personal-data collection.
 
 ### 7.5 Final production QA
 - [x] Run the production Chromium checklist after the publication-status correction and Privacy notice release: [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824), 135/135 checks passed. Physical-device accessibility QA remains open.
-- [ ] Confirm there are zero draft questions visible through the public UI or public API.
-- [ ] Confirm required response headers, direct routes, mobile layouts, search/filter behavior, and official curriculum links.
+- [x] Confirm zero draft lesson or question rows are visible via the public API: post-correction anonymous SQL checks returned zero rows from both content tables, and the live Chromium test verified the published-only practice endpoint returned zero questions.
+- [x] Confirm required response headers, direct routes, responsive widths, and the official CHED curriculum PDF using [production Chromium run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824), which passed 135/135 checks.
+- [ ] Finish the full search/filter edge-case matrix and no-results recovery checks; earlier browser tests covered only key paths and combinations.
 - [ ] Check the site from a signed-out/private browser and the actual Android phone.
-- [ ] Update the status page with links to the latest successful run evidence.
+- [x] Update project status, README, phase plan, launch checklist, and audit record with the latest main CI/secret scan and production Chromium smoke evidence in this documentation change.
 
 ### Phase 7 exit criteria
 The older encrypted backup has been restored into isolated local PostgreSQL, but it predates the 2026-10-18 publication correction. A fresh backup and managed-target restore, B2 lifecycle and GitHub failure-email confirmation, physical-device/accessibility QA, human content approval, and student pilot remain before broad release. Latest production smoke evidence is [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824), with 135/135 checks passed.
