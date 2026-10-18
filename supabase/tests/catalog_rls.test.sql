@@ -1,5 +1,5 @@
 begin;
-select plan(21);
+select plan(23);
 
 select ok((select relrowsecurity from pg_class where oid='public.catalog_subjects'::regclass),'RLS enabled on catalog_subjects');
 select ok((select relrowsecurity from pg_class where oid='public.practice_questions'::regclass),'RLS enabled on practice_questions');
@@ -47,7 +47,8 @@ insert into public.practice_questions (
 
 set local role anon;
 select ok((select count(*) from public.catalog_subjects)>=70,'anon can read the public catalog');
-select is((select count(*) from public.practice_questions),1::bigint,'anon sees only the published fixture');
+select is((select count(id) from public.practice_questions),1::bigint,'anon sees only the published fixture');
+select ok(has_column_privilege('anon','public.practice_questions','prompt','select') and not has_column_privilege('anon','public.practice_questions','review_notes','select') and not has_column_privilege('anon','public.practice_questions','reviewed_at','select'),'anon can read published question fields but not private review metadata');
 select throws_ok($$insert into public.catalog_subjects(slug,title,summary,category,classification,source_reference,source_note,availability,display_order) values('unauthorized-test','Unauthorized','Denied','year-level','ched-common-course','test','test','coming-soon',99999)$$,'42501',null,'anon catalog INSERT denied');
 select throws_ok($$update public.catalog_subjects set title='Tampered' where slug='calculus-1'$$,'42501',null,'anon catalog UPDATE denied');
 select throws_ok($$delete from public.catalog_subjects where slug='calculus-1'$$,'42501',null,'anon catalog DELETE denied');
@@ -57,7 +58,8 @@ select throws_ok($$update public.practice_questions set status='published' where
 reset role;
 set local role authenticated;
 select ok((select count(*) from public.catalog_subjects)>=70,'authenticated can read the public catalog');
-select is((select count(*) from public.practice_questions),1::bigint,'authenticated sees only the published fixture');
+select is((select count(id) from public.practice_questions),1::bigint,'authenticated sees only the published fixture');
+select ok(has_column_privilege('authenticated','public.practice_questions','prompt','select') and not has_column_privilege('authenticated','public.practice_questions','review_notes','select') and not has_column_privilege('authenticated','public.practice_questions','reviewed_at','select'),'authenticated can read published question fields but not private review metadata');
 select throws_ok($$insert into public.catalog_subjects(slug,title,summary,category,classification,source_reference,source_note,availability,display_order) values('authenticated-unauthorized-test','Unauthorized','Denied','year-level','ched-common-course','test','test','coming-soon',99998)$$,'42501',null,'authenticated catalog INSERT denied');
 select throws_ok($$update public.catalog_subjects set title='Tampered' where slug='calculus-1'$$,'42501',null,'authenticated catalog UPDATE denied');
 select throws_ok($$delete from public.catalog_subjects where slug='calculus-1'$$,'42501',null,'authenticated catalog DELETE denied');
