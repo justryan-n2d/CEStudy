@@ -4,7 +4,8 @@ import { BrandLoader } from "../components/BrandLoader";
 import { MarkdownContent } from "../components/MarkdownContent";
 import { fetchPublishedLessons } from "../data/lesson-api";
 import type { SubjectLesson } from "../types/lesson-content";
-import { readCompletedLessons, readLearningActivityDays, setLessonCompleted, type CompletedLesson } from "../data/learning-progress";
+import { readCompletedLessons, setLessonCompleted, type CompletedLesson } from "../data/learning-progress";
+import { useAuth } from "../contexts/AuthContext";
 import { LearningStreakBadge } from "../components/LearningStreakBadge";
 
 function searchText(lesson:SubjectLesson):string {
@@ -25,13 +26,13 @@ function topicSnippet(lesson:SubjectLesson,query:string):string {
 
 export function StudyPage() {
   const { slug, unit } = useParams();
+  const { user } = useAuth();
   const subjectSlug = slug ?? "";
   const [lessons, setLessons] = useState<SubjectLesson[]>([]);
   const [topicQuery,setTopicQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
-  const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
 
   useEffect(() => {
     let active = true;
@@ -39,7 +40,6 @@ export function StudyPage() {
     setError(null);
     setTopicQuery("");
     setCompletedLessons(readCompletedLessons());
-    setActivityDays(readLearningActivityDays());
     fetchPublishedLessons(subjectSlug)
       .then((items) => { if (active) setLessons(items); })
       .catch((reason: unknown) => {
@@ -70,9 +70,8 @@ export function StudyPage() {
       subjectSlug: activeLesson.subjectSlug,
       unitNumber: activeLesson.unitNumber,
       title: activeLesson.title,
-    }, !activeLessonCompleted);
+    }, !activeLessonCompleted, user?.id);
     setCompletedLessons(next);
-    setActivityDays(readLearningActivityDays());
   };
 
   return (
@@ -128,7 +127,7 @@ export function StudyPage() {
               <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
               <h2>{activeLesson.title}</h2>
               <MarkdownContent markdown={activeLesson.lessonMarkdown} />
-              <LearningStreakBadge activityDays={activityDays} />
+              <LearningStreakBadge />
               <div className="study-lesson-completion">
                 <button
                   type="button"
