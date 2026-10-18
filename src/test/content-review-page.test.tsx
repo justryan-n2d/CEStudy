@@ -194,6 +194,9 @@ describe("owner content review", () => {
     const choices = screen.getByLabelText(/Answer choices/);
     await user.clear(choices);
     await user.type(choices, "Revised choice A{enter}Revised choice B");
+    const answer = screen.getByLabelText(/Correct answer/);
+    await user.clear(answer);
+    await user.type(answer, "Revised choice B");
     const steps = screen.getByLabelText(/Worked solution steps/);
     await user.clear(steps);
     await user.type(steps, "Revised step one{enter}Revised step two");
