@@ -38,8 +38,10 @@ describe("student lesson reader",()=>{
   it("does not show draft text when no published lessons are returned",async()=>{
     fetchPublishedLessonsMock.mockResolvedValue([]);
     renderStudy("/study/basic-algebra");
-    expect(await screen.findByRole("heading",{name:"Lessons are being prepared"})).toBeInTheDocument();
+    expect(await screen.findByRole("heading",{name:"Reviewer content is being prepared"})).toBeInTheDocument();
     expect(screen.queryByText(/private draft secret/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Browse math foundations/i)).not.toBeInTheDocument();
   });
 
   it("renders only the provided published lesson and its objectives",async()=>{
@@ -55,8 +57,9 @@ describe("student lesson reader",()=>{
     fetchPublishedLessonsMock.mockResolvedValue([publishedLesson,factoringLesson]);
     renderStudy("/study/basic-algebra");
     const search=await screen.findByRole("searchbox",{name:"Find a topic"});
-    await user.type(search,"factoring");
+    await user.type(search,"common factors");
     expect(await screen.findByRole("link",{name:/Polynomials and Factoring/})).toBeInTheDocument();
+    expect(screen.getByText(/common factors/i)).toBeInTheDocument();
     expect(screen.queryByRole("link",{name:/Published Test Lesson/})).not.toBeInTheDocument();
     await user.click(screen.getByRole("link",{name:/Polynomials and Factoring/}));
     expect(await screen.findByRole("heading",{name:"Polynomials and Factoring"})).toBeInTheDocument();
