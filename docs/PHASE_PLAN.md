@@ -110,7 +110,7 @@ The main user journey, included/excluded features, feedback path, and pilot meas
 ### Implemented and tested
 - [x] Dedicated CEStudy Supabase project is active.
 - [x] 72 catalog subjects are seeded. The live database currently contains 52 private practice-question records and 13 private lesson records, not public seed content.
-- [x] Both exposed tables have RLS and explicit client grants.
+- [x] Catalog, lesson, and practice tables have RLS and explicit client grants; lesson/question content is student-visible only when explicitly published.
 - [x] Public clients can read the catalog but cannot insert, update, delete, or publish questions.
 - [x] The practice-question read policy only exposes rows marked published.
 - [x] All 52 practice questions and all 13 lessons are currently `needs-review`; published count is zero for both content tables.
@@ -237,7 +237,7 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [ ] Update the status page with links to the latest successful run evidence.
 
 ### Phase 7 exit criteria
-The latest live database state has a verified encrypted backup and managed-target restore; future-question content is kept out of public source; the main-branch ruleset is active; current CI/security checks pass; the privacy/feedback path exists; and manual accessibility/device/production QA is recorded. The 2026-10-18 publication correction still needs a new backup and managed-target restore before this exit criterion is met.
+The older encrypted backup has been restored into isolated local PostgreSQL, but it predates the 2026-10-18 publication correction. A fresh backup and managed-target restore, current production smoke test, physical-device/accessibility QA, human content approval, and student pilot remain before broad release.
 
 ## Phase 8: Human content review and approved question publishing
 
