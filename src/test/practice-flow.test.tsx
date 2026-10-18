@@ -42,7 +42,7 @@ describe("practice flow",()=>{
     vi.mocked(fetchPublishedPracticeQuestions).mockResolvedValueOnce([]);
     render(<MemoryRouter><PracticePage/></MemoryRouter>);
     expect(await screen.findByRole("heading",{name:"Questions coming soon"})).toBeInTheDocument();
-    expect(screen.getByText("We're checking these questions before publishing them.")).toBeInTheDocument();
+    expect(screen.getByText("We're reviewing these questions.")).toBeInTheDocument();
     expect(screen.queryByText(/session is not saved between visits/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/student-facing AI tutor/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Draft questions are kept private/i)).not.toBeInTheDocument();
