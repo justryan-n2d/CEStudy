@@ -198,7 +198,12 @@ async function main() {
   }
   check("Live API returns all 72 catalog subjects", catalogRowsConfirmed, catalogRowsConfirmed ? "72 rows received" : "could not confirm 72 returned rows");
 
-  const practice = apiResponses.filter((item) => item.kind === "practice");
+  const allPracticeApi = apiResponses.filter((item) => item.kind === "practice");
+  const practice = allPracticeApi.filter((item) => (item.selectFields || "").split(",").includes("prompt"));
+  const practiceTopicIndex = allPracticeApi.filter((item) => {
+    const fields = (item.selectFields || "").split(",");
+    return fields.includes("topic") && !fields.includes("prompt");
+  });
   check("Practice page made a live API request", practice.length > 0, "responses=" + practice.length);
   check(
     "Practice API query filters status to published",
@@ -208,6 +213,23 @@ async function main() {
   check(
     "Practice API uses the dedicated host and only a publishable key",
     practice.length > 0 && practice.every((item) => item.host === expectedSupabaseHost && item.apikeyIsPublishable && !item.apikeyIsPrivileged),
+    "key contents are not logged"
+  );
+  check(
+    "Browser made a published practice-topic index request",
+    practiceTopicIndex.length > 0,
+    "responses=" + practiceTopicIndex.length
+  );
+  check(
+    "Practice-topic index queries only published topic labels",
+    practiceTopicIndex.length > 0 && practiceTopicIndex.every((item) =>
+      item.filterStatus === "eq.published"
+      && (item.selectFields || "").split(",").every((field) => ["subject_slug", "topic", "status"].includes(field))),
+    "practice prompts, choices, answers, and solutions are not selected"
+  );
+  check(
+    "Practice-topic index uses the dedicated host and only a publishable key",
+    practiceTopicIndex.length > 0 && practiceTopicIndex.every((item) => item.host === expectedSupabaseHost && item.apikeyIsPublishable && !item.apikeyIsPrivileged),
     "key contents are not logged"
   );
 
