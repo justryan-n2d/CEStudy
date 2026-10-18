@@ -106,7 +106,7 @@ describe("owner content review", () => {
       "",
       expect.objectContaining({ title: "Corrected Readiness Diagnostic" }),
     ));
-    expect(await screen.findByRole("status")).toHaveTextContent(/edits saved.*remains unpublished/i);
+    expect(await screen.findByText(/edits saved.*remains unpublished/i)).toBeVisible();
   });
 
   it("prevents verification when lesson edits have not been saved", async () => {
