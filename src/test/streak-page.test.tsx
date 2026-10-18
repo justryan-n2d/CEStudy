@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { StreakPage } from "../pages/StreakPage";
 import { formatLocalDateKey, learningActivityStorageKey } from "../data/learning-progress";
@@ -21,7 +22,7 @@ beforeEach(() => {
 });
 
 describe("learning streak calendar", () => {
-  it("highlights study days from the signed-in account's activity history", () => {
+  it("highlights study days and explains a selected date from the signed-in account's activity history", async () => {
     const today = new Date();
     localStorage.setItem(
       learningActivityStorageKey("calendar-test-user"),
@@ -32,7 +33,12 @@ describe("learning streak calendar", () => {
 
     expect(screen.getByRole("heading", { name: /streak calendar/i })).toBeInTheDocument();
     expect(screen.getByText(/current streak/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /study day/i })).toHaveAttribute("aria-pressed", "true");
+    const studyDay = screen.getByRole("button", { name: /study day/i });
+    expect(studyDay).toHaveClass("is-active");
+    expect(studyDay).toHaveAttribute("aria-pressed", "false");
+    await userEvent.setup().click(studyDay);
+    expect(studyDay).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("status")).toHaveTextContent(/study activity recorded for/i);
     expect(screen.getByText(/study days are highlighted/i)).toBeInTheDocument();
   });
 
