@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { InlineMathText } from "./InlineMathText";
 import { LatexMath } from "./LatexMath";
 
 type Block =
@@ -34,7 +34,6 @@ function parseDisplayMath(lines: string[], startIndex: number): { blocks: Block[
     formulaLines.push(lines[index]);
   }
 
-  // An unmatched opener is left as Markdown text instead of silently consuming the rest of the lesson.
   return null;
 }
 
@@ -92,23 +91,6 @@ function parseBlocks(markdown: string): Block[] {
   }
 
   return blocks;
-}
-
-const INLINE_TOKEN_PATTERN = /(\*\*[^*]+\*\*|\u0060[^\u0060]+\u0060|\\\([\s\S]+?\\\))/g;
-
-export function InlineMathText({ text }: { text: string }) {
-  const pieces = text.split(INLINE_TOKEN_PATTERN);
-  return <>{pieces.map((piece, index): ReactNode => {
-    if (piece.startsWith("**") && piece.endsWith("**")) {
-      return <strong key={index}><InlineMathText text={piece.slice(2, -2)} /></strong>;
-    }
-    if (piece.startsWith(String.fromCharCode(96)) && piece.endsWith(String.fromCharCode(96))) {
-      return <code key={index}>{piece.slice(1, -1)}</code>;
-    }
-    const math = piece.match(/^\\\(([\s\S]+)\\\)$/);
-    if (math) return <LatexMath key={index} latex={math[1]} />;
-    return piece;
-  })}</>;
 }
 
 /** Render a deliberately small, safe subset of Markdown. It never interprets HTML. */
