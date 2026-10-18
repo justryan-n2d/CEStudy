@@ -158,6 +158,41 @@ function reviewPath(entity: Entity, id: string, select: string): string | null {
   }
   return null;
 }
+function validatedText(value: unknown, maximum: number): string {
+  if (typeof value !== "string") throw new Error("invalid_content_edits");
+  const result = value.trim();
+  if (!result || result.length > maximum) throw new Error("invalid_content_edits");
+  return result;
+}
+function validatedStringList(value: unknown, minimum: number, maximum: number, itemMaximum: number): string[] {
+  if (!Array.isArray(value) || value.length < minimum || value.length > maximum) throw new Error("invalid_content_edits");
+  const result = value.map((item) => validatedText(item, itemMaximum));
+  if (new Set(result).size !== result.length) throw new Error("invalid_content_edits");
+  return result;
+}
+function validatedContentEdits(entity: Entity, value: unknown): RecordValue {
+  if (!isRecord(value)) throw new Error("invalid_content_edits");
+  if (entity === "lesson") {
+    return {
+      title: validatedText(value.title, 180),
+      learning_objectives: validatedStringList(value.learningObjectives, 1, 8, 400),
+      lesson_markdown: validatedText(value.lessonMarkdown, 20000),
+      source_note: validatedText(value.sourceNote, 1200),
+    };
+  }
+  const choices = validatedStringList(value.choices, 2, 8, 240);
+  const correctAnswer = validatedText(value.correctAnswer, 240);
+  if (!choices.includes(correctAnswer)) throw new Error("invalid_content_edits");
+  return {
+    topic: validatedText(value.topic, 120),
+    prompt: validatedText(value.prompt, 1200),
+    choices,
+    correct_answer: correctAnswer,
+    solution_steps: validatedStringList(value.solutionSteps, 1, 12, 2000),
+    explanation: validatedText(value.explanation, 1000),
+    source_note: validatedText(value.sourceNote, 500),
+  };
+}
 function currentStatus(value: unknown): value is ContentStatus {
   return typeof value === "string" && [
     "draft", "needs-review", "verified", "published", "correction-required", "retired",
@@ -212,6 +247,7 @@ async function changeStatus(body: RecordValue) {
   const hasNotes = typeof body.reviewNotes === "string";
   const notes = hasNotes ? clean(body.reviewNotes) : clean(current.review_notes);
   if (notes.length > 4000 || (transition.needsNote && notes.length < 8)) throw new Error("review_note_required");
+  const edits = action === "save-edits" ? validatedContentEdits(entity as Entity, body.contentEdits) : {};
 
   const table = entity === "lesson" ? "subject_lessons" : "practice_questions";
   const query = new URLSearchParams({
@@ -221,9 +257,10 @@ async function changeStatus(body: RecordValue) {
   });
   const now = new Date().toISOString();
   const update: RecordValue = {
+    ...edits,
     status: transition.to,
     review_notes: notes,
-    reviewed_at: transition.to === "verified" ? now : transition.to === "needs-review" ? null : current.reviewed_at ?? null,
+    reviewed_at: transition.to === "verified" ? now : (transition.to === "needs-review" && (action === "save-edits" || action === "return-to-review")) ? null : current.reviewed_at ?? null,
     updated_at: now,
   };
   const changed = await rest(`${table}?${query.toString()}`, "PATCH", update, "return=representation");
@@ -291,11 +328,12 @@ Deno.serve(async (req: Request) => {
         const code = error instanceof Error ? error.message : "review_action_failed";
         const status = code === "review_content_not_found" ? 404
           : code === "review_status_conflict" ? 409
-          : ["invalid_review_action", "invalid_content_id", "review_note_required"].includes(code) ? 400 : 503;
+          : ["invalid_review_action", "invalid_content_id", "review_note_required", "invalid_content_edits"].includes(code) ? 400 : 503;
         const message = ({
           invalid_review_action: "That review action is not allowed.",
           invalid_content_id: "The content item ID is not allowed.",
           review_note_required: "Add a short correction note before requesting changes.",
+          invalid_content_edits: "Check the edited text. Required fields, lengths, unique choices, and the correct-answer match must be valid.",
           review_content_not_found: "The content item could not be found.",
           review_status_conflict: "The item's status changed. Refresh the review list and try again.",
         } as Record<string, string>)[code] ?? "The review status could not be updated. Please try again.";
