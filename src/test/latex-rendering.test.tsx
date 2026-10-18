@@ -102,4 +102,11 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelector(".markdown-content")?.textContent).toContain("divide both sides by l to get");
     expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
   });
+
+  it("renders standalone Unicode expressions inside lesson prose",async()=>{
+    const lesson = "Write a number as a × 10^n, where 1 ≤ |a| < 10.";
+    render(<MarkdownContent markdown={lesson} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(2));
+    expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
+  });
 });
