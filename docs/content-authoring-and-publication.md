@@ -40,3 +40,29 @@ The owner-only review screen supports direct edits that save the item as `needs-
 ## Cloudflare Pages
 
 Repository visibility is unchanged. Cloudflare Pages remains configured to build from `justryan-n2d/CEStudy`, production branch `main`, with `npm run build` and `dist`. The code changes are delivered through a normal pull request and CI; verify the production Pages deployment and `https://cestudy.pages.dev` after merging. No repository-visibility migration or reconnect is required for this decision.
+
+
+## Author mathematical notation
+
+The shared lesson and practice renderer supports LaTeX and also detects obvious equations already saved as plain Unicode text.
+
+- Inline math: `\(a^2 + b^2 = c^2\)` or `$a^2 + b^2 = c^2$`
+- Display math on its own lines, using either delimiter style:
+
+  ```text
+  \[
+  \frac{a}{b} = c
+  \]
+  ```
+
+  ```text
+  $$
+  \frac{a}{b} = c
+  $$
+  ```
+
+Explicit delimiters are preferred for new or ambiguous formulas. Legacy expressions with clear equality/inequality structure and Unicode math symbols are automatically rendered in lesson prose, headings, lists, practice prompts, answer choices, solutions, explanations, and source notes. Unicode superscripts, square roots, and common math operators are normalized before rendering.
+
+Single currency values such as `$5`, ordinary prose, and inline-code examples remain literal. Raw HTML is not supported. If automatic detection could change the meaning of a sentence, wrap the exact expression in explicit math delimiters.
+
+KaTeX output is rendered with HTML + MathML, trusted commands disabled, and bounded expansion/size options. The site's CSP allows inline style attributes for KaTeX formula layout; because that CSP directive applies to inline style attributes generally, keep the no-raw-HTML rule and KaTeX's `trust: false` setting in place.
