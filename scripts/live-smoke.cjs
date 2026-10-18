@@ -78,6 +78,7 @@ async function main() {
     { path: "/support", heading: /Support CEStudy/ },
     { path: "/bug-reports", heading: /Report a bug/ },
     { path: "/feedback", heading: /Feedback/ },
+    { path: "/privacy", heading: /Privacy notice/ },
   ];
 
   let lastResponse;
@@ -128,6 +129,7 @@ async function main() {
     ["Support us", "/support"],
     ["Report a bug", "/bug-reports"],
     ["Send feedback", "/feedback"],
+    ["Privacy notice", "/privacy"],
   ]) {
     const count = await page.locator(`footer a[href="${href}"]`).count();
     check("Footer link exists: " + label, count === 1, "href=" + href + ", count=" + count);
