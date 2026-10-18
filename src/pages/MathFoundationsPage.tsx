@@ -13,7 +13,7 @@ export function MathFoundationsPage() {
       <ScrollReveal className="reveal-section">
         <div className="math-practice-callout">
           <div className="math-symbol" aria-hidden="true">∑</div>
-          <div><span className="kicker">Practice</span><h2>Basic algebra</h2><p>Questions appear after human review.</p></div>
+          <div><span className="kicker">Practice</span><h2>Algebra Foundations</h2><p>Questions appear after human review.</p></div>
           <Link className="button button-primary" to="/practice/basic-algebra">Open practice →</Link>
         </div>
       </ScrollReveal>
