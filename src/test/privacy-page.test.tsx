@@ -9,7 +9,8 @@ describe("Privacy page", () => {
 
     expect(screen.getByRole("heading", { level: 1, name: /privacy notice/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /google sign-in/i })).toBeInTheDocument();
-    expect(screen.getByText(/history, completed lessons, streak activity, and appearance are stored in this browser/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /study data stored in this browser/i })).toBeInTheDocument();
+    expect(screen.getByText(/streak activity is kept under the signed-in Supabase user ID/i)).toBeInTheDocument();
     expect(screen.getByText(/not currently synced across devices/i)).toBeInTheDocument();
   });
 
