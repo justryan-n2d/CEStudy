@@ -46,13 +46,13 @@ Repository visibility is unchanged. Cloudflare Pages remains configured to build
 
 The lesson and practice renderer supports explicit LaTeX delimiters:
 
-- Inline math: `\\(a^2 + b^2 = c^2\\)`
+- Inline math: `\(a^2 + b^2 = c^2\)`
 - Display math on its own lines:
 
   ```text
-  \\[
-  \\frac{a}{b} = c
-  \\]
+  \[
+  \frac{a}{b} = c
+  \]
   ```
 
 Use these delimiters for equations in lesson Markdown, practice prompts, answer choices, and worked explanations. A single dollar sign is treated as plain text, so prices such as `$5` are not interpreted as equations. Inline-code spans remain literal. Raw HTML is not supported.
