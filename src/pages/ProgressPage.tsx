@@ -37,10 +37,10 @@ export function ProgressPage() {
       <section className="page-intro">
         <span className="kicker">My progress</span>
         <h1>Your learning progress</h1>
-        <p>Review the published lessons you have completed. Progress is saved in this browser on this device only, not synced to an account.</p>
+        <p>Review completed lessons saved in this browser. Your streak is available only while signed in and is kept separately for your Google account on this device.</p>
       </section>
 
-      <LearningStreakBadge activityDays={activityDays} />
+      <LearningStreakBadge />
 
       {sortedLessons.length === 0 ? (
         <section className="state-panel progress-empty">
