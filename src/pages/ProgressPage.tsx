@@ -43,6 +43,9 @@ export function ProgressPage() {
           <h2>No completed lessons yet</h2>
           <p>Open a published lesson and mark it complete to keep track of your learning.</p>
           <Link className="button button-primary" to="/catalog">Browse the library</Link>
+          {activityDays.length > 0 && (
+            <button type="button" className="button button-secondary" onClick={clearProgress}>Clear progress and streak</button>
+          )}
         </section>
       ) : (
         <section className="progress-list-section" aria-label="Completed lessons">
