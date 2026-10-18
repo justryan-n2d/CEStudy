@@ -55,7 +55,7 @@ The original eight question review remains in [the 2026-10-15 pre-review](2026-1
 2. Restore that refreshed backup into a separate managed Supabase test project after explicit cost approval, then verify table counts, content statuses, RLS, and grants.
 3. In Backblaze B2, confirm lifecycle cleanup handles old hidden versions without hiding current verified backups.
 4. Confirm GitHub Actions failure-email notifications are enabled.
-5. [x] Run a live Chromium smoke test after the database correction and Privacy notice release, including direct routes, headers, live Supabase host/key, and published-only API behavior. [Run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824) passed 135/135 checks with zero failures.
+5. [x] Run a live Chromium smoke test after the database correction and Privacy notice release, including direct routes, headers, live Supabase host/key, and published-only API behavior. [Run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed 135/135 checks with zero failures.
 6. Complete manual accessibility and physical-device checks, including Android, keyboard, screen-reader/TalkBack, zoom, touch targets, and search/filter no-results recovery.
 7. Configure Google OAuth in Google Cloud and Supabase, then test sign-in, sign-out, safe return destinations, and the profile/streak journey end to end. The new Profile and safe return-path implementation is in draft [PR #44](https://github.com/justryan-n2d/CEStudy/pull/44), not in production.
 8. Have a qualified human reviewer approve the specific questions and lessons intended for release.
