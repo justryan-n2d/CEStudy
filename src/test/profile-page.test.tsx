@@ -31,6 +31,21 @@ describe("Profile page", () => {
     expect(screen.getByRole("link", { name: /browse the library/i })).toHaveAttribute("href", "/catalog");
   });
 
+  it("shows a loading state while the account session is checked", () => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      loading: true,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+
+    render(<MemoryRouter><ProfilePage /></MemoryRouter>);
+
+    expect(screen.getByRole("status")).toHaveTextContent(/checking your account/i);
+    expect(screen.queryByRole("link", { name: /continue with google/i })).not.toBeInTheDocument();
+  });
+
   it("shows the connected Google account and study shortcuts", () => {
     mockUseAuth.mockReturnValue({
       user: { id: "google-student-1", email: "student@example.com" },
