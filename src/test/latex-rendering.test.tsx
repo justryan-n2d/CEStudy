@@ -95,4 +95,11 @@ describe("LaTeX math rendering",()=>{
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
     expect(screen.getByText((_content,element)=>element?.textContent?.includes("fee is $5") ?? false)).toBeInTheDocument();
   });
+  it("auto-renders formula rearrangement without absorbing instruction words",async()=>{
+    const lesson = "If A = lw and l ≠ 0, divide both sides by l to get w = A/l.";
+    render(<MarkdownContent markdown={lesson} />);
+    await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(3));
+    expect(screen.getByText((_content,element)=>element?.textContent?.includes("divide both sides by l to get") ?? false)).toBeInTheDocument();
+    expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
+  });
 });
