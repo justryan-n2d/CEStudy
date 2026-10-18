@@ -126,6 +126,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <Link to="/support" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Support us</Link>
           <Link to="/bug-reports" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Report a bug</Link>
           <Link to="/feedback" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Send feedback</Link>
+          <Link to="/privacy" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Privacy notice</Link>
           {feedbackInboxUnlocked && <Link to="/feedbacks" onClick={() => setMobileMenuOpen(false)} className="mobile-feedbacks-link"><span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>Feedbacks</Link>}
         </nav>
       </header>
@@ -141,7 +142,7 @@ export function Layout({ children }: { children: ReactNode }) {
             <h2>Explore</h2><Link to="/about">About us</Link><Link to="/catalog">Subject catalog</Link><Link to="/years">Year levels</Link><Link to="/math-foundations">Math foundations</Link>
           </nav>
           <nav className="footer-links" aria-label="Contact and help">
-            <h2>Contact and help</h2><Link to="/contact">Contact CEStudy</Link><Link to="/support">Support us</Link><Link to="/bug-reports">Report a bug</Link><Link to="/feedback">Send feedback</Link>
+            <h2>Contact and help</h2><Link to="/contact">Contact CEStudy</Link><Link to="/support">Support us</Link><Link to="/bug-reports">Report a bug</Link><Link to="/feedback">Send feedback</Link><Link to="/privacy">Privacy notice</Link>
           </nav>
         </div>
       </footer>
