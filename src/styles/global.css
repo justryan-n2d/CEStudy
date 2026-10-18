@@ -607,3 +607,22 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .login-setup-note{padding:.8rem;border:1px solid #e9c88d;border-radius:12px;background:#fff8e9;color:#6e4a16}
 .login-error{padding:.75rem;border:1px solid #efc2bf;border-radius:12px;background:#fff1f0;color:#8b2b24;font-size:.85rem}
 .login-panel>.text-link{display:inline-block;margin-top:.6rem}
+
+
+/* Signed-out streak preview: muted zero, opening an unlock prompt. */
+.learning-streak-locked{appearance:none;cursor:pointer;text-align:left;font:inherit;background:#f3f4f6;border-color:#d1d5db;color:#6b7280;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+.learning-streak-locked:hover{background:#e9ecef;border-color:#9ca3af}
+.learning-streak-locked:active{transform:translateY(1px)}
+.learning-streak-locked .learning-streak-main strong,.learning-streak-locked .learning-streak-main span:last-child,.learning-streak-locked small{color:#6b7280}
+.learning-streak-locked .learning-streak-flame{filter:grayscale(1);opacity:.72}
+.learning-streak-locked .learning-streak-main strong{font-size:1.08rem}
+.streak-unlock-overlay{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:1rem;background:rgba(13,29,45,.48)}
+.streak-unlock-dialog{position:relative;width:min(100%,480px);padding:clamp(1.4rem,4vw,2rem);border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:0 24px 72px rgba(10,30,48,.28);color:var(--navy)}
+.streak-unlock-close{position:absolute;top:.7rem;right:.7rem;display:grid;place-items:center;width:40px;height:40px;border:1px solid #d8e0e7;border-radius:12px;background:#fff;color:#4b5b69;font-size:1.55rem;line-height:1}
+.streak-unlock-close:hover{background:#f2f5f8}
+.streak-unlock-flame{display:grid;place-items:center;width:48px;height:48px;margin-bottom:.5rem;border-radius:15px;background:#fff1d8;font-size:1.6rem}
+.streak-unlock-dialog h2{margin:.2rem 2.4rem .75rem 0;font-size:clamp(1.45rem,4vw,1.9rem)}
+.streak-unlock-dialog>p{color:#5d7180;font-size:.93rem;line-height:1.7}
+.streak-unlock-dialog .google-signin-button{margin-top:.45rem}
+.streak-unlock-dialog .login-setup-note,.streak-unlock-dialog .login-error{margin-top:.8rem}
+@media(prefers-reduced-motion:reduce){.learning-streak-locked{transition:none}}
