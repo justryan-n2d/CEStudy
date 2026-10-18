@@ -157,6 +157,7 @@ function findPlainMathRanges(text: string): MathRange[] {
 function looksLikeDollarMath(expression: string): boolean {
   const value = expression.trim();
   if (!value || /\n/u.test(value)) return false;
+  if ("+-−×÷*/^=≠<>≤≥".includes(value.at(-1) ?? "")) return false;
   // Do not interpret paired currency amounts with intervening prose as an equation.
   if (/\s+[\p{L}]{2,}\s+/u.test(value) && !/[=+\-−*/^_{}\\±√×÷]/u.test(value)) return false;
   return true;
