@@ -56,7 +56,7 @@ describe("published lesson API", () => {
     await expect(fetchPublishedLessons("basic-algebra")).resolves.toEqual([]);
   });
 
-  it("returns an empty list when Supabase is not configured through the same data contract", async () => {
+  it("returns an empty list when no lessons have been published", async () => {
     mocks.order.mockResolvedValueOnce({ data: [], error: null });
     await expect(fetchPublishedLessons("basic-algebra")).resolves.toEqual([]);
   });
