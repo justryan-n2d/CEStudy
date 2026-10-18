@@ -19,6 +19,11 @@ describe("safeInternalReturnPath", () => {
       .toBe("/streak");
   });
 
+  it("rejects backslash-based protocol-relative destinations", () => {
+    expect(safeInternalReturnPath("\\\\evil.example\\collect", "/profile", origin))
+      .toBe("/profile");
+  });
+
   it("prevents a login-to-login redirect loop", () => {
     expect(safeInternalReturnPath("/login?next=/streak", "/profile", origin))
       .toBe("/profile");
