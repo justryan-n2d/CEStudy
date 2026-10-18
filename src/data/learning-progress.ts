@@ -9,16 +9,52 @@ export interface LessonCompletionInput {
 
 export interface CompletedLesson extends LessonCompletionInput {
   completedAt: string;
+  /** The learner's local calendar day when the lesson was completed. */
+  completedOn: string;
 }
 
-function isCompletedLesson(value: unknown): value is CompletedLesson {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+export function formatLocalDateKey(date: Date): string {
+  if (!Number.isFinite(date.getTime())) return "";
+  const year = String(date.getFullYear()).padStart(4, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function isValidCalendarDateKey(value: unknown): value is string {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year
+    && date.getUTCMonth() === month - 1
+    && date.getUTCDate() === day;
+}
+
+function parseCompletedLesson(value: unknown): CompletedLesson | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
-  return typeof record.lessonId === "string" && record.lessonId.length > 0
-    && typeof record.subjectSlug === "string" && record.subjectSlug.length > 0
-    && typeof record.unitNumber === "number" && Number.isInteger(record.unitNumber) && record.unitNumber >= 0
-    && typeof record.title === "string" && record.title.trim().length > 0
-    && typeof record.completedAt === "string" && record.completedAt.length > 0;
+  if (typeof record.lessonId !== "string" || !record.lessonId.trim()
+    || typeof record.subjectSlug !== "string" || !record.subjectSlug.trim()
+    || typeof record.unitNumber !== "number" || !Number.isInteger(record.unitNumber) || record.unitNumber < 0
+    || typeof record.title !== "string" || !record.title.trim()
+    || typeof record.completedAt !== "string" || !Number.isFinite(new Date(record.completedAt).getTime())) {
+    return null;
+  }
+
+  const completedAt = record.completedAt;
+  const parsedCompletedAt = new Date(completedAt);
+  const completedOn = isValidCalendarDateKey(record.completedOn)
+    ? record.completedOn
+    : formatLocalDateKey(parsedCompletedAt);
+
+  return {
+    lessonId: record.lessonId,
+    subjectSlug: record.subjectSlug,
+    unitNumber: record.unitNumber,
+    title: record.title,
+    completedAt,
+    completedOn,
+  };
 }
 
 export function readCompletedLessons(): CompletedLesson[] {
@@ -27,7 +63,9 @@ export function readCompletedLessons(): CompletedLesson[] {
     const stored = window.localStorage.getItem(LEARNING_PROGRESS_STORAGE_KEY);
     if (!stored) return [];
     const parsed: unknown = JSON.parse(stored);
-    return Array.isArray(parsed) ? parsed.filter(isCompletedLesson) : [];
+    return Array.isArray(parsed)
+      ? parsed.map(parseCompletedLesson).filter((item): item is CompletedLesson => item !== null)
+      : [];
   } catch {
     return [];
   }
@@ -39,8 +77,9 @@ export function setLessonCompleted(
 ): CompletedLesson[] {
   const current = readCompletedLessons();
   const remaining = current.filter((item) => item.lessonId !== lesson.lessonId);
+  const now = new Date();
   const next = completed
-    ? [...remaining, { ...lesson, completedAt: new Date().toISOString() }]
+    ? [...remaining, { ...lesson, completedAt: now.toISOString(), completedOn: formatLocalDateKey(now) }]
     : remaining;
 
   if (typeof window !== "undefined") {
