@@ -56,4 +56,17 @@ describe("LaTeX math rendering",()=>{
     expect(screen.getByText(String.raw`Unfinished formula: \(x + 2`)).toBeInTheDocument();
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
   });
+
+  it("shows malformed LaTeX as readable source",()=>{
+    render(<MarkdownContent markdown={"Invalid formula: \\(\\notARealCommand{x}\\)"} />);
+    expect(screen.getByText("\\notARealCommand{x}")).toHaveClass("latex-math-error");
+    expect(document.querySelectorAll(".katex")).toHaveLength(0);
+  });
+
+  it("keeps raw HTML as text",()=>{
+    const html = '<img src=x onerror=alert(1)>';
+    render(<MarkdownContent markdown={"Literal text " + html} />);
+    expect(document.querySelector("img")).not.toBeInTheDocument();
+    expect(screen.getByText("Literal text " + html)).toBeInTheDocument();
+  });
 });
