@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   canTransitionContentStatus,
+  parseReviewPracticeQuestion,
   parseSubjectLesson,
   type ContentStatus,
 } from "../types/lesson-content";
@@ -55,5 +56,41 @@ describe("content status transitions", () => {
 
   it.each(cases)("%s to %s is %s", (from, to, allowed) => {
     expect(canTransitionContentStatus(from, to)).toBe(allowed);
+  });
+});
+
+const validQuestion = {
+  id: "algebra-foundations-u00-q01",
+  subject_slug: "basic-algebra",
+  topic: "Synthetic topic",
+  prompt: "TEST PROMPT",
+  choices: ["TEST OPTION A", "TEST OPTION B"],
+  correct_answer: "TEST OPTION B",
+  solution_steps: ["TEST STEP ONE"],
+  explanation: "TEST EXPLANATION",
+  source_note: "Synthetic test fixture.",
+  status: "needs-review",
+  review_notes: "",
+  reviewed_at: null,
+  updated_at: "2026-10-18T00:00:00Z",
+  display_order: 9,
+};
+
+describe("practice-question review parsing", () => {
+  it("accepts a well-formed question with an answer present in its choices", () => {
+    expect(parseReviewPracticeQuestion(validQuestion)).toMatchObject({
+      id: "algebra-foundations-u00-q01",
+      correctAnswer: "TEST OPTION B",
+      status: "needs-review",
+    });
+  });
+
+  it("rejects a review question if its answer is not one of its choices", () => {
+    expect(parseReviewPracticeQuestion({ ...validQuestion, correct_answer: "NOT A CHOICE" })).toBeNull();
+  });
+
+  it("rejects invalid question choice and step arrays", () => {
+    expect(parseReviewPracticeQuestion({ ...validQuestion, choices: ["ONLY ONE"] })).toBeNull();
+    expect(parseReviewPracticeQuestion({ ...validQuestion, solution_steps: [] })).toBeNull();
   });
 });
