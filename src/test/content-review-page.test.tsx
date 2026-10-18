@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
@@ -84,6 +84,28 @@ describe("owner content review", () => {
 
     await user.click(screen.getByRole("checkbox", { name: /I reviewed this lesson against the approved syllabus/i }));
     expect(verifyButton).toBeEnabled();
+  });
+
+  it("lets the owner save corrected lesson text while keeping it in review", async () => {
+    const user = userEvent.setup();
+    mocks.updateContentReviewStatus.mockResolvedValue({ status: "needs-review", catalogAvailabilitySync: true });
+    render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
+    await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
+    await user.click(screen.getByRole("button", { name: "Unlock review" }));
+    await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
+
+    await user.clear(screen.getByLabelText("Lesson title"));
+    await user.type(screen.getByLabelText("Lesson title"), "Corrected Readiness Diagnostic");
+    await user.click(screen.getByRole("button", { name: "Save edits, keep unpublished" }));
+
+    await waitFor(() => expect(mocks.updateContentReviewStatus).toHaveBeenCalledWith(
+      "lesson",
+      "algebra-foundations-unit-00",
+      "save-edits",
+      "",
+      expect.objectContaining({ title: "Corrected Readiness Diagnostic" }),
+    ));
+    expect(await screen.findByRole("status")).toHaveTextContent(/edits saved.*remains unpublished/i);
   });
 
   it("shows question answer details only when the owner expands them", async () => {
