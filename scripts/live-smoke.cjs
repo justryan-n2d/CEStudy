@@ -28,6 +28,7 @@ function recordApiResponse(kind, response) {
     pathname: url.pathname,
     status: response.status(),
     filterStatus: url.searchParams.get("status"),
+    selectFields: url.searchParams.get("select"),
     apikeyIsPublishable: key.startsWith("sb_publishable_"),
     apikeyIsPrivileged: key.startsWith("sb_secret_") ||
       (key.startsWith("eyJ") && key.toLowerCase().includes("service_role")),
@@ -61,6 +62,9 @@ async function main() {
     if (url.hostname.endsWith(".supabase.co") && url.pathname.startsWith("/rest/v1/practice_questions")) {
       recordApiResponse("practice", response);
     }
+    if (url.hostname.endsWith(".supabase.co") && url.pathname.startsWith("/rest/v1/subject_lessons")) {
+      recordApiResponse("lessons", response);
+    }
     if (url.hostname === new URL(baseUrl).hostname && response.status() >= 400) {
       runtimeErrors.push("same-origin HTTP " + response.status() + " at " + activeRoute + ": " + url.pathname);
     }
@@ -72,8 +76,9 @@ async function main() {
     { path: "/years", heading: /Year levels/ },
     { path: "/year/2", heading: /Second year/ },
     { path: "/math-foundations", heading: /Math foundations/ },
-    { path: "/subjects/basic-algebra", heading: /Basic and Advanced Algebra/ },
-    { path: "/practice/basic-algebra", heading: /Basic algebra practice/ },
+    { path: "/subjects/basic-algebra", heading: /Algebra Foundations/ },
+    { path: "/practice/basic-algebra", heading: /Algebra Foundations practice/ },
+    { path: "/study/basic-algebra", heading: /Algebra Foundations/ },
     { path: "/contact", heading: /Contact CEStudy/ },
     { path: "/support", heading: /Support CEStudy/ },
     { path: "/bug-reports", heading: /Report a bug/ },
@@ -193,7 +198,12 @@ async function main() {
   }
   check("Live API returns all 72 catalog subjects", catalogRowsConfirmed, catalogRowsConfirmed ? "72 rows received" : "could not confirm 72 returned rows");
 
-  const practice = apiResponses.filter((item) => item.kind === "practice");
+  const allPracticeApi = apiResponses.filter((item) => item.kind === "practice");
+  const practice = allPracticeApi.filter((item) => (item.selectFields || "").split(",").includes("prompt"));
+  const practiceTopicIndex = allPracticeApi.filter((item) => {
+    const fields = (item.selectFields || "").split(",");
+    return fields.includes("topic") && !fields.includes("prompt");
+  });
   check("Practice page made a live API request", practice.length > 0, "responses=" + practice.length);
   check(
     "Practice API query filters status to published",
@@ -204,6 +214,47 @@ async function main() {
     "Practice API uses the dedicated host and only a publishable key",
     practice.length > 0 && practice.every((item) => item.host === expectedSupabaseHost && item.apikeyIsPublishable && !item.apikeyIsPrivileged),
     "key contents are not logged"
+  );
+  check(
+    "Browser made a published practice-topic index request",
+    practiceTopicIndex.length > 0,
+    "responses=" + practiceTopicIndex.length
+  );
+  check(
+    "Practice-topic index queries only published topic labels",
+    practiceTopicIndex.length > 0 && practiceTopicIndex.every((item) =>
+      item.filterStatus === "eq.published"
+      && (item.selectFields || "").split(",").every((field) => ["subject_slug", "topic", "status"].includes(field))),
+    "practice prompts, choices, answers, and solutions are not selected"
+  );
+  check(
+    "Practice-topic index uses the dedicated host and only a publishable key",
+    practiceTopicIndex.length > 0 && practiceTopicIndex.every((item) => item.host === expectedSupabaseHost && item.apikeyIsPublishable && !item.apikeyIsPrivileged),
+    "key contents are not logged"
+  );
+
+  const lessons = apiResponses.filter((item) => item.kind === "lessons");
+  check("Browser made a published lesson/topic API request", lessons.length > 0, "responses=" + lessons.length);
+  check(
+    "Lesson and topic API requests filter status to published",
+    lessons.length > 0 && lessons.every((item) => item.filterStatus === "eq.published"),
+    "status filter checked"
+  );
+  check(
+    "Lesson and topic API uses the dedicated host and only a publishable key",
+    lessons.length > 0 && lessons.every((item) => item.host === expectedSupabaseHost && item.apikeyIsPublishable && !item.apikeyIsPrivileged),
+    "key contents are not logged"
+  );
+  check(
+    "Topic index requests only lightweight topic fields",
+    lessons.some((item) => {
+      const fields = (item.selectFields || "").split(",");
+      return fields.includes("learning_objectives") && fields.includes("title")
+        && !fields.includes("lesson_markdown") && !fields.includes("review_notes")
+        && !fields.includes("reviewed_at") && !fields.includes("prompt")
+        && !fields.includes("correct_answer") && !fields.includes("solution_steps");
+    }),
+    "topic index excludes lesson bodies, answers, and review metadata"
   );
 
   const practiceCounts = [];
@@ -230,8 +281,8 @@ async function main() {
   const practiceText = await page.locator("body").innerText().catch(() => "");
   if (expectedPublishedCount === 0) {
     check(
-      "Practice page shows review gate and no seed draft prompt",
-      practiceText.includes("Practice questions are being reviewed") && !practiceText.includes("Solve for x: 3x + 5 = 20."),
+      "Practice page shows empty state and no seed draft prompt",
+      practiceText.includes("Questions coming soon") && !practiceText.includes("Solve for x: 3x + 5 = 20."),
       "draft prompt absent from rendered page"
     );
   }
