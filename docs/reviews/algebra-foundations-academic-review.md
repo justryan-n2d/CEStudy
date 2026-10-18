@@ -2,7 +2,7 @@
 
 **Review date:** 2026-10-18  
 **Reviewed artifact:** [Algebra Foundations syllabus v0.2](../curriculum/algebra-foundations-syllabus.md)  
-**Syllabus Git blob at review:** `4baf93274e6db9cbddaf3f8b9376c0a0ef118c85`  
+**Syllabus Git blob at review:** `a0d201ce1b05681503c0f661c9add55d4f8d98ea`  
 **Review type:** AI-assisted academic desk review of course scope, sequence, outcome alignment, and source claims  
 **Status:** Revised after desk review; independent instructor review remains outstanding  
 **Decision rule:** One subject = one syllabus. Algebra Readiness remains the opening phase inside the one Algebra Foundations syllabus. No lesson or practice-question bank is part of this review.
