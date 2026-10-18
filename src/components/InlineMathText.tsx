@@ -7,7 +7,7 @@ const SHORT_IDENTIFIER_PATTERN = /^[\p{L}]{1,2}$/u;
 const STOP_WORDS = new Set([
   "and", "or", "then", "not", "because", "since", "the", "an", "for",
   "when", "where", "which", "it", "as", "from", "so", "while", "this", "that",
-  "by", "to", "get", "if", "is", "are", "was", "were", "be", "with", "gives", "means",
+  "by", "to", "get", "of", "using", "if", "is", "are", "was", "were", "be", "with", "gives", "means",
   "shows", "describes", "produces", "correspond", "matching", "has", "have",
   "can", "must", "write", "solve", "example", "formula", "equation", "discriminant",
 ]);
@@ -28,7 +28,7 @@ function isMathCharacter(text: string, index: number): boolean {
 
 function stripLastStopWord(value: string, from: number): number {
   const suffix = value.slice(from);
-  const pattern = /\b(?:and|or|then|not|because|since|the|an|for|when|where|which|it|as|from|so|while|this|that|by|to|get|if|is|are|was|were|be|with|gives|means|shows|describes|produces|correspond|matching|has|have|can|must|write|solve|example|formula|equation|discriminant)\b\s+/giu;
+  const pattern = /\b(?:and|or|then|not|because|since|the|an|for|when|where|which|it|as|from|so|while|this|that|by|to|get|of|using|if|is|are|was|were|be|with|gives|means|shows|describes|produces|correspond|matching|has|have|can|must|write|solve|example|formula|equation|discriminant)\b\s+/giu;
   let match: RegExpExecArray | null;
   let nextStart = from;
   while ((match = pattern.exec(suffix)) !== null) {
