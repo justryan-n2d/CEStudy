@@ -37,11 +37,11 @@
 
 ## Conclusion
 
-- **Algebra Foundations (CEStudy grouping):** no standalone public Algebra Readiness syllabus was found; a bridging College Algebra entry and College Algebra course descriptions/curriculum listings were found. No complete current syllabus for CEStudy's combined pathway was verified.
+- **External-source result:** no standalone public Algebra Readiness syllabus was found; a bridging College Algebra entry and College Algebra course descriptions/curriculum listings were found. These sources did not provide a complete current syllabus for CEStudy's combined pathway. CEStudy has now drafted its own separate [Algebra Foundations syllabus](../curriculum/algebra-foundations-syllabus.md) from the approved scope. This is an original CEStudy draft, not an official university or CHED syllabus.
 - **For Advanced Algebra, Plane and Spherical Trigonometry, and Analytic Geometry, course descriptions and/or older curriculum listings were found, but a full current BSCE syllabus was not verified.**
 - **For Solid Mensuration, a detailed course description and a historical 2013 syllabus copy were found, but no current official complete syllabus was verified.**
 - This is a record of what surfaced in public sources during this search, not proof that other universities do not have syllabi that are unpublished or not indexed.
-- Keep Advanced Algebra, Trigonometry, Analytic Geometry, and Solid Mensuration separate. Algebra Readiness and College Algebra are grouped as one CEStudy planning pathway, with readiness/review first and College Algebra next. This decision does not claim that a combined official syllabus exists. Do not draft the syllabus until the scope and target curriculum approach are approved.
+- Keep Advanced Algebra, Trigonometry, Analytic Geometry, and Solid Mensuration separate, each with its own syllabus. Algebra Readiness and College Algebra are grouped into the single CEStudy subject Algebra Foundations, with readiness/review first and College Algebra next. The scope has been approved and an original CEStudy syllabus draft is available for academic review.
 
 ## Use and copyright note
 
