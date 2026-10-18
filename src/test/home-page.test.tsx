@@ -14,6 +14,8 @@ describe("homepage and year-level navigation", () => {
     expect(screen.getByRole("heading", { name: "Build your CE foundation." })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /browse subjects/i })).toHaveAttribute("href", "/catalog");
     expect(screen.getByRole("link", { name: /math foundations/i })).toHaveAttribute("href", "/math-foundations");
+    expect(screen.getByRole("link", { name: "View my progress" })).toHaveAttribute("href", "/progress");
+    expect(screen.getByRole("heading", { name: "Mark lessons as you finish them" })).toBeInTheDocument();
     const heroImage = screen.getByRole("img", { name: /bridge crossing a river/i });
     expect(heroImage).toHaveAttribute("width", "1600");
     expect(heroImage).toHaveAttribute("height", "1200");
