@@ -61,7 +61,7 @@ The shared lesson and practice renderer supports LaTeX and also detects obvious 
   $$
   ```
 
-Explicit delimiters are preferred for new or ambiguous formulas. Legacy expressions with clear equality/inequality structure and Unicode math symbols are automatically rendered in lesson prose, headings, lists, practice prompts, answer choices, solutions, explanations, and source notes. Unicode superscripts, square roots, and common math operators are normalized before rendering.
+Explicit delimiters are preferred for new or ambiguous formulas. Common complete grouped LaTeX commands such as `\frac{2x}{3}`, `\sqrt{x}`, and nested fractions are also recognized without extra delimiters. For an equation containing a fraction, use explicit delimiters when possible, for example `\(x = \\frac{2x}{3}\)`. Legacy expressions with clear equality/inequality structure and Unicode math symbols are automatically rendered in lesson prose, headings, lists, practice prompts, answer choices, solutions, explanations, and source notes. Unicode superscripts, square roots, and common math operators are normalized before rendering.
 
 Single currency values such as `$5`, ordinary prose, and inline-code examples remain literal. Raw HTML is not supported. If automatic detection could change the meaning of a sentence, wrap the exact expression in explicit math delimiters.
 
