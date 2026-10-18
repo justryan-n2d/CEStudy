@@ -16,7 +16,8 @@ The source of truth is the migration under `supabase/migrations/`. It creates:
 
 - `catalog_subjects`, readable by public roles through an explicit SELECT grant and RLS policy.
 - `practice_questions`, readable by public roles only when `status = 'published'`.
-- No public INSERT, UPDATE, or DELETE grants/policies on these tables.
+- `subject_lessons`, readable by public roles only when `status = 'published'`.
+- No public INSERT, UPDATE, or DELETE grants/policies on these three student-facing tables.
 
 For local validation, use the documented Supabase CLI workflow and `npx supabase test db`. For a new dedicated remote project, link the repository with the CEStudy project reference, inspect migration status, run a dry run, and apply migrations using the CLI. Review the target project reference carefully before any remote write.
 
