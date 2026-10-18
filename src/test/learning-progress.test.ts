@@ -99,6 +99,7 @@ describe("device-local learning progress", () => {
 
     expect(readCompletedLessons()).toEqual([]);
     expect(readLearningActivityDays()).toEqual([]);
+    expect(localStorage.getItem(LEARNING_PROGRESS_STORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(LEARNING_ACTIVITY_DAYS_STORAGE_KEY)).toBeNull();
     expect(localStorage.getItem("unrelated-app-data")).toBe("keep");
   });
