@@ -28,7 +28,7 @@ By the end of Algebra Foundations, students should be able to:
 
 1. Perform arithmetic with real numbers, fractions, ratios, proportions, exponents, and radicals accurately.
 2. Simplify algebraic expressions and rearrange formulas while preserving equality and identifying restrictions.
-3. Solve linear equations and inequalities, quadratic equations, selected higher-degree polynomial equations, and selected rational and radical equations; verify candidate solutions in the original equations.
+3. Solve linear equations and inequalities, introductory absolute-value equations and inequalities, quadratic equations, selected higher-degree polynomial equations, and selected rational and radical equations; verify candidate solutions in the original equations.
 4. Use function notation and interpret the domain, range, values, and basic graphs of functions.
 5. Factor and manipulate polynomials and use polynomial division, the Remainder Theorem, the Factor Theorem, and the Rational Root Theorem in suitable problems.
 6. Represent complex numbers in the form a + bi, where a and b are real and i² = -1, and perform basic operations needed to interpret quadratic roots.
