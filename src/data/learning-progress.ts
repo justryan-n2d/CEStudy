@@ -1,4 +1,5 @@
 export const LEARNING_PROGRESS_STORAGE_KEY = "cestudy:completed-lessons:v1";
+export const LEARNING_ACTIVITY_DAYS_STORAGE_KEY = "cestudy:learning-activity-days:v1";
 
 export interface LessonCompletionInput {
   lessonId: string;
@@ -57,6 +58,33 @@ function parseCompletedLesson(value: unknown): CompletedLesson | null {
   };
 }
 
+export function readLearningActivityDays(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = window.localStorage.getItem(LEARNING_ACTIVITY_DAYS_STORAGE_KEY);
+    if (!stored) return [];
+    const parsed: unknown = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return [];
+    return [...new Set(parsed.filter(isValidCalendarDateKey))];
+  } catch {
+    return [];
+  }
+}
+
+function recordLearningActivityDay(day: string): string[] {
+  const days = readLearningActivityDays();
+  if (days.includes(day)) return days;
+  const next = [...days, day].filter(isValidCalendarDateKey).sort();
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(LEARNING_ACTIVITY_DAYS_STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // Keep the current screen usable when browser storage is unavailable.
+    }
+  }
+  return next;
+}
+
 export function readCompletedLessons(): CompletedLesson[] {
   if (typeof window === "undefined") return [];
   try {
@@ -78,9 +106,12 @@ export function setLessonCompleted(
   const current = readCompletedLessons();
   const remaining = current.filter((item) => item.lessonId !== lesson.lessonId);
   const now = new Date();
+  const completedOn = formatLocalDateKey(now);
   const next = completed
-    ? [...remaining, { ...lesson, completedAt: now.toISOString(), completedOn: formatLocalDateKey(now) }]
+    ? [...remaining, { ...lesson, completedAt: now.toISOString(), completedOn }]
     : remaining;
+
+  if (completed) recordLearningActivityDay(completedOn);
 
   if (typeof window !== "undefined") {
     try {
@@ -96,6 +127,7 @@ export function clearLessonProgress(): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.removeItem(LEARNING_PROGRESS_STORAGE_KEY);
+    window.localStorage.removeItem(LEARNING_ACTIVITY_DAYS_STORAGE_KEY);
   } catch {
     // The page remains usable if browser storage is blocked.
   }
