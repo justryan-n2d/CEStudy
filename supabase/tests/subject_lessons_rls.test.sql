@@ -1,5 +1,5 @@
 begin;
-select plan(20);
+select plan(22);
 
 select ok(
   (select relrowsecurity from pg_class where oid = 'public.subject_lessons'::regclass),
@@ -15,11 +15,11 @@ select ok(
     and cmd='SELECT' and roles @> ARRAY['authenticated']::name[] and qual like '%published%'),
   'authenticated has published-only SELECT policy'
 );
-select ok(has_table_privilege('anon','public.subject_lessons','select'),'anon can SELECT lessons');
+select ok(has_column_privilege('anon','public.subject_lessons','title','select') and has_column_privilege('anon','public.subject_lessons','lesson_markdown','select') and not has_column_privilege('anon','public.subject_lessons','review_notes','select') and not has_column_privilege('anon','public.subject_lessons','reviewed_at','select'),'anon can read public lesson fields but not private review metadata');
 select ok(not has_table_privilege('anon','public.subject_lessons','insert'),'anon cannot INSERT lessons');
 select ok(not has_table_privilege('anon','public.subject_lessons','update'),'anon cannot UPDATE lessons');
 select ok(not has_table_privilege('anon','public.subject_lessons','delete'),'anon cannot DELETE lessons');
-select ok(has_table_privilege('authenticated','public.subject_lessons','select'),'authenticated can SELECT lessons');
+select ok(has_column_privilege('authenticated','public.subject_lessons','title','select') and has_column_privilege('authenticated','public.subject_lessons','lesson_markdown','select') and not has_column_privilege('authenticated','public.subject_lessons','review_notes','select') and not has_column_privilege('authenticated','public.subject_lessons','reviewed_at','select'),'authenticated can read public lesson fields but not private review metadata');
 select ok(not has_table_privilege('authenticated','public.subject_lessons','insert'),'authenticated cannot INSERT lessons');
 select ok(not has_table_privilege('authenticated','public.subject_lessons','update'),'authenticated cannot UPDATE lessons');
 select ok(not has_table_privilege('authenticated','public.subject_lessons','delete'),'authenticated cannot DELETE lessons');
@@ -46,7 +46,7 @@ values
 
 set local role anon;
 select is(
-  (select count(*) from public.subject_lessons where subject_slug='rls-test-subject'),
+  (select count(id) from public.subject_lessons where subject_slug='rls-test-subject'),
   1::bigint,
   'anon sees only the published test lesson'
 );
