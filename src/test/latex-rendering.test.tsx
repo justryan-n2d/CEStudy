@@ -34,7 +34,7 @@ describe("LaTeX math rendering",()=>{
     const markdown = "The fee is $5 and the example is " + tick + "\\(x+2\\)" + tick + ".";
     render(<MarkdownContent markdown={markdown} />);
 
-    expect(screen.getByText((_content,element)=>element?.textContent?.includes("The fee is $5") ?? false)).toBeInTheDocument();
+    expect(document.querySelector(".markdown-content p")?.textContent).toContain("The fee is $5");
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
     expect(screen.getByText("\\(x+2\\)")).toBeInTheDocument();
   });
@@ -93,7 +93,7 @@ describe("LaTeX math rendering",()=>{
     const dollar = String.fromCharCode(36);
     render(<MarkdownContent markdown={"Area is " + dollar + "x^2" + dollar + " and the fee is " + dollar + "5."} />);
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
-    expect(screen.getByText((_content,element)=>element?.textContent?.includes("fee is $5") ?? false)).toBeInTheDocument();
+    expect(document.querySelector(".markdown-content p")?.textContent).toContain("fee is $5");
   });
   it("auto-renders formula rearrangement without absorbing instruction words",async()=>{
     const lesson = "If A = lw and l ≠ 0, divide both sides by l to get w = A/l.";
