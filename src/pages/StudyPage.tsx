@@ -5,6 +5,7 @@ import { MarkdownContent } from "../components/MarkdownContent";
 import { fetchPublishedLessons } from "../data/lesson-api";
 import type { SubjectLesson } from "../types/lesson-content";
 import { readCompletedLessons, setLessonCompleted, type CompletedLesson } from "../data/learning-progress";
+import { LearningStreakBadge } from "../components/LearningStreakBadge";
 
 function searchText(lesson:SubjectLesson):string {
   return [lesson.title,lesson.slug,...lesson.learningObjectives,lesson.lessonMarkdown].join(" ").normalize("NFKC").toLowerCase();
@@ -124,6 +125,7 @@ export function StudyPage() {
               <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
               <h2>{activeLesson.title}</h2>
               <MarkdownContent markdown={activeLesson.lessonMarkdown} />
+              <LearningStreakBadge completedLessons={completedLessons} />
               <div className="study-lesson-completion">
                 <button
                   type="button"
