@@ -1,5 +1,6 @@
 export const LEARNING_PROGRESS_STORAGE_KEY = "cestudy:completed-lessons:v1";
 export const LEARNING_ACTIVITY_DAYS_STORAGE_KEY = "cestudy:learning-activity-days:v2:";
+export const LEARNING_ACTIVITY_CHANGED_EVENT = "cestudy:learning-activity-changed";
 
 export interface LessonCompletionInput {
   lessonId: string;
@@ -82,6 +83,7 @@ function recordLearningActivityDay(day: string, userId: string): string[] {
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(learningActivityStorageKey(userId), JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent(LEARNING_ACTIVITY_CHANGED_EVENT, { detail: { userId } }));
     } catch {
       // Keep the current screen usable when browser storage is unavailable.
     }
@@ -135,6 +137,7 @@ export function clearLessonProgress(userId?: string | null): void {
     window.localStorage.removeItem(LEARNING_PROGRESS_STORAGE_KEY);
     if (userId?.trim()) {
       window.localStorage.removeItem(learningActivityStorageKey(userId));
+      window.dispatchEvent(new CustomEvent(LEARNING_ACTIVITY_CHANGED_EVENT, { detail: { userId } }));
     }
   } catch {
     // The page remains usable if browser storage is blocked.
