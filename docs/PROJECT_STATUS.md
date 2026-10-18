@@ -2,9 +2,20 @@
 
 **Last updated:** 2026-10-18  
 **Current phase:** **Phase 7, pre-launch hardening and release gates.**  
-**Release status:** The live web MVP is deployed and the automated live smoke test passed 70/70 checks. The real encrypted backup dated 2026-10-15 has now been checksum-checked, decrypted with successful AES-GCM authentication, and restored into an isolated local PostgreSQL 18.2 database in Termux. Validation confirmed 72 catalog rows, eight `needs-review` practice questions, zero published questions, RLS on both application tables, and no client INSERT/UPDATE/DELETE privileges. This proves a local application-schema restore, not a restore into a managed Supabase project. CEStudy is not approved for a broad student launch yet. The managed Supabase restore check, manual accessibility/device QA, human content review, and student pilot remain release gates. The active main-branch ruleset is now verified. The repository stays public by decision; future unpublished question content is kept out of public source and guarded by CI. See the [restore-drill evidence](deployment/restore-drill-2026-10-16.md) and [organized phase plan](PHASE_PLAN.md).
+**Release status:** Stage 1 is not fully signed off. The live website is deployed, and the latest documented production Chromium smoke run passed on 2026-10-17, but it predates the 2026-10-18 publication-status correction. The live database now has 72 catalog subjects, 52 practice questions and 13 lessons. All questions and lessons are `needs-review`; no content is currently published. Two lesson records that were marked published despite draft notes were returned to review, and Algebra Foundations is marked `in-preparation`. Anonymous-role SQL verification returned zero rows from both content tables. The main-branch ruleset is active and verified. A fresh encrypted backup after the current database change, a managed-Supabase-target restore, B2 lifecycle and GitHub failure-email confirmation, fresh production smoke testing, physical-device/accessibility QA, independent content review, Google OAuth end-to-end testing, and the student pilot remain open. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md), [restore-drill evidence](deployment/restore-drill-2026-10-16.md), and [organized phase plan](PHASE_PLAN.md).
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
+
+
+## Stage 1 release audit (2026-10-18)
+
+- **Catalog:** 72 subjects.
+- **Practice bank:** 52 records, all `needs-review`; 0 published.
+- **Lesson bank:** 13 records, all `needs-review`; 0 published.
+- **Publication correction:** two lesson rows whose source notes identified them as drafts were returned to `needs-review`. Review timestamps were cleared, an audit note was recorded in the private database, and Algebra Foundations was changed to `in-preparation`.
+- **Live access check:** all six public/private data tables inspected have RLS enabled. The anonymous database role returned zero rows from `subject_lessons` and `practice_questions`; published-only read policies remain in place. The security advisor returned three informational no-policy findings for private tables that have no client grants, not actionable public-table policy gaps.
+- **Question pre-review:** all 52 questions passed basic database integrity checks for nonempty required fields, unique options, and exactly one matching stored correct answer. A first-pass AI-assisted math/solution consistency check found no definite answer mismatch. This is not independent academic review. Do not publish any question or lesson until a qualified human records approval.
+- **Current limitations:** production smoke test after the database change, a fresh encrypted backup, a managed-Supabase recovery rehearsal, Backblaze lifecycle and GitHub failure-email settings, real-device accessibility, human content review, and a 5–8 student pilot remain open. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
 
 
 ## Product direction locked (2026-10-18)
@@ -45,7 +56,7 @@ Detailed architecture, access model, checks, and manual checklist: [feedback inb
 
 ## Release verification update (2026-10-15)
 
-### Live browser verification passed
+### Historical live browser verification (2026-10-17)
 
 Automated Chromium smoke test [run 38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed **70/70 checks** against the live Pages deployment.
 
@@ -54,7 +65,7 @@ Automated Chromium smoke test [run 38627326289](https://github.com/justryan-n2d/
 - At 320 px and 1440 px viewport widths, Chromium measured no horizontal overflow.
 - Browser console, page, request, and same-origin HTTP error checks reported no errors.
 - Actual network requests reached `qqmdwltfgpqtcvdbcmto.supabase.co`. Catalog requests returned HTTP 200 and all 72 catalog entries. Captured API key headers used the `sb_publishable_` prefix; no privileged/service-role key was detected in browser requests. Key material is not included in the logs.
-- The practice API request used `status=eq.published`, returned HTTP 200 and zero rows. The practice screen displayed its review gate and did not show a seeded draft prompt.
+- The practice API request used `status=eq.published`, returned HTTP 200 and zero rows at the time of that run. The practice screen displayed its review gate and did not show a seeded draft prompt. This is historical evidence and not a fresh check after the 2026-10-18 publication-status correction.
 - The rendered CHED CMO No. 92, s. 2017 link matched the official Civil Engineering PDF. The PDF returned HTTP 200 and `application/pdf`.
 
 This is an automated Chromium run at 320 px and 1440 px, not a full accessibility audit or testing on every physical device/browser.
@@ -62,9 +73,9 @@ This is an automated Chromium run at 320 px and 1440 px, not a full accessibilit
 ### Database access and privacy confirmed
 
 - The dedicated Supabase project named CEStudy is `ACTIVE_HEALTHY`, with project ref `qqmdwltfgpqtcvdbcmto`.
-- Remote query confirmed 72 catalog subjects and eight practice questions, all with `needs-review`; published count remains zero.
-- Both exposed public tables have RLS enabled. The practice SELECT policy exposes only rows where `status = 'published'`; client roles `anon` and `authenticated` have SELECT only, with no client INSERT/UPDATE/DELETE grants.
-- Queries executed under both `anon` and `authenticated` returned 72 catalog rows and zero practice rows, including zero unpublished rows.
+- Live query after the Stage 1 audit confirmed 72 catalog subjects, 52 practice questions, and 13 lesson records. All 52 questions and all 13 lessons are `needs-review`; published count is zero for both content tables.
+- The catalog, practice-question, and lesson tables have RLS enabled. Lesson and question SELECT policies expose only rows where `status = 'published'`; public client roles have no INSERT/UPDATE/DELETE grants.
+- A post-audit query executed as `anon` returned 0 rows from `subject_lessons` and 0 rows from `practice_questions`. The public catalog continues to be readable.
 - Supabase security advisor returned no security lint findings. Default-privilege hardening is applied for objects created through standard `postgres`-owned migrations.
 
 ### Secret scanning and dependency CI
@@ -75,9 +86,9 @@ This is an automated Chromium run at 320 px and 1440 px, not a full accessibilit
 
 ### Content, backup and pilot gates still open
 
-- All eight original Basic Algebra questions received a mathematical answer/step consistency pre-review with no arithmetic mismatch found. This is not independent academic approval. All eight remain `needs-review` and unpublished until a human reviewer checks clarity, options, workings, explanations, and attribution. See [sample question pre-review](reviews/2026-10-15-basic-algebra-draft-review.md).
+- The original eight questions have a separate mathematical consistency pre-review. A first-pass AI-assisted math/choice structure audit covered all 52 live question records on 2026-10-18. Database checks confirmed required fields, unique choices, and exactly one option matching `correct_answer` for each record; no definite answer mismatch was identified in the first pass. This is not independent academic approval. All 52 questions and 13 lessons remain `needs-review` until a qualified reviewer checks clarity, workings, explanations, originality, and attribution. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md) and the [original eight-question pre-review](reviews/2026-10-15-basic-algebra-draft-review.md).
 - **Future-question content protection decision:** the repository remains public because the exposure of the original eight drafts is acceptable; those questions are treated as already disclosed. The current change removes actual question rows from `supabase/seed.sql`, uses only synthetic test fixtures, and adds a CI rule preventing practice-question INSERTs or answer/solution fields from returning to the public seed. Future unpublished prompts, options, answers, solutions, and review notes must be authored directly in the CEStudy Supabase database with `needs-review` status. RLS hides unpublished rows from anon/authenticated API clients. Cloudflare Pages configuration is unchanged; confirm its post-merge production deployment and the live site before closing this release check.
-- The GitHub Actions workflow, encryption helper, retention tests, and public recipient certificate at `scripts/backup-recipient-cert.pem` are committed. The first successful live backup run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) exported the database, encrypted it, uploaded the encrypted archive and checksum to the correct singular bucket `cestudy-db-backup`, read them back for verification, verified the marker, and completed retention with one backup set. Current CI [38774949531](https://github.com/justryan-n2d/CEStudy/actions/runs/38774949531) also passed its encryption/decryption and retention tests using test data. On 2026-10-16, the actual October 15 backup was decrypted and restored into isolated local PostgreSQL 18.2, then validated for record counts, RLS policies, and client privileges; see [restore-drill evidence](deployment/restore-drill-2026-10-16.md). A restore into a separate managed Supabase project remains untested. Confirm Backblaze lifecycle cleanup and GitHub failure email settings. See [weekly backup setup](deployment/weekly-backups.md).
+- The encrypted weekly backup workflow passed a live run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). Its archive and checksum were read back and verified in private Backblaze B2. The actual October 15 backup was later decrypted and restored into isolated local PostgreSQL 18.2; see [restore-drill evidence](deployment/restore-drill-2026-10-16.md). That snapshot predates the current 52-question/13-lesson dataset and the 2026-10-18 publication-status correction. A fresh backup must be run and verified now, then restored into a separate managed Supabase project after explicit cost approval. B2 lifecycle cleanup and GitHub failure-email settings also need confirmation.
 - The controlled 5–8-student pilot procedure and proposed metrics are documented in [student pilot plan](plans/2026-10-15-student-pilot-plan.md). No student pilot has been run.
 - The active [Protect main ruleset](https://github.com/justryan-n2d/CEStudy/rules/25242389) is verified. It requires pull requests plus `Lint, test, and build`, `Supabase migration and RLS tests`, and `Scan repository history for secrets`; it also blocks branch deletion and non-fast-forward updates and has no bypass actors. Verification PR [#13](https://github.com/justryan-n2d/CEStudy/pull/13) passed its required CI and secret-scan checks before merge.
 
@@ -97,7 +108,7 @@ The authoritative phase table and detailed tasks live in [the organized phase pl
 | 5. Cloudflare Pages and Supabase integration | Complete for initial deployment | Live site is active at [cestudy.pages.dev](https://cestudy.pages.dev). |
 | 6. Automated and manual technical QA | Partially complete | Live Chromium run 38909783333 passed 70/70 checks. PR #14 adds contrast regression checks and combined-filter coverage; physical-device and full assistive-technology review remain. |
 | 7. Pre-launch hardening and release gates | **Current** | The actual backup passed a local isolated application-schema restore; managed Supabase target recovery, manual accessibility/device QA, human question review, and the controlled pilot remain. Main-branch ruleset is active; future question text is kept out of public source by policy and CI. |
-| 8. Human content review and approved publishing | Not started | The eight drafts have not been independently approved; published count remains zero. |
+| 8. Human content review and approved publishing | Not started | All 52 questions and 13 lessons remain `needs-review`; none are published pending qualified human review. |
 | 9. Controlled student pilot | Not started | The 5–8-student pilot plan exists but has not run. |
 | 10. Final polish and broad public launch | Not started | Complete pilot fixes and a documented go/no-go decision before announcing broadly. |
 | 11. Ongoing operations and future expansion | Deferred | Accounts, AI tutor, submissions, and native mobile apps remain future options. |
@@ -120,7 +131,7 @@ The following initial checks were reported working on mobile after deployment: h
 
 The subsequent independent Chromium run [38627326289](https://github.com/justryan-n2d/CEStudy/actions/runs/38627326289) passed 70/70 live checks, including six direct-route loads, live Supabase API and publishable-key verification, required response headers, 320 px and 1440 px overflow checks, zero browser/runtime errors, hidden unpublished questions, and the official CHED PDF link.
 
-Still pending before a student launch: a managed-Supabase-target restore check, confirmation of Backblaze lifecycle cleanup and GitHub failure-email settings, full accessibility and physical-device review, human question review, and the controlled student pilot. PR #14 adds regression coverage for key filter combinations and small-text contrast; the full search/filter matrix and on-device assistive-technology behavior still need manual QA.
+Still pending before a student launch: a fresh encrypted backup after the live database change, managed-Supabase-target restore, Backblaze lifecycle and GitHub failure-email confirmation, post-correction production smoke test, full accessibility and physical-device review, Google OAuth end-to-end verification, human review of questions and lessons, and the controlled student pilot. PR #14 adds regression coverage for key filter combinations and small-text contrast; the full search/filter matrix and on-device assistive-technology behavior still need manual QA.
 
 ## Completed and verified
 
