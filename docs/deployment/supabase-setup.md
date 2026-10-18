@@ -20,7 +20,7 @@ The source of truth is the migration under `supabase/migrations/`. It creates:
 
 For local validation, use the documented Supabase CLI workflow and `npx supabase test db`. For a new dedicated remote project, link the repository with the CEStudy project reference, inspect migration status, run a dry run, and apply migrations using the CLI. Review the target project reference carefully before any remote write.
 
-The seed contains catalog metadata and eight original draft Basic Algebra questions. The questions start as `needs-review`; they must not be published until a human has independently reviewed every prompt, option, answer, solution step, and explanation. Do not run draft seed data against a populated production project.
+The public seed contains catalog metadata only. The live database currently has 52 practice questions and 13 lesson records, all `needs-review` and none published. Do not place real question or lesson content in public seed files. Content must remain in the private CEStudy database and must not be published until a qualified human independently checks correctness, clarity, originality, and attribution.
 
 ## 3. Configure the frontend
 
@@ -35,12 +35,12 @@ Only a publishable key belongs in a browser build. A publishable key is not a pe
 
 After configuring the project:
 
-1. Confirm `catalog_subjects` and `practice_questions` exist under `public`.
-2. Confirm RLS is enabled on both tables.
+1. Confirm `catalog_subjects`, `practice_questions`, and `subject_lessons` exist under `public`.
+2. Confirm RLS is enabled on all three student-facing tables.
 3. Verify the anonymous client can read the catalog.
-4. Verify the anonymous client sees only rows with `status = 'published'`.
-5. Verify anonymous insert/update/delete operations fail.
-6. Run the Supabase security advisor checks and review all findings before preview.
+4. Verify the anonymous client sees only lesson and question rows with `status = 'published'`.
+5. Verify anonymous insert/update/delete operations fail and private review fields are not browser-readable.
+6. Run the Supabase security advisor checks and review each finding, distinguishing intentionally private tables with no client policies from actionable warnings.
 7. Confirm the frontend API URL and publishable key belong to CEStudy.
 
 Keep this setup separate from production release approval. The local CI security test is necessary but cannot establish that a remote project or Pages environment is configured correctly.
