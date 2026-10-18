@@ -40,6 +40,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] PR #14 adds a regression test for the six identified small-text selectors to stay at or above 4.5:1 contrast, an accessible live status for catalog result counts, and combined search/year/category/classification/content-status filters. This is source/test coverage, not a substitute for full rendered WCAG or device testing.
 - [x] Latest live Pages responses included CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy. CSP allowed the expected Supabase host. The `/privacy` route was checked for those headers too in [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824).
 - [x] Post-correction database checks confirm the anonymous role receives zero rows from `subject_lessons` and `practice_questions`; both tables still expose only published records through RLS.
+- [x] Public UI/API check confirmed no draft questions or lessons are exposed; the latest Chromium smoke test also confirmed the published-only practice API returned zero question rows.
 - [x] Re-run the production Chromium smoke suite after the 2026-10-18 publication-status correction and Privacy notice release: [run 39142423824](https://github.com/justryan-n2d/CEStudy/actions/runs/39142423824), 135/135 checks passed with zero failures.
 
 - [ ] On a physical Android phone, test portrait/landscape, keyboard-only navigation, TalkBack, 200% text zoom, touch targets, all five catalog filters in combinations, no-results recovery, and direct-route refresh. Record device/browser and findings before launch.
@@ -52,5 +53,5 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] Proposed measures and session procedure documented in the [controlled student pilot plan](../plans/2026-10-15-student-pilot-plan.md).
 - [ ] Recruit volunteers and run the pilot only after blocking release checks and human review are complete.
 - [x] Add the public [Privacy notice](https://cestudy.pages.dev/privacy) describing the currently deployed no-account site, browser-local study history/progress, feedback and support confirmations, bug-report email drafts, and service providers. The separate Google sign-in/Profile feature remains in draft PR #38; the notice does not claim that login is live.
-- [ ] A feedback/contact path and correction/removal process are ready.
+- [x] A feedback/contact path and correction/removal process are ready: Contact, Feedback, and Report a bug are live; the [content authoring/publication policy](../content-authoring-and-publication.md) explains correction/removal, and the public [Privacy notice](https://cestudy.pages.dev/privacy) provides the contact route.
 - [ ] Production promotion is explicitly approved only after all blocking items pass.
