@@ -41,7 +41,7 @@ export function PracticePage() {
   }, [subjectSlug, normalizedTopic]);
 
   const questions = useMemo(() => normalizedTopic
-    ? allQuestions.filter(question => question.topic.normalize("NFKC").toLowerCase() === normalizedTopic)
+    ? allQuestions.filter(question => question.topic.trim().normalize("NFKC").toLowerCase() === normalizedTopic)
     : allQuestions, [allQuestions, normalizedTopic]);
 
   const current = questions[index];
