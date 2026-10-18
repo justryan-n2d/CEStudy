@@ -18,6 +18,7 @@ import { FeedbacksPage } from "./pages/FeedbacksPage";
 import { StudyPage } from "./pages/StudyPage";
 import { ProgressPage } from "./pages/ProgressPage";
 import { LoginPage } from "./pages/LoginPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { ContentReviewPage } from "./pages/ContentReviewPage";
 import { MenuPage } from "./pages/MenuPage";
 import { HistoryPage } from "./pages/HistoryPage";
@@ -41,7 +42,7 @@ export default function App() {
               <Route path="/study/:slug" element={<StudyPage />} />
               <Route path="/study/:slug/:unit" element={<StudyPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/profile" element={<LoginPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
               <Route path="/progress" element={<ProgressPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/streak" element={<StreakPage />} />
