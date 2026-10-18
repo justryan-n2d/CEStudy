@@ -31,7 +31,26 @@ Set these values in a private local environment file or the Cloudflare Pages bui
 
 Only a publishable key belongs in a browser build. A publishable key is not a permission boundary: explicit grants and RLS must remain the enforcement point. Never expose a Supabase secret/service-role key, database password, or access token in browser code or a `VITE_*` variable.
 
-## 4. Remote verification gate
+## 4. Google sign-in setup
+
+CEStudy's login page offers **Google only**. Supabase Auth sessions persist in the browser, and the app uses the authenticated Supabase user ID to isolate local streak activity. Lesson browsing and completion tracking remain available without an account, but a signed-out completion does not count toward a streak.
+
+Google OAuth needs one-time setup in Google Cloud and the dedicated CEStudy Supabase project:
+
+1. In [Google Auth Platform](https://console.cloud.google.com/auth/overview), configure the consent screen and create an OAuth client ID with application type **Web application**.
+2. Add these **Authorized JavaScript origins**:
+   - `https://cestudy.pages.dev`
+   - `http://localhost:5173` for local development only.
+3. Add this **Authorized redirect URI** in Google Cloud: `https://qqmdwltfgpqtcvdbcmto.supabase.co/auth/v1/callback`.
+4. In the [CEStudy Supabase dashboard](https://supabase.com/dashboard/project/qqmdwltfgpqtcvdbcmto/auth/providers), enable **Google** and enter the Google OAuth client ID and client secret. Keep the client secret in Supabase's provider configuration, never in GitHub, Vite variables, frontend source, or this chat.
+5. In Supabase **Authentication → URL Configuration**, set the Site URL to `https://cestudy.pages.dev` and add these app redirect URLs:
+   - `https://cestudy.pages.dev/login`
+   - `http://localhost:5173/login` for local development.
+6. Save the configuration, then test Google sign-in and sign-out on the production URL and local development URL.
+
+The application code is prepared for Google OAuth, but the live sign-in flow cannot work until the Google client ID/secret and Supabase provider/redirect settings above are configured. Do not mark authentication as production-verified before that manual test passes. See the [current Supabase Google sign-in guide](https://supabase.com/docs/guides/auth/social-login/auth-google).
+
+## 5. Remote verification gate
 
 After configuring the project:
 
