@@ -137,7 +137,7 @@ describe("LaTeX math rendering",()=>{
   });
 
   it("keeps instruction words outside equations with bare fractions",async()=>{
-    const equation = String.raw`Simplify x = \\frac{2x}{3}.`;
+    const equation = String.raw`Simplify x = \frac{2x}{3}.`;
     render(<MarkdownContent markdown={equation} />);
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
     const renderedMath = document.querySelector(".katex");
