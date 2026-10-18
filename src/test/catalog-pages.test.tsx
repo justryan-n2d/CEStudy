@@ -40,7 +40,7 @@ describe("catalog pages",()=>{
     render(<MemoryRouter><CatalogPage/></MemoryRouter>);
     await user.type(screen.getByRole("searchbox",{name:/search subjects/i}),"no-such-subject");
     expect(await screen.findByRole("heading",{name:/no subjects found/i})).toBeInTheDocument();
-    await user.click(screen.getByRole("button",{name:/reset search and filters/i}));
+    await user.click(screen.getByRole("button",{name:/clear search/i}));
     expect(await screen.findByRole("link",{name:/Calculus 1/})).toBeInTheDocument();
   });
 
@@ -102,6 +102,6 @@ describe("catalog pages",()=>{
     const topic=await screen.findByRole("link",{name:/Polynomials and Factoring/});
     expect(topic).toHaveAttribute("href","/study/basic-algebra/4");
     expect(screen.getByRole("heading",{name:"Matching topics"})).toBeInTheDocument();
-    expect(screen.queryByRole("heading",{name:/No subjects found/i})).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading",{name:/No results found/i})).not.toBeInTheDocument();
   });
 });
