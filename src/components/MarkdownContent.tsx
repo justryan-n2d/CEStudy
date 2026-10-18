@@ -85,7 +85,7 @@ function parseBlocks(markdown: string): Block[] {
     const paragraph: string[] = [];
     while (index < lines.length) {
       const next = lines[index].trim();
-      if (!next || /^(#{1,3})\s+/.test(next) || /^[-*]\s+/.test(next) || /^\d+\.\s+/.test(next) || next.startsWith("\\[") || next.startsWith("$$")) break;
+      if (!next || /^(#{1,3})\s+/.test(next) || /^[-*]\s+/.test(next) || /^\d+\.\s+/.test(next) || parseDisplayMath(lines, index)) break;
       paragraph.push(next);
       index++;
     }
