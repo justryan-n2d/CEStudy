@@ -59,6 +59,6 @@ describe("mobile menu page", () => {
     renderMenu();
 
     expect(document.documentElement).toHaveAttribute("data-theme", "dark");
-    expect(screen.getByRole("button", { name: /switch to light mode/i })).toBeInTheDocument();
+    expect(screen.getByRole("switch", { name: /switch to light mode/i })).toBeInTheDocument();
   });
 });
