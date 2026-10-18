@@ -888,3 +888,17 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
   .profile-guest-actions .button{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.profile-shortcut{transition:none}}
+
+
+/* Privacy notice: readable legal/help copy with minimal visual chrome. */
+.privacy-page{max-width:820px;margin-inline:auto}
+.privacy-updated{margin-top:-.8rem;color:var(--muted);font-size:.8rem}
+.privacy-sections{display:grid;gap:.85rem}
+.privacy-section{padding:1.1rem 1.2rem;border:1px solid var(--line);border-radius:15px;background:#fff}
+.privacy-section h2{margin:0 0 .5rem;color:var(--navy);font-size:1.08rem}
+.privacy-section p{margin:.35rem 0 0;color:var(--muted);font-size:.9rem;line-height:1.75}
+.privacy-section p+p{margin-top:.8rem}
+:root[data-theme="dark"] .privacy-section{background:#121f30;border-color:#2b3d51}
+:root[data-theme="dark"] .privacy-section h2{color:#e5edf6}
+:root[data-theme="dark"] .privacy-section p{color:#c2cdd9}
+@media(max-width:560px){.privacy-section{padding:.95rem}.privacy-section p{font-size:.88rem}}
