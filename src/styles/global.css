@@ -539,3 +539,8 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .study-no-results{margin:.3rem .9rem .9rem;color:var(--muted);font-size:.82rem}
 .study-practice-link{display:flex;width:fit-content;margin:.5rem .9rem .9rem;font-size:.82rem}
 .study-empty p{max-width:640px;margin:.7rem auto 0}
+.reviewer-topic-disclosure{margin-top:.1rem}
+.reviewer-topic-disclosure summary{display:flex;align-items:center;justify-content:space-between;gap:.65rem;cursor:pointer;list-style:none;padding:.55rem .9rem .7rem;color:var(--blue);font-size:.82rem;font-weight:750}
+.reviewer-topic-disclosure summary::-webkit-details-marker{display:none}
+.reviewer-topic-disclosure summary::after{content:"+";font-size:1rem;font-weight:650}
+.reviewer-topic-disclosure[open] summary::after{content:"−"}
