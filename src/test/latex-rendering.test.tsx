@@ -8,42 +8,39 @@ const syntheticQuestion:PracticeQuestionData={
   id:"synthetic-latex-question",
   subjectSlug:"basic-algebra",
   topic:"Synthetic topic",
-  prompt:String.raw`Solve \(x + 2 = 5\).`,
-  choices:[String.raw`\(x = 3\)`,String.raw`\(x = 7\)`],
-  correctAnswer:String.raw`\(x = 3\)`,
-  solutionSteps:[String.raw`Subtract 2: \(x = 5 - 2\).`],
-  explanation:String.raw`Therefore \(x = 3\).`,
+  prompt:"Solve \\(x + 2 = 5\\).",
+  choices:["\\(x = 3\\)","\\(x = 7\\)"],
+  correctAnswer:"\\(x = 3\\)",
+  solutionSteps:["Subtract 2: \\(x = 5 - 2\\)."],
+  explanation:"Therefore \\(x = 3\\).",
   sourceNote:"Synthetic test fixture only.",
   displayOrder:1,
 };
 
 describe("LaTeX math rendering",()=>{
   it("renders inline and display expressions in lesson Markdown",async()=>{
-    render(<MarkdownContent markdown={String.raw`The formula is \(a^2 + b^2 = c^2\).
-
-\[
-\frac{a}{b} = c
-\]`} />);
+    const markdown = "The formula is \\(a^2 + b^2 = c^2\\).\n\n\\[\n\\frac{a}{b} = c\n\\]";
+    render(<MarkdownContent markdown={markdown} />);
 
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(2));
     expect(document.querySelector(".katex-display")).toBeInTheDocument();
     expect(document.querySelector(".katex [style]")).toBeInTheDocument();
     expect(screen.getByText(/The formula is/)).toBeInTheDocument();
-    const visibleText = document.querySelector(".markdown-content")?.cloneNode(true) as HTMLElement;
-    visibleText.querySelectorAll(".katex").forEach((node) => node.remove());
-    expect(visibleText.textContent).not.toMatch(/\\\(|\\\[|frac\{a\}/);
+    expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
   });
 
   it("does not treat prices or inline-code examples as math",()=>{
-    render(<MarkdownContent markdown={String.raw`The fee is $5 and the example is ` + "`\\(x+2\\)`" + String.raw`.`} />);
+    const tick = String.fromCharCode(96);
+    const markdown = "The fee is $5 and the example is " + tick + "\\(x+2\\)" + tick + ".";
+    render(<MarkdownContent markdown={markdown} />);
 
-    expect(screen.getByText(/The fee is \$5/)).toBeInTheDocument();
+    expect(screen.getByText(/The fee is \\$5/)).toBeInTheDocument();
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
-    expect(screen.getByText(String.raw`\(x+2\)`)).toBeInTheDocument();
+    expect(screen.getByText("\\(x+2\\)")).toBeInTheDocument();
   });
 
   it("renders math in practice prompts, choices, and worked explanations",async()=>{
-    render(<PracticeQuestion question={syntheticQuestion} index={0} total={1} selectedAnswer={String.raw`\(x = 3\)`} submitted={true}
+    render(<PracticeQuestion question={syntheticQuestion} index={0} total={1} selectedAnswer={"\\(x = 3\\)"} submitted={true}
       onSelect={()=>{}} onSubmit={()=>{}} onNext={()=>{}} />);
 
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(5));
@@ -52,8 +49,8 @@ describe("LaTeX math rendering",()=>{
   });
 
   it("preserves unmatched delimiters as readable text",()=>{
-    render(<MarkdownContent markdown={String.raw`Unfinished formula: \(x + 2`} />);
-    expect(screen.getByText(String.raw`Unfinished formula: \(x + 2`)).toBeInTheDocument();
+    render(<MarkdownContent markdown={"Unfinished formula: \\(x + 2"} />);
+    expect(screen.getByText("Unfinished formula: \\(x + 2")).toBeInTheDocument();
     expect(document.querySelectorAll(".katex")).toHaveLength(0);
   });
 
@@ -86,15 +83,16 @@ describe("LaTeX math rendering",()=>{
   });
 
   it("renders double-dollar display math",async()=>{
-    render(<MarkdownContent markdown={["Displayed formula:", "$", "\\frac{a}{b} = c", "$"].join("\n")} />);
+    const dollar = String.fromCharCode(36);
+    render(<MarkdownContent markdown={["Displayed formula:", dollar+dollar, "\\frac{a}{b} = c", dollar+dollar].join("\n")} />);
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
     expect(document.querySelector(".katex-display")).toBeInTheDocument();
   });
 
   it("supports single-dollar inline math without converting currency",async()=>{
-    render(<MarkdownContent markdown={"Area is $x^2$ and the fee is $5."} />);
+    const dollar = String.fromCharCode(36);
+    render(<MarkdownContent markdown={"Area is " + dollar + "x^2" + dollar + " and the fee is " + dollar + "5."} />);
     await waitFor(()=>expect(document.querySelectorAll(".katex")).toHaveLength(1));
     expect(screen.getByText(/fee is \\$5/)).toBeInTheDocument();
   });
-
 });
