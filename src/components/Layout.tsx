@@ -77,7 +77,7 @@ export function Layout({ children }: { children: ReactNode }) {
     };
   }, [feedbackInboxUnlocked]);
 
-old mobile popover effect  return (
+return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <header className="site-header">
@@ -105,7 +105,7 @@ old mobile popover effect  return (
           </nav>
 <LearningStreakBadge />
         </div>
-remove old More popover      </header>
+      </header>
       <main id="main-content" className="main-content">{children}</main>
       <footer className="site-footer">
         <div className="footer-inner">
