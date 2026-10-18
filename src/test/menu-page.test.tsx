@@ -47,11 +47,11 @@ describe("mobile menu page", () => {
     const user = userEvent.setup();
     renderMenu();
 
-    await user.click(screen.getByRole("button", { name: /switch to dark mode/i }));
+    await user.click(screen.getByRole("switch", { name: /switch to dark mode/i }));
 
     expect(document.documentElement).toHaveAttribute("data-theme", "dark");
     expect(localStorage.getItem("cestudy:theme:v1")).toBe("dark");
-    expect(screen.getByRole("button", { name: /switch to light mode/i })).toBeInTheDocument();
+    expect(screen.getByRole("switch", { name: /switch to light mode/i })).toBeInTheDocument();
   });
 
   it("restores a previously saved theme", () => {
