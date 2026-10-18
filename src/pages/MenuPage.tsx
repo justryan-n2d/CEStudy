@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
+import { FEEDBACK_INBOX_SESSION_EVENT, getFeedbackInboxSessionToken } from "../data/feedback-inbox";
 
 type MenuIconName = "profile" | "history" | "streak" | "community" | "support" | "feedback" | "bug" | "sun" | "moon";
 
@@ -24,6 +26,9 @@ const menuItems: { to: string; label: string; description: string; icon: MenuIco
   { to: "/profile", label: "Profile", description: "Your Google sign-in and account", icon: "profile" },
   { to: "/history", label: "History", description: "Return to lessons you opened", icon: "history" },
   { to: "/streak", label: "Streak", description: "See your study days on a calendar", icon: "streak" },
+  { to: "/progress", label: "Progress", description: "Review lessons you have completed", icon: "history" },
+  { to: "/about", label: "About us", description: "Learn about CEStudy and its purpose", icon: "community" },
+  { to: "/contact", label: "Contact CEStudy", description: "Get in touch with the project", icon: "feedback" },
   { to: "/community", label: "Community", description: "Updates about student community spaces", icon: "community" },
   { to: "/support", label: "Support us", description: "Help keep CEStudy free to use", icon: "support" },
   { to: "/feedback", label: "Send feedback", description: "Share an idea or suggestion", icon: "feedback" },
@@ -33,6 +38,17 @@ const menuItems: { to: string; label: string; description: string; icon: MenuIco
 export function MenuPage() {
   const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
+
+  useEffect(() => {
+    const syncFeedbackInbox = () => setFeedbackInboxUnlocked(Boolean(getFeedbackInboxSessionToken()));
+    window.addEventListener(FEEDBACK_INBOX_SESSION_EVENT, syncFeedbackInbox);
+    syncFeedbackInbox();
+    return () => window.removeEventListener(FEEDBACK_INBOX_SESSION_EVENT, syncFeedbackInbox);
+  }, []);
+  const visibleMenuItems = feedbackInboxUnlocked
+    ? [...menuItems, { to: "/feedbacks", label: "Feedback inbox", description: "Review incoming student feedback", icon: "feedback" as const }]
+    : menuItems;
   const isDark = theme === "dark";
 
   return (
@@ -53,7 +69,7 @@ export function MenuPage() {
       </section>
 
       <nav className="menu-links-grid" aria-label="Account and help pages">
-        {menuItems.map((item) => (
+        {visibleMenuItems.map((item) => (
           <Link className="menu-link-card" key={item.to} to={item.to}>
             <span className={"menu-link-icon menu-link-icon-" + item.icon}><MenuGlyph name={item.icon} /></span>
             <span className="menu-link-copy">
