@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { readLearningActivityDays } from "../data/learning-progress";
 import { getLearningStreak } from "../data/learning-streak";
@@ -75,18 +76,18 @@ export function LearningStreakBadge() {
       <>
         <button
           type="button"
-          className="learning-streak learning-streak-locked"
+          className="learning-streak learning-streak-locked learning-streak-header"
           aria-label="Learning streak, zero days. Click to unlock."
           aria-haspopup="dialog"
           aria-expanded={unlockOpen}
           onClick={openUnlockPrompt}
         >
           <span className="learning-streak-main">
-            <span className="learning-streak-flame" aria-hidden="true">🔥</span>
             <strong>0</strong>
-            <span>day streak</span>
+            <span className="learning-streak-flame" aria-hidden="true">🔥</span>
+            <span className="visually-hidden">day streak</span>
           </span>
-          <small>Sign in to unlock your streak.</small>
+          <small className="visually-hidden">Sign in to unlock your streak.</small>
         </button>
 
         {unlockOpen && (
@@ -116,8 +117,8 @@ export function LearningStreakBadge() {
               <span className="streak-unlock-flame" aria-hidden="true">🔥</span>
               <h2 id="streak-unlock-title">Unlock your learning streak</h2>
               <p id="streak-unlock-description">
-                Sign in with Google to track your consecutive study days and keep your learning streak going.
-                You can still browse the full engineering library without signing in.
+                Sign in with Google to track consecutive study days, save your streak history, and keep track of the last lessons you opened.
+                Your progress is currently stored in this browser. You can still browse the full engineering library without signing in.
               </p>
               <button
                 className="button button-primary google-signin-button"
@@ -148,15 +149,21 @@ export function LearningStreakBadge() {
     : completedToday
       ? "You completed a lesson today."
       : "Complete a lesson today to keep it going.";
+  const active = currentStreak >= 1;
 
   return (
-    <section className="learning-streak" aria-label="Learning streak">
-      <div className="learning-streak-main" role="status">
-        <span className="learning-streak-flame" aria-hidden="true">🔥</span>
+    <Link
+      to="/streak"
+      className={"learning-streak learning-streak-header " + (active ? "learning-streak-active" : "learning-streak-locked learning-streak-signed-in-empty")}
+      aria-label={"Learning streak, " + currentStreak + " " + dayLabel + ". View streak calendar."}
+      title={prompt}
+    >
+      <span className="learning-streak-main">
         <strong>{currentStreak}</strong>
-        <span>{dayLabel} streak</span>
-      </div>
-      <small>{prompt}</small>
-    </section>
+        <span className="learning-streak-flame" aria-hidden="true">🔥</span>
+        <span className="visually-hidden">{dayLabel} streak</span>
+      </span>
+      <small className="visually-hidden">{prompt}</small>
+    </Link>
   );
 }
