@@ -9,23 +9,6 @@ beforeEach(() => localStorage.clear());
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
-  it("clears local progress after confirmation", async () => {
-    const user = userEvent.setup();
-    setLessonCompleted({
-      lessonId: "lesson-2",
-      subjectSlug: "basic-algebra",
-      unitNumber: 2,
-      title: "Linear Equations",
-    }, true);
-    vi.stubGlobal("confirm", vi.fn(() => true));
-
-    render(<MemoryRouter><ProgressPage /></MemoryRouter>);
-    await user.click(screen.getByRole("button", { name: "Clear progress" }));
-
-    expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
-    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toBeNull();
-  });
-
 });
 
 describe("student progress page", () => {
@@ -67,5 +50,22 @@ describe("student progress page", () => {
 
     expect(screen.getByRole("heading", { name: "Algebra Foundations" })).toBeInTheDocument();
     expect(localStorage.getItem("cestudy:completed-lessons:v1")).not.toBeNull();
+  });
+
+  it("clears local progress after confirmation", async () => {
+    const user = userEvent.setup();
+    setLessonCompleted({
+      lessonId: "lesson-2",
+      subjectSlug: "basic-algebra",
+      unitNumber: 2,
+      title: "Linear Equations",
+    }, true);
+    vi.stubGlobal("confirm", vi.fn(() => true));
+
+    render(<MemoryRouter><ProgressPage /></MemoryRouter>);
+    await user.click(screen.getByRole("button", { name: "Clear progress" }));
+
+    expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
+    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toBeNull();
   });
 });
