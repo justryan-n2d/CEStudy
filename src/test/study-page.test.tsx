@@ -50,7 +50,6 @@ describe("student lesson reader", () => {
     renderStudy("/study/basic-algebra/1");
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
     expect(screen.getByText("Identify a test objective")).toBeInTheDocument();
-    expect(screen.getByText("This lesson is")).toBeInTheDocument();
-    expect(screen.getByText("published")).toBeInTheDocument();
+    expect(screen.getByRole("article")).toHaveTextContent("This lesson is published.");
   });
 });
