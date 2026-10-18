@@ -46,7 +46,7 @@ describe("LaTeX math rendering",()=>{
       onSelect={()=>{}} onSubmit={()=>{}} onNext={()=>{}} />);
 
     expect(document.querySelectorAll(".katex")).toHaveLength(5);
-    expect(screen.getByRole("heading",{name:/Solve/})).toBeInTheDocument();
+    expect(document.querySelector(".practice-question-card h2")?.textContent).toContain("Solve");
     expect(screen.getByText(/Subtract 2/)).toBeInTheDocument();
   });
 
