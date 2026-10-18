@@ -40,10 +40,10 @@ describe("LaTeX math rendering",()=>{
   });
 
   it("renders math in practice prompts, choices, and worked explanations",()=>{
-    render(<PracticeQuestion question={syntheticQuestion} index={0} total={1} selectedAnswer={null} submitted={false}
+    render(<PracticeQuestion question={syntheticQuestion} index={0} total={1} selectedAnswer={String.raw`\(x = 3\)`} submitted={true}
       onSelect={()=>{}} onSubmit={()=>{}} onNext={()=>{}} />);
 
-    expect(document.querySelectorAll(".katex")).toHaveLength(3);
+    expect(document.querySelectorAll(".katex")).toHaveLength(5);
     expect(screen.getByRole("heading",{name:/Solve/})).toBeInTheDocument();
     expect(screen.getByText(/Subtract 2/)).toBeInTheDocument();
   });
