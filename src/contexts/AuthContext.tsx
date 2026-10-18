@@ -2,16 +2,17 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
 import { hasSupabaseConfig, supabase } from "../lib/supabase";
+import { safeInternalReturnPath } from "../lib/safe-return-path";
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   configured: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: (returnTo?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
-const unavailableAuthAction = async (): Promise<void> => {
+const unavailableAuthAction = async (_returnTo?: string): Promise<void> => {
   throw new Error("Supabase configuration is required for Google sign-in.");
 };
 
@@ -62,15 +63,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (returnTo = "/profile") => {
     if (!supabase) {
       throw new Error("Supabase configuration is required for Google sign-in.");
     }
 
+    const safeReturnTo = safeInternalReturnPath(returnTo, "/profile", window.location.origin);
+    const callback = new URL("/login", window.location.origin);
+    callback.searchParams.set("next", safeReturnTo);
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: callback.toString(),
         queryParams: { prompt: "select_account" },
       },
     });
