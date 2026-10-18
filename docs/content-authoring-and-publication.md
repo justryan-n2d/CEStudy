@@ -56,3 +56,5 @@ The lesson and practice renderer supports explicit LaTeX delimiters:
   ```
 
 Use these delimiters for equations in lesson Markdown, practice prompts, answer choices, and worked explanations. A single dollar sign is treated as plain text, so prices such as `$5` are not interpreted as equations. Inline-code spans remain literal. Raw HTML is not supported.
+
+KaTeX output is rendered with HTML + MathML, trusted commands disabled, and bounded expansion/size options. The site's CSP allows inline style attributes for KaTeX formula layout; because that CSP directive applies to inline style attributes generally, keep the no-raw-HTML rule and KaTeX's `trust: false` setting in place.
