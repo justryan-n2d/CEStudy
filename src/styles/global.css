@@ -512,3 +512,35 @@
 .review-edit-fields>.field-hint{margin:-.35rem 0 0}
 .review-edit-fields textarea{width:100%;min-height:90px;border:1px solid #cbd8e1;border-radius:10px;padding:.7rem .8rem;background:white;color:#24384b;font:inherit;font-weight:450;line-height:1.55;resize:vertical}
 .review-edit-fields label input{font-weight:450}
+
+
+/* Keep the catalog focused on search; filters stay optional. */
+.filters-panel{margin:1rem 0 1.5rem}
+.catalog-extra-filters{margin-top:.65rem}
+.catalog-extra-filters summary{display:flex;align-items:center;gap:.5rem;width:fit-content;cursor:pointer;color:var(--blue);font-size:.84rem;font-weight:750;list-style:none;padding:.35rem .1rem}
+.catalog-extra-filters summary::-webkit-details-marker{display:none}
+.catalog-extra-filters summary::before{content:"+";display:grid;place-items:center;width:1.2rem;height:1.2rem;border:1px solid #cbd8e1;border-radius:50%;font-size:1rem;font-weight:600}
+.catalog-extra-filters[open] summary::before{content:"−"}
+.active-filter-count{color:var(--muted);font-size:.75rem;font-weight:650}
+
+/* One tap target per subject, with no duplicate CTA inside the card. */
+a.subject-card{color:inherit;text-align:left;text-decoration:none;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+a.subject-card:hover{transform:translateY(-2px);border-color:#a9c8d2;box-shadow:var(--shadow)}
+a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:3px}
+.subject-card .card-meta{margin-top:auto;padding-top:.95rem;margin-bottom:0}
+
+/* Topic search stays close to the reviewer outline and shows useful context. */
+.reviewer-entry-action{display:flex;justify-content:flex-start;margin:1rem 0}
+.study-topic-search{display:flex;flex-direction:column;gap:.4rem;padding:.75rem .85rem .25rem}
+.study-topic-search span{color:#4b6579;font-size:.75rem;font-weight:800}
+.study-topic-search input{min-height:42px}
+.study-outline-copy{display:flex;flex-direction:column;gap:.25rem;min-width:0}
+.study-outline-copy small{color:var(--muted);font-size:.7rem;font-weight:500;line-height:1.4}
+.study-no-results{margin:.3rem .9rem .9rem;color:var(--muted);font-size:.82rem}
+.study-practice-link{display:flex;width:fit-content;margin:.5rem .9rem .9rem;font-size:.82rem}
+.study-empty p{max-width:640px;margin:.7rem auto 0}
+.reviewer-topic-disclosure{margin-top:.1rem}
+.reviewer-topic-disclosure summary{display:flex;align-items:center;justify-content:space-between;gap:.65rem;cursor:pointer;list-style:none;padding:.55rem .9rem .7rem;color:var(--blue);font-size:.82rem;font-weight:750}
+.reviewer-topic-disclosure summary::-webkit-details-marker{display:none}
+.reviewer-topic-disclosure summary::after{content:"+";font-size:1rem;font-weight:650}
+.reviewer-topic-disclosure[open] summary::after{content:"−"}

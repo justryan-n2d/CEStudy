@@ -5,10 +5,27 @@ import { MarkdownContent } from "../components/MarkdownContent";
 import { fetchPublishedLessons } from "../data/lesson-api";
 import type { SubjectLesson } from "../types/lesson-content";
 
+function searchText(lesson:SubjectLesson):string {
+  return [lesson.title,lesson.slug,...lesson.learningObjectives,lesson.lessonMarkdown].join(" ").normalize("NFKC").toLowerCase();
+}
+function topicSnippet(lesson:SubjectLesson,query:string):string {
+  const terms=query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if(!terms.length)return "";
+  const markdownText=lesson.lessonMarkdown.replace(/^#{1,6}\s*/gm,"").replace(/[*_`>]/g,"").replace(/\s+/g," ").trim();
+  const candidates=[...lesson.learningObjectives,markdownText,lesson.title,lesson.slug];
+  const match=candidates.find(candidate=>terms.every(term=>candidate.toLowerCase().includes(term)));
+  if(!match)return "";
+  const index=Math.max(0,match.toLowerCase().indexOf(terms[0]));
+  const start=Math.max(0,index-32);
+  const end=Math.min(match.length,start+96);
+  return `${start>0?"…":""}${match.slice(start,end).trim()}${end<match.length?"…":""}`;
+}
+
 export function StudyPage() {
   const { slug, unit } = useParams();
   const subjectSlug = slug ?? "";
   const [lessons, setLessons] = useState<SubjectLesson[]>([]);
+  const [topicQuery,setTopicQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,10 +33,11 @@ export function StudyPage() {
     let active = true;
     setLoading(true);
     setError(null);
+    setTopicQuery("");
     fetchPublishedLessons(subjectSlug)
       .then((items) => { if (active) setLessons(items); })
       .catch((reason: unknown) => {
-        if (active) setError(reason instanceof Error ? reason.message : "Lessons could not be loaded.");
+        if (active) setError(reason instanceof Error ? reason.message : "Reviewer content could not be loaded.");
       })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -32,64 +50,78 @@ export function StudyPage() {
   );
   const lessonIndex = activeLesson ? lessons.findIndex((lesson) => lesson.id === activeLesson.id) : -1;
   const title = subjectSlug === "basic-algebra" ? "Algebra Foundations" : subjectSlug.replace(/-/g, " ");
+  const normalizedQuery=topicQuery.trim().normalize("NFKC").toLowerCase();
+  const visibleLessons=useMemo(() => {
+    const queryTerms=normalizedQuery.split(/\s+/).filter(Boolean);
+    return queryTerms.length===0 ? lessons : lessons.filter(lesson=>queryTerms.every(term=>searchText(lesson).includes(term)));
+  }, [lessons,normalizedQuery]);
+  const showActiveLesson=activeLesson!==null&&(!normalizedQuery||visibleLessons.some(lesson=>lesson.id===activeLesson.id));
 
   return (
     <div className="page-wrap study-page">
-      <Link className="back-link" to={`/subjects/${subjectSlug}`}>← Back to subject</Link>
+      <Link className="back-link" to="/catalog">← Subjects</Link>
       <section className="page-intro">
-        <span className="kicker">CEStudy lessons</span>
+        <span className="kicker">Reviewer</span>
         <h1>{title}</h1>
-        <p>Read the published lessons in sequence. Practice questions are available separately when approved for learners.</p>
+        <p>Search a topic or work through the reviewer in order.</p>
       </section>
 
-      {loading ? <div className="state-panel"><BrandLoader label="Loading published lessons…" /></div>
-      : error ? <div className="state-panel state-error" role="alert"><h2>Lessons unavailable</h2><p>{error}</p></div>
+      {loading ? <div className="state-panel"><BrandLoader label="Loading reviewer…" /></div>
+      : error ? <div className="state-panel state-error" role="alert"><h2>Reviewer unavailable</h2><p>{error}</p></div>
       : lessons.length === 0 ? (
         <section className="state-panel study-empty">
-          <span className="study-empty-mark" aria-hidden="true">Aa</span>
-          <h2>Lessons are being prepared</h2>
-          <p>Lesson drafts remain private while they are reviewed. Published lessons will appear here in the approved order.</p>
-          {subjectSlug === "basic-algebra" && <Link className="button button-secondary" to="/practice/basic-algebra">Open published practice</Link>}
-          <Link className="button button-primary" to="/math-foundations">Browse math foundations</Link>
+          <h2>Reviewer content is being prepared</h2>
+          <p>Published topics will appear here.</p>
+          {subjectSlug === "basic-algebra" && <Link className="study-practice-link text-link" to="/practice/basic-algebra">Practice problems →</Link>}
         </section>
       ) : (
         <div className="study-layout">
-          <aside className="study-outline" aria-label="Published lesson list">
+          <aside className="study-outline" aria-label="Reviewer topics">
             <div className="study-outline-heading">
-              <span className="kicker">Course outline</span>
-              <strong>{lessons.length} published {lessons.length === 1 ? "lesson" : "lessons"}</strong>
+              <span className="kicker">Topics</span>
+              <strong>{normalizedQuery ? `${visibleLessons.length} of ${lessons.length} topics` : `${lessons.length} topics`}</strong>
             </div>
-            <nav>
-              {lessons.map((lesson) => (
-                <Link key={lesson.id} className={activeLesson?.id === lesson.id ? "study-outline-item active" : "study-outline-item"}
-                  to={`/study/${subjectSlug}/${lesson.unitNumber}`} aria-current={activeLesson?.id === lesson.id ? "page" : undefined}>
-                  <span className="study-outline-number">{lesson.unitNumber}</span>
-                  <span>{lesson.title}</span>
-                </Link>
-              ))}
-            </nav>
-            {subjectSlug === "basic-algebra" && <Link className="button button-secondary study-practice-link" to="/practice/basic-algebra">Practice questions</Link>}
+            <label className="study-topic-search">
+              <span>Find a topic</span>
+              <input type="search" value={topicQuery} onChange={event=>setTopicQuery(event.target.value)} placeholder="e.g. factoring, logarithms" />
+            </label>
+            <details className="reviewer-topic-disclosure" open={!activeLesson || Boolean(normalizedQuery)}>
+              <summary>Browse topics ({visibleLessons.length})</summary>
+              <nav aria-label="Topic results">
+                {visibleLessons.map((lesson) => (
+                  <Link key={lesson.id} className={activeLesson?.id === lesson.id ? "study-outline-item active" : "study-outline-item"}
+                    to={`/study/${subjectSlug}/${lesson.unitNumber}`} onClick={() => setTopicQuery("")}
+                    aria-current={activeLesson?.id === lesson.id ? "page" : undefined}>
+                    <span className="study-outline-number">{lesson.unitNumber}</span>
+                    <span className="study-outline-copy">
+                      <span>{lesson.title}</span>
+                      {normalizedQuery&&<small>{topicSnippet(lesson,normalizedQuery)}</small>}
+                    </span>
+                  </Link>
+                ))}
+              </nav>
+              {normalizedQuery&&visibleLessons.length===0&&<p className="study-no-results">No matching topics. Try another keyword.</p>}
+            </details>
+            {subjectSlug === "basic-algebra" && <Link className="study-practice-link text-link" to="/practice/basic-algebra">Practice problems →</Link>}
           </aside>
 
-          {activeLesson ? (
+          {showActiveLesson && activeLesson ? (
             <article className="study-lesson">
-              <div className="study-lesson-topline"><span className="status status-ready">Published lesson</span><span>Unit {activeLesson.unitNumber}</span></div>
+              <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
               <h2>{activeLesson.title}</h2>
-              <section className="study-objectives"><h3>What you will learn</h3><ul>{activeLesson.learningObjectives.map((objective, index) => <li key={index}>{objective}</li>)}</ul></section>
               <MarkdownContent markdown={activeLesson.lessonMarkdown} />
               <div className="study-lesson-navigation">
-                {lessonIndex > 0 ? <Link className="button button-secondary" to={`/study/${subjectSlug}/${lessons[lessonIndex - 1].unitNumber}`}>← Previous lesson</Link> : <span />}
+                {lessonIndex > 0 ? <Link className="button button-secondary" to={`/study/${subjectSlug}/${lessons[lessonIndex - 1].unitNumber}`}>← Previous</Link> : <span />}
                 {lessonIndex >= 0 && lessonIndex < lessons.length - 1
-                  ? <Link className="button button-primary" to={`/study/${subjectSlug}/${lessons[lessonIndex + 1].unitNumber}`}>Next lesson →</Link>
-                  : subjectSlug === "basic-algebra" ? <Link className="button button-primary" to="/practice/basic-algebra">Start practice →</Link> : null}
+                  ? <Link className="button button-primary" to={`/study/${subjectSlug}/${lessons[lessonIndex + 1].unitNumber}`}>Next topic →</Link>
+                  : subjectSlug === "basic-algebra" ? <Link className="button button-primary" to="/practice/basic-algebra">Practice problems →</Link> : null}
               </div>
             </article>
           ) : (
             <section className="study-lesson study-lesson-welcome">
               <span className="kicker">Start here</span>
-              <h2>Follow the course outline</h2>
-              <p>Choose a lesson from the list. Each lesson is shown only after an authorized maintainer publishes it.</p>
-              {subjectSlug === "basic-algebra" && <Link className="button button-primary" to={`/study/${subjectSlug}/${lessons[0].unitNumber}`}>Start first published lesson →</Link>}
+              <h2>Choose a topic</h2>
+              <p>Search above or select a topic from the list.</p>
             </section>
           )}
         </div>
