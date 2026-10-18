@@ -109,6 +109,27 @@ describe("owner content review", () => {
     expect(await screen.findByRole("status")).toHaveTextContent(/edits saved.*remains unpublished/i);
   });
 
+  it("prevents verification when lesson edits have not been saved", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
+    await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
+    await user.click(screen.getByRole("button", { name: "Unlock review" }));
+    await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
+    await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Readiness Diagnostic Test"));
+
+    await user.click(screen.getByRole("checkbox", { name: /I reviewed this lesson against the approved syllabus/i }));
+    const verifyButton = screen.getByRole("button", { name: "Mark verified" });
+    expect(verifyButton).toBeEnabled();
+
+    await user.clear(screen.getByLabelText("Lesson title"));
+    await user.type(screen.getByLabelText("Lesson title"), "Changed but not saved");
+    expect(verifyButton).toBeDisabled();
+    expect(screen.getByRole("status")).toHaveTextContent(/unsaved changes/i);
+    expect(mocks.updateContentReviewStatus).not.toHaveBeenCalledWith(
+      "lesson", "algebra-foundations-unit-00", "verify", expect.anything(), expect.anything(),
+    );
+  });
+
   it("shows question answer details only when the owner expands them", async () => {
     const user = userEvent.setup();
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
