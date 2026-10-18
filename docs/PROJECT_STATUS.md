@@ -76,7 +76,7 @@ This is an automated Chromium run at 320 px and 1440 px, not a full accessibilit
 - Live query after the Stage 1 audit confirmed 72 catalog subjects, 52 practice questions, and 13 lesson records. All 52 questions and all 13 lessons are `needs-review`; published count is zero for both content tables.
 - The catalog, practice-question, and lesson tables have RLS enabled. Lesson and question SELECT policies expose only rows where `status = 'published'`; public client roles have no INSERT/UPDATE/DELETE grants.
 - A post-audit query executed as `anon` returned 0 rows from `subject_lessons` and 0 rows from `practice_questions`. The public catalog continues to be readable.
-- Supabase security advisor returned no security lint findings. Default-privilege hardening is applied for objects created through standard `postgres`-owned migrations.
+- The Supabase security advisor returned three informational `RLS enabled, no policy` notices for private feedback/support tables with no client grants. All six inspected tables had RLS enabled, and the three content tables' published-only access was checked directly. Default-privilege hardening is applied for objects created through standard `postgres`-owned migrations.
 
 ### Secret scanning and dependency CI
 
@@ -150,7 +150,9 @@ Still pending before a student launch: a fresh encrypted backup after the live d
 - Dedicated `CEStudy` project created in Singapore, separate from all other applications.
 - Migration applied and seed loaded.
 - `catalog_subjects`: 72 rows.
-- `practice_questions`: 8 rows, all `needs-review`; published count is 0.
+- `practice_questions`: 52 rows, all `needs-review`; published count is 0.
+- `subject_lessons`: 13 rows, all `needs-review`; published count is 0.
+- After the 2026-10-18 live status correction, a new backup and managed-Supabase restore check are required before recovery can be considered current.
 - RLS is enabled on both tables.
 - Public roles can read intended records; public INSERT/UPDATE/DELETE privileges are absent.
 - The practice-question RLS policy only allows rows where `status = 'published'`.
