@@ -94,8 +94,7 @@ function parseBlocks(markdown: string): Block[] {
   return blocks;
 }
 
-const CODE_TICK = String.fromCharCode(96);
-const INLINE_TOKEN_PATTERN = new RegExp("(\\\\*\\\\*[^*]+\\\\*\\\\*|" + CODE_TICK + "[^" + CODE_TICK + "]+" + CODE_TICK + "|\\\\\\\\\\\\([\\\\s\\\\S]+?\\\\\\\\\\\\))", "g");
+const INLINE_TOKEN_PATTERN = /(\*\*[^*]+\*\*|\u0060[^\u0060]+\u0060|\\\([\s\S]+?\\\))/g;
 
 export function InlineMathText({ text }: { text: string }) {
   const pieces = text.split(INLINE_TOKEN_PATTERN);
@@ -103,10 +102,10 @@ export function InlineMathText({ text }: { text: string }) {
     if (piece.startsWith("**") && piece.endsWith("**")) {
       return <strong key={index}><InlineMathText text={piece.slice(2, -2)} /></strong>;
     }
-    if (piece.startsWith(CODE_TICK) && piece.endsWith(CODE_TICK)) {
+    if (piece.startsWith(String.fromCharCode(96)) && piece.endsWith(String.fromCharCode(96))) {
       return <code key={index}>{piece.slice(1, -1)}</code>;
     }
-    const math = piece.match(/^\\\\\\(([\\s\\S]+)\\\\\\)$/);
+    const math = piece.match(/^\\\(([\s\S]+)\\\)$/);
     if (math) return <LatexMath key={index} latex={math[1]} />;
     return piece;
   })}</>;
