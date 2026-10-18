@@ -70,8 +70,8 @@ describe("Supabase Google authentication", () => {
     expect(await screen.findByText("Auth ready")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Start unsafe Google sign-in" }));
 
-    const [, options] = authMocks.signInWithOAuth.mock.calls[0];
-    const callback = new URL(options.redirectTo);
+    const [oauthOptions] = authMocks.signInWithOAuth.mock.calls.at(-1) ?? [];
+    const callback = new URL(oauthOptions.options.redirectTo);
     expect(callback.origin).toBe(window.location.origin);
     expect(callback.pathname).toBe("/login");
     expect(callback.searchParams.get("next")).toBe("/profile");
