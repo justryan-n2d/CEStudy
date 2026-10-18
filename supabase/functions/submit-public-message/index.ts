@@ -30,7 +30,7 @@ function allowedOrigins(): string[] {
   return [...new Set(values)];
 }
 
-function isAllowedOrigin(origin: string | null): origin is string {
+export function isAllowedOrigin(origin: string | null): origin is string {
   if (!origin) return false;
   if (allowedOrigins().includes(origin)) return true;
   try {
@@ -278,7 +278,7 @@ function validateSubmission(body: RecordValue):
   return { ok: false, message: "Unsupported message type." };
 }
 
-Deno.serve(async (request: Request) => {
+export async function handleRequest(request: Request) {
   const origin = request.headers.get("origin");
   if (!isAllowedOrigin(origin)) {
     return new Response(JSON.stringify({ ok: false, message: "This origin is not allowed." }), {
@@ -356,4 +356,6 @@ Deno.serve(async (request: Request) => {
   } catch {
     return jsonResponse(request, 503, { ok: false, message: "This form is temporarily unavailable. Please try again later." }, cors);
   }
-});
+}
+
+if (import.meta.main) Deno.serve(handleRequest);
