@@ -17,7 +17,7 @@ The canonical roadmap is [PHASE_PLAN.md](PHASE_PLAN.md). It records each project
 
 **CEStudy is both a comprehensive engineering knowledge library and an interactive learning platform.** Students can freely browse subjects and topics, or optionally follow guided learning paths and track progress. See the [learning model decision](product/COMBINED_LEARNING_MODEL.md) for the locked scope, implementation order, acceptance criteria, and constraints.
 
-The first implementation slice is device-local progress plus a flame streak for published lessons only. The flame count is visible only to Google-authenticated users and activity days are isolated by Supabase user ID in browser storage. Signed-out lesson completions do not count. No server-side progress writes or cross-device sync are added. Google OAuth credentials and redirect allowlists must be configured and tested in Supabase before live sign-in can be considered ready. Existing Phase 7 release gates remain active; this direction does not approve a broad launch.
+The first implementation slice is device-local progress plus a flame streak for published lessons only. The actual count is visible only to Google-authenticated users and activity days are isolated by Supabase user ID in browser storage. Signed-out visitors see a muted gray flame with a placeholder `0`; clicking it opens an unlock dialog with Google sign-in. Signed-out lesson completions do not count. No server-side progress writes or cross-device sync are added. Google OAuth credentials and redirect allowlists must be configured and tested in Supabase before live sign-in can be considered ready. Existing Phase 7 release gates remain active; this direction does not approve a broad launch.
 
 ## Ordered priorities
 
