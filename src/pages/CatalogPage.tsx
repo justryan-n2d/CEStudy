@@ -1,5 +1,5 @@
 import { useEffect,useMemo,useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useSearchParams } from "react-router-dom";
 import { CatalogFilters } from "../components/CatalogFilters";
 import { BrandLoader } from "../components/BrandLoader";
 import { CurriculumNotice } from "../components/CurriculumNotice";
@@ -22,7 +22,8 @@ function topicTitleText(topic:PublishedTopicIndexEntry):string {
 
 export function CatalogPage(){
   const {subjects,loading,error}=useCatalog();
-  const [query,setQuery]=useState("");
+  const [searchParams]=useSearchParams();
+  const [query,setQuery]=useState(()=>searchParams.get("q")??"");
   const [year,setYear]=useState("");
   const [category,setCategory]=useState("");
   const [classification,setClassification]=useState("");
