@@ -94,6 +94,7 @@ describe("owner content review", () => {
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
     await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
 
+    await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Readiness Diagnostic Test"));
     await user.clear(screen.getByLabelText("Lesson title"));
     await user.type(screen.getByLabelText("Lesson title"), "Corrected Readiness Diagnostic");
     await user.click(screen.getByRole("button", { name: "Save edits, keep unpublished" }));
