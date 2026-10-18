@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { readLearningActivityDays } from "../data/learning-progress";
+import { LEARNING_ACTIVITY_CHANGED_EVENT, learningActivityStorageKey, readLearningActivityDays } from "../data/learning-progress";
 import { getLearningStreak } from "../data/learning-streak";
 
 export function LearningStreakBadge() {
@@ -9,6 +9,7 @@ export function LearningStreakBadge() {
   const [unlockOpen, setUnlockOpen] = useState(false);
   const [signInPending, setSignInPending] = useState(false);
   const [signInError, setSignInError] = useState<string | null>(null);
+  const [, setActivityVersion] = useState(0);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
 
@@ -50,6 +51,29 @@ export function LearningStreakBadge() {
       previouslyFocused?.focus();
     };
   }, [unlockOpen]);
+
+  useEffect(() => {
+    const userId = user?.id;
+    if (!userId) return;
+
+    const refreshForActivity = (event: Event) => {
+      const detail = (event as CustomEvent<{ userId?: string }>).detail;
+      if (detail?.userId && detail.userId !== userId) return;
+      setActivityVersion((current) => current + 1);
+    };
+    const refreshForStorage = (event: StorageEvent) => {
+      if (event.key === null || event.key === learningActivityStorageKey(userId)) {
+        setActivityVersion((current) => current + 1);
+      }
+    };
+
+    window.addEventListener(LEARNING_ACTIVITY_CHANGED_EVENT, refreshForActivity);
+    window.addEventListener("storage", refreshForStorage);
+    return () => {
+      window.removeEventListener(LEARNING_ACTIVITY_CHANGED_EVENT, refreshForActivity);
+      window.removeEventListener("storage", refreshForStorage);
+    };
+  }, [user?.id]);
 
   const openUnlockPrompt = () => {
     setSignInError(null);
