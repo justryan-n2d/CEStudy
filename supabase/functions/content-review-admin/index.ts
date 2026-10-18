@@ -198,7 +198,7 @@ async function changeStatus(body: RecordValue) {
   const action = clean(body.actionName);
   const transition = ACTIONS[action];
   if ((entity !== "lesson" && entity !== "question") || !transition) throw new Error("invalid_review_action");
-  const select = "id,status,review_notes";
+  const select = "id,status,review_notes,reviewed_at";
   const getPath = reviewPath(entity, id, select);
   if (!getPath) throw new Error("invalid_content_id");
 
