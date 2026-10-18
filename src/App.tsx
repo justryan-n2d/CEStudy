@@ -24,6 +24,7 @@ import { MenuPage } from "./pages/MenuPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { StreakPage } from "./pages/StreakPage";
 import { CommunityPage } from "./pages/CommunityPage";
+import { PrivacyPage } from "./pages/PrivacyPage";
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/catalog" element={<CatalogPage />} />
               <Route path="/years" element={<YearLevelsPage />} />
               <Route path="/year/:year" element={<YearLevelPage />} />
