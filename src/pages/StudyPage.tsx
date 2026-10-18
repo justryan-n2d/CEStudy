@@ -55,6 +55,7 @@ export function StudyPage() {
     const queryTerms=normalizedQuery.split(/\s+/).filter(Boolean);
     return queryTerms.length===0 ? lessons : lessons.filter(lesson=>queryTerms.every(term=>searchText(lesson).includes(term)));
   }, [lessons,normalizedQuery]);
+  const showActiveLesson=activeLesson!==null&&(!normalizedQuery||visibleLessons.some(lesson=>lesson.id===activeLesson.id));
 
   return (
     <div className="page-wrap study-page">
@@ -100,7 +101,7 @@ export function StudyPage() {
             {subjectSlug === "basic-algebra" && <Link className="study-practice-link text-link" to="/practice/basic-algebra">Practice problems →</Link>}
           </aside>
 
-          {activeLesson ? (
+          {showActiveLesson && activeLesson ? (
             <article className="study-lesson">
               <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
               <h2>{activeLesson.title}</h2>
