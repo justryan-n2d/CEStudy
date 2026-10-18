@@ -4,6 +4,7 @@ import { BrandLoader } from "../components/BrandLoader";
 import { MarkdownContent } from "../components/MarkdownContent";
 import { fetchPublishedLessons } from "../data/lesson-api";
 import type { SubjectLesson } from "../types/lesson-content";
+import { readCompletedLessons, setLessonCompleted, type CompletedLesson } from "../data/learning-progress";
 
 function searchText(lesson:SubjectLesson):string {
   return [lesson.title,lesson.slug,...lesson.learningObjectives,lesson.lessonMarkdown].join(" ").normalize("NFKC").toLowerCase();
@@ -28,12 +29,14 @@ export function StudyPage() {
   const [topicQuery,setTopicQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setError(null);
     setTopicQuery("");
+    setCompletedLessons(readCompletedLessons());
     fetchPublishedLessons(subjectSlug)
       .then((items) => { if (active) setLessons(items); })
       .catch((reason: unknown) => {
@@ -56,6 +59,17 @@ export function StudyPage() {
     return queryTerms.length===0 ? lessons : lessons.filter(lesson=>queryTerms.every(term=>searchText(lesson).includes(term)));
   }, [lessons,normalizedQuery]);
   const showActiveLesson=activeLesson!==null&&(!normalizedQuery||visibleLessons.some(lesson=>lesson.id===activeLesson.id));
+  const activeLessonCompleted = Boolean(activeLesson && completedLessons.some((item) => item.lessonId === activeLesson.id));
+  const toggleLessonCompletion = () => {
+    if (!activeLesson) return;
+    const next = setLessonCompleted({
+      lessonId: activeLesson.id,
+      subjectSlug: activeLesson.subjectSlug,
+      unitNumber: activeLesson.unitNumber,
+      title: activeLesson.title,
+    }, !activeLessonCompleted);
+    setCompletedLessons(next);
+  };
 
   return (
     <div className="page-wrap study-page">
@@ -63,7 +77,7 @@ export function StudyPage() {
       <section className="page-intro">
         <span className="kicker">Reviewer</span>
         <h1>{title}</h1>
-        <p>Search a topic or work through the reviewer in order.</p>
+        <p>Explore any topic, or follow published lessons in order when you want more structure.</p>
       </section>
 
       {loading ? <div className="state-panel"><BrandLoader label="Loading reviewer…" /></div>
@@ -110,6 +124,17 @@ export function StudyPage() {
               <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
               <h2>{activeLesson.title}</h2>
               <MarkdownContent markdown={activeLesson.lessonMarkdown} />
+              <div className="study-lesson-completion">
+                <button
+                  type="button"
+                  className={activeLessonCompleted ? "button button-primary" : "button button-secondary"}
+                  aria-pressed={activeLessonCompleted}
+                  onClick={toggleLessonCompletion}
+                >
+                  {activeLessonCompleted ? "Mark as incomplete" : "Mark as complete"}
+                </button>
+                <p>{activeLessonCompleted ? "Completed and saved on this device." : "Progress is saved on this device only."} <Link to="/progress">View my progress</Link></p>
+              </div>
               <div className="study-lesson-navigation">
                 {lessonIndex > 0 ? <Link className="button button-secondary" to={`/study/${subjectSlug}/${lessons[lessonIndex - 1].unitNumber}`}>← Previous</Link> : <span />}
                 {lessonIndex >= 0 && lessonIndex < lessons.length - 1
