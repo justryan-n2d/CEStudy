@@ -124,8 +124,14 @@ return (
       </footer>
       <nav className="mobile-bottom-nav" aria-label="Quick navigation">
         {mobileLinks.map((item) => (
-          <Link key={item.to} to={item.to} className={`mobile-tab${item.active ? " active" : ""}`} aria-current={item.active ? "page" : undefined}>
-            <NavigationGlyph name={item.name} /><span>{item.label}</span>
+          <Link key={item.to} to={item.to} className={`mobile-tab${item.active ? " active" : ""}`}
+            aria-current={item.active ? "page" : undefined}
+            aria-label={item.name === "menu" && unreadFeedbackCount > 0 ? "Menu, unread feedback" : undefined}>
+            <span className="mobile-tab-icon">
+              <NavigationGlyph name={item.name} />
+              {item.name === "menu" && unreadFeedbackCount > 0 && <span className="feedback-unread-dot mobile-menu-unread-dot" aria-hidden="true" />}
+            </span>
+            <span>{item.label}</span>
           </Link>
         ))}
       </nav>
