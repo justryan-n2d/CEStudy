@@ -17,13 +17,15 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] Dedicated CEStudy Supabase project and correct project reference confirmed.
 - [x] Migrations applied without resetting or damaging a shared/production database.
 - [x] RLS enabled and grants reviewed on every exposed table.
-- [x] Anonymous catalog reads work; the two app tables grant client roles SELECT only.
-- [x] Questions requiring review remain hidden; all eight remote questions remain `needs-review`, with zero published.
+- [x] Anonymous catalog reads work. The three student-facing tables use explicit client grants and RLS; clients cannot write, and lesson/question rows are readable only when `status = 'published'`.
+- [x] Live publication gate verified on 2026-10-18: all 52 practice questions and all 13 lessons are `needs-review`, with zero published. Anonymous-role SQL checks returned zero rows from both content tables. Algebra Foundations is marked `in-preparation`.
 - [x] Anonymous and authenticated write attempts are denied in isolated database security tests.
-- [x] Supabase security advisor reviewed; no security lint findings. Default-privilege hardening is applied for new objects created by the standard `postgres` migration owner.
+- [x] Supabase security advisor reviewed. The current findings are three informational `RLS enabled, no policy` notices for private tables that have no client grants; no high or critical security lint findings were returned. Default-privilege hardening is applied for new objects created by the standard `postgres` migration owner.
 - [x] Recovery method for the current catalog and schema is documented; public catalog metadata can be seeded from source. Actual unpublished question rows are intentionally not reconstructed from public Git, and the encrypted database backup is the recovery source for those rows.
 - [x] Backup/recovery procedure documented in [backup and recovery plan](backup-and-recovery.md).
-- [ ] Create a real private off-site export, test restoring it to a separate temporary project, and record verification before adding mutable student data or submissions.
+- [x] The real encrypted off-site backup was verified and restored to isolated local PostgreSQL 18.2; see [restore-drill evidence](restore-drill-2026-10-16.md).
+- [ ] Run and verify a fresh encrypted backup after the 2026-10-18 publication-status correction.
+- [ ] Restore the refreshed backup into a separate managed Supabase test project after explicit cost approval; local restore does not test managed Supabase system roles or settings.
 - [x] Live Chromium network capture confirmed the deployed browser requests use `qqmdwltfgpqtcvdbcmto.supabase.co` and an `sb_publishable_` key; no privileged key was detected. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
 
 ## Cloudflare Pages deployment
@@ -37,16 +39,18 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] Live Chromium recorded no browser console, page, request, or same-origin HTTP errors. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
 - [x] PR #14 adds a regression test for the six identified small-text selectors to stay at or above 4.5:1 contrast, an accessible live status for catalog result counts, and combined search/year/category/classification/content-status filters. This is source/test coverage, not a substitute for full rendered WCAG or device testing.
 - [x] Live Pages responses included CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy; CSP allowed the expected Supabase host and no browser errors were observed. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
-- [x] Deployed UI displays the review gate and no seed draft prompt; live API query filters to `status=published` and returns zero rows. SQL checks under `anon` and `authenticated` also returned zero unpublished questions. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
+- [x] Post-correction database checks confirm the anonymous role receives zero rows from `subject_lessons` and `practice_questions`; both tables still expose only published records through RLS.
+- [ ] Re-run the production Chromium smoke suite after the 2026-10-18 publication-status correction. The last documented run [39069495822](https://github.com/justryan-n2d/CEStudy/actions/runs/39069495822) predates that live change.
 
 - [ ] On a physical Android phone, test portrait/landscape, keyboard-only navigation, TalkBack, 200% text zoom, touch targets, all five catalog filters in combinations, no-results recovery, and direct-route refresh. Record device/browser and findings before launch.
 
 ## Educational content and pilot
 
-- [x] Mathematical pre-review completed for the eight existing draft questions (originally seeded) with no answer/step mismatch found; see [review record](../reviews/2026-10-15-basic-algebra-draft-review.md). This does not replace human approval. All eight stay unpublished.
-- [ ] Human content reviewer identified and all questions independently approved before any status changes to `published`.
-- [ ] Every published question is checked for correctness, clear steps, source/attribution, and permission to use. No questions are currently published.
+- [x] The original eight questions have a separate historical pre-review. A first-pass AI-assisted math/choice-structure audit covered all 52 live question records on 2026-10-18. Database checks confirmed required fields, unique choices, and exactly one stored correct answer among choices for every record. No definite mismatch was identified in the first pass; this is not independent academic approval. See [Stage 1 audit](../reviews/2026-10-18-stage1-content-and-publication-audit.md).
+- [ ] Identify a qualified human reviewer to independently review the 52 questions and 13 lessons before anything changes to `published`.
+- [ ] Every proposed published question and lesson is checked for correctness, clear steps, source/attribution, originality, and permission to use. No lessons or questions are currently published.
 - [x] Proposed measures and session procedure documented in the [controlled student pilot plan](../plans/2026-10-15-student-pilot-plan.md).
 - [ ] Recruit volunteers and run the pilot only after blocking release checks and human review are complete.
+- [ ] Add a short privacy notice that accurately describes optional Google sign-in, local study data, and the public feedback/support forms before recruiting pilot students.
 - [ ] A feedback/contact path and correction/removal process are ready.
 - [ ] Production promotion is explicitly approved only after all blocking items pass.
