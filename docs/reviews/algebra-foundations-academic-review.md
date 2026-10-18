@@ -2,6 +2,7 @@
 
 **Review date:** 2026-10-18  
 **Reviewed artifact:** [Algebra Foundations syllabus v0.2](../curriculum/algebra-foundations-syllabus.md)  
+**Syllabus Git blob at review:** `4baf93274e6db9cbddaf3f8b9376c0a0ef118c85`  
 **Review type:** AI-assisted academic desk review of course scope, sequence, outcome alignment, and source claims  
 **Status:** Revised after desk review; independent instructor review remains outstanding  
 **Decision rule:** One subject = one syllabus. Algebra Readiness remains the opening phase inside the one Algebra Foundations syllabus. No lesson or practice-question bank is part of this review.
@@ -31,8 +32,8 @@ This review did **not** verify future individual lessons, worked solutions, answ
 
 - **Severity:** Medium
 - **Evidence:** The former outline mentioned factoring, division, and known factors but did not state how students would identify possible rational roots.
-- **Change:** Unit 8 now includes the Rational Root Theorem specifically for candidate rational zeros of polynomials with integer coefficients, plus polynomial/synthetic division and checking candidates in the original equation.
-- **Verification needed during lesson writing:** State the integer-coefficient condition when applying the Rational Root Theorem, distinguish candidate roots from proven roots, and verify every candidate by substitution or the Factor Theorem.
+- **Change:** Unit 8 now includes the Rational Root Theorem for candidate rational zeros of integer-coefficient polynomials with a nonzero constant term, plus polynomial/synthetic division and checking candidates in the original equation.
+- **Verification needed during lesson writing:** Explain the nonzero-constant and integer-coefficient conditions when applying the Rational Root Theorem, distinguish candidate roots from proven roots, and verify every candidate by substitution or the Factor Theorem.
 
 ### A3. Rational-function coverage was vague and could drift into Analytic Geometry
 
@@ -75,6 +76,7 @@ This review did **not** verify future individual lessons, worked solutions, answ
 2. **CHED CMO No. 29, Series of 2007.** The historical BSCE curriculum table lists College Algebra and Advanced Algebra as separate courses, along with Trigonometry, Analytic Geometry, and Solid Mensuration. This is evidence of historical curriculum packaging, not a declaration that the CEStudy combination is an official syllabus. [Source PDF](https://legacy.ched.gov.ph/wp-content/uploads/2017/10/CMO-No.29-s2007.pdf)
 3. **CHED CMO No. 92, Series of 2017.** Used as the later BSCE program-standards reference in the project source map. CEStudy's syllabus must not be described as CHED-approved or university-accredited. [CHED record](https://legacy.ched.gov.ph/2017-ched-memorandum-orders/) · [Source PDF](https://legacy.ched.gov.ph/wp-content/uploads/2018/04/CMO-92-s.-2017-BS-Civil-Engineering.pdf)
 4. **Lippman and Rasmussen, _Precalculus: An Investigation of Functions_, 2nd edition.** The public course description and textbook records support using functions, polynomial/rational functions, exponential/logarithmic functions, graphs, and modeling as broad cross-checks. The LibreTexts record states CC BY-SA 4.0. Source access or citation is not permission to copy prose, figures, exercises, or distinctive presentation; CEStudy materials should be original unless reuse rights are checked. [LibreTexts record](https://math.libretexts.org/Bookshelves/Precalculus/Book%253A_Precalculus__An_Investigation_of_Functions_%28Lippman_and_Rasmussen%29) · [Open Textbook Library record](https://open.umn.edu/opentextbooks/textbooks/precalculus-an-investigation-of-functions)
+5. **Siena College, _Preparation for College Mathematics_, Section 5.4, “Roots of Polynomial Functions.”** Used as a topic cross-check for teaching the Rational Root Theorem alongside polynomial division and factoring higher-degree polynomial functions. The page's precise reuse license was not established; it is a verification-only reference. [Source](https://math.libretexts.org/Courses/Siena_College/Preparation_for_College_Mathematics/Chapter_5%3A_Polynomial_Functions/5.4_Roots_of_Polynomial_Functions)
 
 ## 5. Remaining limitations and pre-release gate
 
