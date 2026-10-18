@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { YearLevelGrid } from "../components/YearLevelGrid";
 import { HERO_IMAGE } from "../config/hero-image";
+import { readCompletedLessons } from "../data/learning-progress";
+import { LearningStreakBadge } from "../components/LearningStreakBadge";
 
 export function HomePage() {
+  const completedLessons = readCompletedLessons();
   return (
     <>
       <section className="hero hero-home">
@@ -58,6 +61,7 @@ export function HomePage() {
             <span className="kicker">Optional guided learning</span>
             <h2>Mark lessons as you finish them</h2>
             <p>Follow published topics in order, or explore freely. Completed lessons are saved on this device.</p>
+            <LearningStreakBadge completedLessons={completedLessons} />
           </div>
           <Link className="button button-secondary" to="/progress">View my progress</Link>
         </section>
