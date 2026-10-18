@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
+import { LoginPage } from "../pages/LoginPage";
 
 vi.mock("../contexts/AuthContext", () => ({
   useAuth: () => ({
@@ -11,8 +12,6 @@ vi.mock("../contexts/AuthContext", () => ({
     signOut: vi.fn(),
   }),
 }));
-import { LoginPage } from "../pages/LoginPage";
-
 describe("Google sign-in page", () => {
   it("only offers Google as the sign-in method", () => {
     render(<MemoryRouter><LoginPage /></MemoryRouter>);
