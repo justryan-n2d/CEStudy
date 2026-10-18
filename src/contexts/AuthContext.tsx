@@ -15,6 +15,13 @@ const unavailableAuthAction = async (): Promise<void> => {
   throw new Error("Supabase configuration is required for Google sign-in.");
 };
 
+function googleAuthenticatedUser(user: User | null | undefined): User | null {
+  if (!user) return null;
+  const primaryProvider = user.app_metadata?.provider;
+  const hasGoogleIdentity = user.identities?.some((identity) => identity.provider === "google") ?? false;
+  return primaryProvider === "google" || hasGoogleIdentity ? user : null;
+}
+
 const AuthContext = createContext<AuthContextValue>({
   user: null,
   loading: false,
@@ -33,14 +40,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let active = true;
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
-      setUser(session?.user ?? null);
+      setUser(googleAuthenticatedUser(session?.user));
       setLoading(false);
     });
 
     void supabase.auth.getSession()
       .then(({ data, error }) => {
         if (!active) return;
-        setUser(error ? null : data.session?.user ?? null);
+        setUser(error ? null : googleAuthenticatedUser(data.session?.user));
         setLoading(false);
       })
       .catch(() => {
