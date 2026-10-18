@@ -31,7 +31,7 @@ export function Layout({ children }: { children: ReactNode }) {
     { to: "/years", label: "Year levels" },
     { to: "/math-foundations", label: "Math foundations" },
   ];
-  const menuPaths = ["/profile", "/login", "/history", "/streak", "/community", "/support", "/feedback", "/bug-reports", "/contact"];
+  const menuPaths = ["/profile", "/login", "/history", "/streak", "/progress", "/community", "/support", "/feedback", "/feedbacks", "/bug-reports", "/contact", "/about"];
   const mobileLinks = [
     { to: "/", label: "Home", name: "home" as const, active: location.pathname === "/" },
     { to: "/catalog", label: "Subjects", name: "book" as const, active: location.pathname === "/catalog" || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/practice/") || location.pathname.startsWith("/study/") },
