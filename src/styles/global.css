@@ -808,3 +808,20 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 :root[data-theme="dark"] .learning-streak-active{border-color:#956126;background:linear-gradient(135deg,#3c2a18,#583714);color:#ffdc9b;box-shadow:0 4px 12px rgba(0,0,0,.22)}
 :root[data-theme="dark"] .learning-streak-active .learning-streak-main strong{color:#ffcf82}
 :root[data-theme="dark"] .learning-streak-active::before{background:linear-gradient(135deg,rgba(255,177,57,.26),rgba(236,88,22,.18))}
+
+.streak-calendar-day.is-selected{outline:3px solid var(--brand-blue);outline-offset:2px}
+.streak-day-detail{margin:.8rem 0 0;padding:.75rem .9rem;border:1px solid var(--line);border-radius:11px;background:#f5f8fb;color:var(--navy);font-size:.82rem;line-height:1.55}
+:root[data-theme="dark"] .streak-day-detail{background:#172538;border-color:#2b3d51;color:#dce6f1}
+:root[data-theme="dark"] .hero-copy>p,:root[data-theme="dark"] .hero-home .hero-copy>p,:root[data-theme="dark"] .page-intro>p,:root[data-theme="dark"] .muted-copy,:root[data-theme="dark"] .section-heading p,:root[data-theme="dark"] .subject-card>p,:root[data-theme="dark"] .detail-summary,:root[data-theme="dark"] .detail-panel p,:root[data-theme="dark"] .math-banner p,:root[data-theme="dark"] .math-practice-callout p,:root[data-theme="dark"] .card-meta,:root[data-theme="dark"] .study-lesson-completion p,:root[data-theme="dark"] .study-lesson p,:root[data-theme="dark"] .study-outline-heading strong{color:#b7c5d6}
+:root[data-theme="dark"] .detail-hero,:root[data-theme="dark"] .curriculum-notice,:root[data-theme="dark"] .math-banner,:root[data-theme="dark"] .math-practice-callout,:root[data-theme="dark"] .about-purpose,:root[data-theme="dark"] .community-launch-panel,:root[data-theme="dark"] .review-gate,:root[data-theme="dark"] .study-lesson-welcome{background:#142438;border-color:#2b4056}
+:root[data-theme="dark"] .curriculum-notice h2,:root[data-theme="dark"] .curriculum-notice p,:root[data-theme="dark"] .curriculum-notice a,:root[data-theme="dark"] .about-purpose p,:root[data-theme="dark"] .community-launch-panel p{color:#bfd0df}
+:root[data-theme="dark"] .year-number,:root[data-theme="dark"] .progress-complete-label{color:#87d7b4}
+:root[data-theme="dark"] .status{background:#263546;color:#c3d0df}
+:root[data-theme="dark"] .status-ready{background:#164b3b;color:#bef0d8}
+:root[data-theme="dark"] .status-progress{background:#4b3b21;color:#ffe0a2}
+:root[data-theme="dark"] .answer-option{background:#172538;border-color:#40556c;color:#e5edf6}
+:root[data-theme="dark"] .answer-option-selected{background:#173d3a;border-color:#5cafa7}
+:root[data-theme="dark"] .answer-feedback{background:#172538;border-color:#40556c}
+:root[data-theme="dark"] .answer-correct{background:#14372e;border-color:#27684d}
+:root[data-theme="dark"] .answer-incorrect{background:#422c1f;border-color:#855b35}
+:root[data-theme="dark"] .payment-mark-gcash,:root[data-theme="dark"] .payment-mark-paypal{background:#fff}
