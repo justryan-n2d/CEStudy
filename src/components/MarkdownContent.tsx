@@ -10,30 +10,32 @@ type Block =
 
 function parseDisplayMath(lines: string[], startIndex: number): { blocks: Block[]; nextIndex: number } | null {
   const line = lines[startIndex].trim();
-  if (!line.startsWith("\\[")) return null;
-
-  const firstLine = line.slice(2);
-  const sameLineClose = firstLine.indexOf("\\]");
+  const opener = line.startsWith("\\[") ? "\\[" : line.startsWith("$$") ? "$$" : null;
+  if (!opener) return null;
+  const closer = opener === "\\[" ? "\\]" : "$$";
+  const firstLine = line.slice(opener.length);
+  const sameLineClose = firstLine.indexOf(closer);
   if (sameLineClose >= 0) {
     const blocks: Block[] = [{ type: "display-math", latex: firstLine.slice(0, sameLineClose).trim() }];
-    const trailing = firstLine.slice(sameLineClose + 2).trim();
+    const trailing = firstLine.slice(sameLineClose + closer.length).trim();
     if (trailing) blocks.push({ type: "paragraph", text: trailing });
     return { blocks, nextIndex: startIndex + 1 };
   }
 
   const formulaLines = [firstLine];
   for (let index = startIndex + 1; index < lines.length; index++) {
-    const closeIndex = lines[index].indexOf("\\]");
+    const closeIndex = lines[index].indexOf(closer);
     if (closeIndex >= 0) {
       formulaLines.push(lines[index].slice(0, closeIndex));
       const blocks: Block[] = [{ type: "display-math", latex: formulaLines.join("\n").trim() }];
-      const trailing = lines[index].slice(closeIndex + 2).trim();
+      const trailing = lines[index].slice(closeIndex + closer.length).trim();
       if (trailing) blocks.push({ type: "paragraph", text: trailing });
       return { blocks, nextIndex: index + 1 };
     }
     formulaLines.push(lines[index]);
   }
 
+  // Unmatched delimiters are left as normal text instead of swallowing the rest of a lesson.
   return null;
 }
 
@@ -83,7 +85,7 @@ function parseBlocks(markdown: string): Block[] {
     const paragraph: string[] = [];
     while (index < lines.length) {
       const next = lines[index].trim();
-      if (!next || /^(#{1,3})\s+/.test(next) || /^[-*]\s+/.test(next) || /^\d+\.\s+/.test(next)) break;
+      if (!next || /^(#{1,3})\s+/.test(next) || /^[-*]\s+/.test(next) || /^\d+\.\s+/.test(next) || next.startsWith("\\[") || next.startsWith("$$")) break;
       paragraph.push(next);
       index++;
     }
