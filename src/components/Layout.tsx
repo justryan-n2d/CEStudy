@@ -32,7 +32,7 @@ export function Layout({ children }: { children: ReactNode }) {
   ];
   const mobileLinks = [
     { to: "/", label: "Home", name: "home" as const, active: location.pathname === "/" },
-    { to: "/catalog", label: "Subjects", name: "book" as const, active: location.pathname === "/catalog" || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/practice/") },
+    { to: "/catalog", label: "Subjects", name: "book" as const, active: location.pathname === "/catalog" || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/practice/") || location.pathname.startsWith("/study/") },
     { to: "/years", label: "Years", name: "layers" as const, active: location.pathname === "/years" || location.pathname.startsWith("/year/") },
     { to: "/math-foundations", label: "Math", name: "math" as const, active: location.pathname === "/math-foundations" },
   ];
