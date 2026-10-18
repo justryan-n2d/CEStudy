@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { BrandLoader } from "../components/BrandLoader";
 import { MarkdownContent } from "../components/MarkdownContent";
 import {
   CONTENT_REVIEW_SESSION_EVENT,
@@ -275,7 +276,8 @@ export function ContentReviewPage() {
                 <textarea value={reviewNotes} onChange={(event) => setReviewNotes(event.target.value)} rows={3} maxLength={4000}
                   placeholder="Add corrections or notes for your next review." disabled={busy} />
               </label>
-              {(current.status === "needs-review" || current.status === "draft") && <>
+              {current.status === "draft" && <button className="button button-secondary" type="button" onClick={() => void runAction("return-to-review")} disabled={busy}>Move to review queue</button>}
+              {current.status === "needs-review" && <>
                 <label className="review-confirm-check"><input type="checkbox" checked={reviewConfirmed} onChange={(event) => setReviewConfirmed(event.target.checked)} disabled={busy} />
                   <span>{tab === "lessons" ? "I reviewed this lesson against the approved syllabus." : "I checked the prompt, choices, correct answer, and worked solution."}</span>
                 </label>
