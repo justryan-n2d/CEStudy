@@ -26,6 +26,15 @@ function contrastRatio(foreground: string, background: string): number {
   return (values[0] + 0.05) / (values[1] + 0.05);
 }
 
+describe("dark theme sign-in contrast", () => {
+  it("keeps Google sign-in label readable on the dark streak unlock dialog", () => {
+    expect(stylesheet).toContain(':root[data-theme="dark"] .streak-unlock-dialog > p');
+    expect(stylesheet).toContain(':root[data-theme="dark"] .streak-unlock-dialog .google-signin-button');
+    expect(stylesheet).toMatch(/:root\[data-theme="dark"\] \.google-signin-button[\s\S]*?background-color:\s*#ffffff;[\s\S]*?color:\s*#1f1f1f;/);
+    expect(stylesheet).toContain(':root[data-theme="dark"] .google-signin-button:disabled');
+  });
+});
+
 describe("small text color contrast", () => {
   it.each([
     [".hero-note", "#f7f9fc"],
