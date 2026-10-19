@@ -32,6 +32,7 @@ describe("dark theme sign-in contrast", () => {
     expect(stylesheet).toMatch(/\.google-signin-button\{[^}]*background:var\(--ui-brand-surface\)[^}]*color:var\(--ui-brand-text\)/);
     expect(stylesheet).toContain('--ui-brand-surface: #ffffff;');
     expect(stylesheet).toContain('--ui-brand-text: #1f1f1f;');
+    expect(stylesheet).toContain(':root[data-theme="dark"] .button-primary:not(.google-signin-button)');
     expect(stylesheet).not.toMatch(/:root\[data-theme="dark"\]\s*\.google-signin-button\s*\{[^}]*background(?:-color)?:\s*#(?:131314|242428)/);
     expect(stylesheet).toContain(':root[data-theme="dark"] .google-signin-button:disabled');
   });
