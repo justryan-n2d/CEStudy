@@ -131,6 +131,65 @@ async function main() {
   }
 
 
+  // Exercise the shared dark theme on the new account and study screens.
+  activeRoute = "dark theme setup";
+  try {
+    await page.goto(baseUrl + "/menu", { waitUntil: "networkidle", timeout: 45000 });
+    await page.evaluate(() => window.localStorage.setItem("cestudy:theme:v1", "dark"));
+    await page.reload({ waitUntil: "networkidle", timeout: 45000 });
+  } catch (error) {
+    check("Set persisted dark theme for PR #44 screens", false, error.message);
+  }
+
+  const darkThemeRoutes = [
+    { path: "/", surface: ".home-progress-entry" },
+    { path: "/privacy", surface: ".privacy-content > section" },
+    { path: "/login", surface: ".login-panel" },
+    { path: "/profile", surface: ".profile-account-card" },
+    { path: "/menu", surface: ".menu-link-card" },
+    { path: "/history", surface: ".history-list-item, .history-empty" },
+    { path: "/streak", surface: ".streak-calendar-card" },
+    { path: "/progress", surface: ".progress-empty, .progress-list-item" },
+    { path: "/community", surface: ".community-launch-panel" },
+  ];
+
+  for (const route of darkThemeRoutes) {
+    activeRoute = route.path + " [dark]";
+    try {
+      lastResponse = await page.goto(baseUrl + route.path, { waitUntil: "networkidle", timeout: 45000 });
+      const state = await page.evaluate((surfaceSelector) => {
+        const surface = document.querySelector(surfaceSelector);
+        return {
+          theme: document.documentElement.dataset.theme || "",
+          colorScheme: document.documentElement.style.colorScheme,
+          bodyBackground: getComputedStyle(document.body).backgroundColor,
+          themeColor: document.querySelector('meta[name="theme-color"]')?.getAttribute("content") || "",
+          surfaceBackground: surface ? getComputedStyle(surface).backgroundColor : "missing",
+          hasSurface: Boolean(surface),
+        };
+      }, route.surface);
+
+      check("Dark theme selected: " + route.path, state.theme === "dark" && state.colorScheme === "dark",
+        "data-theme=" + state.theme + ", color-scheme=" + state.colorScheme);
+      check("Dark page background: " + route.path, state.bodyBackground === "rgb(11, 20, 33)",
+        "background=" + state.bodyBackground);
+      check("Dark content surface is present and not white: " + route.path,
+        state.hasSurface && state.surfaceBackground !== "rgb(255, 255, 255)" && state.surfaceBackground !== "missing",
+        "surface=" + state.surfaceBackground);
+      check("Dark browser theme color: " + route.path, state.themeColor === "#0B1421",
+        "theme-color=" + state.themeColor);
+
+      if (route.path === "/privacy") {
+        check("Privacy sections use the shared dark surface", state.surfaceBackground === "rgb(18, 31, 48)",
+          "surface=" + state.surfaceBackground);
+      }
+    } catch (error) {
+      check("Dark-theme route check: " + route.path, false, error.message);
+    }
+  }
+
+  await page.evaluate(() => window.localStorage.removeItem("cestudy:theme:v1"));
+
   for (const [label, href] of [
     ["Contact CEStudy", "/contact"],
     ["Support us", "/support"],
