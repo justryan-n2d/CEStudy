@@ -916,3 +916,236 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .privacy-actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem}
 @media(max-width:560px){.privacy-content>section{padding:1rem}.privacy-actions{flex-direction:column}.privacy-actions .button{width:100%}}
 
+/* Shared theme foundation. Keep the same component system across light and dark modes. */
+:root {
+  color-scheme: light;
+  --ui-page-bg: #ffffff;
+  --ui-surface: #ffffff;
+  --ui-surface-raised: #ffffff;
+  --ui-surface-muted: #f7f9fc;
+  --ui-text: #24384b;
+  --ui-heading: #0b263d;
+  --ui-text-muted: #637487;
+  --ui-border: #dce5ec;
+  --ui-hover: #f1f7f8;
+  --ui-focus: #0754b5;
+  --ui-link: #0754b5;
+  --ui-success-bg: #def3e9;
+  --ui-success-text: #226b55;
+  --ui-warning-bg: #fff3dc;
+  --ui-warning-text: #87601a;
+  --ui-danger-bg: #fff6f5;
+  --ui-danger-text: #8c2f2b;
+  --ui-shadow: 0 8px 24px rgba(18, 52, 81, .08);
+  --ink: #24384b;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ui-page-bg: #0b1421;
+  --ui-surface: #121f30;
+  --ui-surface-raised: #172538;
+  --ui-surface-muted: #101c2b;
+  --ui-text: #e5edf6;
+  --ui-heading: #f3f7fb;
+  --ui-text-muted: #b6c4d4;
+  --ui-border: #2b3d51;
+  --ui-hover: #1b2b40;
+  --ui-focus: #90c4ff;
+  --ui-link: #90c4ff;
+  --ui-success-bg: #14372e;
+  --ui-success-text: #c2e7db;
+  --ui-warning-bg: #422c1f;
+  --ui-warning-text: #ffe0a2;
+  --ui-danger-bg: #422323;
+  --ui-danger-text: #ffcbc7;
+  --ui-shadow: 0 8px 24px rgba(0, 0, 0, .28);
+  --navy: #d6e4f2;
+  --navy-strong: #f3f7fb;
+  --muted: #b6c4d4;
+  --line: #2b3d51;
+  --blue-soft: #1b3147;
+  --blue: #90c4ff;
+  --teal-dark: #8bd9c1;
+  --shadow: var(--ui-shadow);
+  --ink: #e5edf6;
+}
+
+:root {
+  color: var(--ui-text);
+  background: var(--ui-page-bg);
+}
+
+body {
+  background-color: var(--ui-page-bg);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] a:focus-visible,
+:root[data-theme="dark"] button:focus-visible,
+:root[data-theme="dark"] input:focus-visible,
+:root[data-theme="dark"] select:focus-visible,
+:root[data-theme="dark"] textarea:focus-visible {
+  outline-color: var(--ui-focus);
+}
+
+:root[data-theme="dark"] .skip-link {
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface-raised);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .text-link,
+:root[data-theme="dark"] .back-link,
+:root[data-theme="dark"] .year-arrow,
+:root[data-theme="dark"] .footer-links a {
+  color: var(--ui-link);
+}
+
+:root[data-theme="dark"] .text-link:hover,
+:root[data-theme="dark"] .back-link:hover,
+:root[data-theme="dark"] .footer-links a:hover {
+  color: #b0d7ff;
+}
+
+:root[data-theme="dark"] .mobile-menu-toggle {
+  border-color: var(--ui-border);
+  background: var(--ui-surface);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .mobile-menu-toggle:hover,
+:root[data-theme="dark"] .mobile-menu-toggle[aria-expanded="true"] {
+  border-color: #48627f;
+  background: var(--ui-hover);
+  color: var(--ui-link);
+}
+
+:root[data-theme="dark"] .modal-close {
+  border-color: var(--ui-border);
+  background: var(--ui-surface-raised);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .modal-close:hover {
+  border-color: #48627f;
+  background: var(--ui-hover);
+}
+
+:root[data-theme="dark"] .state-panel,
+:root[data-theme="dark"] .subject-card,
+:root[data-theme="dark"] .year-card,
+:root[data-theme="dark"] .detail-panel,
+:root[data-theme="dark"] .inline-callout,
+:root[data-theme="dark"] .filters-panel,
+:root[data-theme="dark"] .stat-strip,
+:root[data-theme="dark"] .home-progress-entry,
+:root[data-theme="dark"] .home-math-entry,
+:root[data-theme="dark"] .progress-list-item,
+:root[data-theme="dark"] .menu-account-summary,
+:root[data-theme="dark"] .menu-link-card,
+:root[data-theme="dark"] .theme-settings-card,
+:root[data-theme="dark"] .streak-calendar-card,
+:root[data-theme="dark"] .history-list-item,
+:root[data-theme="dark"] .study-outline,
+:root[data-theme="dark"] .study-lesson,
+:root[data-theme="dark"] .login-panel,
+:root[data-theme="dark"] .contact-primary-card,
+:root[data-theme="dark"] .contact-option-card,
+:root[data-theme="dark"] .support-method-card,
+:root[data-theme="dark"] .surface-form,
+:root[data-theme="dark"] .modal-panel,
+:root[data-theme="dark"] .streak-unlock-dialog,
+:root[data-theme="dark"] .profile-account-card,
+:root[data-theme="dark"] .profile-shortcut,
+:root[data-theme="dark"] .privacy-section,
+:root[data-theme="dark"] .privacy-content > section,
+:root[data-theme="dark"] .practice-question-card {
+  background: var(--ui-surface);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+  box-shadow: var(--ui-shadow);
+}
+
+:root[data-theme="dark"] .privacy-content h2,
+:root[data-theme="dark"] .privacy-content strong,
+:root[data-theme="dark"] .profile-account-copy strong,
+:root[data-theme="dark"] .profile-shortcuts-section > h2,
+:root[data-theme="dark"] .profile-signout-section strong,
+:root[data-theme="dark"] .menu-link-copy strong,
+:root[data-theme="dark"] .menu-account-summary strong,
+:root[data-theme="dark"] .theme-settings-copy h2 {
+  color: var(--ui-heading);
+}
+
+:root[data-theme="dark"] .privacy-content p,
+:root[data-theme="dark"] .privacy-section p,
+:root[data-theme="dark"] .profile-account-copy span,
+:root[data-theme="dark"] .profile-shortcut small,
+:root[data-theme="dark"] .profile-signout-section p,
+:root[data-theme="dark"] .login-description,
+:root[data-theme="dark"] .login-footnote,
+:root[data-theme="dark"] .login-setup-note,
+:root[data-theme="dark"] .hero-note,
+:root[data-theme="dark"] .privacy-updated,
+:root[data-theme="dark"] .search-field span,
+:root[data-theme="dark"] .filter-grid label > span,
+:root[data-theme="dark"] .form-field,
+:root[data-theme="dark"] .answer-options legend {
+  color: var(--ui-text-muted);
+}
+
+:root[data-theme="dark"] .privacy-content a:not(.button) {
+  color: var(--ui-link);
+}
+
+:root[data-theme="dark"] .profile-avatar,
+:root[data-theme="dark"] .menu-link-icon,
+:root[data-theme="dark"] .menu-account-summary > .navigation-glyph {
+  background-color: var(--ui-hover);
+  color: var(--ui-link);
+}
+
+:root[data-theme="dark"] .profile-connected-status {
+  color: var(--ui-success-text);
+}
+
+:root[data-theme="dark"] .privacy-content .button-secondary,
+:root[data-theme="dark"] .profile-shortcut:hover {
+  background: var(--ui-hover);
+  border-color: #48627f;
+}
+
+:root[data-theme="dark"] .state-error,
+:root[data-theme="dark"] .inline-status-error {
+  background: var(--ui-danger-bg);
+  border-color: #87504e;
+  color: var(--ui-danger-text);
+}
+
+:root[data-theme="dark"] .inline-status-warning {
+  background: var(--ui-warning-bg);
+  border-color: #80613b;
+  color: var(--ui-warning-text);
+}
+
+:root[data-theme="dark"] .inline-status-success,
+:root[data-theme="dark"] .answer-correct {
+  background: var(--ui-success-bg);
+  border-color: #27684d;
+  color: var(--ui-success-text);
+}
+
+:root[data-theme="dark"] .answer-incorrect {
+  background: var(--ui-danger-bg);
+  border-color: #87504e;
+  color: var(--ui-danger-text);
+}
+
+/* Keep intentionally white brand/payment marks unchanged in both themes. */
+:root[data-theme="dark"] .google-signin-icon-wrap,
+:root[data-theme="dark"] .payment-mark-gcash,
+:root[data-theme="dark"] .payment-mark-paypal,
+:root[data-theme="dark"] .support-qr {
+  background: #ffffff;
+}
