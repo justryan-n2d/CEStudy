@@ -1439,7 +1439,7 @@ body {
   background-color: var(--ui-brand-surface);
 }
 
-:root[data-theme="dark"] .button-primary,
+:root[data-theme="dark"] .button-primary:not(.google-signin-button),
 :root[data-theme="dark"] .button-dark {
   color: #ffffff;
 }
