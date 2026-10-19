@@ -1149,3 +1149,30 @@ body {
 :root[data-theme="dark"] .support-qr {
   background: #ffffff;
 }
+
+/* Dark-mode feedback and legend details share the same semantic states. */
+:root[data-theme="dark"] .login-setup-note {
+  background: var(--ui-warning-bg);
+  border-color: #80613b;
+  color: var(--ui-warning-text);
+}
+
+:root[data-theme="dark"] .login-error {
+  background: var(--ui-danger-bg);
+  border-color: #87504e;
+  color: var(--ui-danger-text);
+}
+
+:root[data-theme="dark"] .streak-legend-dot {
+  border-color: #40556c;
+  background: var(--ui-surface-raised);
+}
+
+:root[data-theme="dark"] .streak-legend-dot.is-active {
+  background: #174b37;
+  border-color: #3a9368;
+}
+
+:root[data-theme="dark"] .streak-legend-dot.is-today {
+  outline-color: var(--ui-focus);
+}
