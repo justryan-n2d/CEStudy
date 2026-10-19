@@ -29,8 +29,10 @@ function contrastRatio(foreground: string, background: string): number {
 describe("dark theme sign-in contrast", () => {
   it("keeps Google sign-in label readable on the dark streak unlock dialog", () => {
     expect(stylesheet).toContain(':root[data-theme="dark"] .streak-unlock-dialog > p');
-    expect(stylesheet).toContain(':root[data-theme="dark"] .streak-unlock-dialog .google-signin-button');
-    expect(stylesheet).toMatch(/:root\[data-theme="dark"\] \.google-signin-button[\s\S]*?background-color:\s*#ffffff;[\s\S]*?color:\s*#1f1f1f;/);
+    expect(stylesheet).toMatch(/\.google-signin-button\{[^}]*background:var\(--ui-brand-surface\)[^}]*color:var\(--ui-brand-text\)/);
+    expect(stylesheet).toContain('--ui-brand-surface: #ffffff;');
+    expect(stylesheet).toContain('--ui-brand-text: #1f1f1f;');
+    expect(stylesheet).not.toMatch(/:root\[data-theme="dark"\]\s*\.google-signin-button\s*\{[^}]*background(?:-color)?:\s*#(?:131314|242428)/);
     expect(stylesheet).toContain(':root[data-theme="dark"] .google-signin-button:disabled');
   });
 });
