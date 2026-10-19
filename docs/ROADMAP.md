@@ -27,7 +27,7 @@ The [Phase Plan](PHASE_PLAN.md) is the single source of truth for phase definiti
 | 4. Frontend MVP implementation | Complete for current app scope | Core application workflows are implemented; published learning content is tracked separately in Phase 8. |
 | 5. Cloudflare Pages and Supabase integration | Complete for initial deployment | Production Pages site and dedicated Supabase connection are active. |
 | 6. Automated and manual technical QA | Partially complete | Recorded CI and production smoke checks pass; manual device/accessibility and edge-case checks remain. |
-| 7. Pre-launch hardening and release gates | **Current** | Current-state backup/recovery proof, backup-account safeguards and manual QA remain. |
+| 7. Pre-launch hardening and release gates | **Current** | Current-state backup/recovery proof, backup-retention/notification safeguards and manual QA remain. |
 | 8. Human content review and approved publishing | Partially complete: tooling exists | Owner-only review UI/API and data access controls exist; human review and publication have not begun. |
 | 9. Controlled student pilot | Not started | The 5–8-student plan exists; no pilot has run. |
 | 10. Final polish and broad public launch | Not started | Pilot findings, final verification and launch approval remain. |
