@@ -1,6 +1,6 @@
 # CEStudy: Organized Project Phases and Release Plan
 
-**Last reviewed:** 2026-10-18  
+**Last reviewed:** 2026-10-19  
 **Live website:** https://cestudy.pages.dev  
 **Current phase:** **Phase 7, Pre-launch hardening and release gates**  
 **Launch status:** The web MVP is deployed, but the broad student launch is not approved.
@@ -9,9 +9,9 @@ This is the canonical phase plan for CEStudy. Use this file for the overall orde
 
 ## Where we are now
 
-CEStudy is **past initial frontend development and is now in release hardening**. The live site has a 72-subject catalog, year-level routes, Mathematics Foundations, subject detail pages, a practice area, and a public Privacy notice at `/privacy`. The dedicated Supabase database currently has 52 practice questions and 13 lesson records, all `needs-review`; there are zero published questions and zero published lessons. On 2026-10-18, two lesson records that were marked published despite draft notes were returned to `needs-review`, and the catalog now marks Algebra Foundations as `in-preparation`. After the correction and Privacy notice release, the latest production Chromium smoke test [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed **135/135 checks** with no failures, including direct routes, security headers, privacy route, responsive widths, the live Supabase connection and zero published practice questions. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
+CEStudy is deployed and the project is in **Phase 7: pre-launch hardening**. The code already includes the 72-subject catalog, year-level routes, Mathematics Foundations, subject pages, topic/lesson navigation, a practice flow, browser-local lesson progress and streaks, Privacy/Contact/Feedback/Bug Report pages, and an owner-only content-review interface. The live Supabase database was checked read-only on 2026-10-19: 72 catalog subjects, 52 practice questions and 13 lessons. All 52 questions and all 13 lessons are `needs-review`; zero of either type is published. The two lessons found incorrectly marked published on 2026-10-18 were returned to review and Algebra Foundations is `in-preparation`. The latest recorded production Chromium smoke test, [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), passed **135/135 checks on 2026-10-18**. It tested production routes, security headers, privacy route, responsive widths, the live Supabase connection and published-only practice API. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
 
-The current job is to make the deployed MVP safe and reliable enough for a controlled student pilot. Do not describe the site as fully launch-ready until the remaining release gates pass.
+The roadmap records actual completion rather than pretending every phase happened sequentially. **Phases 1 and 2 still have discovery and UX-documentation gaps**, even though later implementation work exists. Do not roll back completed code or restart the project; complete those missing validation tasks alongside Phase 7 hardening before expanding scope. The site is not approved for a broad student launch.
 
 ### What “storage” means for CEStudy
 
@@ -31,20 +31,20 @@ A phase can be partially complete even when a later phase has already been built
 
 ## Phase overview
 
-| Phase | Name | Status | Main result |
+| Phase | Name | Status | Reality check |
 |---|---|---|---|
-| 0 | Repository and project foundation | **Complete** | Repository, stack, scope notes, security requirements, and core development workflow exist. |
-| 1 | Student discovery and problem validation | **Not started** | Confirm the first users and the study problem with real student feedback. |
-| 2 | MVP scope, user journey, and UX specification | **Partially complete** | Core scope and architecture are selected; discovery evidence, success targets, and wireframes are incomplete. |
-| 3 | Database, backend access, and security baseline | **Complete for the current MVP** | Supabase schema, catalog, draft-question states, grants, RLS, and database tests are implemented. Backup operations remain a Phase 7 release gate. |
-| 4 | Frontend MVP implementation | **Complete for the current MVP** | The main browsing and practice UI is built and deployed. Remaining design/accessibility polish is tracked in Phase 7. |
-| 5 | Cloudflare Pages and Supabase integration | **Complete for initial deployment** | The live site uses the dedicated CEStudy Supabase project and the Pages deployment is active. |
-| 6 | Automated and manual technical QA | **Partially complete** | The latest production Chromium smoke test [39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed 135/135 checks after the Privacy notice release. Physical-device/accessibility review and some search/filter edge cases remain. |
-| 7 | Pre-launch hardening and release gates | **CURRENT** | The local restore of the actual encrypted backup is proven, and the main-branch ruleset is active. The Privacy notice is live and the latest production Chromium smoke test passed 135/135 checks. A fresh backup after the 2026-10-18 publication correction, managed-Supabase-target recovery, B2 lifecycle cleanup, GitHub failure-email verification, physical-device QA, independent content review, and student pilot remain. Future question content stays out of public source. |
-| 8 | Human content review and approved question publishing | **Not started** | Have a qualified human review each question and only publish content that passes the review process. |
-| 9 | Controlled student pilot | **Not started** | Run the planned 5–8-student usability pilot after blocking release gates pass. |
-| 10 | Final polish and broad public launch | **Not started** | Fix pilot findings, complete sign-off, and then announce the wider release. |
-| 11 | Ongoing operations and future expansion | **Deferred until after launch** | Maintain content, security, costs, backups, and feedback before considering new features. |
+| 0 | Repository and project foundation | **Complete** | Repository, stack, security requirements, development scripts and CI exist. |
+| 1 | Student discovery and problem validation | **Not started** | No documented student-discovery findings are recorded yet. |
+| 2 | MVP scope, user journey and UX specification | **Partially complete** | Product scope and architecture are set and the live UI serves as the visual baseline; discovery evidence, written user journey and validated pilot measures remain. |
+| 3 | Database, backend access and security baseline | **Complete for current MVP** | Live tables, explicit grants, RLS and published-only content policies are implemented and checked. Current-state backup recovery is tracked in Phase 7. |
+| 4 | Frontend MVP implementation | **Complete for current app scope** | Core browsing, learning/practice interfaces, local progress, privacy and feedback flows are implemented. The published learning library is not yet populated. |
+| 5 | Cloudflare Pages and Supabase integration | **Complete for initial deployment** | Production Pages site is connected to the dedicated CEStudy Supabase project. |
+| 6 | Automated and manual technical QA | **Partially complete** | CI and recorded production Chromium checks passed; physical-device/accessibility QA and full search/filter edge cases remain. |
+| 7 | Pre-launch hardening and release gates | **CURRENT** | Fresh current-state backup/recovery proof, backup-account safeguards, final manual QA and security sign-off remain. |
+| 8 | Human content review and approved publishing | **Partially complete: tooling only** | Owner-only review UI/API and publication controls exist; independent human review and approved content publication have not started. |
+| 9 | Controlled student pilot | **Not started** | The 5–8-student pilot plan exists but no pilot has run. It must wait for Phase 7 and use only reviewed content for practice tasks. |
+| 10 | Final polish and broad public launch | **Not started** | Pilot findings, final checks and an explicit go/no-go decision are still required. |
+| 11 | Ongoing operations and future expansion | **Partially implemented; expansion deferred** | CI, scheduled operational workflows, feedback/reporting and local progress exist. Account sync, AI assistance and native mobile apps remain future decisions. |
 
 ---
 
@@ -81,27 +81,27 @@ Building ahead of validation means this work is still necessary. It does not mea
 ### Exit criteria
 A concise discovery note records the target user, the main study problem, what students currently use, and the most useful first workflow.
 
-## Phase 2: MVP scope, user journey, and UX specification
+## Phase 2: MVP scope, user journey and UX specification
 
 **Status: PARTIALLY COMPLETE**
 
-### Already decided
-- Free-first, mobile-first Civil Engineering reviewer.
-- National BSCE curriculum as a reference, with a note that subject placement differs by university.
-- Four year levels, foundations content, subject pages, and a practice flow.
-- No student-facing AI tutor, AI-generated questions, sign-in, public submissions, or native mobile app in this MVP.
-- The existing React/Vite/Tailwind stack and Supabase/Cloudflare architecture.
+### Decisions and work already recorded
+- [x] Free-first, mobile-first BSCE reviewer using the national curriculum as a reference, with a note that university subject placement differs.
+- [x] Four year levels, supplementary mathematics foundations, subject pages and a practice flow are defined in the scope and implemented in the app.
+- [x] React + TypeScript + Vite + Tailwind, Cloudflare Pages and Supabase are the selected stack.
+- [x] The deployed UI is the current visual baseline, so new wireframes are not a prerequisite for documenting the existing interface.
+- [x] The MVP excludes student accounts, server-side student progress, public academic-content submissions, file uploads, a student-facing AI tutor and native mobile apps.
+- [x] Content review, correction, attribution and publication rules are documented in [the content authoring policy](content-authoring-and-publication.md).
+- [x] Proposed usability tasks and success measures are recorded in the [student pilot plan](plans/2026-10-15-student-pilot-plan.md).
 
 ### Still needed
-- [ ] Write a one-page main user journey from homepage to finding a subject or completing a practice task.
-- [ ] Record the first target user and specific MVP problem after Phase 1 discovery.
-- [ ] Agree on pilot success measures before recruiting students.
-- [ ] Create or document the mobile-first wireframes for the main pages, or explicitly record that the implemented UI serves as the current baseline.
-- [ ] Define the content review, correction, attribution, and publication workflow.
-- [ ] Confirm the MVP requires no student accounts or file uploads.
+- [ ] Complete Phase 1 discovery and use the findings to confirm the first target learner and most important study problem.
+- [ ] Write the primary end-to-end user journey, from discovering a subject through learning/practice and choosing a next step.
+- [ ] Validate the proposed pilot success measures with target students before recruiting participants.
+- [ ] Record any scope changes supported by discovery; do not add new feature families based only on assumptions.
 
 ### Exit criteria
-The main user journey, included/excluded features, feedback path, and pilot measures are written down. Avoid expanding the scope before these are clear.
+A short discovery summary identifies the target learner and key study problem; the main user journey and MVP boundaries are written down; and pilot measures are reviewed before recruitment. Preserve the deployed UI as the baseline unless student evidence justifies changes.
 
 ## Phase 3: Database, backend access, and security baseline
 
@@ -213,7 +213,7 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [x] Document the Supabase-only workflow for future drafts in [unpublished question authoring and publication](content-authoring-and-publication.md).
 - [x] Confirm the CI guard and Cloudflare Pages production deployment succeeded; the latest production smoke test [39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) confirmed the catalog loads and the published-only practice API returns zero questions.
 - [x] Verify the active `main` branch ruleset requires PRs and successful CI plus full-history secret scan: [Protect main ruleset](https://github.com/justryan-n2d/CEStudy/rules/25242389).
-- [ ] Continue to require human review before changing any future question to `published`.
+- [x] Publication policy and owner-only review workflow require explicit maintainer review; actual academic review and individual approvals are tracked in Phase 8.
 
 ### 7.3 Protect the main branch and rerun security checks
 - [x] The `main` ruleset requires a pull request and passing CI checks.
@@ -227,7 +227,7 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [x] Provide clear Contact, Feedback, and Report a bug routes.
 - [x] Document how users report a wrong question, broken CHED link, or copyright concern, and how the maintainer reviews/corrects/removes content in the [content authoring and publication policy](content-authoring-and-publication.md) and [public Privacy notice](https://cestudy.pages.dev/privacy).
 - [x] Add the public [Privacy notice](https://cestudy.pages.dev/privacy) describing browser-local study data, feedback/support messages, bug-report email drafts, and service providers without claiming analytics or account features that are not currently in production.
-- [ ] Confirm the current MVP does not require student accounts, private uploads, or extra personal-data collection.
+- [x] The current MVP remains no-account/no-upload by decision. Optional Google sign-in is still isolated in draft PR #44 and is not in production.
 
 ### 7.5 Final production QA
 - [x] Run the production Chromium checklist after the publication-status correction and Privacy notice release: [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), 135/135 checks passed. Physical-device accessibility QA remains open.
@@ -238,31 +238,47 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [x] Update project status, README, phase plan, launch checklist, and audit record with the latest main CI/secret scan and production Chromium smoke evidence in this documentation change.
 
 ### Phase 7 exit criteria
-The older encrypted backup has been restored into isolated local PostgreSQL, but it predates the 2026-10-18 publication correction. A fresh backup and managed-target restore, B2 lifecycle and GitHub failure-email confirmation, physical-device/accessibility QA, human content approval, and student pilot remain before broad release. Latest production smoke evidence is [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), with 135/135 checks passed.
 
-## Phase 8: Human content review and approved question publishing
+Phase 7 is complete only when the following technical and operational evidence is current and recorded:
 
-**Status: NOT STARTED**
+- [ ] A fresh encrypted backup captures the post-correction live database; the uploaded archive, checksum and verification marker are read back and checked.
+- [ ] The refreshed backup is restored to a separate managed Supabase test project, after cost approval, and table counts, RLS, client grants and published-only access are validated. Production must never be the test restore target.
+- [ ] Backblaze B2 hidden-version lifecycle behavior is checked without hiding current verified backups; GitHub Actions failure-email settings and protected recovery-key copies are confirmed.
+- [ ] Physical Android-device, keyboard/screen-reader, touch-target and text-zoom checks are recorded; the remaining search/filter/no-results and loading/error-state matrix is tested.
+- [ ] Current production variables and the final security review are checked and documented. The latest existing Chromium evidence is [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), which passed 135/135 checks on 2026-10-18; rerun it if a relevant production change is made.
+- [ ] Current no-account/no-upload MVP boundaries and accepted security limitations are confirmed.
 
-The original eight questions have a separate initial pre-review record. On 2026-10-18, a first-pass AI-assisted mathematical and option-structure consistency audit covered the current 52-question bank. No definite arithmetic/answer mismatch was identified in that pass, and database checks confirmed all 52 records have unique options and the stored correct answer appears exactly once. This is not independent academic approval. All 52 questions and all 13 lessons remain `needs-review` and unpublished. See the [2026-10-18 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
+Phase 7 is a technical-readiness gate, not a declaration that content has been academically approved or that a student pilot has occurred. Human content approval belongs to Phase 8, the controlled pilot to Phase 9, and the broad launch decision to Phase 10. Phases 8 and 9 must not bypass the relevant earlier gates.
 
-### Tasks
-- [ ] Identify a qualified human reviewer familiar with the relevant mathematics.
-- [ ] Review every prompt, answer option, correct answer, solution step, explanation, wording, and attribution.
-- [ ] Verify that original or sourced material has appropriate rights and attribution.
-- [ ] Record reviewer, review date, result, and correction notes without exposing secrets.
-- [ ] Keep any rejected or uncertain question in a non-published state.
-- [ ] Publish only the questions that have passed the human review.
-- [ ] Re-test the public API and UI to confirm only intentionally published records are visible.
+## Phase 8: Human content review and approved publishing
+
+**Status: PARTIALLY COMPLETE: REVIEW TOOLING EXISTS; HUMAN APPROVAL HAS NOT STARTED**
+
+The content workflow is implemented, but the content itself is not approved. On the live database check on 2026-10-19, all 52 questions and all 13 lessons remain `needs-review`; zero are published and zero are marked verified. The October 18 AI-assisted consistency pass found no definite answer mismatch, but it is not independent academic approval. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
+
+### Implemented foundation
+- [x] Owner-only content review page at `/owner/content-review`, backed by the `content-review-admin` Supabase Edge Function.
+- [x] Review API supports controlled edits and explicit review-status actions; owner sessions use short-lived tokens.
+- [x] Unpublished lesson/question content and private review metadata are protected by database RLS and column-level privileges. Public APIs request published content only.
+- [x] Real unpublished content is kept in the private CEStudy database, not inserted into the public seed.
+- [x] Structural checks confirmed the current 52 questions have required fields, unique choices and one matching stored correct answer each; automated checks do not establish academic correctness, originality or rights.
+
+### Remaining human-approval work
+- [ ] Identify a qualified human reviewer for the mathematics and engineering content.
+- [ ] Review each proposed item for accuracy, clear wording, answer options, solution steps, source attribution, originality and rights to use.
+- [ ] Record reviewer role, review date, approval/rejection and correction notes without exposing private content in public Git.
+- [ ] Keep uncertain or rejected items unpublished; use `needs-review`, `correction-required` or another appropriate non-public state.
+- [ ] Publish only the items that the responsible reviewer has explicitly approved.
+- [ ] Recheck the live API and student-facing UI after the first publication batch.
 
 ### Exit criteria
-A small, useful, reviewed practice set is available, and publication status is controlled by the trusted maintainer rather than by public clients.
+A small, useful initial set of lessons/questions has documented human approval, its sources and usage rights are recorded, and a live check confirms that only intentionally approved/published items are visible to students.
 
 ## Phase 9: Controlled student pilot
 
 **Status: NOT STARTED**
 
-Use the existing [controlled student pilot plan](plans/2026-10-15-student-pilot-plan.md). Do not start the pilot until Phase 7 release blockers are cleared. Practice tasks must use only human-approved questions.
+Use the existing [controlled student pilot plan](plans/2026-10-15-student-pilot-plan.md). No pilot has run yet. Do not start until Phase 7 technical release blockers are cleared. Catalog/navigation tasks can be tested without practice questions, but any practice task must use content explicitly approved and published through Phase 8.
 
 ### Tasks
 - [ ] Invite 5–8 volunteer Civil Engineering students, ideally across the early year levels.
@@ -326,36 +342,36 @@ The approved first slice and its acceptance criteria are maintained in [the comb
 
 ## Phase 11: Ongoing operations and future expansion
 
-**Status: DEFERRED UNTIL AFTER LAUNCH**
+**Status: PARTIALLY IMPLEMENTED; BROADER EXPANSION DEFERRED**
 
-### Ongoing maintenance
-- Keep dependencies and CI current.
-- Review security notices, access policies, failed runs, and storage/hosting costs.
-- Confirm scheduled backups and periodically repeat restore drills.
-- Correct reported errors and keep content-source records.
-- Monitor only the minimum information needed to operate the service, and explain any collection clearly.
+This phase is not wholly untouched. The repository already has CI and required branch checks, a scheduled secret scan, a weekly encrypted database-backup workflow, feedback/contact/correction paths and owner-only review tooling. The local lesson-progress and streak feature is implemented on the current main branch in `src/data/learning-progress.ts`, `src/pages/StudyPage.tsx` and `src/pages/ProgressPage.tsx`. Those implementations do not mean every operational safeguard is finished; current-state backup recovery and manual release checks remain Phase 7 blockers.
+
+### Ongoing maintenance still required
+- [ ] Monitor dependency/security updates, failed workflows, and hosting/database costs.
+- [ ] Keep scheduled backups healthy, confirm retention settings, and repeat restore drills. See Phase 7 for outstanding current-state recovery evidence.
+- [ ] Review reports and correction requests; keep source, reviewer and publication records current.
+- [ ] Limit collected information and describe any new data collection in the privacy notice before it ships.
 
 ### Future features, only after evidence supports them
-- Local-only progress tracking for published lessons is approved as the first incremental implementation.
-- Optional bookmarks and review queues may follow if student feedback supports them.
-- Accounts and synced study progress remain deferred pending student research and a separate privacy/security review.
-- Trusted content-management tools or moderated submissions.
+- Optional bookmarks and review queues after the current workflow is evaluated with students.
+- Accounts and cross-device study progress only after student research and a separate privacy/security review. Optional Google sign-in remains in draft [PR #44](https://github.com/justryan-n2d/CEStudy/pull/44), not in production.
+- Trusted content-management expansions or moderated public submissions.
 - Offline-friendly reviewer sets.
-- More verified practice content.
-- An optional AI Study Helper, only after a separate accuracy, privacy, security, and cost review.
-- Android/iOS delivery only after the web product proves useful.
+- Broader verified practice content across all BSCE subjects.
+- An optional AI Study Helper only after a separate accuracy, privacy, security and cost review.
+- Android/iOS delivery only after the web product proves useful and a mobile approach is approved.
 
-These are not blockers for the current no-account web MVP and should not distract from completing the release gates.
+The local progress/streak feature is already implemented, but actual lesson completion cannot be meaningfully used until reviewed lessons are published. These longer-term features are not blockers for the current no-account web MVP.
 
 ## Immediate next actions
 
-1. Run and verify a fresh encrypted database backup after the 2026-10-18 publication-status correction. The known October 15 snapshot predates the current 52-question/13-lesson state.
-2. Restore that refreshed backup into a separate temporary Supabase project only after explicit cost approval; the local application-schema restore does not test managed Supabase roles/system settings. A Supabase branch has an estimated usage cost of $0.01344 per hour while active.
-3. Confirm the Backblaze B2 lifecycle rule and GitHub failure-email notifications, then run a fresh live Chromium smoke test after the database correction.
-4. Complete physical-device accessibility QA, direct-route/refresh checks, search/filter edge cases, and privacy notice review. Configure and test Google OAuth end to end before the account features leave draft.
-5. Identify a qualified human reviewer, review and approve specific lessons/questions, and publish only approved items.
-6. Run the controlled student pilot, fix high-impact issues, and record the go/no-go decision.
-7. Complete final polish and only then make a broad launch announcement.
+1. **Finish Phase 7 technical blockers:** run a fresh encrypted backup for the current live state, verify the archive/checksum/marker, then rehearse restore into a separate managed Supabase test project after cost approval. Confirm B2 lifecycle behavior, protected recovery-key copies and GitHub failure-email settings.
+2. **Finish Phase 6/7 manual QA:** complete the actual Android-device, keyboard/TalkBack, text-zoom/touch-target, direct-route and search/filter/no-results matrix; record the final security review. Re-run production checks after relevant changes.
+3. **Complete Phase 1/2 catch-up work in parallel:** document student discovery, the primary user journey and validated pilot measures. Keep the existing deployed UI as the design baseline; do not rebuild completed screens just to create retrospective wireframes.
+4. **Complete Phase 8 content review:** identify a qualified reviewer, review the intended initial lesson/question set, record rights and decisions, and publish only explicitly approved items.
+5. **Run Phase 9 pilot:** invite the planned 5–8 students only after Phase 7 blockers pass; use published questions only if Phase 8 has approved them. Record anonymous results and a go/no-go recommendation.
+6. **Complete Phase 10 polish and launch approval:** resolve critical pilot issues, confirm production, finish metadata/accessibility review and record the owner's launch decision.
+7. Keep optional Google sign-in PR #44 in draft unless account features are separately approved. OAuth setup and E2E login are not blockers for the current no-account MVP, but become mandatory before any account feature is merged or released.
 
 ## Detailed supporting documents
 
