@@ -38,6 +38,36 @@ describe("dark theme sign-in contrast", () => {
   });
 });
 
+describe("shared theme tokens", () => {
+  it("defines page, surface, text, heading, muted, and border tokens for dark mode", () => {
+    expect(stylesheet).toContain('--ui-page-bg: #0b1421;');
+    expect(stylesheet).toContain('--ui-surface: #121f30;');
+    expect(stylesheet).toContain('--ui-surface-raised: #172538;');
+    expect(stylesheet).toContain('--ui-text: #e5edf6;');
+    expect(stylesheet).toContain('--ui-heading: #f3f7fb;');
+    expect(stylesheet).toContain('--ui-text-muted: #b6c4d4;');
+    expect(stylesheet).toContain('--ui-border: #2b3d51;');
+  });
+
+  it.each([
+    [".login-panel", "background:var(--ui-surface)"],
+    [".profile-account-card", "background:var(--ui-surface)"],
+    [".menu-link-card", "background:var(--ui-surface)"],
+    [".history-list-item", "background:var(--ui-surface)"],
+    [".streak-calendar-card", "background:var(--ui-surface)"],
+    [".progress-list-item", "background:var(--ui-surface)"],
+    [".community-launch-panel", "background:var(--ui-community-bg)"],
+    [".privacy-content>section", "background:var(--ui-surface)"],
+    ["input,select", "background:var(--ui-surface-raised)"],
+    [".streak-unlock-dialog", "background:var(--ui-surface)"],
+  ])("%s uses a shared surface token", (selector, declaration) => {
+    expect(stylesheet).toContain(selector + "{");
+    const start = stylesheet.indexOf(selector + "{");
+    const end = stylesheet.indexOf("}", start);
+    expect(stylesheet.slice(start, end)).toContain(declaration);
+  });
+});
+
 describe("small text color contrast", () => {
   it.each([
     [".hero-note", "#f7f9fc"],
