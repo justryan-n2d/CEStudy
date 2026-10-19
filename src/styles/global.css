@@ -1213,3 +1213,235 @@ body {
   border-color: #4a8adb;
   background: var(--brand-blue);
 }
+
+/* Comprehensive dark-theme pass: cover the existing UI, including older pages.
+   Keep layout and brand accents unchanged; only remap semantic surfaces and text. */
+:root[data-theme="dark"] .site-header,
+:root[data-theme="dark"] .site-footer,
+:root[data-theme="dark"] .mobile-bottom-nav,
+:root[data-theme="dark"] .mobile-help-menu,
+:root[data-theme="dark"] .feedback-action-menu,
+:root[data-theme="dark"] .feedback-message-card,
+:root[data-theme="dark"] .feedback-message-summary,
+:root[data-theme="dark"] .about-principle,
+:root[data-theme="dark"] .about-next,
+:root[data-theme="dark"] .year-card,
+:root[data-theme="dark"] .subject-card,
+:root[data-theme="dark"] .stat-strip,
+:root[data-theme="dark"] .filters-panel,
+:root[data-theme="dark"] .inline-callout,
+:root[data-theme="dark"] .detail-panel,
+:root[data-theme="dark"] .practice-question-card,
+:root[data-theme="dark"] .answer-option,
+:root[data-theme="dark"] .home-math-entry,
+:root[data-theme="dark"] .contact-primary-card,
+:root[data-theme="dark"] .contact-option-card,
+:root[data-theme="dark"] .support-method-card,
+:root[data-theme="dark"] .surface-form,
+:root[data-theme="dark"] .modal-panel,
+:root[data-theme="dark"] .modal-close,
+:root[data-theme="dark"] .mobile-menu-toggle,
+:root[data-theme="dark"] .study-entry-panel,
+:root[data-theme="dark"] .study-outline,
+:root[data-theme="dark"] .study-lesson,
+:root[data-theme="dark"] .review-summary-strip > div,
+:root[data-theme="dark"] .content-review-detail,
+:root[data-theme="dark"] .review-detail-card,
+:root[data-theme="dark"] .streak-calendar-card,
+:root[data-theme="dark"] .calendar-month-button,
+:root[data-theme="dark"] .history-list-item,
+:root[data-theme="dark"] .progress-list-item,
+:root[data-theme="dark"] .login-panel,
+:root[data-theme="dark"] .streak-unlock-dialog,
+:root[data-theme="dark"] .streak-unlock-close,
+:root[data-theme="dark"] .profile-account-card,
+:root[data-theme="dark"] .profile-shortcut,
+:root[data-theme="dark"] .privacy-section,
+:root[data-theme="dark"] .privacy-content > section,
+:root[data-theme="dark"] .menu-link-card,
+:root[data-theme="dark"] .theme-settings-card {
+  background-color: var(--ui-surface);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .site-footer,
+:root[data-theme="dark"] .feedback-message-detail,
+:root[data-theme="dark"] .content-review-tabs,
+:root[data-theme="dark"] .content-review-list,
+:root[data-theme="dark"] .review-edit-fields,
+:root[data-theme="dark"] .review-answer-details,
+:root[data-theme="dark"] .math-banner,
+:root[data-theme="dark"] .math-practice-callout,
+:root[data-theme="dark"] .curriculum-notice,
+:root[data-theme="dark"] .detail-next,
+:root[data-theme="dark"] .home-progress-entry,
+:root[data-theme="dark"] .login-account,
+:root[data-theme="dark"] .streak-summary-card,
+:root[data-theme="dark"] .streak-calendar-empty,
+:root[data-theme="dark"] .streak-day-detail,
+:root[data-theme="dark"] .profile-data-note,
+:root[data-theme="dark"] .study-objectives,
+:root[data-theme="dark"] .study-outline-number,
+:root[data-theme="dark"] .state-panel,
+:root[data-theme="dark"] .skip-link {
+  background-color: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .button-secondary,
+:root[data-theme="dark"] .content-review-tabs button,
+:root[data-theme="dark"] .content-review-tabs button.active,
+:root[data-theme="dark"] .content-review-list-item,
+:root[data-theme="dark"] .feedback-message-summary,
+:root[data-theme="dark"] .feedback-action-menu button,
+:root[data-theme="dark"] .profile-shortcut,
+:root[data-theme="dark"] .calendar-month-button,
+:root[data-theme="dark"] .mobile-menu-toggle {
+  background-color: var(--ui-surface-raised);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .button-secondary:hover,
+:root[data-theme="dark"] .answer-option:hover,
+:root[data-theme="dark"] .feedback-message-more:hover,
+:root[data-theme="dark"] .feedback-message-more:focus-visible,
+:root[data-theme="dark"] .feedback-action-menu button:hover,
+:root[data-theme="dark"] .feedback-action-menu button:focus-visible,
+:root[data-theme="dark"] .content-review-list-item:hover,
+:root[data-theme="dark"] .content-review-tabs button.active,
+:root[data-theme="dark"] .profile-shortcut:hover,
+:root[data-theme="dark"] .mobile-menu-toggle:hover {
+  background-color: var(--ui-hover);
+  border-color: #48627f;
+  color: var(--ui-heading);
+}
+
+:root[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .form-field input,
+:root[data-theme="dark"] .form-field select,
+:root[data-theme="dark"] .form-field textarea,
+:root[data-theme="dark"] .review-edit-fields textarea,
+:root[data-theme="dark"] .search-field input {
+  background-color: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+  caret-color: var(--ui-focus);
+}
+
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder,
+:root[data-theme="dark"] .form-field input::placeholder,
+:root[data-theme="dark"] .form-field textarea::placeholder {
+  color: var(--ui-text-muted);
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .site-footer a,
+:root[data-theme="dark"] .mobile-tab,
+:root[data-theme="dark"] .footer-links a,
+:root[data-theme="dark"] .text-link,
+:root[data-theme="dark"] .back-link,
+:root[data-theme="dark"] .feedback-pin-indicator,
+:root[data-theme="dark"] .profile-shortcut > span,
+:root[data-theme="dark"] .year-card p,
+:root[data-theme="dark"] .subject-card p,
+:root[data-theme="dark"] .state-panel p {
+  color: var(--ui-text-muted);
+}
+
+:root[data-theme="dark"] .site-footer a:hover,
+:root[data-theme="dark"] .mobile-tab[aria-current="page"],
+:root[data-theme="dark"] .mobile-tab.active {
+  color: var(--ui-link);
+}
+
+:root[data-theme="dark"] .status {
+  background-color: var(--ui-hover);
+  color: var(--ui-text-muted);
+}
+
+:root[data-theme="dark"] .status-progress,
+:root[data-theme="dark"] .streak-summary-card.is-active .streak-summary-flame,
+:root[data-theme="dark"] .streak-unlock-flame {
+  background-color: var(--ui-warning-bg);
+  color: var(--ui-warning-text);
+}
+
+:root[data-theme="dark"] .curriculum-notice,
+:root[data-theme="dark"] .profile-data-note,
+:root[data-theme="dark"] .study-objectives {
+  background-color: var(--ui-success-bg);
+  border-color: #27684d;
+  color: var(--ui-success-text);
+}
+
+:root[data-theme="dark"] .answer-correct {
+  background-color: var(--ui-success-bg);
+  border-color: #27684d;
+  color: var(--ui-success-text);
+}
+
+:root[data-theme="dark"] .answer-incorrect {
+  background-color: var(--ui-danger-bg);
+  border-color: #87504e;
+  color: var(--ui-danger-text);
+}
+
+:root[data-theme="dark"] .learning-streak,
+:root[data-theme="dark"] .learning-streak-locked,
+:root[data-theme="dark"] .learning-streak-locked.learning-streak-header {
+  background-color: var(--ui-surface-raised);
+  border-color: var(--ui-border);
+  color: var(--ui-text-muted);
+}
+
+:root[data-theme="dark"] .streak-calendar-day {
+  background-color: var(--ui-surface-raised);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .streak-calendar-day.is-active,
+:root[data-theme="dark"] .streak-calendar-day[aria-pressed="true"] {
+  background-color: #174b37;
+  border-color: #3a9368;
+  color: #d5f6e7;
+}
+
+:root[data-theme="dark"] .mobile-menu-unread-dot {
+  border-color: var(--ui-surface);
+}
+
+:root[data-theme="dark"] .theme-toggle-switch {
+  background-color: #26384d;
+  border-color: #52677e;
+}
+
+:root[data-theme="dark"] .theme-toggle-switch.is-on {
+  background-color: var(--brand-blue);
+  border-color: var(--ui-focus);
+}
+
+/* These assets intentionally stay on white for brand fidelity and scanability. */
+:root[data-theme="dark"] .google-signin-button,
+:root[data-theme="dark"] .google-signin-icon-wrap,
+:root[data-theme="dark"] .payment-mark-gcash,
+:root[data-theme="dark"] .payment-mark-paypal,
+:root[data-theme="dark"] .support-qr {
+  background-color: #ffffff;
+  color: #1f1f1f;
+}
+
+:root[data-theme="dark"] .google-signin-button:hover {
+  background-color: #f8f9fa;
+}
+
+:root[data-theme="dark"] .button-primary,
+:root[data-theme="dark"] .button-dark {
+  color: #ffffff;
+}
