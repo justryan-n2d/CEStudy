@@ -1176,3 +1176,40 @@ body {
 :root[data-theme="dark"] .streak-legend-dot.is-today {
   outline-color: var(--ui-focus);
 }
+
+/* Smaller nested elements also need theme-aware surfaces and label contrast. */
+:root[data-theme="dark"] .community-launch-icon {
+  background: var(--ui-hover);
+  color: var(--ui-link);
+}
+
+:root[data-theme="dark"] .streak-summary-flame {
+  background: #243449;
+}
+
+:root[data-theme="dark"] .streak-summary-card.is-active .streak-summary-flame {
+  background: #49341c;
+}
+
+:root[data-theme="dark"] .streak-unlock-flame {
+  background: #433117;
+}
+
+:root[data-theme="dark"] .study-outline-number {
+  background: #243449;
+  color: #cad7e5;
+}
+
+:root[data-theme="dark"] .study-topic-search span {
+  color: var(--ui-text-muted);
+}
+
+:root[data-theme="dark"] .theme-toggle-switch {
+  border-color: #52677e;
+  background: #26384d;
+}
+
+:root[data-theme="dark"] .theme-toggle-switch.is-on {
+  border-color: #4a8adb;
+  background: var(--brand-blue);
+}
