@@ -40,7 +40,7 @@ A phase can be partially complete even when a later phase has already been built
 | 4 | Frontend MVP implementation | **Complete for current app scope** | Core browsing, learning/practice interfaces, local progress, privacy and feedback flows are implemented. The published learning library is not yet populated. |
 | 5 | Cloudflare Pages and Supabase integration | **Complete for initial deployment** | Production Pages site is connected to the dedicated CEStudy Supabase project. |
 | 6 | Automated and manual technical QA | **Partially complete** | CI and recorded production Chromium checks passed; physical-device/accessibility QA and full search/filter edge cases remain. |
-| 7 | Pre-launch hardening and release gates | **CURRENT** | Fresh current-state backup/recovery proof, backup-account safeguards, final manual QA and security sign-off remain. |
+| 7 | Pre-launch hardening and release gates | **CURRENT** | Fresh current-state backup/recovery proof, backup-retention/notification safeguards, final manual QA and security sign-off remain. |
 | 8 | Human content review and approved publishing | **Partially complete: tooling only** | Owner-only review UI/API and publication controls exist; independent human review and approved content publication have not started. |
 | 9 | Controlled student pilot | **Not started** | The 5–8-student pilot plan exists but no pilot has run. It must wait for Phase 7 and use only reviewed content for practice tasks. |
 | 10 | Final polish and broad public launch | **Not started** | Pilot findings, final checks and an explicit go/no-go decision are still required. |
@@ -246,7 +246,7 @@ Phase 7 is complete only when the following technical and operational evidence i
 - [ ] Backblaze B2 hidden-version lifecycle behavior is checked without hiding current verified backups; GitHub Actions failure-email settings and protected recovery-key copies are confirmed.
 - [ ] Physical Android-device, keyboard/screen-reader, touch-target and text-zoom checks are recorded; the remaining search/filter/no-results and loading/error-state matrix is tested.
 - [ ] Current production variables and the final security review are checked and documented. The latest existing Chromium evidence is [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), which passed 135/135 checks on 2026-10-18; rerun it if a relevant production change is made.
-- [ ] Current no-account/no-upload MVP boundaries and accepted security limitations are confirmed.
+- [x] Current MVP remains no-account/no-upload; optional account features stay out of production unless separately approved.
 
 Phase 7 is a technical-readiness gate, not a declaration that content has been academically approved or that a student pilot has occurred. Human content approval belongs to Phase 8, the controlled pilot to Phase 9, and the broad launch decision to Phase 10. Phases 8 and 9 must not bypass the relevant earlier gates.
 
