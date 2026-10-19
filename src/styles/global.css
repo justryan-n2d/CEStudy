@@ -941,7 +941,7 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
   --ui-brand-text: #1f1f1f;
   --ui-brand-border: #747775;
   --ui-brand-border-hover: #5f6368;
-  --ink: #24384b;
+  --ink: var(--ui-text);
 }
 
 :root[data-theme="dark"] {
@@ -964,15 +964,15 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
   --ui-danger-bg: #422323;
   --ui-danger-text: #ffcbc7;
   --ui-shadow: 0 8px 24px rgba(0, 0, 0, .28);
-  --navy: #d6e4f2;
-  --navy-strong: #f3f7fb;
-  --muted: #b6c4d4;
-  --line: #2b3d51;
+  --navy: var(--ui-heading);
+  --navy-strong: var(--ui-heading);
+  --muted: var(--ui-text-muted);
+  --line: var(--ui-border);
   --blue-soft: #1b3147;
-  --blue: #90c4ff;
+  --blue: var(--ui-link);
   --teal-dark: #8bd9c1;
   --shadow: var(--ui-shadow);
-  --ink: #e5edf6;
+  --ink: var(--ui-text);
 }
 
 :root {
@@ -1331,7 +1331,7 @@ body {
 :root[data-theme="dark"] .form-field textarea,
 :root[data-theme="dark"] .review-edit-fields textarea,
 :root[data-theme="dark"] .search-field input {
-  background-color: var(--ui-surface-muted);
+  background-color: var(--ui-surface-raised);
   border-color: var(--ui-border);
   color: var(--ui-text);
   caret-color: var(--ui-focus);
