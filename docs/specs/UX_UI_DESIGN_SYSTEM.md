@@ -154,6 +154,9 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 - Scroll reveal applies only to major content sections. Use IntersectionObserver, unobserve after the first reveal, animate only opacity/transform, and show content immediately if reduced motion is requested or the API is unavailable. See MDN: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API.
 
 ### Future native mobile app
+- Treat the user's mobile dashboard reference as an information-structure reference, not a color reference: profile/greeting near the top, a compact learner summary, weekly study activity, a prominent Continue Learning section, and persistent bottom navigation.
+- Use CEStudy's own blue/white brand direction with navy/neutral dark surfaces; do not copy the reference's purple gradient palette, icons, or branded artwork.
+- Keep statistics only when backed by real user data. Until progress data exists, prioritize search, year/subject browsing, and Continue Learning rather than fabricated course totals.
 - Use a study-first home screen: Continue studying when progress exists, search, subjects, and practice reachable without a deep menu.
 - Use native bottom tabs and touch-first patterns, not the website DOM, header, footer, or mobile web menu.
 - Reuse the same brand, type/spacing tokens, statuses, data contracts, and interaction semantics; rebuild visual components in the future mobile framework.
