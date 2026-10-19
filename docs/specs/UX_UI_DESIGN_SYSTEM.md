@@ -31,6 +31,30 @@
 
 Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes responsive. Use consistent 4px/8px spacing increments and a restrained set of radii.
 
+## Theme system
+
+Light mode remains the default. Students can switch to dark mode from Menu; the choice is saved locally and applied before the application renders. Both themes must use the same component, spacing, typography, and navigation system. Dark mode is a coordinated color change, not a page-by-page redesign.
+
+| Semantic role | Light | Dark |
+|---|---|---|
+| Page background | `#FFFFFF` | `#0B1421` |
+| Card and panel surface | `#FFFFFF` | `#121F30` |
+| Raised surface and inputs | `#F7F9FC` | `#172538` |
+| Header and bottom navigation | `#FFFFFF` | `#101C2B` |
+| Primary text | `#24384B` | `#E5EDF6` |
+| Headings | `#0B263D` | `#F3F7FB` |
+| Supporting text | `#637487` | `#B6C4D4` |
+| Border and divider | `#DCE5EC` | `#2B3D51` |
+| Focus and link accent | `#0754B5` | `#90C4FF` |
+| Selected surface | `#E8F0F8` | `#1B3147` |
+
+- Use a deep navy background rather than pure black. Do not carry over the purple palette from the visual reference; retain CEStudy's blue identity, neutral surfaces, and restrained teal/green success cues.
+- All card, form, dialog, empty, loading, error, selected, and disabled states must be readable in both themes. Use semantic tokens instead of adding unrelated colors to individual pages.
+- Keep text and control contrast at WCAG AA targets where applicable. Focus indicators must remain clearly visible on dark surfaces, and status must not rely on color alone.
+- Keep the official blue-and-white logo artwork unchanged. White tiles behind the Google mark and payment QR/brand assets are intentional exceptions.
+- The saved preference must not depend on sign-in or clear history/progress. Update the browser's `theme-color` alongside the document color scheme, and initialize the saved theme before first paint without inline script because the site uses a restrictive Content Security Policy.
+
+
 ## Logo use
 
 - Keep `public/branding/cestudy-master-logo.svg` as the full logo in the site header.
