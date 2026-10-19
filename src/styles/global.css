@@ -1445,3 +1445,72 @@ body {
 :root[data-theme="dark"] .button-dark {
   color: #ffffff;
 }
+
+/* Remaining shared surfaces used by catalog, math, practice, forms and feedback. */
+:root[data-theme="dark"] .math-banner,
+:root[data-theme="dark"] .math-practice-callout,
+:root[data-theme="dark"] .stat-strip,
+:root[data-theme="dark"] .filters-panel,
+:root[data-theme="dark"] .detail-panel,
+:root[data-theme="dark"] .inline-callout,
+:root[data-theme="dark"] .home-math-entry,
+:root[data-theme="dark"] .about-principle,
+:root[data-theme="dark"] .about-next,
+:root[data-theme="dark"] .review-summary-strip > div,
+:root[data-theme="dark"] .content-review-detail,
+:root[data-theme="dark"] .review-detail-card,
+:root[data-theme="dark"] .study-entry-panel {
+  background: var(--ui-surface);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .detail-next,
+:root[data-theme="dark"] .content-review-list,
+:root[data-theme="dark"] .content-review-tabs,
+:root[data-theme="dark"] .feedback-message-detail,
+:root[data-theme="dark"] .review-answer-details,
+:root[data-theme="dark"] .review-edit-fields,
+:root[data-theme="dark"] .streak-calendar-empty,
+:root[data-theme="dark"] .streak-day-detail,
+:root[data-theme="dark"] .login-account {
+  background: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .state-error,
+:root[data-theme="dark"] .inline-status-error,
+:root[data-theme="dark"] .login-error {
+  background: var(--ui-danger-bg);
+  border-color: #87504e;
+  color: var(--ui-danger-text);
+}
+
+:root[data-theme="dark"] .inline-status-warning,
+:root[data-theme="dark"] .login-setup-note {
+  background: var(--ui-warning-bg);
+  border-color: #80613b;
+  color: var(--ui-warning-text);
+}
+
+:root[data-theme="dark"] .inline-status-success {
+  background: var(--ui-success-bg);
+  border-color: #27684d;
+  color: var(--ui-success-text);
+}
+
+:root[data-theme="dark"] .markdown-content code {
+  background: var(--ui-hover);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .feedback-message-summary,
+:root[data-theme="dark"] .content-review-list-item {
+  background: var(--ui-surface-raised);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .mobile-bottom-nav {
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, .28);
+}
