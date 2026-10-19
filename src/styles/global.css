@@ -1514,3 +1514,54 @@ body {
 :root[data-theme="dark"] .mobile-bottom-nav {
   box-shadow: 0 -8px 28px rgba(0, 0, 0, .28);
 }
+
+/* Dark-mode fixes for the streak unlock dialog and Google OAuth action.
+   Keep Google's conventional light button so its label/logo stay legible on dark surfaces. */
+:root[data-theme="dark"] .streak-unlock-dialog {
+  background-color: var(--ui-surface);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .streak-unlock-dialog h2 {
+  color: var(--ui-heading);
+}
+
+:root[data-theme="dark"] .streak-unlock-dialog > p {
+  color: var(--ui-text-muted);
+}
+
+:root[data-theme="dark"] .google-signin-button,
+:root[data-theme="dark"] .streak-unlock-dialog .google-signin-button {
+  background-color: #ffffff;
+  border-color: #747775;
+  color: #1f1f1f;
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .google-signin-button:hover,
+:root[data-theme="dark"] .streak-unlock-dialog .google-signin-button:hover {
+  background-color: #f8f9fa;
+  border-color: #5f6368;
+  color: #1f1f1f;
+}
+
+:root[data-theme="dark"] .google-signin-button:active,
+:root[data-theme="dark"] .streak-unlock-dialog .google-signin-button:active {
+  background-color: #f1f3f4;
+  color: #1f1f1f;
+}
+
+:root[data-theme="dark"] .google-signin-button:disabled,
+:root[data-theme="dark"] .streak-unlock-dialog .google-signin-button:disabled {
+  background-color: #f1f3f4;
+  border-color: #9aa0a6;
+  color: #3c4043;
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .streak-unlock-close:hover {
+  background-color: var(--ui-hover);
+  border-color: #48627f;
+  color: var(--ui-heading);
+}
