@@ -708,7 +708,7 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .streak-legend-dot{display:inline-block;width:11px;height:11px;border:1px solid #cfd7de;border-radius:4px;background:#f4f6f8}
 .streak-legend-dot.is-active{background:#dcf4e4;border-color:#9ed5b4}
 .streak-legend-dot.is-today{outline:2px solid var(--brand-blue);outline-offset:1px}
-.community-launch-panel{padding:clamp(1.3rem,4vw,2.2rem);border:1px solid #d5e5f5;border-radius:22px;background:linear-gradient(135deg,#f5f9ff,#edf4fc);text-align:center}
+.community-launch-panel{padding:clamp(1.3rem,4vw,2.2rem);border:1px solid var(--ui-border);border-radius:22px;background:var(--ui-community-bg);text-align:center}
 .community-launch-icon{display:grid;place-items:center;width:54px;height:54px;margin:0 auto .8rem;border-radius:16px;background:#dceafa;color:var(--brand-blue);font-size:1.8rem}
 .community-launch-panel h2{margin:.25rem 0 .65rem;font-size:clamp(1.4rem,3vw,1.8rem)}
 .community-launch-panel p{max-width:600px;margin:0 auto 1rem;color:var(--ui-text-muted)}
@@ -818,8 +818,8 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .streak-day-detail{margin:.8rem 0 0;padding:.75rem .9rem;border:1px solid var(--line);border-radius:11px;background:#f5f8fb;color:var(--navy);font-size:.82rem;line-height:1.55}
 :root[data-theme="dark"] .streak-day-detail{background:#172538;border-color:#2b3d51;color:#dce6f1}
 :root[data-theme="dark"] .hero-copy>p,:root[data-theme="dark"] .hero-home .hero-copy>p,:root[data-theme="dark"] .page-intro>p,:root[data-theme="dark"] .muted-copy,:root[data-theme="dark"] .section-heading p,:root[data-theme="dark"] .subject-card>p,:root[data-theme="dark"] .detail-summary,:root[data-theme="dark"] .detail-panel p,:root[data-theme="dark"] .math-banner p,:root[data-theme="dark"] .math-practice-callout p,:root[data-theme="dark"] .card-meta,:root[data-theme="dark"] .study-lesson-completion p,:root[data-theme="dark"] .study-lesson p,:root[data-theme="dark"] .study-outline-heading strong{color:#b7c5d6}
-:root[data-theme="dark"] .detail-hero,:root[data-theme="dark"] .curriculum-notice,:root[data-theme="dark"] .math-banner,:root[data-theme="dark"] .math-practice-callout,:root[data-theme="dark"] .about-purpose,:root[data-theme="dark"] .community-launch-panel,:root[data-theme="dark"] .review-gate,:root[data-theme="dark"] .study-lesson-welcome{background:#142438;border-color:#2b4056}
-:root[data-theme="dark"] .curriculum-notice h2,:root[data-theme="dark"] .curriculum-notice p,:root[data-theme="dark"] .curriculum-notice a,:root[data-theme="dark"] .about-purpose p,:root[data-theme="dark"] .community-launch-panel p{color:#bfd0df}
+:root[data-theme="dark"] .detail-hero,:root[data-theme="dark"] .curriculum-notice,:root[data-theme="dark"] .math-banner,:root[data-theme="dark"] .math-practice-callout,:root[data-theme="dark"] .about-purpose,:root[data-theme="dark"] .review-gate,:root[data-theme="dark"] .study-lesson-welcome{background:#142438;border-color:#2b4056}
+:root[data-theme="dark"] .curriculum-notice h2,:root[data-theme="dark"] .curriculum-notice p,:root[data-theme="dark"] .curriculum-notice a,:root[data-theme="dark"] .about-purpose p{color:#bfd0df}
 :root[data-theme="dark"] .year-number,:root[data-theme="dark"] .progress-complete-label{color:#87d7b4}
 :root[data-theme="dark"] .status{background:#263546;color:#c3d0df}
 :root[data-theme="dark"] .status-ready{background:#164b3b;color:#bef0d8}
@@ -847,9 +847,9 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .profile-account-copy span{color:var(--muted);font-size:.8rem}
 .profile-connected-status{display:inline-flex;align-items:center;gap:.32rem;color:#236c62;font-size:.78rem;font-weight:800;white-space:nowrap}
 .profile-connected-status span{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#dff3e9}
-.profile-data-note{margin-top:1rem;padding:1rem 1.1rem;border:1px solid #d3e7e0;border-radius:16px;background:#f0f8f5}
-.profile-data-note strong{color:#174d45;font-size:.92rem}
-.profile-data-note p{margin:.3rem 0 0;color:#496c66;font-size:.84rem;line-height:1.6}
+.profile-data-note{margin-top:1rem;padding:1rem 1.1rem;border:1px solid var(--ui-success-border);border-radius:16px;background:var(--ui-success-bg)}
+.profile-data-note strong{color:var(--ui-success-text);font-size:.92rem}
+.profile-data-note p{margin:.3rem 0 0;color:var(--ui-success-text);font-size:.84rem;line-height:1.6}
 .profile-shortcuts-section{margin-top:1.7rem}
 .profile-shortcuts-section>h2{margin-bottom:.7rem;font-size:1.25rem;color:var(--navy)}
 .profile-shortcut-list{display:grid;gap:.65rem}
@@ -869,8 +869,6 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .profile-guest-actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem}
 :root[data-theme="dark"] .profile-account-card,:root[data-theme="dark"] .profile-shortcut{background:#121f30;border-color:#2b3d51;color:#e5edf6}
 :root[data-theme="dark"] .profile-account-copy strong,:root[data-theme="dark"] .profile-shortcuts-section>h2,:root[data-theme="dark"] .profile-signout-section strong{color:#e5edf6}
-:root[data-theme="dark"] .profile-data-note{background:#142a28;border-color:#235247}
-:root[data-theme="dark"] .profile-data-note strong,:root[data-theme="dark"] .profile-data-note p{color:#c2e7db}
 :root[data-theme="dark"] .profile-connected-status{color:#9fe2c8}
 :root[data-theme="dark"] .profile-connected-status span{background:#1d4339}
 :root[data-theme="dark"] .profile-shortcut:hover{background:#1b2b40;border-color:#365a80}
@@ -929,6 +927,8 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
   --ui-link: #0754b5;
   --ui-success-bg: #def3e9;
   --ui-success-text: #226b55;
+  --ui-success-border: #b8e2d2;
+  --ui-community-bg: linear-gradient(135deg, #f5f9ff, #edf4fc);
   --ui-warning-bg: #fff3dc;
   --ui-warning-text: #87601a;
   --ui-danger-bg: #fff6f5;
@@ -959,6 +959,8 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
   --ui-link: #90c4ff;
   --ui-success-bg: #14372e;
   --ui-success-text: #c2e7db;
+  --ui-success-border: #27684d;
+  --ui-community-bg: var(--ui-surface-muted);
   --ui-warning-bg: #422c1f;
   --ui-warning-text: #ffe0a2;
   --ui-danger-bg: #422323;
@@ -1284,7 +1286,7 @@ body {
 :root[data-theme="dark"] .streak-summary-card,
 :root[data-theme="dark"] .streak-calendar-empty,
 :root[data-theme="dark"] .streak-day-detail,
-:root[data-theme="dark"] .profile-data-note,
+
 :root[data-theme="dark"] .study-objectives,
 :root[data-theme="dark"] .study-outline-number,
 :root[data-theme="dark"] .state-panel,
@@ -1377,7 +1379,7 @@ body {
 }
 
 :root[data-theme="dark"] .curriculum-notice,
-:root[data-theme="dark"] .profile-data-note,
+
 :root[data-theme="dark"] .study-objectives {
   background-color: var(--ui-success-bg);
   border-color: #27684d;
