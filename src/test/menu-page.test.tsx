@@ -9,9 +9,15 @@ const mockUseAuth = vi.hoisted(() => vi.fn());
 
 vi.mock("../contexts/AuthContext", () => ({ useAuth: mockUseAuth }));
 
+const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]') ?? document.createElement("meta");
+themeColorMeta.name = "theme-color";
+if (!themeColorMeta.isConnected) document.head.append(themeColorMeta);
+
 beforeEach(() => {
   localStorage.clear();
   delete document.documentElement.dataset.theme;
+  document.documentElement.style.removeProperty("color-scheme");
+  themeColorMeta.content = "#FFFFFF";
   mockUseAuth.mockReset();
   mockUseAuth.mockReturnValue({
     user: null,
@@ -50,8 +56,23 @@ describe("mobile menu page", () => {
     await user.click(screen.getByRole("switch", { name: /switch to dark mode/i }));
 
     expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(document.documentElement.style.colorScheme).toBe("dark");
+    expect(themeColorMeta).toHaveAttribute("content", "#0B1421");
     expect(localStorage.getItem("cestudy:theme:v1")).toBe("dark");
     expect(screen.getByRole("switch", { name: /switch to light mode/i })).toBeInTheDocument();
+  });
+
+  it("switches back to light mode and restores the light browser theme color", async () => {
+    localStorage.setItem("cestudy:theme:v1", "dark");
+    const user = userEvent.setup();
+    renderMenu();
+
+    await user.click(screen.getByRole("switch", { name: /switch to light mode/i }));
+
+    expect(document.documentElement).toHaveAttribute("data-theme", "light");
+    expect(document.documentElement.style.colorScheme).toBe("light");
+    expect(themeColorMeta).toHaveAttribute("content", "#FFFFFF");
+    expect(localStorage.getItem("cestudy:theme:v1")).toBe("light");
   });
 
   it("restores a previously saved theme", () => {
