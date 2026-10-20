@@ -3,7 +3,17 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { ProgressPage } from "../pages/ProgressPage";
-import { setLessonCompleted } from "../data/learning-progress";
+import { learningActivityStorageKey, setLessonCompleted } from "../data/learning-progress";
+
+vi.mock("../contexts/AuthContext", () => ({
+  useAuth: () => ({
+    user: { id: "progress-test-user", email: "student@example.com" },
+    loading: false,
+    configured: true,
+    signInWithGoogle: vi.fn(),
+    signOut: vi.fn(),
+  }),
+}));
 
 beforeEach(() => localStorage.clear());
 afterEach(() => {
@@ -16,8 +26,8 @@ describe("student progress page", () => {
     render(<MemoryRouter><ProgressPage /></MemoryRouter>);
 
     expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
-    expect(screen.getByRole("region", { name: "Learning streak" })).toBeInTheDocument();
-    expect(screen.getByText(/saved in this browser on this device only/i)).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Learning streak" })).not.toBeInTheDocument();
+    expect(screen.getByText(/saved in this browser/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Browse the library" })).toHaveAttribute("href", "/catalog");
   });
 
@@ -60,20 +70,20 @@ describe("student progress page", () => {
       subjectSlug: "basic-algebra",
       unitNumber: 3,
       title: "Factoring",
-    }, true);
+    }, true, "progress-test-user");
     setLessonCompleted({
       lessonId: "lesson-3",
       subjectSlug: "basic-algebra",
       unitNumber: 3,
       title: "Factoring",
-    }, false);
+    }, false, "progress-test-user");
     vi.stubGlobal("confirm", vi.fn(() => true));
 
     render(<MemoryRouter><ProgressPage /></MemoryRouter>);
     expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Clear progress and streak" }));
 
-    expect(localStorage.getItem("cestudy:learning-activity-days:v1")).toBeNull();
+    expect(localStorage.getItem(learningActivityStorageKey("progress-test-user"))).toBeNull();
   });
 
   it("clears local progress after confirmation", async () => {

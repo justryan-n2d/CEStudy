@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { FEEDBACK_INBOX_SESSION_EVENT, FEEDBACK_INBOX_UNREAD_EVENT, getFeedbackInboxSessionToken, getUnreadFeedbackCount } from "../data/feedback-inbox";
+import { useAuth } from "../contexts/AuthContext";
+import { LearningStreakBadge } from "./LearningStreakBadge";
 
 type GlyphName = "home" | "book" | "layers" | "math" | "menu" | "close" | "help" | "messages";
 
@@ -21,8 +23,7 @@ function NavigationGlyph({ name }: { name: GlyphName }) {
 
 export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const headerRef = useRef<HTMLElement>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
   const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
   const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
   const links = [
@@ -30,14 +31,14 @@ export function Layout({ children }: { children: ReactNode }) {
     { to: "/years", label: "Year levels" },
     { to: "/math-foundations", label: "Math foundations" },
   ];
+  const menuPaths = ["/profile", "/login", "/history", "/streak", "/progress", "/community", "/support", "/feedback", "/feedbacks", "/bug-reports", "/contact", "/about", "/privacy"];
   const mobileLinks = [
     { to: "/", label: "Home", name: "home" as const, active: location.pathname === "/" },
     { to: "/catalog", label: "Subjects", name: "book" as const, active: location.pathname === "/catalog" || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/practice/") || location.pathname.startsWith("/study/") },
     { to: "/years", label: "Years", name: "layers" as const, active: location.pathname === "/years" || location.pathname.startsWith("/year/") },
     { to: "/math-foundations", label: "Math", name: "math" as const, active: location.pathname === "/math-foundations" },
+    { to: "/menu", label: "Menu", name: "menu" as const, active: location.pathname === "/menu" || menuPaths.includes(location.pathname) },
   ];
-
-  useEffect(() => setMobileMenuOpen(false), [location.pathname]);
 
   useEffect(() => {
     const syncSession = () => setFeedbackInboxUnlocked(Boolean(getFeedbackInboxSessionToken()));
@@ -76,26 +77,10 @@ export function Layout({ children }: { children: ReactNode }) {
     };
   }, [feedbackInboxUnlocked]);
 
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-    const handlePointerDown = (event: PointerEvent) => {
-      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) setMobileMenuOpen(false);
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMobileMenuOpen(false);
-    };
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [mobileMenuOpen]);
-
-  return (
+return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">Skip to main content</a>
-      <header ref={headerRef} className="site-header">
+      <header className="site-header">
         <div className="header-inner">
           <Link className="brand" to="/" aria-label="CEStudy home">
             <img className="brand-logo" src="/branding/cestudy-master-logo.svg" alt="" aria-hidden="true" width={52} height={52} />
@@ -108,6 +93,9 @@ export function Layout({ children }: { children: ReactNode }) {
                 {item.label}
               </NavLink>
             ))}
+            <NavLink to={user ? "/profile" : "/login"} className={({ isActive }) => isActive || (user && location.pathname === "/profile") ? "nav-link active account-nav-link" : "nav-link account-nav-link"}>
+              {user ? "Account" : "Sign in"}
+            </NavLink>
             {feedbackInboxUnlocked && (
               <NavLink to="/feedbacks" className={({ isActive }) => isActive ? "nav-link active feedbacks-nav-link" : "nav-link feedbacks-nav-link"}>
                 <span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>
@@ -115,20 +103,8 @@ export function Layout({ children }: { children: ReactNode }) {
               </NavLink>
             )}
           </nav>
-          <button className="mobile-menu-toggle" type="button" aria-expanded={mobileMenuOpen} aria-controls="mobile-help-menu"
-            aria-label={`${mobileMenuOpen ? "Close" : "Open"} more pages menu${unreadFeedbackCount > 0 ? ", unread feedback" : ""}`} onClick={() => setMobileMenuOpen((open) => !open)}>
-            <span className="menu-toggle-icon"><NavigationGlyph name={mobileMenuOpen ? "close" : "menu"} />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot menu-unread-dot" aria-hidden="true" />}</span><span>More</span>
-          </button>
+<LearningStreakBadge />
         </div>
-        <nav id="mobile-help-menu" className={`mobile-help-menu${mobileMenuOpen ? " is-open" : ""}`} aria-label="More CEStudy pages" aria-hidden={!mobileMenuOpen}>
-          <Link to="/about" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />About us</Link>
-          <Link to="/contact" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Contact CEStudy</Link>
-          <Link to="/support" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Support us</Link>
-          <Link to="/bug-reports" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Report a bug</Link>
-          <Link to="/feedback" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Send feedback</Link>
-          <Link to="/privacy" onClick={() => setMobileMenuOpen(false)}><NavigationGlyph name="help" />Privacy notice</Link>
-          {feedbackInboxUnlocked && <Link to="/feedbacks" onClick={() => setMobileMenuOpen(false)} className="mobile-feedbacks-link"><span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>Feedbacks</Link>}
-        </nav>
       </header>
       <main id="main-content" className="main-content">{children}</main>
       <footer className="site-footer">
@@ -148,8 +124,14 @@ export function Layout({ children }: { children: ReactNode }) {
       </footer>
       <nav className="mobile-bottom-nav" aria-label="Quick navigation">
         {mobileLinks.map((item) => (
-          <Link key={item.to} to={item.to} className={`mobile-tab${item.active ? " active" : ""}`} aria-current={item.active ? "page" : undefined}>
-            <NavigationGlyph name={item.name} /><span>{item.label}</span>
+          <Link key={item.to} to={item.to} className={`mobile-tab${item.active ? " active" : ""}`}
+            aria-current={item.active ? "page" : undefined}
+            aria-label={item.name === "menu" && unreadFeedbackCount > 0 ? "Menu, unread feedback" : undefined}>
+            <span className="mobile-tab-icon">
+              <NavigationGlyph name={item.name} />
+              {item.name === "menu" && unreadFeedbackCount > 0 && <span className="feedback-unread-dot mobile-menu-unread-dot" aria-hidden="true" />}
+            </span>
+            <span>{item.label}</span>
           </Link>
         ))}
       </nav>
