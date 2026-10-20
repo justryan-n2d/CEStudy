@@ -1285,7 +1285,6 @@ body {
 :root[data-theme="dark"] .login-account,
 :root[data-theme="dark"] .streak-summary-card,
 :root[data-theme="dark"] .streak-calendar-empty,
-:root[data-theme="dark"] .streak-day-detail,
 
 :root[data-theme="dark"] .study-objectives,
 :root[data-theme="dark"] .study-outline-number,
@@ -1472,7 +1471,6 @@ body {
 :root[data-theme="dark"] .review-answer-details,
 :root[data-theme="dark"] .review-edit-fields,
 :root[data-theme="dark"] .streak-calendar-empty,
-:root[data-theme="dark"] .streak-day-detail,
 :root[data-theme="dark"] .login-account {
   background: var(--ui-surface-muted);
   border-color: var(--ui-border);

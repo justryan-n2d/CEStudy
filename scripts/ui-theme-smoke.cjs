@@ -189,6 +189,24 @@ async function main() {
       check("Selecting a calendar day keeps a visible theme-aware outline",
         selected.selected && selected.outlineColor === "rgb(144, 196, 255)" && selected.outlineWidth === "3px",
         JSON.stringify(selected));
+      const detail = page.locator(".streak-day-detail").first();
+      check("Selected date detail message is rendered", await detail.count() === 1);
+      if (await detail.count() === 1) {
+        const detailStyle = await detail.evaluate((element) => {
+          const style = getComputedStyle(element);
+          return {
+            background: style.backgroundColor,
+            borderColor: style.borderTopColor,
+            foreground: style.color,
+          };
+        });
+        check("Selected-day detail uses the dark raised surface token",
+          detailStyle.background === "rgb(23, 37, 56)",
+          JSON.stringify(detailStyle));
+        check("Selected-day detail uses theme-aware border and text tokens",
+          detailStyle.borderColor === "rgb(43, 61, 81)" && detailStyle.foreground === "rgb(229, 237, 246)",
+          JSON.stringify(detailStyle));
+      }
     }
 
     await page.goto(baseUrl + "/streak", { waitUntil: "domcontentloaded", timeout: 30000 });
