@@ -1,6 +1,6 @@
 # CEStudy: Organized Project Phases and Release Plan
 
-**Last reviewed:** 2026-10-19  
+**Last reviewed:** 2026-10-20  
 **Live website:** https://cestudy.pages.dev  
 **Current phase:** **Phase 7, Pre-launch hardening and release gates**  
 **Launch status:** The web MVP is deployed, but the broad student launch is not approved.
@@ -10,6 +10,13 @@ This is the canonical phase plan for CEStudy. Use this file for the overall orde
 ## Where we are now
 
 CEStudy is deployed and the project is in **Phase 7: pre-launch hardening**. The code already includes the 72-subject catalog, year-level routes, Mathematics Foundations, subject pages, topic/lesson navigation, a practice flow, browser-local lesson progress and streaks, Privacy/Contact/Feedback/Bug Report pages, and an owner-only content-review interface. The live Supabase database was checked read-only on 2026-10-19: 72 catalog subjects, 52 practice questions and 13 lessons. All 52 questions and all 13 lessons are `needs-review`; zero of either type is published. The two lessons found incorrectly marked published on 2026-10-18 were returned to review and Algebra Foundations is `in-preparation`. The latest recorded production Chromium smoke test, [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), passed **135/135 checks on 2026-10-18**. It tested production routes, security headers, privacy route, responsive widths, the live Supabase connection and published-only practice API. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
+
+### Current code-review work (2026-10-20)
+
+- [PR #47](https://github.com/justryan-n2d/CEStudy/pull/47) has passing CI and full-history secret scanning for the narrow historical test-fixture allowlist. It is still open for review and has not been merged.
+- [PR #44](https://github.com/justryan-n2d/CEStudy/pull/44) now includes the latest `main` history and current Supabase setup documentation. Theme regression tests cover the semantic focus token and streak-calendar today/selected/legend indicators. Lint, tests, and build passed on CI run [39406238480](https://github.com/justryan-n2d/CEStudy/actions/runs/39406238480); the isolated Supabase migration/RLS job was still in progress when this plan was updated.
+- The UI code check is not a substitute for a rendered-browser accessibility review. Confirm dark and light themes, keyboard focus visibility, narrow mobile layouts, and real Google OAuth behavior before calling this feature ready.
+- PR work does not change the overall release decision: Phase 7 remains current, and broad student launch remains blocked by the release gates listed below.
 
 The roadmap records actual completion rather than pretending every phase happened sequentially. **Phases 1 and 2 still have discovery and UX-documentation gaps**, even though later implementation work exists. Do not roll back completed code or restart the project; complete those missing validation tasks alongside Phase 7 hardening before expanding scope. The site is not approved for a broad student launch.
 
