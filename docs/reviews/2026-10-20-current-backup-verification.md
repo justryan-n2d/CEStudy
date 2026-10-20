@@ -1,45 +1,48 @@
 # CEStudy current backup and archive-verification audit
 
 **Audit date:** 2026-10-20  
-**Live project:** CEStudy Supabase, production data exported by the existing scheduled-backup workflow  
-**Status:** A current snapshot was encrypted, uploaded and read back successfully. The full release gate remains open until the corrected three-table validator runs against the live database and a managed-target restore is completed.
+**Live project:** CEStudy Supabase, backed up by the production GitHub Actions workflow  
+**Status:** A fresh encrypted snapshot was successfully delivered and read back in the latest live run. The Phase 7 archive-validation gate remains open because that run used the pre-PR validator, which checks only the catalog and question tables. PR #48 adds the missing lesson-table check and visible success output for each table. A managed-Supabase-target restore also remains untested.
 
-## Fresh backup evidence
+## Latest successful live backup
 
-- Workflow: [CEStudy weekly database backup, run 38773249088, attempt 3](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088).
-- The rerun checked out source commit `21089d5e774952c541154eafaf475cefd92cf12b`, so it used an older version of `scripts/weekly-db-backup.sh`.
-- Export/encryption/upload occurred on 2026-10-20. The archive timestamp written by the workflow was `20261020T105202Z`.
-- Encrypted archive: `CEStudy-20261020T105202Z.dump.enc`.
-- Logged SHA-256: `215fff404b92ef25a8f90eca33f6fa2289c8e1b568181d5a1a47b042b0413115`.
-- The job logged that it streamed the uploaded archive back through SHA-256 verification, then completed retention with **four verified backup sets kept and zero stale/incomplete artifacts hidden**.
-- The export, encryption, archive read-back and retention steps completed before the final Markdown-summary lines ran.
+- Workflow: [CEStudy weekly database backup, run 39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649).
+- Trigger: manual workflow dispatch on 2026-10-20.
+- Source: `main` commit `44ceab69364ba0b094399fbd878ccd38d942356c`.
+- Job: [Export, encrypt, verify, and retain four backups](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649/job/118664596666), completed successfully.
+- The logs show that the database export ran, the encrypted archive and checksum were uploaded to private Backblaze B2, the remote archive was read back through SHA-256 verification, and retention completed.
+- Retention result: **four verified backup sets kept; three stale or incomplete artifacts hidden**.
+- The run ended with `SUCCESS: Encrypted backup uploaded and verified.` No `command not found` summary errors appeared in this run.
 
-## What this run did not prove
+## What the latest run proves
 
-Two validation weaknesses were identified in the old script revision:
+The current live database was freshly exported, encrypted, uploaded to the configured private B2 destination, and the encrypted bytes were read back for integrity verification. The workflow's verification-marker read-back and retention steps completed before the success result. This is usable evidence of fresh backup delivery and remote-read integrity.
 
-1. Its `pg_restore --list` check explicitly required only `catalog_subjects` and `practice_questions`. The current live database also contains `subject_lessons` (13 rows), so the verifier could have passed without explicitly requiring the lesson table to be present in the archive.
-2. Four Markdown-summary `echo` statements placed backtick-delimited metadata inside double quotes. Bash interpreted the backticks as command substitutions and logged `command not found` for the timestamp, archive name, checksum and remote prefix. Those messages occurred after archive upload/read-back and retention; the job still concluded success. Current `main` already uses `printf` for those summary fields, but the rerun used the older commit.
+It does **not** prove that the validator explicitly required every application content table:
 
-The old run is evidence of a fresh encrypted archive upload, checksum/marker read-back and retention. It is **not** final evidence that the archive verifier required all three content tables or that the workflow summary was clean.
+1. The script version on `main` at commit `44ceab6` still declares only `catalog_subjects` and `practice_questions` in its expected-table loop. The live database also contains `subject_lessons` (13 lesson records), so the verifier could pass without enforcing the lesson-table presence check.
+2. An earlier run, [38773249088, attempt 3](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), checked out an older source commit `21089d5e774952c541154eafaf475cefd92cf12b`. That run also delivered an archive but printed four summary-only `command not found` errors after archive upload and retention. The latest run on `main` had clean summary logs, but it still used the two-table validator.
 
 ## Corrective change and CI evidence
 
 [PR #48](https://github.com/justryan-n2d/CEStudy/pull/48) adds:
 
-- an explicit required-table list containing `catalog_subjects`, `practice_questions` and `subject_lessons`;
-- a regression test that fails if the lesson table is removed from the list;
-- a guard against restoring the old backtick command-substitution patterns; and
-- execution of that regression test in the existing CI job.
+- An explicit required-table list containing `catalog_subjects`, `practice_questions`, and `subject_lessons`.
+- A regression test proving the validator cannot silently omit the lesson table.
+- A guard against reintroducing unsafe backtick command substitution into the Actions Markdown summary.
+- An explicit successful log line for each verified table, so the next live run identifies which checks passed without logging database rows or credentials.
+- Execution of the regression test in the existing CI workflow.
 
-The new test first failed on the old two-table implementation in [CI run 39430805954](https://github.com/justryan-n2d/CEStudy/actions/runs/39430805954), then the implementation was updated. The corrected code head `ef46d2615a8c9b1450434315e0277a32c1399442` passed [CI run 39430991750](https://github.com/justryan-n2d/CEStudy/actions/runs/39430991750), including the new backup-verification test and isolated Supabase migration/RLS tests. [Full-history secret scan 39430991755](https://github.com/justryan-n2d/CEStudy/actions/runs/39430991755) also passed. PR #48 remains open; the corrected script has not yet been run against live B2.
+The missing table check was first reproduced by [CI run 39430805954](https://github.com/justryan-n2d/CEStudy/actions/runs/39430805954). The per-table log assertion then failed as intended on commit `28f95dbc594bb5595635962612096db6233a41f9`, with [CI run 39434510999](https://github.com/justryan-n2d/CEStudy/actions/runs/39434510999) recording `FAIL: backup logs must name each required table after archive validation.` The script was updated on commit `80d8f9bc4495114a27f27effe3a13544953b22be`. That implementation commit passed [CI run 39434748294](https://github.com/justryan-n2d/CEStudy/actions/runs/39434748294), including lint, unit tests, build, backup crypto/retention/verification tests, and isolated Supabase migration/RLS tests. The matching [full-history secret scan 39434747834](https://github.com/justryan-n2d/CEStudy/actions/runs/39434747834) also passed.
+
+PR #48 remains open and draft. The corrected validator has not yet run against the live database.
 
 ## Remaining recovery gates
 
-- [ ] After PR #48 is merged, run **CEStudy weekly database backup** from branch `main` in GitHub Actions. Confirm no summary errors.
-- [ ] Verify the new archive list explicitly contains `catalog_subjects`, `practice_questions` and `subject_lessons`; confirm encrypted archive/checksum/verification-marker read-back and retention.
-- [ ] After explicit cost approval, restore the new archive into a **separate managed Supabase test project**, not production. Validate table counts, RLS, grants, column-level protection and published-only row visibility. The October 16 local PostgreSQL restore does not test Supabase-managed roles/system schemas/settings.
+- [ ] After PR #48 is merged, run **CEStudy weekly database backup** from `main`. Confirm the logs explicitly name all three required tables, archive/checksum/verification-marker read-back succeeds, retention completes, and there are no summary errors.
+- [ ] After explicit cost approval, restore the refreshed archive into a **separate managed Supabase test project**, not production. Validate table counts, RLS, grants, column protections, and published-only row visibility. The October 16 local PostgreSQL restore does not test Supabase-managed roles, system schemas, or project settings.
 - [ ] Confirm the Backblaze B2 hidden-version lifecycle rule does not hide current verified sets.
-- [ ] Confirm GitHub Actions failure-email preferences and protected private-key/passphrase recovery copies.
+- [ ] Confirm GitHub Actions failure-email preferences.
+- [ ] Confirm protected private-key and passphrase recovery copies are stored outside GitHub.
 
-**Decision:** Do not mark Phase 7 recovery as complete yet. The live snapshot delivery succeeded, but the corrected validator needs a clean run and managed-Supabase-target recovery still needs separate proof.
+**Decision:** Do not mark Phase 7 recovery complete yet. The latest snapshot delivery succeeded, and its logs are clean, but the corrected three-table validator still needs a successful live run and managed-Supabase-target recovery still needs separate proof.
