@@ -105,7 +105,8 @@ describe("Google sign-in page", () => {
 
     expect(signInWithGoogle).toHaveBeenCalledOnce();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /continue with google/i })).toBeEnabled();
+    // The mock resolves without performing a browser redirect, so the pending label is expected here.
+    expect(screen.getByRole("button", { name: /opening google/i })).toBeDisabled();
   });
 
   it("recovers after OAuth initiation fails and permits a second attempt", async () => {
