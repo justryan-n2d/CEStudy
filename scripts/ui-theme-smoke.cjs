@@ -117,26 +117,56 @@ async function main() {
             const exists = await googleButton.count() > 0;
             check("Google sign-in button exists on Login", exists);
             if (exists) {
-              const googleStyle = await googleButton.evaluate((button) => {
-                const icon = button.querySelector("img");
+              // The CI preview intentionally has no provider secrets, so the real button is normally disabled.
+              // Check that unavailable state, then temporarily enable the DOM control to verify the actual
+              // enabled-state brand styling without starting an OAuth request.
+              await page.mouse.move(0, 0);
+              const renderedState = await googleButton.evaluate((button) => {
+                const style = getComputedStyle(button);
                 return {
-                  background: getComputedStyle(button).backgroundColor,
-                  foreground: getComputedStyle(button).color,
+                  disabled: button instanceof HTMLButtonElement && button.disabled,
+                  background: style.backgroundColor,
+                  foreground: style.color,
+                  opacity: style.opacity,
+                  setupNoteVisible: Boolean(document.querySelector(".login-setup-note")),
+                };
+              });
+              check("Google sign-in disabled state matches the visible setup notice",
+                renderedState.disabled === renderedState.setupNoteVisible,
+                JSON.stringify(renderedState));
+              if (renderedState.disabled) {
+                check("Disabled Google sign-in remains visibly disabled and readable",
+                  renderedState.background === "rgb(241, 243, 244)" &&
+                    renderedState.foreground === "rgb(60, 64, 67)" &&
+                    renderedState.opacity === "1" &&
+                    contrastRatio(renderedState.foreground, renderedState.background) >= 4.5,
+                  JSON.stringify(renderedState));
+              }
+
+              const enabledStyle = await googleButton.evaluate((button) => {
+                if (button instanceof HTMLButtonElement) button.disabled = false;
+                const icon = button.querySelector("img");
+                const style = getComputedStyle(button);
+                return {
+                  background: style.backgroundColor,
+                  foreground: style.color,
                   icon: icon?.getAttribute("src") || "",
                   iconTileBackground: icon?.parentElement ? getComputedStyle(icon.parentElement).backgroundColor : "missing",
                 };
               });
-              const allowedBrandSurfaces = ["rgb(255, 255, 255)", "rgb(248, 249, 250)", "rgb(241, 243, 244)"];
-              check("Google sign-in retains its light brand surface in dark mode",
-                allowedBrandSurfaces.includes(googleStyle.background),
-                JSON.stringify(googleStyle));
+              check("Enabled Google sign-in uses the intended white brand treatment",
+                enabledStyle.background === "rgb(255, 255, 255)" &&
+                  enabledStyle.foreground === "rgb(31, 31, 31)",
+                JSON.stringify(enabledStyle));
               check("Google logo remains on a white tile",
-                googleStyle.iconTileBackground === "rgb(255, 255, 255)",
-                JSON.stringify(googleStyle));
-              check("Google sign-in uses the local brand asset", googleStyle.icon === "/branding/icons/google.svg", googleStyle.icon);
-              check("Google sign-in label contrast meets WCAG AA",
-                contrastRatio(googleStyle.foreground, googleStyle.background) >= 4.5,
-                JSON.stringify(googleStyle));
+                enabledStyle.iconTileBackground === "rgb(255, 255, 255)",
+                JSON.stringify(enabledStyle));
+              check("Google sign-in uses the local brand asset",
+                enabledStyle.icon === "/branding/icons/google.svg",
+                enabledStyle.icon);
+              check("Enabled Google sign-in label contrast meets WCAG AA",
+                contrastRatio(enabledStyle.foreground, enabledStyle.background) >= 4.5,
+                JSON.stringify(enabledStyle));
             }
           }
         } catch (error) {
