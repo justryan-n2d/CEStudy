@@ -144,10 +144,15 @@ async function main() {
               }
 
               const enabledStyle = await googleButton.evaluate((button) => {
+                // Disable transitions before toggling the synthetic control, or the browser may report an
+                // intermediate color while the disabled-state background animates back to the brand surface.
+                button.style.transition = "none";
                 if (button instanceof HTMLButtonElement) button.disabled = false;
+                button.getBoundingClientRect();
                 const icon = button.querySelector("img");
                 const style = getComputedStyle(button);
                 return {
+                  disabled: button instanceof HTMLButtonElement && button.disabled,
                   background: style.backgroundColor,
                   foreground: style.color,
                   hovered: button.matches(":hover"),
@@ -156,15 +161,13 @@ async function main() {
                   iconTileBackground: icon?.parentElement ? getComputedStyle(icon.parentElement).backgroundColor : "missing",
                 };
               });
-              const expectedEnabledSurface = enabledStyle.active
-                ? "rgb(241, 243, 244)"
-                : enabledStyle.hovered
-                  ? "rgb(248, 249, 250)"
-                  : "rgb(255, 255, 255)";
-              check("Enabled Google sign-in uses the approved light brand surface for its current state",
-                enabledStyle.background === expectedEnabledSurface &&
+              check("Enabled Google sign-in uses the white brand treatment in dark mode",
+                !enabledStyle.disabled &&
+                  !enabledStyle.hovered &&
+                  !enabledStyle.active &&
+                  enabledStyle.background === "rgb(255, 255, 255)" &&
                   enabledStyle.foreground === "rgb(31, 31, 31)",
-                JSON.stringify({ ...enabledStyle, expectedEnabledSurface }));
+                JSON.stringify(enabledStyle));
               check("Google logo remains on a white tile",
                 enabledStyle.iconTileBackground === "rgb(255, 255, 255)",
                 JSON.stringify(enabledStyle));
