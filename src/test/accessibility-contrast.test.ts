@@ -100,7 +100,8 @@ describe("shared theme tokens", () => {
     [".progress-list-item", "background:var(--ui-surface)"],
     [".community-launch-panel", "background:var(--ui-community-bg)"],
     [".privacy-content>section", "background:var(--ui-surface)"],
-    ["input,select", "background:var(--ui-surface-raised)"],
+    ["input", "background:var(--ui-surface-raised)"],
+    ["select", "background:var(--ui-surface-raised)"],
     [".streak-unlock-dialog", "background:var(--ui-surface)"],
   ])("%s uses a shared surface token", (selector, declaration) => {
     const matchingRules = cssRulesFor(selector);
