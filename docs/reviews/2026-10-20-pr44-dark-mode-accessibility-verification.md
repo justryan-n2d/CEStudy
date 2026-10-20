@@ -2,7 +2,7 @@
 
 **Verification date:** 2026-10-20  
 **Pull request:** [#44, optional Google sign-in and local study streak](https://github.com/justryan-n2d/CEStudy/pull/44)  
-**Verified source head:** `a4bc452e1a76795144fed4c75730850ef2652d2c`  
+**Verified source head:** `88f13391b505a830de21fd00a019799e9470ce9c`  
 **PR state:** Open and draft. This record does not approve merging the feature or launching CEStudy broadly.
 
 ## Code changes verified
@@ -14,10 +14,10 @@
 
 ## Automated verification evidence
 
-- [CEStudy CI run 39409560301](https://github.com/justryan-n2d/CEStudy/actions/runs/39409560301): passed on the verified source head. This includes dependency audit, ESLint, unit tests, production build/header packaging, backup encryption/retention tests, the rendered-browser checks and isolated Supabase migration/RLS tests.
-- [Rendered theme/accessibility job](https://github.com/justryan-n2d/CEStudy/actions/runs/39409560301/job/118583867724): **142/142 assertions passed, 0 failed**. The added checks verify the selected-date detail panel is visible and its computed background, border and text use the intended dark theme tokens.
-- [Full-history secret scan 39409560328](https://github.com/justryan-n2d/CEStudy/actions/runs/39409560328): passed on the same source head.
-- [Cloudflare Pages branch deployment](https://github.com/justryan-n2d/CEStudy/runs/118583809263): succeeded for the PR head.
+- [CEStudy CI run 39411257568](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257568): passed on the verified source head. This includes dependency audit, ESLint, unit tests, production build/header packaging, backup encryption/retention tests, the rendered-browser checks and isolated Supabase migration/RLS tests.
+- [Rendered theme/accessibility job](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257568/job/118589302707): **146/146 assertions passed, 0 failed**. Coverage includes the selected-date detail surface's computed colors and the enabled/disabled Google button states.
+- [Full-history secret scan 39411257552](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257552): passed on the same source head.
+- [Cloudflare Pages branch deployment](https://github.com/justryan-n2d/CEStudy/runs/118589446105): succeeded for the PR head.
 - The dedicated CI database job passed migration and row-level-security tests, including published-only question/lesson visibility, client-write denial and private review-field protection.
 
 ### Chromium coverage
@@ -51,7 +51,8 @@ The three advisor notices reflect private tables with no direct client grants; t
 
 - [ ] Configure Google OAuth in Google Cloud and the dedicated CEStudy Supabase project.
 - [ ] Verify real successful sign-in, cancellation and retry/error behavior, safe return paths, sign-out, and local streak separation on the intended production/local URLs. Do not commit or share the OAuth client secret.
-- [ ] Run a fresh encrypted off-site database backup for the current live state and confirm the remote archive, checksum and `.verified` marker by read-back. The last recorded real backup predates the 2026-10-18 content-status correction; CI crypto tests are not a real backup run.
+- [x] A fresh live-database snapshot was encrypted, uploaded, and read-back verified in [backup workflow run 38773249088, attempt 3](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) on 2026-10-20; see the [backup verification report](current-backup-verification.md). This attempt used an older validator that did not explicitly require `subject_lessons` and emitted summary-only command-substitution errors after upload/retention.
+- [ ] After PR #48's corrected three-table validator is merged to `main`, run the backup again and confirm the archive lists `catalog_subjects`, `practice_questions`, and `subject_lessons`; confirm clean summary logs, checksum/marker read-back and retention before closing the backup gate.
 - [ ] After explicit cost approval, restore the refreshed backup into a separate managed Supabase test project and validate counts, roles, grants, RLS and published-only visibility. The existing successful restore was into isolated local PostgreSQL only.
 - [ ] Confirm Backblaze B2 hidden-version lifecycle cleanup, GitHub Actions failure-email settings and protected private-key/passphrase recovery copies.
 - [ ] On a physical Android device, verify portrait/landscape, keyboard navigation, TalkBack, 200% text zoom, tap targets, catalog filter combinations, no-results recovery and direct-route refresh. Record device/browser and findings.
