@@ -36,7 +36,7 @@ function resolveLightThemeColor(color: string): string {
   const variable = color.match(/^var\((--[a-z0-9-]+)\)$/i)?.[1];
   if (!variable) return color;
 
-  const token = stylesheet.match(new RegExp(escapeRegExp(variable) + ":\\s*(#[0-9a-f]{6})", "i"))?.[1];
+  const token = stylesheet.match(new RegExp(variable + ":\\s*(#[0-9a-f]{6})", "i"))?.[1];
   return token ?? color;
 }
 
