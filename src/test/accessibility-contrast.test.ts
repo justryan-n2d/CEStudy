@@ -47,6 +47,8 @@ describe("shared theme tokens", () => {
     expect(stylesheet).toContain('--ui-heading: #f3f7fb;');
     expect(stylesheet).toContain('--ui-text-muted: #b6c4d4;');
     expect(stylesheet).toContain('--ui-border: #2b3d51;');
+    expect(stylesheet).toContain('--ui-focus: #0754b5;');
+    expect(stylesheet).toContain('--ui-focus: #90c4ff;');
   });
 
   it.each([
