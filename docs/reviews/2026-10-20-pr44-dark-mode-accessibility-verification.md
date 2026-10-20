@@ -40,6 +40,8 @@ On 2026-10-20, read-only project inspection reconfirmed:
 | Practice questions | 52, all `needs-review`, 0 published |
 | Lessons | 13, all `needs-review`, 0 published |
 | RLS | Enabled on all six current public tables |
+| Actual `anon`-role query | 72 catalog rows visible; 0 practice-question rows and 0 lesson rows visible |
+| Client column grants | Authenticated clients can select lesson bodies/question prompts but cannot select private `review_notes` fields |
 | Client write access | Denied on the catalog, lesson and practice-content tables |
 | Security advisor | Three `INFO` no-policy notices on the intentionally private feedback, support-confirmation and submission-limit tables |
 
