@@ -13,6 +13,14 @@ if ! grep -Fq -- "$expected_table_list" "$backup_script"; then
   exit 1
 fi
 
+
+# Print explicit successful evidence for every required table, so a green run
+# proves which archive contents were checked without exposing database rows.
+if ! grep -Fq -- "Verified required archive table: public.%s" "$backup_script"; then
+  echo "FAIL: backup logs must name each required table after archive validation." >&2
+  exit 1
+fi
+
 # Bash treats backticks inside double quotes as command substitutions. The
 # summary must use printf placeholders rather than interpolate metadata as shell.
 unsafe_summary_lines=(
