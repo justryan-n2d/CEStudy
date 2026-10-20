@@ -133,3 +133,12 @@ describe("theme-aware streak calendar indicators", () => {
     expect(stylesheet).toContain(`${selector}{${declaration}`);
   });
 });
+describe("selected date detail surface", () => {
+  it("has one authoritative dark-theme rule using shared raised-surface tokens", () => {
+    const rules = cssRulesFor(':root[data-theme="dark"] .streak-day-detail');
+    expect(rules).toHaveLength(1);
+    expect(rules[0]).toContain("background:var(--ui-surface-raised)");
+    expect(rules[0]).toContain("border-color:var(--ui-border)");
+    expect(rules[0]).toContain("color:var(--ui-text)");
+  });
+});
