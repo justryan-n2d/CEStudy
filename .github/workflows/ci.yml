@@ -57,7 +57,7 @@ jobs:
           python -m pip install --disable-pip-version-check --only-binary=:all: -r requirements-backup.txt
       - name: Check backup syntax, encryption, and retention behavior
         run: |
-          for file in scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh scripts/tests/backup-encryption.test.sh; do
+          for file in scripts/backup-supabase.sh scripts/weekly-db-backup.sh scripts/prune-weekly-backups.sh scripts/tests/weekly-backup-retention.test.sh scripts/tests/backup-encryption.test.sh scripts/tests/backup-verification.test.sh; do
             bash -n "$file"
           done
           if grep -Fq 'CESTUDY_BACKUP_CERT_B64' scripts/weekly-db-backup.sh .github/workflows/weekly-db-backup.yml; then
@@ -73,6 +73,7 @@ jobs:
           python -m py_compile scripts/encrypt-db-backup.py
           bash scripts/tests/backup-encryption.test.sh
           bash scripts/tests/weekly-backup-retention.test.sh
+          bash scripts/tests/backup-verification.test.sh
 
   database-security:
     name: Supabase migration and RLS tests
