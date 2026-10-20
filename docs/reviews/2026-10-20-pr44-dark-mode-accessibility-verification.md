@@ -2,22 +2,22 @@
 
 **Verification date:** 2026-10-20  
 **Pull request:** [#44, optional Google sign-in and local study streak](https://github.com/justryan-n2d/CEStudy/pull/44)  
-**Verified source head:** `faff4929304a9ef76a10411a68b1cd57ea382f26)  
+**Verified source head:** `a4bc452e1a76795144fed4c75730850ef2652d2c`  
 **PR state:** Open and draft. This record does not approve merging the feature or launching CEStudy broadly.
 
 ## Code changes verified
 
 - The streak calendar's today outline, selected-day outline and matching legend outline now use the semantic `--ui-focus` token instead of hardcoding a light-theme blue.
-- The dark selected-day detail panel uses the shared raised-surface, border and text tokens.
+- The dark selected-day detail panel uses the shared raised-surface, border and text tokens. Removed duplicate grouped CSS overrides that were replacing the intended raised surface with a muted surface.
 - Accessibility regression helpers now find repeated CSS rules and resolve semantic CSS color variables rather than rejecting valid `var(--ui-text-muted)` values.
 - Added `scripts/ui-theme-smoke.cjs` and integrated it into `.github/workflows/ci.yml` after the production Vite build. It opens the built app in Chromium. It does not contact the Google OAuth provider or require a configured account.
 
 ## Automated verification evidence
 
-- [CEStudy CI run 39407877713](https://github.com/justryan-n2d/CEStudy/actions/runs/39407877713): passed on the verified source head. This includes dependency audit, ESLint, unit tests, production build/header packaging, backup encryption/retention tests, and isolated Supabase migration/RLS tests.
-- [Rendered theme/accessibility job](https://github.com/justryan-n2d/CEStudy/actions/runs/39407877713/job/118578140499): **139/139 assertions passed, 0 failed**.
-- [Full-history secret scan 39407877704](https://github.com/justryan-n2d/CEStudy/actions/runs/39407877704): passed on the same source head.
-- [Cloudflare Pages branch deployment](https://github.com/justryan-n2d/CEStudy/runs/118578343730): succeeded for the PR head.
+- [CEStudy CI run 39409560301](https://github.com/justryan-n2d/CEStudy/actions/runs/39409560301): passed on the verified source head. This includes dependency audit, ESLint, unit tests, production build/header packaging, backup encryption/retention tests, the rendered-browser checks and isolated Supabase migration/RLS tests.
+- [Rendered theme/accessibility job](https://github.com/justryan-n2d/CEStudy/actions/runs/39409560301/job/118583867724): **142/142 assertions passed, 0 failed**. The added checks verify the selected-date detail panel is visible and its computed background, border and text use the intended dark theme tokens.
+- [Full-history secret scan 39409560328](https://github.com/justryan-n2d/CEStudy/actions/runs/39409560328): passed on the same source head.
+- [Cloudflare Pages branch deployment](https://github.com/justryan-n2d/CEStudy/runs/118583809263): succeeded for the PR head.
 - The dedicated CI database job passed migration and row-level-security tests, including published-only question/lesson visibility, client-write denial and private review-field protection.
 
 ### Chromium coverage
