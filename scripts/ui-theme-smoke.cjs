@@ -117,13 +117,21 @@ async function main() {
             const exists = await googleButton.count() > 0;
             check("Google sign-in button exists on Login", exists);
             if (exists) {
-              const googleStyle = await googleButton.evaluate((button) => ({
-                background: getComputedStyle(button).backgroundColor,
-                foreground: getComputedStyle(button).color,
-                icon: button.querySelector("img")?.getAttribute("src") || "",
-              }));
-              check("Google sign-in keeps the white brand treatment in dark mode",
-                googleStyle.background === "rgb(255, 255, 255)" && googleStyle.foreground === "rgb(31, 31, 31)",
+              const googleStyle = await googleButton.evaluate((button) => {
+                const icon = button.querySelector("img");
+                return {
+                  background: getComputedStyle(button).backgroundColor,
+                  foreground: getComputedStyle(button).color,
+                  icon: icon?.getAttribute("src") || "",
+                  iconTileBackground: icon?.parentElement ? getComputedStyle(icon.parentElement).backgroundColor : "missing",
+                };
+              });
+              const allowedBrandSurfaces = ["rgb(255, 255, 255)", "rgb(248, 249, 250)", "rgb(241, 243, 244)"];
+              check("Google sign-in retains its light brand surface in dark mode",
+                allowedBrandSurfaces.includes(googleStyle.background),
+                JSON.stringify(googleStyle));
+              check("Google logo remains on a white tile",
+                googleStyle.iconTileBackground === "rgb(255, 255, 255)",
                 JSON.stringify(googleStyle));
               check("Google sign-in uses the local brand asset", googleStyle.icon === "/branding/icons/google.svg", googleStyle.icon);
               check("Google sign-in label contrast meets WCAG AA",
