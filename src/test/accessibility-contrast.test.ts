@@ -81,3 +81,13 @@ describe("small text color contrast", () => {
     expect(contrastRatio(foreground, background), `${selector} contrast on ${background}`).toBeGreaterThanOrEqual(4.5);
   });
 });
+
+describe("theme-aware streak calendar indicators", () => {
+  it.each([
+    [".streak-calendar-day.is-today", "outline:2px solid var(--ui-focus)"],
+    [".streak-calendar-day.is-selected", "outline:3px solid var(--ui-focus)"],
+    [".streak-legend-dot.is-today", "outline:2px solid var(--ui-focus)"],
+  ])("%s uses the theme-aware focus token", (selector, declaration) => {
+    expect(stylesheet).toContain(`${selector}{${declaration}`);
+  });
+});
