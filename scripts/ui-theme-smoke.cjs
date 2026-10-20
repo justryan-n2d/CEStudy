@@ -73,6 +73,7 @@ async function main() {
           check("Direct route returns HTTP 200 at " + width + "px: " + route.path, Boolean(response && response.status() === 200), "status=" + (response?.status() ?? "no response"));
           const heading = page.locator("h1").first();
           await heading.waitFor({ state: "visible", timeout: 10000 });
+          await page.locator(route.surface).first().waitFor({ state: "visible", timeout: 10000 });
           const headingText = (await heading.innerText()).trim();
           check("Expected heading at " + width + "px: " + route.path, route.heading.test(headingText), "heading=" + headingText);
 
