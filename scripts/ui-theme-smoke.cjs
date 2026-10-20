@@ -73,6 +73,10 @@ async function main() {
           check("Direct route returns HTTP 200 at " + width + "px: " + route.path, Boolean(response && response.status() === 200), "status=" + (response?.status() ?? "no response"));
           const heading = page.locator("h1").first();
           await heading.waitFor({ state: "visible", timeout: 10000 });
+          if (route.path === "/login") {
+            // A configured Supabase client briefly renders its session-checking state on first load.
+            await page.getByRole("heading", { name: /^sign in to cestudy$/i }).waitFor({ state: "visible", timeout: 10000 });
+          }
           await page.locator(route.surface).first().waitFor({ state: "visible", timeout: 10000 });
           const headingText = (await heading.innerText()).trim();
           check("Expected heading at " + width + "px: " + route.path, route.heading.test(headingText), "heading=" + headingText);
@@ -197,6 +201,8 @@ async function main() {
       callbackUrl.searchParams.set("error", scenario.error);
       callbackUrl.searchParams.set("error_description", scenario.description);
       const callbackResponse = await page.goto(callbackUrl.toString(), { waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.getByRole("heading", { name: /^sign in to cestudy$/i }).waitFor({ state: "visible", timeout: 10000 });
+      await page.getByRole("alert").waitFor({ state: "visible", timeout: 10000 });
       const callbackState = await page.evaluate(() => {
         const button = document.querySelector(".google-signin-button");
         return {
@@ -223,6 +229,8 @@ async function main() {
           callbackState.buttonDisabled === callbackState.setupNoteVisible,
         JSON.stringify(callbackState));
       await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.getByRole("heading", { name: /^sign in to cestudy$/i }).waitFor({ state: "visible", timeout: 10000 });
+      await page.getByRole("alert").waitFor({ state: "visible", timeout: 10000 });
       check("OAuth " + scenario.label + " callback remains recoverable after refresh",
         await page.getByRole("alert").count() === 1 &&
           /canceled or could not be completed/i.test(await page.getByRole("alert").innerText()));
