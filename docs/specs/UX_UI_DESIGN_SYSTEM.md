@@ -50,7 +50,7 @@ Light mode remains the default. Students can switch to dark mode from Menu; the 
 
 - Use a deep navy background rather than pure black. Do not carry over the purple palette from the visual reference; retain CEStudy's blue identity, neutral surfaces, and restrained teal/green success cues.
 - All card, form, dialog, empty, loading, error, selected, and disabled states must be readable in both themes. Use semantic tokens instead of adding unrelated colors to individual pages.
-- Keep text and control contrast at WCAG AA targets where applicable. Focus indicators must remain clearly visible on dark surfaces, and status must not rely on color alone.
+- Keep text and control contrast at WCAG AA targets where applicable. Focus indicators must remain clearly visible on dark surfaces, and status must not rely on color alone. Use the semantic `--ui-focus` token for keyboard focus rings and streak-calendar state outlines such as today, selected day, and the matching legend marker; never hardcode a light-theme blue outline for those states.
 - Keep the official blue-and-white logo artwork unchanged. White tiles behind the Google mark and payment QR/brand assets are intentional exceptions.
 - The saved preference must not depend on sign-in or clear history/progress. Update the browser's `theme-color` alongside the document color scheme, and initialize the saved theme before first paint without inline script because the site uses a restrictive Content Security Policy.
 
