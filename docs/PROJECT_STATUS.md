@@ -6,13 +6,11 @@
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
-## Current pull-request validation (2026-10-20)
+## Current pull-request validation (updated 2026-10-20 23:30 +08:00)
 
-- **PR #47, historical Gitleaks fixture:** its required CI and full-history scan passed on head `07df0feedfdcf81456c97fa79938d97a1ca073a0` in [CI run 39404037762](https://github.com/justryan-n2d/CEStudy/actions/runs/39404037762) and [secret scan 39404037818](https://github.com/justryan-n2d/CEStudy/actions/runs/39404037818). It remains open and unmerged, so the historical finding still appears in the main-branch scheduled scan until the narrow exception is merged.
-- **PR #44, dark mode/accessibility:** head `88f13391b505a830de21fd00a019799e9470ce9c` passed [CI run 39411257568](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257568), including **146/146 rendered Chromium assertions**, lint, unit tests, build and Supabase migration/RLS tests. [Secret scan 39411257552](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257552) and [Cloudflare Pages preview 118589446105](https://github.com/justryan-n2d/CEStudy/runs/118589446105) passed. It remains draft until a real Google OAuth sign-in/cancel/return/sign-out test is completed.
-- **PR #48, backup archive verification:** merged into `main` at `6135f4faf6ca1c01c2abc49ca372e40ddfe1bc2b`. On its final PR head `ccab201fd9bb854e13df9fda660c6bfe74ebf267`, [CI run 39435660395](https://github.com/justryan-n2d/CEStudy/actions/runs/39435660395) and [secret scan 39435660738](https://github.com/justryan-n2d/CEStudy/actions/runs/39435660738) passed. The fix requires `catalog_subjects`, `practice_questions`, and `subject_lessons`, protects the Markdown summary from shell command substitution, and logs each table as verified. The live run [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) predates this fix and must be repeated from current `main` to verify the corrected checks against the live database.
-- These are branch/CI checks, not broad-launch approval. Draft learning content remains unpublished.
-
+- **PR #47, Gitleaks fixture allowlist:** CI and secret-scan runs are green on recorded head `07df0feedfdcf81456c97fa79938d97a1ca073a0`, but a fresh compare against current `main` reports 1 commit ahead and 2 behind. The allowlist also needs `regexTarget = "line"` because its regex matches the complete source line while Gitleaks defaults to testing the extracted secret. Do not merge until corrected, reconciled, and validated with a full-history scan. See the [dated OAuth and PR readiness record](reviews/2026-10-20-google-oauth-and-pr-readiness.md).
+- **PR #44, sign-in/profile/streak/theme accessibility:** preview Google sign-in, Profile identity, session persistence on refresh, sign-out, and guest library access were reported as passing on 2026-10-20. GitHub still reports PR #44 as draft and not mergeable; the branch diverges from `main` (92 commits ahead, 2 behind in the fresh comparison). Cancellation/error recovery and manual unsafe-return testing remain open. Reconcile with current `main`, rerun CI/secret scan/preview checks, complete the missing OAuth tests, and keep the PR draft until then. See the [dated OAuth and PR readiness record](reviews/2026-10-20-google-oauth-and-pr-readiness.md).
+- These PR checks are not broad-launch approval. Draft learning content remains unpublished; Phase 7 release gates and a controlled student pilot still apply.
 
 ## Latest production verification (2026-10-18)
 
