@@ -700,14 +700,14 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .streak-calendar-blank{min-width:0;aspect-ratio:1}
 .streak-calendar-day{display:grid;place-items:center;min-width:0;aspect-ratio:1;padding:0;border:1px solid transparent;border-radius:12px;background:#f4f6f8;color:#405368;font-size:.86rem;font-variant-numeric:tabular-nums;transition:background-color .15s ease,border-color .15s ease}
 .streak-calendar-day.is-active{border-color:#9ed5b4;background:#dcf4e4;color:#17613b;font-weight:850;box-shadow:inset 0 0 0 1px rgba(38,131,79,.08)}
-.streak-calendar-day.is-today{outline:2px solid var(--brand-blue);outline-offset:1px}
+.streak-calendar-day.is-today{outline:2px solid var(--ui-focus);outline-offset:1px}
 .streak-calendar-day:focus-visible{outline:3px solid var(--brand-blue);outline-offset:2px}
 .streak-calendar-empty{margin:1rem 0 0;padding:.8rem .9rem;border-radius:12px;background:#f5f8fb;color:var(--muted);font-size:.8rem;line-height:1.55}
 .streak-calendar-legend{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.8rem;color:var(--muted);font-size:.77rem}
 .streak-calendar-legend>span{display:inline-flex;align-items:center;gap:.4rem}
 .streak-legend-dot{display:inline-block;width:11px;height:11px;border:1px solid #cfd7de;border-radius:4px;background:#f4f6f8}
 .streak-legend-dot.is-active{background:#dcf4e4;border-color:#9ed5b4}
-.streak-legend-dot.is-today{outline:2px solid var(--brand-blue);outline-offset:1px}
+.streak-legend-dot.is-today{outline:2px solid var(--ui-focus);outline-offset:1px}
 .community-launch-panel{padding:clamp(1.3rem,4vw,2.2rem);border:1px solid var(--ui-border);border-radius:22px;background:var(--ui-community-bg);text-align:center}
 .community-launch-icon{display:grid;place-items:center;width:54px;height:54px;margin:0 auto .8rem;border-radius:16px;background:#dceafa;color:var(--brand-blue);font-size:1.8rem}
 .community-launch-panel h2{margin:.25rem 0 .65rem;font-size:clamp(1.4rem,3vw,1.8rem)}
@@ -814,9 +814,9 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 :root[data-theme="dark"] .learning-streak-active .learning-streak-main strong{color:#ffcf82}
 :root[data-theme="dark"] .learning-streak-active::before{background:linear-gradient(135deg,rgba(255,177,57,.26),rgba(236,88,22,.18))}
 
-.streak-calendar-day.is-selected{outline:3px solid var(--brand-blue);outline-offset:2px}
+.streak-calendar-day.is-selected{outline:3px solid var(--ui-focus);outline-offset:2px}
 .streak-day-detail{margin:.8rem 0 0;padding:.75rem .9rem;border:1px solid var(--line);border-radius:11px;background:#f5f8fb;color:var(--navy);font-size:.82rem;line-height:1.55}
-:root[data-theme="dark"] .streak-day-detail{background:#172538;border-color:#2b3d51;color:#dce6f1}
+:root[data-theme="dark"] .streak-day-detail{background:var(--ui-surface-raised);border-color:var(--ui-border);color:var(--ui-text)}
 :root[data-theme="dark"] .hero-copy>p,:root[data-theme="dark"] .hero-home .hero-copy>p,:root[data-theme="dark"] .page-intro>p,:root[data-theme="dark"] .muted-copy,:root[data-theme="dark"] .section-heading p,:root[data-theme="dark"] .subject-card>p,:root[data-theme="dark"] .detail-summary,:root[data-theme="dark"] .detail-panel p,:root[data-theme="dark"] .math-banner p,:root[data-theme="dark"] .math-practice-callout p,:root[data-theme="dark"] .card-meta,:root[data-theme="dark"] .study-lesson-completion p,:root[data-theme="dark"] .study-lesson p,:root[data-theme="dark"] .study-outline-heading strong{color:#b7c5d6}
 :root[data-theme="dark"] .detail-hero,:root[data-theme="dark"] .curriculum-notice,:root[data-theme="dark"] .math-banner,:root[data-theme="dark"] .math-practice-callout,:root[data-theme="dark"] .about-purpose,:root[data-theme="dark"] .review-gate,:root[data-theme="dark"] .study-lesson-welcome{background:#142438;border-color:#2b4056}
 :root[data-theme="dark"] .curriculum-notice h2,:root[data-theme="dark"] .curriculum-notice p,:root[data-theme="dark"] .curriculum-notice a,:root[data-theme="dark"] .about-purpose p{color:#bfd0df}
