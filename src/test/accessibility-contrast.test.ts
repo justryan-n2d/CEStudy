@@ -3,18 +3,18 @@ import { describe, expect, it } from "vitest";
 import stylesheet from "../styles/global.css?raw";
 
 function escapeRegExp(value: string): string {
-  return value.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+  return value.replace(/[.*+?^$()|[\]\\]/g, "\\$&");
 }
 
 function cssRulesFor(selector: string): string[] {
-  const pattern = new RegExp("(?:^|})" + escapeRegExp(selector) + "\\\\{([^}]*)}", "g");
+  const pattern = new RegExp("(?:^|})" + escapeRegExp(selector) + "\\{([^}]*)}", "g");
   return [...stylesheet.matchAll(pattern)].map((match) => match[1]);
 }
 
 function resolveLightThemeColor(color: string): string {
   if (/^#[0-9a-f]{6}$/i.test(color)) return color;
 
-  const variable = color.match(/^var\\((--[a-z0-9-]+)\\)$/i)?.[1];
+  const variable = color.match(/^var\((--[a-z0-9-]+)\)$/i)?.[1];
   if (!variable) return color;
 
   const token = stylesheet.match(new RegExp(escapeRegExp(variable) + ":\\s*(#[0-9a-f]{6})", "i"))?.[1];
