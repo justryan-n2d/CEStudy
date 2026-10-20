@@ -2,7 +2,7 @@
 
 **Verification date:** 2026-10-20  
 **Pull request:** [#44, optional Google sign-in and local study streak](https://github.com/justryan-n2d/CEStudy/pull/44)  
-**Verified source head:** `88f13391b505a830de21fd00a019799e9470ce9c`  
+**Verified source head:** `4551e4e5b2c1a54e627415b296471bb761b2ad56`  
 **PR state:** Open and draft. This record does not approve merging the feature or launching CEStudy broadly.
 
 ## Code changes verified
@@ -14,10 +14,10 @@
 
 ## Automated verification evidence
 
-- [CEStudy CI run 39411257568](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257568): passed on the verified source head. This includes dependency audit, ESLint, unit tests, production build/header packaging, backup encryption/retention tests, the rendered-browser checks and isolated Supabase migration/RLS tests.
-- [Rendered theme/accessibility job](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257568/job/118589302707): **146/146 assertions passed, 0 failed**. Coverage includes the selected-date detail surface's computed colors and the enabled/disabled Google button states.
-- [Full-history secret scan 39411257552](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257552): passed on the same source head.
-- [Cloudflare Pages branch deployment](https://github.com/justryan-n2d/CEStudy/runs/118589446105): succeeded for the PR head.
+- [CEStudy CI run 39432289551](https://github.com/justryan-n2d/CEStudy/actions/runs/39432289551): passed on the verified source head. This includes dependency audit, ESLint, unit tests, production build/header packaging, backup encryption/retention tests, the rendered-browser checks and isolated Supabase migration/RLS tests.
+- [Rendered theme/accessibility job](https://github.com/justryan-n2d/CEStudy/actions/runs/39432289551/job/118660134114): **146/146 assertions passed, 0 failed**. Coverage includes the selected-date detail surface's computed colors and the enabled/disabled Google button states.
+- [Full-history secret scan 39432289211](https://github.com/justryan-n2d/CEStudy/actions/runs/39432289211): passed on the same source head.
+- [Cloudflare Pages branch deployment](https://github.com/justryan-n2d/CEStudy/runs/118660472757): succeeded for the PR head.
 - The dedicated CI database job passed migration and row-level-security tests, including published-only question/lesson visibility, client-write denial and private review-field protection.
 
 ### Chromium coverage
@@ -47,10 +47,14 @@ On 2026-10-20, read-only project inspection reconfirmed:
 
 The three advisor notices reflect private tables with no direct client grants; they should remain private. The feature branch did not change remote database schema or rows.
 
+## Owner-reported OAuth checks (2026-10-20)
+
+The project owner reported that these preview checks passed: Google sign-in returned to `/profile`; Profile displayed the Google identity and Connected state; refreshing `/profile` retained the session; signing out and refreshing remained signed out; and the public library remained accessible while signed out. These are owner-reported manual results, not an independent replay by this audit.
+
 ## Release gates that remain open
 
-- [ ] Configure Google OAuth in Google Cloud and the dedicated CEStudy Supabase project.
-- [ ] Verify real successful sign-in, cancellation and retry/error behavior, safe return paths, sign-out, and local streak separation on the intended production/local URLs. Do not commit or share the OAuth client secret.
+- [x] Initial Google OAuth configuration and happy-path preview sign-in were reported as verified by the project owner. The Google consent screen remains in Testing mode; production publishing and allowed-return configuration still require review.
+- [x] Happy path, refresh persistence, sign-out persistence and guest library access were reported as passing on the preview. [ ] Cancellation, provider/callback error recovery and unsafe/malformed return-target behavior still require manual deployed-flow checks. Unit tests cover path sanitization but do not replace those manual checks. Do not commit or share the OAuth client secret.
 - [x] A fresh live-database snapshot was encrypted, uploaded, and read-back verified in [backup workflow run 38773249088, attempt 3](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) on 2026-10-20; see the [backup verification report](current-backup-verification.md). This attempt used an older validator that did not explicitly require `subject_lessons` and emitted summary-only command-substitution errors after upload/retention.
 - [ ] After PR #48's corrected three-table validator is merged to `main`, run the backup again and confirm the archive lists `catalog_subjects`, `practice_questions`, and `subject_lessons`; confirm clean summary logs, checksum/marker read-back and retention before closing the backup gate.
 - [ ] After explicit cost approval, restore the refreshed backup into a separate managed Supabase test project and validate counts, roles, grants, RLS and published-only visibility. The existing successful restore was into isolated local PostgreSQL only.
@@ -61,3 +65,8 @@ The three advisor notices reflect private tables with no direct client grants; t
 - [ ] Complete the documented Phase 1 student-discovery and Phase 2 user-journey/UX-validation catch-up without rebuilding completed screens.
 
 **Release decision:** PR #44 remains draft. The current branch's automated code and browser checks pass, but real OAuth and physical-device checks are outstanding. Phase 7 is still current, and CEStudy is not approved for a broad student launch.
+
+
+## Reconciliation status (2026-10-20)
+
+This verification evidence refers to the previous tested feature head, not yet the reconciled merge head. Fresh CI, full-history secret scanning and Pages preview checks must pass on the reconciled head before merge readiness is reconsidered. PR #44 remains draft.
