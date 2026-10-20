@@ -2,16 +2,37 @@ import { describe, expect, it } from "vitest";
 
 import stylesheet from "../styles/global.css?raw";
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+}
+
+function cssRulesFor(selector: string): string[] {
+  const pattern = new RegExp("(?:^|})" + escapeRegExp(selector) + "\\\\{([^}]*)}", "g");
+  return [...stylesheet.matchAll(pattern)].map((match) => match[1]);
+}
+
+function resolveLightThemeColor(color: string): string {
+  if (/^#[0-9a-f]{6}$/i.test(color)) return color;
+
+  const variable = color.match(/^var\\((--[a-z0-9-]+)\\)$/i)?.[1];
+  if (!variable) return color;
+
+  const token = stylesheet.match(new RegExp(escapeRegExp(variable) + ":\\s*(#[0-9a-f]{6})", "i"))?.[1];
+  return token ?? color;
+}
+
 function cssColorFor(selector: string): string {
-  const start = stylesheet.indexOf(`${selector}{`);
-  expect(start, `Expected a CSS rule for ${selector}`).toBeGreaterThanOrEqual(0);
-  if (start < 0) return "#000000";
-  const end = stylesheet.indexOf("}", start);
-  const rule = stylesheet.slice(start + selector.length + 1, end);
-  const declaration = rule.split(";").find((part) => part.trim().startsWith("color:"));
-  const color = declaration?.slice(declaration.indexOf(":") + 1).trim();
-  expect(color, `Expected a literal text color for ${selector}`).toMatch(/^#[0-9a-f]{6}$/i);
-  return color ?? "#000000";
+  const rules = cssRulesFor(selector);
+  expect(rules.length, "Expected a CSS rule for " + selector).toBeGreaterThan(0);
+
+  const color = rules
+    .flatMap((rule) => rule.split(";"))
+    .find((part) => part.trim().startsWith("color:"))
+    ?.split(":").slice(1).join(":").trim();
+  const resolved = color ? resolveLightThemeColor(color) : undefined;
+
+  expect(resolved, "Expected a resolvable text color for " + selector).toMatch(/^#[0-9a-f]{6}$/i);
+  return resolved ?? "#000000";
 }
 
 function luminance(hex: string): number {
@@ -63,10 +84,9 @@ describe("shared theme tokens", () => {
     ["input,select", "background:var(--ui-surface-raised)"],
     [".streak-unlock-dialog", "background:var(--ui-surface)"],
   ])("%s uses a shared surface token", (selector, declaration) => {
-    expect(stylesheet).toContain(selector + "{");
-    const start = stylesheet.indexOf(selector + "{");
-    const end = stylesheet.indexOf("}", start);
-    expect(stylesheet.slice(start, end)).toContain(declaration);
+    const matchingRules = cssRulesFor(selector);
+    expect(matchingRules.length, "Expected a CSS rule for " + selector).toBeGreaterThan(0);
+    expect(matchingRules.some((rule) => rule.includes(declaration))).toBe(true);
   });
 });
 
