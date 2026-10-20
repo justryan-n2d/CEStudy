@@ -1,6 +1,6 @@
 # CEStudy automated weekly database backups
 
-**Status:** The weekly encrypted backup workflow is active, and the first real run [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088) uploaded an encrypted archive and checksum to private Backblaze B2, verified both by read-back, wrote the `.verified` marker, and completed retention. The October 15 snapshot was restored into isolated local PostgreSQL 18.2 on 2026-10-16. **That snapshot predates the 2026-10-18 live publication-status correction and the current 52-question/13-lesson bank. A fresh backup must be run and verified before Stage 1 can be signed off.** The managed-Supabase-target restore remains untested; see [restore-drill evidence](restore-drill-2026-10-16.md).
+**Status:** The weekly encrypted backup workflow is active. The latest live run [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded on `main` commit `44ceab69364ba0b094399fbd878ccd38d942356c`: upload and archive/checksum read-back passed, retention kept four verified sets and hid three stale/incomplete artifacts, and the logs had no summary errors. That main-branch script still checks only `catalog_subjects` and `practice_questions`; PR #48 adds `subject_lessons`, a regression test, and explicit success logs for each table. Do not close the full validation gate until the corrected script is run successfully against live B2. The managed-Supabase-target restore remains untested; see the [current backup verification report](../reviews/2026-10-20-current-backup-verification.md).
 
 ## Schedule and destination
 
@@ -15,7 +15,7 @@
 
 **Automatic in GitHub Actions:** the weekly schedule; B2 access preflight; PostgreSQL export; archive and expected-table checks; encryption using the public certificate; upload of the encrypted archive and checksum; remote read-back checks; creation and verification of the `.verified` marker; retention pruning after successful verification; failure summary; and CI tests for encrypt/decrypt, corrupted-tag rejection, retention, migrations, RLS, lint, and build.
 
-**Still manual:** immediately after any critical live data correction, run a fresh backup manually in GitHub Actions and confirm the archive/checksum/verified marker by read-back; Backblaze lifecycle cleanup; GitHub failure-email settings; protected copies of the private key and passphrase; restoring the refreshed dump into a separate Supabase test database; validating counts, grants, RLS, and published-only visibility; and recording restore evidence. A successful upload is not proof that a full restore works.
+**Still manual:** after PR #48's corrected validator is merged, run a clean backup from `main` and confirm the log names all three required tables (`catalog_subjects`, `practice_questions`, and `subject_lessons`), all archive/checksum/marker read-back checks pass, retention completes, and the summary contains no shell errors. Then confirm the Backblaze lifecycle cleanup; GitHub failure-email settings; protected copies of the private key and passphrase; restore the refreshed dump into a separate managed Supabase test project after cost approval; validate counts, grants, RLS and published-only visibility; and record restore evidence.
 
 ## 1. Generate a private key and public certificate in Termux
 
@@ -103,7 +103,7 @@ The GitHub Actions run summary also includes a direct link to a failure, but ema
 
 ## 6. Check the successful backup and future scheduled runs
 
-The first successful post-fix run is [38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088). It retained one verified set. For future manual verification, after confirming the required secrets, configuring the lifecycle rule, and enabling failure notifications:
+The latest successful live backup run is [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649), which retained four verified sets and hid three stale/incomplete artifacts. Its main-branch validator still checks only two application tables; after PR #48 merges, rerun from `main` to verify all three tables with explicit success lines. For future manual verification, after confirming the required secrets, configuring the lifecycle rule, and enabling failure notifications:
 
 1. Open the repository **Actions** tab.
 2. Select **CEStudy weekly database backup**.

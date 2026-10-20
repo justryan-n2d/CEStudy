@@ -147,13 +147,15 @@ if [[ ! -s "$dump_file" ]]; then
   exit 1
 fi
 
-# Verify archive readability and expected application tables before encryption.
+# Verify archive readability and all student-facing content tables before encryption.
 pg_restore --list "$dump_file" > "$work_dir/archive-toc.txt"
-for table in catalog_subjects practice_questions; do
+expected_tables=(catalog_subjects practice_questions subject_lessons)
+for table in "${expected_tables[@]}"; do
   if ! grep -Eq "TABLE public ${table}([[:space:]]|$)" "$work_dir/archive-toc.txt"; then
     echo "ERROR: The dump does not include expected table public.$table." >&2
     exit 1
   fi
+  printf 'Verified required archive table: public.%s\n' "$table"
 done
 
 printf 'Encrypting with RSA-OAEP and streaming AES-256-GCM...\n'

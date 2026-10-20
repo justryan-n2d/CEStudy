@@ -1,6 +1,6 @@
 # CEStudy database backup and recovery plan
 
-**Status:** Automated weekly backup is active. The first successful live backup passed in [GitHub Actions run 38773249088](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), and its encrypted archive/checksum were verified in private Backblaze B2. The actual October 15 snapshot was decrypted and restored into isolated local PostgreSQL 18.2 on 2026-10-16; see [restore-drill evidence](restore-drill-2026-10-16.md). That snapshot predates the live database's current 52-question/13-lesson state and the 2026-10-18 publication-status correction. A fresh encrypted backup and a managed-Supabase-target restore remain required. Backblaze hidden-version lifecycle cleanup and GitHub failure-email settings also need manual confirmation.
+**Status:** Automated weekly backup is active. The latest live run [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded on `main` commit `44ceab69364ba0b094399fbd878ccd38d942356c`; encrypted archive upload, archive/checksum read-back, marker verification and retention completed. Four verified sets were kept and three stale/incomplete artifacts hidden, with no summary errors. That script still checks only catalog and practice-question tables. [PR #48](https://github.com/justryan-n2d/CEStudy/pull/48) adds the `subject_lessons` validation, a regression guard, and explicit per-table success logs. Repeat the backup after that corrected validator reaches `main`. The October 16 local PostgreSQL 18.2 restore used an older snapshot; the managed-Supabase-target restore, B2 hidden-version lifecycle cleanup and GitHub failure-email settings remain open.
 **Scope:** Current seeded-only MVP, before student accounts, submissions, or other mutable user data are introduced.
 
 ## Current recovery position
@@ -19,7 +19,7 @@ The CEStudy Supabase organization is on the Free plan. Supabase documents automa
 
 ## Automated weekly Backblaze workflow
 
-A scheduled workflow is active at [`.github/workflows/weekly-db-backup.yml`](../../.github/workflows/weekly-db-backup.yml). It runs Sundays at 02:00 UTC (10:00 AM Philippine time) and can also be run manually. It exports the database with PostgreSQL 17, validates the archive and expected tables, encrypts with RSA-OAEP/SHA-256 plus streaming AES-256-GCM, uploads to the private `cestudy-db-backup/termux/weekly/` prefix, reads the archive and checksum back, verifies the `.verified` marker, and retains the latest four complete verified sets. The first successful live run is recorded above. The scheduled backup process is automated and one older backup was restored into isolated local PostgreSQL. A fresh backup after the 2026-10-18 content-status correction, B2 lifecycle cleanup, GitHub failure-email preferences, and a managed-Supabase restore are still manual release checks.
+A scheduled workflow is active at
 
 ## Creating a logical export
 
@@ -75,11 +75,12 @@ For a managed-Supabase-target recovery rehearsal (still outstanding), perform th
 
 - [x] Create the password-protected RSA private key and public certificate in Termux, commit the public certificate, and configure the database/B2 repository secrets.
 - [ ] Configure and confirm the B2 lifecycle rule for `termux/weekly/` and GitHub failed-workflow email notifications.
-- [x] Complete a successful live weekly-workflow run; run 38773249088 verified the encrypted archive, checksum, and `.verified` marker in B2.
+- [x] Complete a successful live weekly-workflow run: [run 39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded on `main`, read the encrypted archive back for SHA-256 verification, and completed retention.
 - [x] Decrypt the actual B2 backup in Termux, verify its checksum and AES-GCM authentication, restore its `public` application schema into isolated local PostgreSQL 18.2, and validate counts, RLS, and client permissions. Evidence: [restore drill](restore-drill-2026-10-16.md).
-- [ ] Run/verify a fresh encrypted backup after the 2026-10-18 content-status correction.
+- [x] Fresh encrypted archive and checksum uploaded and read-back verified in [run 39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649); four verified backup sets were retained and three stale/incomplete artifacts hidden. The run still used the pre-PR two-table validator; see [current verification report](../reviews/2026-10-20-current-backup-verification.md).
+- [ ] After PR #48's three-table validator reaches `main`, rerun the backup and confirm the archive verifier checks and logs `catalog_subjects`, `practice_questions`, and `subject_lessons`, followed by archive/checksum/marker read-back and successful retention.
 - [ ] Restore/rehearse the refreshed backup into a separate managed Supabase project and validate platform-target behavior; the local restore does not cover Supabase-managed roles/system schemas/settings.
 - [ ] Backup cadence and retention owner agreed before mutable data or student accounts launch.
 - [ ] Recovery steps and latest export location are known to the maintainer.
 
-The weekly backup automation is active and has completed a successful live backup from an earlier database state. That real encrypted snapshot was decrypted and restored to isolated local PostgreSQL. On 2026-10-18, production publication statuses were corrected, so the current database must be backed up again before the recovery evidence is considered current. Remaining gates are a fresh encrypted backup, the B2 hidden-version lifecycle rule, GitHub failure-email preferences, and a separate managed-Supabase-target restore. Do not treat current-state recovery as proven until the refreshed snapshot and target-specific test pass.
+The weekly backup automation is active, and the latest run successfully delivered and read back a fresh encrypted snapshot. The backup summary was clean. However, this run used the previous two-table validator. Current-state recovery stays partially verified until a new run uses the corrected three-table validator in PR #48; the managed-Supabase-target restore, B2 hidden-version lifecycle rule and GitHub failure-email preferences also remain open.
