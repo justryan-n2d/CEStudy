@@ -150,14 +150,21 @@ async function main() {
                 return {
                   background: style.backgroundColor,
                   foreground: style.color,
+                  hovered: button.matches(":hover"),
+                  active: button.matches(":active"),
                   icon: icon?.getAttribute("src") || "",
                   iconTileBackground: icon?.parentElement ? getComputedStyle(icon.parentElement).backgroundColor : "missing",
                 };
               });
-              check("Enabled Google sign-in uses the intended white brand treatment",
-                enabledStyle.background === "rgb(255, 255, 255)" &&
+              const expectedEnabledSurface = enabledStyle.active
+                ? "rgb(241, 243, 244)"
+                : enabledStyle.hovered
+                  ? "rgb(248, 249, 250)"
+                  : "rgb(255, 255, 255)";
+              check("Enabled Google sign-in uses the approved light brand surface for its current state",
+                enabledStyle.background === expectedEnabledSurface &&
                   enabledStyle.foreground === "rgb(31, 31, 31)",
-                JSON.stringify(enabledStyle));
+                JSON.stringify({ ...enabledStyle, expectedEnabledSurface }));
               check("Google logo remains on a white tile",
                 enabledStyle.iconTileBackground === "rgb(255, 255, 255)",
                 JSON.stringify(enabledStyle));
