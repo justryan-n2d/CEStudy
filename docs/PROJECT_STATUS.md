@@ -1,10 +1,18 @@
 # CEStudy project status
 
-**Last updated:** 2026-10-19  
+**Last updated:** 2026-10-20  
 **Current phase:** **Phase 7, pre-launch hardening and release gates.**  
 **Release status:** CEStudy is **not approved for a broad student launch**. A read-only live Supabase check on 2026-10-19 reconfirmed 72 catalog subjects, 52 practice questions and 13 lessons; all 52 questions and all 13 lessons are `needs-review`, with zero published or verified items in either content table. Anonymous clients can read the catalog but receive no rows from the unpublished question/lesson tables. The latest recorded production Chromium smoke test [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed 135/135 checks on 2026-10-18; main CI and full-history secret scanning also passed their recorded runs. Still open: current-state encrypted backup and managed-Supabase restore, B2 lifecycle and GitHub failure-email confirmation, physical-device/accessibility and search/filter QA, independent human content review, and the controlled student pilot. Phases 1 and 2 also need user-discovery and UX-documentation catch-up. These gaps are tracked in the [Phase Plan](PHASE_PLAN.md) and [launch checklist](deployment/launch-checklist.md).
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
+
+
+## Current pull-request validation (2026-10-20)
+
+- **PR #47, bounded Gitleaks exception:** the PR's CI and full-history secret scan passed on its current head. The exception is limited to one historical synthetic fixture by commit, file path, and exact line. It remains open and unmerged pending review: [PR #47](https://github.com/justryan-n2d/CEStudy/pull/47).
+- **PR #44, theme and accessibility follow-up:** the branch was reconciled with current `main` while preserving the newer Supabase setup documentation and the optional Google sign-in feature. The streak calendar's today, selected-day, and legend outlines now use `--ui-focus`; the dark day-detail panel uses the shared raised-surface, border, and text tokens. Regression tests were added for the theme tokens and indicator states, and the CSS test helper now handles repeated selectors and semantic color variables.
+- **Latest PR #44 checks:** lint, unit tests, and production build passed in [CI run 39406238480](https://github.com/justryan-n2d/CEStudy/actions/runs/39406238480). The isolated Supabase migration/RLS job was still running at the time of this update, so the full CI result is not yet green/confirmed. The full-history secret scan passed on the same branch head.
+- **Not yet verified:** rendered dark-mode contrast and keyboard focus on a real browser/device, real Google OAuth sign-in/sign-out, and the remaining Phase 7 backup/restore, lifecycle/notification, human content-review, and student-pilot gates. Do not treat a passing unit test or deployed preview as approval for a broad launch.
 
 ## Latest production verification (2026-10-18)
 
