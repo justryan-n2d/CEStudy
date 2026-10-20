@@ -185,6 +185,78 @@ async function main() {
       }
     }
 
+    // Simulate OAuth cancellation/provider-error callback URLs without contacting Google.
+    // The external provider click/cancel itself still requires an interactive test account.
+    const oauthErrorScenarios = [
+      { label: "cancellation", error: "access_denied", description: "The user canceled Google sign-in." },
+      { label: "provider failure", error: "server_error", description: "The provider could not complete sign-in." },
+    ];
+    for (const scenario of oauthErrorScenarios) {
+      const callbackUrl = new URL("/login", baseUrl);
+      callbackUrl.searchParams.set("error", scenario.error);
+      callbackUrl.searchParams.set("error_description", scenario.description);
+      const callbackResponse = await page.goto(callbackUrl.toString(), { waitUntil: "domcontentloaded", timeout: 30000 });
+      const callbackState = await page.evaluate(() => {
+        const button = document.querySelector(".google-signin-button");
+        return {
+          origin: window.location.origin,
+          pathname: window.location.pathname,
+          heading: document.querySelector("h1")?.textContent?.trim() || "",
+          alertText: document.querySelector('[role="alert"]')?.textContent?.trim() || "",
+          buttonLabel: button?.textContent?.trim() || "",
+          buttonDisabled: button instanceof HTMLButtonElement ? button.disabled : true,
+          setupNoteVisible: Boolean(document.querySelector(".login-setup-note")),
+        };
+      });
+      check("OAuth " + scenario.label + " callback stays on local Login route",
+        Boolean(callbackResponse && callbackResponse.status() === 200) &&
+          callbackState.origin === new URL(baseUrl).origin &&
+          callbackState.pathname === "/login" &&
+          /sign in to cestudy/i.test(callbackState.heading),
+        JSON.stringify(callbackState));
+      check("OAuth " + scenario.label + " callback displays recovery feedback",
+        /canceled or could not be completed/i.test(callbackState.alertText),
+        callbackState.alertText);
+      check("OAuth " + scenario.label + " callback clears pending state and preserves retry/setup",
+        callbackState.buttonLabel === "Continue with Google" &&
+          callbackState.buttonDisabled === callbackState.setupNoteVisible,
+        JSON.stringify(callbackState));
+      await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+      check("OAuth " + scenario.label + " callback remains recoverable after refresh",
+        await page.getByRole("alert").count() === 1 &&
+          /canceled or could not be completed/i.test(await page.getByRole("alert").innerText()));
+    }
+
+    // Hostile values must not navigate the signed-out Login page away from this app origin.
+    // Unit tests also assert that returnTo resolves safely to /profile for these values.
+    const unsafeTargets = [
+      { label: "absolute external URL", value: "https://evil.example/steal" },
+      { label: "protocol-relative URL", value: "//evil.example/steal" },
+      { label: "backslash protocol-relative URL", value: "\\\\evil.example\\steal" },
+      { label: "javascript URL", value: "javascript:alert(1)" },
+      { label: "login redirect loop", value: "/login?next=%2Fstreak" },
+    ];
+    for (const target of unsafeTargets) {
+      const loginUrl = new URL("/login", baseUrl);
+      loginUrl.searchParams.set("next", target.value);
+      const targetResponse = await page.goto(loginUrl.toString(), { waitUntil: "domcontentloaded", timeout: 30000 });
+      const targetState = await page.evaluate(() => ({
+        origin: window.location.origin,
+        pathname: window.location.pathname,
+        heading: document.querySelector("h1")?.textContent?.trim() || "",
+        hasLoginPanel: Boolean(document.querySelector(".login-panel")),
+        hasSignInButton: Boolean(document.querySelector(".google-signin-button")),
+      }));
+      check("Unsafe return target stays on local Login: " + target.label,
+        Boolean(targetResponse && targetResponse.status() === 200) &&
+          targetState.origin === new URL(baseUrl).origin &&
+          targetState.pathname === "/login" &&
+          /sign in to cestudy/i.test(targetState.heading) &&
+          targetState.hasLoginPanel &&
+          targetState.hasSignInButton,
+        JSON.stringify(targetState));
+    }
+
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(baseUrl + "/menu", { waitUntil: "domcontentloaded", timeout: 30000 });
     await page.evaluate(() => { document.body.tabIndex = -1; document.body.focus(); });
