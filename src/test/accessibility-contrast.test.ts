@@ -2,13 +2,32 @@ import { describe, expect, it } from "vitest";
 
 import stylesheet from "../styles/global.css?raw";
 
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^$()|[\]\\]/g, "\\$&");
-}
-
 function cssRulesFor(selector: string): string[] {
-  const pattern = new RegExp("(?:^|})" + escapeRegExp(selector) + "\\{([^}]*)}", "g");
-  return [...stylesheet.matchAll(pattern)].map((match) => match[1]);
+  const rules: string[] = [];
+  let cursor = 0;
+
+  while (cursor < stylesheet.length) {
+    const openingBrace = stylesheet.indexOf("{", cursor);
+    if (openingBrace < 0) break;
+    const closingBrace = stylesheet.indexOf("}", openingBrace + 1);
+    if (closingBrace < 0) break;
+
+    const previousBoundary = Math.max(
+      stylesheet.lastIndexOf("}", openingBrace - 1),
+      stylesheet.lastIndexOf("{", openingBrace - 1),
+    );
+    const ruleSelector = stylesheet
+      .slice(previousBoundary + 1, openingBrace)
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .trim();
+
+    if (ruleSelector.split(",").some((part) => part.trim() === selector)) {
+      rules.push(stylesheet.slice(openingBrace + 1, closingBrace));
+    }
+    cursor = openingBrace + 1;
+  }
+
+  return rules;
 }
 
 function resolveLightThemeColor(color: string): string {
