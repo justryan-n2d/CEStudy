@@ -2,7 +2,7 @@
 
 **Audit date:** 2026-10-20  
 **Live project:** CEStudy Supabase, backed up by the production GitHub Actions workflow  
-**Status:** A fresh encrypted snapshot was successfully delivered and read back in the latest live run. The Phase 7 archive-validation gate remains open because that run used the pre-PR validator, which checks only the catalog and question tables. PR #48 adds the missing lesson-table check and visible success output for each table. A managed-Supabase-target restore also remains untested.
+**Status:** PR #48 was merged into `main` at `6135f4faf6ca1c01c2abc49ca372e40ddfe1bc2b` on 2026-10-20. A fresh encrypted snapshot was successfully delivered and read back in the latest live run, [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649), but that run used the pre-fix validator and checked only catalog and question tables. The merged `main` script now requires all three content tables and logs each successful check. The Phase 7 archive-validation gate remains open until a fresh run uses the corrected code. A managed-Supabase-target restore also remains untested.
 
 ## Latest successful live backup
 
@@ -25,7 +25,7 @@ It does **not** prove that the validator explicitly required every application c
 
 ## Corrective change and CI evidence
 
-[PR #48](https://github.com/justryan-n2d/CEStudy/pull/48) adds:
+[PR #48](https://github.com/justryan-n2d/CEStudy/pull/48), merged as `6135f4faf6ca1c01c2abc49ca372e40ddfe1bc2b`, adds:
 
 - An explicit required-table list containing `catalog_subjects`, `practice_questions`, and `subject_lessons`.
 - A regression test proving the validator cannot silently omit the lesson table.
@@ -35,11 +35,11 @@ It does **not** prove that the validator explicitly required every application c
 
 The missing table check was first reproduced by [CI run 39430805954](https://github.com/justryan-n2d/CEStudy/actions/runs/39430805954). The per-table log assertion then failed as intended on commit `28f95dbc594bb5595635962612096db6233a41f9`, with [CI run 39434510999](https://github.com/justryan-n2d/CEStudy/actions/runs/39434510999) recording `FAIL: backup logs must name each required table after archive validation.` The script was updated on commit `80d8f9bc4495114a27f27effe3a13544953b22be`. That implementation commit passed [CI run 39434748294](https://github.com/justryan-n2d/CEStudy/actions/runs/39434748294), including lint, unit tests, build, backup crypto/retention/verification tests, and isolated Supabase migration/RLS tests. The matching [full-history secret scan 39434747834](https://github.com/justryan-n2d/CEStudy/actions/runs/39434747834) also passed.
 
-PR #48 remains open and draft. The corrected validator has not yet run against the live database.
+PR #48 is merged. The corrected validator is now on `main`, but it has not yet run against the live database.
 
 ## Remaining recovery gates
 
-- [ ] After PR #48 is merged, run **CEStudy weekly database backup** from `main`. Confirm the logs explicitly name all three required tables, archive/checksum/verification-marker read-back succeeds, retention completes, and there are no summary errors.
+- [ ] Run **CEStudy weekly database backup** from current `main`. Confirm the logs explicitly name all three required tables, archive/checksum/verification-marker read-back succeeds, retention completes, and there are no summary errors.
 - [ ] After explicit cost approval, restore the refreshed archive into a **separate managed Supabase test project**, not production. Validate table counts, RLS, grants, column protections, and published-only row visibility. The October 16 local PostgreSQL restore does not test Supabase-managed roles, system schemas, or project settings.
 - [ ] Confirm the Backblaze B2 hidden-version lifecycle rule does not hide current verified sets.
 - [ ] Confirm GitHub Actions failure-email preferences.
