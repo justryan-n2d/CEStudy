@@ -155,6 +155,7 @@ for table in "${expected_tables[@]}"; do
     echo "ERROR: The dump does not include expected table public.$table." >&2
     exit 1
   fi
+  printf 'Verified required archive table: public.%s\n' "$table"
 done
 
 printf 'Encrypting with RSA-OAEP and streaming AES-256-GCM...\n'
