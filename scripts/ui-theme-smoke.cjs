@@ -249,6 +249,9 @@ async function main() {
       const loginUrl = new URL("/login", baseUrl);
       loginUrl.searchParams.set("next", target.value);
       const targetResponse = await page.goto(loginUrl.toString(), { waitUntil: "domcontentloaded", timeout: 30000 });
+      // Supabase's initial session lookup can briefly render "Checking your sign-in".
+      // Wait for the stable Login state before asserting the destination was safely rejected.
+      await page.getByRole("heading", { name: /^sign in to cestudy$/i }).waitFor({ state: "visible", timeout: 10000 });
       const targetState = await page.evaluate(() => ({
         origin: window.location.origin,
         pathname: window.location.pathname,
