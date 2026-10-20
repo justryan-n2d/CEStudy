@@ -73,8 +73,11 @@ Gitleaks reference: [configuration and allowlists](https://github.com/gitleaks/g
 **Scope note:** This record reflects repository state and test results available at the timestamp above. Recheck PR heads, branch divergence, and checks before making a merge decision.
 
 
-## PR #44 reconciliation update (2026-10-20)
 
-The PR #44 feature branch is being reconciled with current `main` at `e6f657cbbf94467e427fc6183c9714e965098598`. The combined tree retains the newer main-branch backup validator and its regression test, current release-phase documents, and PR #44's app/theme/accessibility changes. CI is being combined so the rendered Chromium smoke test and latest backup-verification test both run.
+## PR #44 OAuth recovery and deployed-preview checks (2026-10-21)
 
-Post-reconciliation verification remains pending. Prior CI and secret-scan passes apply to the earlier head only. Keep PR #44 in draft until fresh lint, tests, build, backup checks, Supabase migration/RLS tests, full-history secret scan and preview pass. Provider cancellation, callback/provider error recovery, and a deployed unsafe-return-target check remain open.
+The application/test head `3c65b387153203b51ac1b2e592dbd92ed7984770` is reconciled with current `main`. Fresh validation on that head passed [CI run 39459966739](https://github.com/justryan-n2d/CEStudy/actions/runs/39459966739), [full-history secret scan 39459966768](https://github.com/justryan-n2d/CEStudy/actions/runs/39459966768), and [Cloudflare Pages preview check 118756850339](https://github.com/justryan-n2d/CEStudy/runs/118756850339).
+
+See the detailed [OAuth recovery verification record](2026-10-21-pr44-oauth-recovery-checks.md). Automated tests passed for simulated cancellation/error callback responses, retry-state behavior, and safe handling of external or malformed return targets. The deployed branch preview passed **157/157 browser assertions** at 320 px and 1440 px; the built production preview passed **159/159**. Unit tests passed **199/199 across 32 files**, including signed-in redirect fallback tests, cancellation retry, and recovery after OAuth initiation failure.
+
+**Important boundary:** the browser automation injects callback error query parameters directly. It does not sign in to Google, click Cancel on Google's actual provider screen, or force a real upstream Google/Supabase callback failure. Those interactive provider tests remain a manual merge gate. The Google consent screen is in Testing mode; production audience/redirect configuration also needs review. PR #44 remains open and in draft; do not merge until the remaining manual gates are completed and recorded.
