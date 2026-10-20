@@ -24,7 +24,8 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] Recovery method for the current catalog and schema is documented; public catalog metadata can be seeded from source. Actual unpublished question rows are intentionally not reconstructed from public Git, and the encrypted database backup is the recovery source for those rows.
 - [x] Backup/recovery procedure documented in [backup and recovery plan](backup-and-recovery.md).
 - [x] The real encrypted off-site backup was verified and restored to isolated local PostgreSQL 18.2; see [restore-drill evidence](restore-drill-2026-10-16.md).
-- [ ] Run and verify a fresh encrypted backup after the 2026-10-18 publication-status correction.
+- [x] A fresh encrypted snapshot of the current live database was uploaded and read-back verified in [backup run 38773249088, attempt 3](https://github.com/justryan-n2d/CEStudy/actions/runs/38773249088), timestamp `20261020T105202Z`; four complete verified sets were retained. See the [current backup verification report](../reviews/2026-10-20-current-backup-verification.md).
+- [ ] After PR #48's three-table validator is merged, rerun backup from `main`. The previous attempt used an old validator that did not explicitly require `subject_lessons` and logged summary-only shell errors after upload/retention.
 - [ ] Restore the refreshed backup into a separate managed Supabase test project after explicit cost approval; local restore does not test managed Supabase system roles or settings.
 - [x] Live Chromium network capture confirmed the deployed browser requests use `qqmdwltfgpqtcvdbcmto.supabase.co` and an `sb_publishable_` key; no privileged key was detected. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
 
