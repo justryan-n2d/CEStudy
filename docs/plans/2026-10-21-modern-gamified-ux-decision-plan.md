@@ -50,7 +50,7 @@ Compare both theme variants on the same desktop flows:
 
 - Public Home and year/semester/subject navigation.
 - Review Materials page, long formula/equation content, and problem solutions.
-- Student Dashboard with streak, readiness evidence, quests, and progress.
+- Student Dashboard with streak, progress history, quests (when enabled), and ordinary activity summaries; no board-readiness measure.
 - Split-screen Practice session with question, diagram, timer, answer controls, and formula panel.
 - Community problem thread, comment composer, and leaderboard.
 - Dialogs, menus, charts, empty/error states, and focus indicators.
@@ -88,7 +88,6 @@ As of 2026-10-22, the owner wants the gamification mechanics to be individually 
 | Stress Test | +50 XP | Score at least 80% on a defined five-question Statics of Rigid Bodies quiz | Freeze the eligible pool/version for that instance; retries cannot repeatedly mint XP for the same instance |
 | Night Owl | +30 XP | Complete an eligible module during a stated overnight window | Keep optional; do not present late-night study as better or multiply streak/leaderboard value because of the hour |
 | Group Study | +100 XP | Participate in three eligible community discussion threads | Define eligible participation after moderation and anti-spam rules; avoid rewarding repeated low-value posts |
-| The Board Simulator | +500 XP and proposed "Subgrade Master" badge | Complete an approved mock-exam package whose length and subject coverage have been verified | Keep the proposed 100-question count and badge name provisional; do not call it an official-format simulator without evidence |
 
 The reward values above reproduce the owner's examples for planning. They are not commitments and can be changed after balancing and abuse review.
 
@@ -154,7 +153,7 @@ The Mock Exam Portal may remain in the high-level website information architectu
 
 ### Keep global navigation and workspace navigation distinct
 
-The current website-first target is a hybrid global header with Year-Level dropdown, Review Materials Hub, direct Mock Exam Portal and Community Forum links, plus the private Student Dashboard/account control. The new Discord-inspired collapsible left sidebar is a presentation proposal, not automatic approval to replace that global navigation everywhere.
+The current website-first target is a hybrid global header with Year-Level dropdown, Review Materials Hub, direct Mock Exam Portal and Community Forum links, plus the private Student Dashboard/account control. The owner approved a collapsible sidebar only for dense signed-in workspaces; it must not replace the public global header everywhere.
 
 Compare three navigation models:
 
