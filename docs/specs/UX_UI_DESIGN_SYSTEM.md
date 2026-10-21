@@ -112,7 +112,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Revision record
 
-- **2026-10-21T19:03:29+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
+- **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
 
 ## Footer
 
