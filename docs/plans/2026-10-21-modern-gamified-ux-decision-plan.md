@@ -31,7 +31,7 @@ This is a decision plan, not an implementation specification. It adds no routes,
 
 ### Existing requirement and newer direction
 
-The earlier website-first plan and design-system specification identify white/light as the default and dark mode as an option. A later owner request proposes dark as the main visual direction, inspired by Discord, Duolingo, GitHub, and CAD/code-editor interfaces. Neither requirement should be silently overwritten. The default-theme choice remains open until a comparison is reviewed.
+The earlier website-first plan and design-system specification identify white/light as the default and dark mode as an option. The owner’s newer design direction is explicitly inspired by four references: **Discord** for community spaces and compact navigation patterns; **Duolingo** for quests, XP, streak feedback, and rewarding learning loops; **GitHub** for structured activity, progress history, and technical information hierarchy; and **Autodesk AutoCAD** for a precise engineering-workspace aesthetic, dark drafting canvas, technical panels, and disciplined high-contrast accents. These are sources of design inspiration, not interfaces to copy. The newer direction favors a dark-first appearance, but the default-theme choice remains open until a comparison is reviewed.
 
 ### Options to compare
 
@@ -56,9 +56,10 @@ Compare both theme variants on the same desktop flows:
 
 Candidate dark palette direction only, not finalized tokens:
 
-- Deep slate or midnight surfaces.
+- Deep slate or midnight surfaces with an AutoCAD-inspired precision-workspace feel. Do not reproduce AutoCAD's exact interface or imply affiliation.
 - Existing CEStudy brand blue #0754B5 retained for brand continuity.
 - Electric green for selected success/progress accents, neon blue/cyan for selected interactive states, and safety orange for carefully scoped warnings.
+- Use clean technical panels, strong alignment, restrained grid/line details where useful, and readable spaces for engineering diagrams and equations. Avoid visual clutter and excessive glow.
 - Semantic colors must remain distinguishable in both themes. Do not use neon fills or glow as the primary way to communicate status.
 
 Evaluation criteria: text and control contrast, equation/diagram readability, long-session comfort, information hierarchy, visual crowding, keyboard focus, reduced-motion behavior, perceived loading performance, and consistency across routes. Use contrast checks and manual keyboard/screen-reader review rather than choosing colors by appearance alone.
