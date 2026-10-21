@@ -48,3 +48,14 @@ Keep PR #44 open and in draft until the following are completed and recorded on 
 3. Review Google OAuth consent-screen publishing/testing-mode requirements and production Supabase redirect allowlists before making the account feature generally available.
 
 The safe-return-path logic has unit-test coverage for signed-in routing, and the deployed preview passed the unauthenticated-origin checks. No merge or production deployment was performed as part of this verification. All draft lessons and practice questions must remain unpublished.
+
+## Manual Gate 1: Real Google provider cancellation (2026-10-21)
+
+**Result: PASS, based on user-observed manual test.** The tester started Google sign-in through the deployed PR preview and cancelled at the actual Google provider screen (not by injecting callback query parameters). The user reported:
+
+- Google returned to Login: **PASS**.
+- App remained signed out: **PASS**.
+- No stuck spinner or false success state: **PASS**.
+- Retry initiated normally: **PASS**.
+
+**Evidence boundary:** this result is based on the tester's reported observations in the conversation. No screen recording, screenshot, timestamped browser log, or provider trace was attached. It confirms Gate 1 at the reported level, but does not close Gate 2 (controlled real provider/callback failure) or Gate 3 (production consent-screen and Supabase redirect review). Keep PR #44 open and in draft.
