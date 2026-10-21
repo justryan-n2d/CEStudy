@@ -1,7 +1,8 @@
 # CEStudy Modern Gamified UX/UI Decision Plan
 
-**Status:** Planning proposal. Product decisions in this document are not yet approved for implementation.  
+**Status:** Owner-reviewed planning record. Selected design directions are approved; feature implementation remains separately gated.  
 **Prepared:** 2026-10-21 (Asia/Manila)  
+**Decision update:** 2026-10-22 (Asia/Manila)  
 **Related plan:** [Website-First Information Architecture and Structure Plan](./2026-10-21-website-first-information-architecture-plan.md)  
 **Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md)
 
@@ -12,36 +13,36 @@ This document defines how CEStudy should resolve five design and product questio
 1. Whether the website should default to dark or light mode.
 2. How quests, XP, streaks, badges, leaderboards, and possible future tokens should work.
 3. How to make study rewarding without pressuring students into unhealthy routines or intrusive effects.
-4. How to ground board-exam practice and readiness indicators in current, approved evidence.
+4. Which exam-specific extensions should remain out of scope unless the owner requests a separate proposal.
 5. How navigation and the split-screen practice workspace should adapt across desktop, tablet, and phone browsers.
 
 This is a decision plan, not an implementation specification. It adds no routes, components, business logic, database structures, RLS policies, question records, or release approvals. Existing features on PR #44 remain draft-branch work and must not be treated as functionality shipped to main.
 
 ## Decision register
 
-| Area | Current state | What must be produced before implementation |
+| Area | Owner decision as of 2026-10-22 | Remaining boundary before implementation |
 |---|---|---|
-| Theme and visual language | Earlier spec says light default; newer owner direction favors a dark-first CAD-inspired interface | Compare representative light-first and dark-first prototypes, choose default and preference persistence |
-| Quest and reward rules | Reward names and example values proposed, not finalized | Written XP, streak, badge, retry, abuse-prevention, timezone, and privacy rules |
-| Healthy engagement | Optional sounds and reduced motion required; Night Owl quest remains questionable | Approved defaults and wording that support student choice and avoid promoting late-night studying |
-| Exam accuracy | A 100-question weekend challenge is proposed; official coverage and count not yet established | PRC-sourced exam blueprint, question provenance and rights, scoring/readiness methodology |
-| Responsive navigation | Existing target is a hybrid top navigation; collapsible side navigation is a new proposal | Page-by-page navigation model and tested breakpoints, including a narrow practice workspace |
+| Theme and visual language | Approved: explicit Light/Dark toggle. Keep the existing light-default baseline for now; do not silently switch to dark-first. | Decide whether preference is device-local or account-synchronized, then verify shared semantic tokens and contrast in both themes. |
+| Quest and reward rules | Approved direction: XP, quests, streak freezes, badges, leaderboards, and retry/reward behavior must be independently toggleable. | Exact reward values, eligibility, uniqueness, retry behavior, privacy and anti-abuse rules still need definition. Safety/integrity controls must never be disabled while the related feature is active. |
+| Healthy engagement | Approved: optional sound, reduced-motion support, and an optional Night Owl quest with safeguards. | Convert the approved principles into accessible acceptance checks. |
+| Exam authenticity | Not approved in this plan. Do not scope current PRC CELE mapping, a past-question sourcing/permissions workflow, the proposed 100-question challenge, or readiness measurements here. | No official-format or board-readiness claims. Any future proposal requires a separate owner request. Existing content review/publication safeguards still apply. |
+| Responsive navigation | Approved: hybrid global header, collapsible sidebar scoped to dense signed-in workspaces, and a flexible approximately 70/30 Practice workspace. | Specify exact responsive behavior and test the panel/sidebar at the planned viewport widths before implementation. |
 
 ## 1. Theme conflict and modern engineering visual language
 
 ### Existing requirement and newer direction
 
-The earlier website-first plan and design-system specification identify white/light as the default and dark mode as an option. The owner’s newer design direction is explicitly inspired by four references: **Discord** for community spaces and compact navigation patterns; **Duolingo** for quests, XP, streak feedback, and rewarding learning loops; **GitHub** for structured activity, progress history, and technical information hierarchy; and **Autodesk AutoCAD** for a precise engineering-workspace aesthetic, dark drafting canvas, technical panels, and disciplined high-contrast accents. These are sources of design inspiration, not interfaces to copy. The newer direction favors a dark-first appearance, but the default-theme choice remains open until a comparison is reviewed.
+The owner confirmed on 2026-10-22 that CEStudy should have an explicit **Light/Dark toggle**. Keep the current light-default baseline for this plan; the new engineering-workspace direction should shape the dark theme without silently changing the initial default to dark-first. Do not add a System choice unless the owner separately approves it. Discord, Duolingo, GitHub, and Autodesk AutoCAD remain design inspirations for CEStudy's own interface, not interfaces to copy.
 
-### Options to compare
+### Theme decision
 
-| Option | Description | Benefits | Risks and trade-offs |
-|---|---|---|---|
-| A. Light-first | Keep the existing white/light default and offer a complete dark mode | Least disruptive to the existing design baseline; familiar reading surface | Does not fully reflect the newer dark-first direction |
-| B. Dark-first | Use a deep slate or midnight-blue default with a complete light alternative | Aligns with the modern engineering-workspace direction; gives dashboards and practice a distinctive identity | Requires careful contrast, equation readability, glow restraint, and design-system migration |
-| C. System-led | Follow the device theme for the initial appearance, then honor an explicit user override | Respects device preference and can reduce surprise | Different users may see different first impressions; it does not guarantee a dark-first brand experience |
+| Choice | Status | Direction |
+|---|---|---|
+| Light theme | Supported and remains the initial default baseline for this plan | Preserve readable white/light surfaces and the current design baseline. |
+| Dark theme | Approved as a full alternative | Use a coherent technical-workspace aesthetic, restrained accents, and complete semantic token coverage. |
+| User control | Approved | Provide a clear Light/Dark toggle. Do not include a System option unless separately approved. |
 
-**Recommended exploration, not a final decision:** prototype Option B first because it best reflects the newest stated preference, then compare it with Option A using the same representative pages. The owner must approve the default after seeing the comparison. Option C remains available if system consistency becomes more important.
+The toggle resolves the need to support both preferences without approving a dark-first default change. The preference persistence model remains open and must be decided before implementation.
 
 ### Prototype and evaluation scope
 
@@ -64,16 +65,20 @@ Candidate dark palette direction only, not finalized tokens:
 
 Evaluation criteria: text and control contrast, equation/diagram readability, long-session comfort, information hierarchy, visual crowding, keyboard focus, reduced-motion behavior, perceived loading performance, and consistency across routes. Use contrast checks and manual keyboard/screen-reader review rather than choosing colors by appearance alone.
 
-### Theme decisions still requiring owner approval
+### Theme decision and remaining implementation details
 
-- Light default, dark default, or system-led initial theme.
-- Light/Dark toggle only or Light/Dark/System.
-- Whether the preference remains device-local or later synchronizes with an account. The current PR #44 branch's local preference is not evidence that account synchronization exists.
-- Whether dark styling applies identically across the whole website or whether public reading and dense study workspaces need different surface treatments.
+- Approved: explicit Light/Dark toggle; the existing light-default baseline remains in effect.
+- Do not silently switch the site's default to dark-first or add a System choice.
+- Still to decide before implementation: whether the theme preference remains device-local or later synchronizes with an account. PR #44's local preference is not evidence that account synchronization exists.
+- Ensure shared semantic tokens keep reading pages, technical workspaces, equations, charts, dialogs, and focus states legible in both themes.
 
 ## 2. Quests, XP, streaks, badges, leaderboards, and future tokens
 
 The following are proposed rules to evaluate, not approved backend behavior or an approved data model.
+
+### Owner decision: configurable feature toggles
+
+As of 2026-10-22, the owner wants the gamification mechanics to be individually switchable rather than treated as one inseparable bundle. Apply this direction to XP/reward display, quests, streak freezes, badges, leaderboards, and retry-related reward behavior. Use clear controls/configuration so a mechanic can be enabled or disabled independently. A toggle is not approval of the example reward amounts or completion rules, and not every feature must be enabled by default. Leaderboard participation must remain a user choice where privacy is involved. Anti-abuse and integrity safeguards are mandatory whenever a related reward feature is enabled and must not be toggled off as a way to bypass them.
 
 ### Candidate quest catalogue
 
@@ -126,14 +131,9 @@ Do not show a freeze count, XP balance, streak calendar, or readiness/ranking va
 
 ## 3. Healthy engagement, motion, and sound
 
-### Night Owl quest decision
+### Night Owl quest: approved with safeguards
 
-The Night Owl example is not approved merely because it has a proposed XP value. Compare two treatments:
-
-- Keep it as an optional, low-prominence challenge that grants no additional streak multiplier or ranking advantage based on the hour.
-- Prefer a more flexible challenge, such as "Study on Your Schedule", whose window is selected by the student and which rewards a completed study session without suggesting that overnight studying is ideal.
-
-The second option is recommended for prototyping. If Night Owl remains, students must be able to ignore or hide it without penalties, and the interface must not send prompts encouraging them to stay awake.
+The owner approved including Night Owl as an **optional** quest. Keep it low-prominence; students may ignore or hide it without penalties. Do not describe late-night studying as better, grant a streak multiplier or ranking advantage because of the hour, or send prompts encouraging students to stay awake. The illustrative +30 XP value remains provisional until reward rules are finalized.
 
 ### Motion and audio requirements
 
@@ -144,39 +144,11 @@ The second option is recommended for prototyping. If Night Owl remains, students
 - Avoid punishing copy, loss-framed reminders, false urgency, excessive notifications, or designs that make users feel they must maintain a streak at the expense of rest, classwork, or other needs.
 - Provide a calm path through practice: readable timer controls, pause/exit behavior where appropriate, and clear explanation of whether unfinished work is saved.
 
-## 4. Exam authenticity, question sourcing, and readiness evidence
+## 4. Deferred exam-specific scope
 
-### Official exam evidence checked for this planning pass
+**Owner decision on 2026-10-22: not approved for this plan.** Do not pursue or implement the current PRC CELE subject-structure mapping, a dedicated past-question sourcing/permissions workflow, the proposed 100-question challenge, or readiness measurements as part of this planning change. Do not describe a CEStudy challenge as an official-format simulation or present a board-readiness gauge based on this proposal.
 
-The Professional Regulation Commission's **Board Resolution No. 01 (s. 2026)** changes the CELE schedule beginning with the March 2026 examination and subsequent schedules. It lists:
-
-- First day: **Principles of Structural Analysis and Design**, 8:00 AM to 2:00 PM.
-- Second day, 8:00 AM to 1:00 PM: **Applied Mathematics, Surveying, Principles of Transportation and Highway Engineering, Construction Management and Methods**.
-- Second day, 2:00 PM to 6:00 PM: **Hydraulics and Principles of Geotechnical Engineering**.
-
-The resolution also states that the structural-analysis subject has seventy-five computational questions, with the change intended to provide more solving time. This is evidence for that subject, not evidence that the whole CELE is a 100-question exam.
-
-Sources checked 2026-10-21:
-- [PRC Board Resolution No. 01 (s. 2026), adjustments beginning March 2026](https://www.prc.gov.ph/sites/default/files/2026-01%20Adjustments%20To%20Be%20Administered%20Starting%20With%20The%20March%202026%20Civil%20Engineers%20Licensure%20Exam.pdf)
-- [PRC Civil Engineering Board page, including resolutions and Tables of Specifications](https://www.prc.gov.ph/Pages/PRBv4/CivilEngineering.htm)
-- [PRC 2026 schedule of examinations](https://www.prc.gov.ph/2026-schedule-examination)
-
-The proposed labels SEC, GEH, and AMSTE should be treated as candidate CEStudy group names, not canonical current exam labels, until they are mapped and reviewed against the current PRC resolution and applicable Tables of Specifications.
-
-### Exam-simulation decision gate
-
-Before using terms such as "Board Simulator", "official-format", or "Board Ready":
-
-1. Identify the current official exam program and applicable Table(s) of Specifications for each subject area.
-2. Map every candidate question to a subject, topic, intended difficulty, answer format, verified solution, source, and review status.
-3. Record the source and reuse/license decision for every external or past-exam question. Do not assume that an exam item is free to republish.
-4. Decide whether the proposed 100-question weekend challenge is a **CEStudy custom practice challenge** or a simulation of a verified official format. These are different product claims.
-5. For an official-format claim, verify session lengths, subject distribution, question count, answer formats, permitted tools/calculators, and rules against current official material before configuring the simulator.
-6. Make results disclose question count, topic/subject coverage, date/version of the blueprint, and the limits of the sample.
-
-The proposed Board Readiness Gauge must not be a decorative percentage. Define its scoring and coverage using verified content and actual completed attempts, explain what evidence contributes to it, and show "Not enough data yet" when coverage or sample size is insufficient. Do not infer readiness from XP, streak duration, or a small sample alone.
-
-The "Subgrade Master" badge also needs review for technical clarity and alignment with approved question content before it is used publicly.
+The Mock Exam Portal may remain in the high-level website information architecture, but the exam-specific items above are deferred and are not implementation commitments. This decision does not waive ordinary content review, publication controls, or the requirement not to publish materials without appropriate approval. Any future proposal for the deferred items requires a separate owner request and review.
 
 ## 5. Navigation, collapsible sidebar, and split-screen practice
 
@@ -192,11 +164,11 @@ Compare three navigation models:
 | Persistent collapsible sidebar | Learning library, dashboard, and practice share a strong app-like left navigation | Can consume the space needed for problem statements, diagrams, tables, and solutions |
 | Contextual workspace navigation | Practice uses a compact toolbar and task controls while the rest of the website keeps the hybrid header | May feel different from Dashboard unless shared patterns and navigation labels are consistent |
 
-**Recommended exploration:** start with the hybrid header on public pages, and prototype a collapsible sidebar only for dense signed-in workspaces. Do not add a permanent left rail merely to make the interface look more like Discord.
+**Approved direction (2026-10-22):** use the hybrid global header on public pages and a collapsible sidebar only in dense signed-in workspaces. Do not add a permanent left rail to every page.
 
 ### Split-screen Practice constraints
 
-The proposed desktop layout has a problem area at roughly 70% and a gamification/tools panel at roughly 30%. Treat those as starting proportions, not fixed widths.
+The approved desktop starting point is a flexible layout with the problem area at roughly 70% and the tools/rewards panel at roughly 30%. These are adjustable proportions, not fixed widths.
 
 The question area must retain room for complete LaTeX, diagrams/images, accessible answer controls, unit-aware numerical inputs where appropriate, explanations, and the timer. The supporting panel may contain pacing guidance, XP status, and a formula cheat sheet, but it must be collapsible or dockable so the core question is not squeezed.
 
@@ -212,30 +184,25 @@ Plan and test the main workflows at 1440px, 1024px, 768px, 390px, and 320px. Che
 - Mobile layouts use a distinct responsive arrangement, not a squeezed desktop sidebar and 70/30 split.
 - Reduced motion, audio off, zoom, visible focus, and readable errors are covered in both themes.
 
-## 6. Decision and review sequence
+## 6. Decisions and remaining implementation gates
 
-1. **Evidence pass:** confirm the current design-system baseline, PR #44 status boundaries, the current official CELE structure, and existing question/progress evidence. Do not infer missing behavior from a route or UI element.
-2. **Theme comparison:** prepare equivalent light-first and dark-first concepts for Home, Dashboard, and Practice. Present contrast/readability trade-offs and obtain an explicit default-theme decision.
-3. **Reward rules:** review each quest's completion criteria, reward amount, retry policy, timezone, streak effect, and anti-abuse behavior. Defer tokens.
-4. **Health and accessibility review:** settle the overnight quest direction, sound default and controls, motion behavior, and reduced-motion requirements.
-5. **Exam content review:** create an authoritative blueprint and question-provenance checklist before approving official-format labels, 100-question scope, readiness percentages, or associated badges.
-6. **Navigation comparison:** test the hybrid header, workspace sidebar, and responsive Practice panel against the same tasks at the documented viewport widths.
-7. **Owner review:** update this decision record and the shared design system with approved choices. Unapproved items remain marked open.
-8. **Implementation planning:** produce separately reviewable implementation plans only after the design choices, content rights, data requirements, security boundaries, and acceptance checks are approved.
+Owner decisions recorded on 2026-10-22:
 
-## Planning exit criteria
+1. **Theme:** provide a Light/Dark toggle and retain the current light-default baseline. Decide preference persistence before implementation.
+2. **Gamification:** make XP/rewards, quests, streak freezes, badges, leaderboards, and retry-related reward behavior independently toggleable. Exact award criteria, anti-abuse rules, retry semantics, date/timezone boundaries, leaderboard privacy, and default feature states remain to be designed. Defer platform tokens.
+3. **Healthy engagement:** optional sound, reduced-motion support, and an optional Night Owl quest are approved with the safeguards in Section 3.
+4. **Exam-specific extensions:** current PRC mapping, the past-question sourcing/permissions workflow, the proposed 100-question challenge, and readiness measurements are explicitly out of scope for this plan.
+5. **Navigation and Practice:** use the hybrid global header, scope the collapsible sidebar to dense signed-in workspaces, and use an approximate 70/30 question/tools layout with a collapsible or dockable panel and a single-column phone layout.
 
-The planning phase is ready to be reviewed as complete only when:
+### Planning exit criteria
 
-- One theme-default option and its preference persistence model are approved.
-- The desktop global navigation and scoped sidebar behavior are described unambiguously.
-- Each first-release quest has a verifiable completion event, reward amount, award uniqueness rule, retry policy, timezone, and streak effect.
-- Badge and leaderboard rules disclose criteria, privacy controls, ranking boundaries, and anti-abuse handling.
-- Night Owl is either replaced with a flexible schedule challenge or kept optional under explicit safeguards.
-- Audio and motion preferences, including non-audio feedback and reduced-motion behavior, are defined.
-- Board-exam subject names, content mapping, question reuse rights, and readiness methodology are checked against current official sources.
-- The 100-question challenge is accurately described as a custom practice challenge unless official-format evidence supports a simulator claim.
-- Desktop, tablet, and phone layouts preserve readable practice content and essential controls.
+Before implementing a feature, write a separate implementation plan with acceptance criteria and tests for that feature. In particular:
+
+- Define exact XP/quest completion events, reward uniqueness, retry rules, and streak/timezone/freeze behavior.
+- Define badge criteria and leaderboard privacy, opt-in/opt-out, ranking boundaries, and anti-abuse handling.
+- Define preference persistence and verify both themes, optional audio feedback, reduced-motion behavior, and keyboard/accessibility states.
+- Test the approved navigation model at 1440px, 1024px, 768px, 390px, and 320px, preserving access to the question, timer, answer state, and controls.
+- Apply existing content review and publication requirements to all study materials without treating this plan as approval to publish content.
 
 ## Explicit non-goals
 
