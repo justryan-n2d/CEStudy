@@ -1,17 +1,20 @@
 # CEStudy UX/UI Design System
 
-**Status:** Approved direction for implementation  
-**Platforms:** Responsive web now; Android and iOS later  
+**Status:** Approved visual direction; website information architecture is being revised  
+**Platforms:** Website-first responsive web now; native Android and iOS later  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
+
+**Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md).
 
 ## Design principles
 
-1. **Logo-led, not logo-disconnected.** Retain the canonical master logo and its geometry. The exact logo blue is `#0754B5`; use its transparent blue-art variant on pale or white surfaces when a larger brand mark is useful.
-2. **White by default.** The website and future app launch in a white theme. Do not add a dark default or large full-width blue panels.
-3. **Blue with restraint.** Use the logo blue for primary actions, links, focus indicators, and small selected states. Pale blue supports selected surfaces. Keep body text in dark neutral colors and retain teal for limited semantic accents.
-4. **Useful copy only.** Text must help students navigate, understand a content status, learn a concept, or recover from a problem. Remove repeated claims, filler slogans, generic marketing copy, and statistics that do not help a student make a decision.
-5. **Motion with purpose.** Motion may show hover, focus, selection, feedback, or the arrival of content. It must not delay studying or act as decoration.
-6. **Performance is a design requirement.** Prefer CSS and existing dependencies; avoid large animations, continuous effects, unnecessary image payloads, repeated data fetching, and gratuitous blur or shadow.
+1. **Website-first information architecture.** Design the desktop website structure and primary workflows first. Adapt them responsively for tablet and phone browsers afterward; mobile-browser usability remains required but does not set the overall architecture.
+2. **Logo-led, not logo-disconnected.** Retain the canonical master logo and its geometry. The exact logo blue is `#0754B5`; use its transparent blue-art variant on pale or white surfaces when a larger brand mark is useful.
+3. **White by default.** The website and future app launch in a white theme. Do not add a dark default or large full-width blue panels.
+4. **Blue with restraint.** Use the logo blue for primary actions, links, focus indicators, and small selected states. Pale blue supports selected surfaces. Keep body text in dark neutral colors and retain teal for limited semantic accents.
+5. **Useful copy only.** Text must help students navigate, understand a content status, learn a concept, or recover from a problem. Remove repeated claims, filler slogans, generic marketing copy, and statistics that do not help a student make a decision.
+6. **Motion with purpose.** Motion may show hover, focus, selection, feedback, or the arrival of content. It must not delay studying or act as decoration.
+7. **Performance is a design requirement.** Prefer CSS and existing dependencies; avoid large animations, continuous effects, unnecessary image payloads, repeated data fetching, and gratuitous blur or shadow.
 
 ## Design tokens
 
@@ -51,13 +54,13 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - **Feedback states:** consistent loading, empty, error, success, focus, and disabled behavior.
 - **Curriculum notice:** preserve important CHED-reference context where it affects a user's interpretation; avoid duplicating notices without a reason.
 
-## Responsive behavior
+## Responsive website behavior
 
-- Mobile-first, with existing 560px and 850px breakpoints as initial reference points.
-- Phone layouts prioritize the main action, search, and subject list. Cards may use two columns when readable.
-- Tablet layouts use compact grids and filters without cramped labels.
-- Desktop content remains centered, with a maximum width around 1120px where appropriate.
-- Keep layouts usable at 320px and verify at 360, 390, 768, 1024, and 1440px.
+- Website-first: establish the desktop information architecture, page hierarchy, and wide-screen workflows first, then design responsive adaptations. Existing 560px and 850px breakpoints are initial references, not mandatory boundaries.
+- Desktop content should use page-appropriate widths. Reading pages may stay centered and constrained; reference tables and dense study workspaces may need wider containers.
+- Tablet layouts should retain useful hierarchy, readable filters, and adequate content space without cramped labels.
+- Phone browser layouts must remain usable and should prioritize the current task, search, and content. They may use different navigation presentation from desktop without changing the underlying destination model.
+- Keep layouts usable at 320px and verify at 360, 390, 768, 1024, and 1440px. Do not force desktop tables or multi-column layouts into unreadable narrow surfaces.
 
 ## Motion and performance
 
@@ -87,7 +90,8 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Year levels links to an overview that lists all four years.
 - No filler marketing statements or non-actionable metrics appear on the homepage.
 - Hover/focus states work, and reduced-motion is respected.
-- Contrast, 320px layout, keyboard behavior, route refreshes, and catalog/practice behavior remain intact.
+- Desktop information architecture and primary journeys are clear at 1440px and 1024px; responsive layouts remain usable at 768px, 390px, and 320px.
+- Contrast, keyboard behavior, route refreshes, and catalog/practice behavior remain intact without horizontal page overflow.
 - CI, browser smoke checks, and available accessibility checks pass before merging.
 
 
@@ -111,10 +115,11 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 - Motion principles: short, purposeful transitions; no animation blocking study tasks; reduced-motion preferences are respected.
 - Brand/service logos are sourced from SVGL (https://svgl.app/) when available and stored locally. Generic interface icons remain simple and visually consistent.
 
-### Website-specific structure
-- Desktop: compact top navigation and multi-column subject lists.
-- Mobile web: persistent four-item quick navigation (Home, Subjects, Years, Math) plus a More menu for Contact, Support, Bug reports, and Feedback.
-- The mobile quick bar must not cover final content; allow room for safe-area insets on gesture-navigation devices.
+### Website-specific structure (current baseline, subject to redesign)
+- Main-branch baseline: brand header, desktop links for Subject catalog, Year levels, and Math foundations, with additional destinations available through secondary navigation/footer patterns. The documented mobile web pattern has a four-item quick-navigation bar (Home, Subjects, Years, Math) plus a More menu.
+- PR #44 is an unmerged draft and proposes related account/profile/history/streak/community routes and a five-destination mobile navigation pattern including Menu. Keep this distinct from current main and preserve PR #44's release gates.
+- Treat the current desktop and mobile-web structures as audit baselines, not fixed requirements. The approved website-first IA may reorganize, group, rename, replace, or remove navigation elements after review.
+- The mobile web navigation must not cover final content; allow room for safe-area insets on gesture-navigation devices.
 - The homepage uses a responsive hero photograph with appropriate srcset widths and reserved dimensions. Only the primary hero is loaded eagerly.
 - Scroll reveal applies only to major content sections. Use IntersectionObserver, unobserve after the first reveal, animate only opacity/transform, and show content immediately if reduced motion is requested or the API is unavailable. See MDN: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API.
 
