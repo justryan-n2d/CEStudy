@@ -3,15 +3,19 @@
 **Verification date:** 2026-10-21 (Asia/Manila)  
 **Repository:** [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy)  
 **Pull request:** [#44, optional Google sign-in and local study streak](https://github.com/justryan-n2d/CEStudy/pull/44)  
-**Application/test head verified:** `3c65b387153203b51ac1b2e592dbd92ed7984770`  
+**Application/test head verified:** `18276056fbecae2e2ea80068f3298ea184b2d77b`  
 **Deployed branch preview:** [feature-google-auth-streak-g-2k99.cestudy.pages.dev](https://feature-google-auth-streak-g-2k99.cestudy.pages.dev)  
-**Immutable preview for this head:** [6c86beb8.cestudy.pages.dev](https://6c86beb8.cestudy.pages.dev)
+**Cloudflare deployment for this application/test head:** [becd5395.cestudy.pages.dev](https://becd5395.cestudy.pages.dev)
+
+**Live PR metadata checked before this documentation sync:** PR #44 was open, draft, and unmerged; GitHub reported mergeable/clean. Its base was `main` at `e6f657cbbf94467e427fc6183c9714e965098598`. The check-run API confirmed that CI, secret scan, and Cloudflare Pages all succeeded on the application/test head above.
+
+**Documentation-only sync note:** the run IDs below validate the verified application/test head, not any later docs-only commit. After this record is committed, re-fetch the PR head and confirm fresh CI, full-history secret-scan, and Pages check runs on that latest head. The documentation update does not close the manual OAuth gates below.
 
 ## Fresh verification evidence
 
-- [CI run 39459966739](https://github.com/justryan-n2d/CEStudy/actions/runs/39459966739): passed.
-- [Full-history secret scan 39459966768](https://github.com/justryan-n2d/CEStudy/actions/runs/39459966768): passed.
-- [Cloudflare Pages preview check 118756850339](https://github.com/justryan-n2d/CEStudy/runs/118756850339): passed.
+- [CI run 39461277462](https://github.com/justryan-n2d/CEStudy/actions/runs/39461277462): passed.
+- [Full-history secret scan 39461277393](https://github.com/justryan-n2d/CEStudy/actions/runs/39461277393): passed.
+- [Cloudflare Pages preview check 118761260082](https://github.com/justryan-n2d/CEStudy/runs/118761260082): passed.
 - CI unit tests: **199 passed across 32 test files**.
 - Lint, dependency audit, production build, backup encryption/retention/verification checks, and isolated Supabase migration/RLS tests: passed.
 - Chromium smoke on the built Vite production preview: **159/159 assertions passed**, at 320 px and 1440 px.
