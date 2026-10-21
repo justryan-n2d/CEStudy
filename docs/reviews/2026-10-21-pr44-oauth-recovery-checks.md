@@ -59,3 +59,40 @@ The safe-return-path logic has unit-test coverage for signed-in routing, and the
 - Retry initiated normally: **PASS**.
 
 **Evidence boundary:** this result is based on the tester's reported observations in the conversation. No screen recording, screenshot, timestamped browser log, or provider trace was attached. It confirms Gate 1 at the reported level, but does not close Gate 2 (controlled real provider/callback failure) or Gate 3 (production consent-screen and Supabase redirect review). Keep PR #44 open and in draft.
+
+
+## Manual Gate 3: Google consent and redirect configuration review (2026-10-21)
+
+**Result: INCOMPLETE.** The source code and recorded setup values were reviewed against current Google and Supabase documentation. The live Google Auth Platform consent settings and Supabase Auth URL allowlist have not been directly verified. Do not publish the Google app or change production redirect settings during this read-only review.
+
+### Evidence checked
+
+- The connected Supabase project listing confirms that the CEStudy project reference qqmdwltfgpqtcvdbcmto exists and is ACTIVE_HEALTHY. The available Supabase connection exposes project metadata, not the live Auth URL Configuration or Google provider settings.
+- src/contexts/AuthContext.tsx calls supabase.auth.signInWithOAuth with provider google, a same-origin /login callback, and a validated internal next path. It does not request additional Google scopes in application code.
+- The existing setup record documents Google Auth Platform project cestudy-2026, External audience, Testing publishing status, the CEStudy Supabase callback URL, production Site URL, and the production/preview/local redirect entries. These remain recorded values, not proof of current dashboard state.
+
+### Review findings
+
+| Configuration | Recorded value or expectation | Read-only assessment |
+|---|---|---|
+| Google audience and publishing | External audience, currently recorded as Testing | Reasonable for preview QA. Do not switch to In production until the intended audience, enabled scopes, branding, and any verification requirements are confirmed. |
+| Google data access scopes | Supabase's documented sign-in baseline is openid, userinfo.email, and userinfo.profile | The app code requests no extra scopes, but the actual Google Auth Platform Data Access screen still needs confirmation. Google's current policy guide says External/Testing is generally limited to up to 100 allowlisted test users, with an exception for apps that request only basic identity scopes. Confirm the actual scope list before relying on that exception. |
+| Google Authorized redirect URI | https://qqmdwltfgpqtcvdbcmto.supabase.co/auth/v1/callback | Matches the callback structure required by Supabase's Google sign-in guide. Confirm this exact URI in the live Google OAuth Web client. |
+| Google Authorized JavaScript origins | The setup record lists https://cestudy.pages.dev and development-only http://localhost:5173 | The production origin is appropriate. The current record does not list the tested branch-preview origin, so verify whether that origin is intended/required for this OAuth client. Keep localhost development-only; consider a separate development OAuth client or remove localhost from the production client when local testing no longer needs it. |
+| Supabase Site URL | https://cestudy.pages.dev | Correct as the documented production base URL. Verify it in the live dashboard. |
+| Supabase Redirect URLs | Production /login; the checked branch-preview /login; a wildcard scoped to feature-google-auth-streak-g-2k99.cestudy.pages.dev; and http://localhost:5173/login for local development | The pattern follows Supabase guidance to use exact production URLs and restrict wildcards to preview/development use. Verify the live allowlist and remove stale preview/local entries when they are no longer required for testing. |
+
+### Required manual console confirmation
+
+1. In [Google Auth Platform](https://console.cloud.google.com/auth/overview) for project cestudy-2026, inspect **Audience** and **Data Access**. Confirm whether publishing status is still Testing, the intended audience is External, and the requested scopes are limited to identity sign-in (openid, email, and profile). Do not add scopes or publish the app as part of this check.
+2. Under **Clients**, open the actual Web OAuth client. Confirm the Authorized redirect URI is exactly https://qqmdwltfgpqtcvdbcmto.supabase.co/auth/v1/callback. Review Authorized JavaScript origins for the production site, whether the current preview origin is intentionally allowed for preview testing, and whether localhost should stay only on a separate development client. Never copy the client secret into chat or the public repository.
+3. In the [CEStudy Supabase Auth URL Configuration](https://supabase.com/dashboard/project/qqmdwltfgpqtcvdbcmto/auth/url-configuration), confirm the Site URL is https://cestudy.pages.dev; the production redirect is exactly https://cestudy.pages.dev/login; and the preview wildcard is restricted to the named CEStudy preview alias. Keep http://localhost:5173/login only while it is needed for development/testing.
+4. Record the visible setting values and whether each matches. Do not share secret values, OAuth codes, tokens, or account-specific data.
+
+References reviewed on 2026-10-21:
+
+- [Google OAuth app state overview](https://developers.google.com/identity/protocols/oauth2/production-readiness/overview): External/Testing behavior, test-user limits, and the basic-identity-scope exception.
+- [Supabase Sign in with Google](https://supabase.com/docs/guides/auth/social-login/auth-google): required sign-in scopes, Google OAuth client setup, and the Supabase callback URI.
+- [Supabase Auth redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls): Site URL, redirect allowlist matching, and guidance to use exact production URLs and scoped preview/development wildcards.
+
+**Gate decision:** Gate 3 is not passed yet. The documented setup is structurally aligned, but a read-only repository review cannot confirm the live dashboard values. Complete the three console checks above before marking Gate 3 passed. Gate 2's controlled real callback-failure test remains separately open for the scheduled desktop session. Keep PR #44 open and in draft.
