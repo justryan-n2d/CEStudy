@@ -7,21 +7,28 @@
 **PR #44 head reviewed:** `662e413601cef93100534b8be52f1a76fe35b335` (open, draft, not merged)  
 **Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md)
 
+
 ## 1. Executive summary
 
-CEStudy will follow a **website-first, not mobile-first, product-design strategy**. Plan the website's information architecture, desktop navigation, and primary page workflows first. Then adapt the approved website structure to tablet and phone browsers. Mobile-browser usability remains a requirement, but it will not dictate the entire website architecture. A future Android/iOS app should have a separately designed mobile interaction model while reusing CEStudy's brand, content taxonomy, data contracts, and learning rules.
+CEStudy follows a website-first, not mobile-first, design strategy. The website's desktop information architecture and primary workflows are planned first; tablet and phone browser layouts are adapted from that structure afterward. The future native mobile app will have a separately designed interaction model.
 
-This plan addresses structural changes made necessary by the planned Practice, Tools, and expanded Profile experiences. The existing navigation, menu, page hierarchy, and responsive layout are baselines to inspect, not fixed constraints.
+The owner's requested target for website navigation is:
+- Year-Level dropdown: 1st, 2nd, 3rd, and 4th year, each expanding into semesters and the individual subjects within each semester.
+- Review Materials Hub mega-menu: Formula Sheets, Problem Sets with Solutions, and Video Tutorials.
+- Mock Exam Portal: timed quizzes, properly sourced and reuse-approved past board exam questions, and performance analytics based on actual attempt history.
+- Student Dashboard: a private signed-in area for progress, evidence-backed weak-subject insights, and bookmarked questions.
+- Community Forum: peer discussion boards for difficult problems and collaborative solution discussions.
 
-**Recommended direction:** a hybrid desktop website shell:
-- A concise global header with the CEStudy brand, the primary learning destinations, search when its behavior is defined, and an account/profile entry.
-- A clear Learn grouping for subject catalog, year levels, mathematics foundations, and lessons.
-- Direct entry to Practice and Tools because they are core learning destinations.
-- Personal records such as readiness, saved formulas, progress, history, and streak grouped under the personal learning/Profile area rather than duplicated across multiple primary destinations.
-- Contact, support, privacy, feedback, and other utility destinations remain secondary.
-- Workspace-level subnavigation may be used inside dense Practice or Tools areas without making the global header longer.
+The future mobile app has five requested tabs:
+1. Home: daily review question, quick access to study streaks, and recently opened modules.
+2. Subjects / Library: year/subject catalog, structured reading, and approved reviewer PDFs for offline use.
+3. Practice: flashcards, customizable timed quizzes, and Shuffled Practice.
+4. Calculator / Tools: unit converters first, then verified steel-section references and carefully bounded concrete-learning tools.
+5. Profile: transparent readiness evidence, saved/bookmarked formulas, and settings.
 
-This is a proposed information architecture, not an implementation commitment. Confirm the labels and exact grouping through the next design review.
+Three cross-cutting capabilities are must-have product requirements: Offline Access, LaTeX/equation rendering, and a Dark Mode toggle. Offline Access must distinguish app-shell caching from deliberate resource downloads and downloaded interactive mock-test packs. Equation support should build on the existing KaTeX dependency, while verifying actual rendering and accessibility on each supported surface. Dark Mode should reuse semantic tokens rather than create a separate page-by-page theme.
+
+This is a product/design specification, not implementation authorization. The requested navigation is the design target. Curriculum mapping, educational content quality, past-exam content rights, readiness calculations, download behavior, and security requirements remain evidence and approval gates.
 
 ## 2. Source baseline and evidence boundary
 
@@ -59,219 +66,329 @@ The documented PR preview alias is [feature-google-auth-streak-g-2k99.cestudy.pa
 7. Keep each future implementation slice reviewable and separate from PR #44, which retains its current OAuth/release gates.
 8. Do not implement proposed features until the relevant plan and acceptance criteria receive explicit approval.
 
+
 ## 4. Information-architecture alternatives
+
+The user's requested navigation is now the target to develop. The comparison below concerns presentation, not a choice to replace the requested destinations.
 
 | Alternative | Model | Advantages | Trade-offs | Assessment |
 |---|---|---|---|---|
-| A. Expanded top navigation | Place every key destination directly in the global header | High visibility; fast desktop access | Long labels and more destinations crowd the header; does not scale well as pages grow | Keep as a comparison option, not the default |
-| B. Persistent desktop sidebar | Main site becomes an app-like left navigation with grouped destinations | Scales to many areas; clear selected states; good for a learning workspace | Changes the character of the public knowledge library; spends horizontal space; adds a structural layer to simple reading pages | Consider if testing shows frequent switching among many study destinations |
-| C. Hybrid header plus contextual navigation | Concise global header for major areas; Learn grouping; subnavigation within dense Practice/Tools areas; personal records grouped under Profile | Retains a recognizable public website while accommodating more features; avoids duplicate global links | Requires careful decisions about what is global versus contextual | **Recommended starting point for the design review** |
+| A. Flat top-level links | Put every destination and subcategory in a single header | Direct access | Semester and material hierarchies become unwieldy; long labels crowd the header | Do not use as a fully flat menu |
+| B. Persistent desktop sidebar | Sidebar groups learning, materials, exams, community, and personal dashboard | Scales for dense workflows | Takes space from lesson reading and technical reference tables; can make the public library feel like an admin app | Keep as a possible dashboard/workspace layout only |
+| C. Requested hybrid navigation | Year-Level dropdown, Review Materials mega-menu, direct Mock Exam Portal and Community Forum entries, private Dashboard/account control | Matches the requested mental model and keeps key areas discoverable | Requires accessible nested-menu behavior and a dedicated responsive adaptation | Recommended target for desktop design |
 
-### Proposed global destination model
+### Target website navigation
 
-**Desktop header candidates:**
-- CEStudy brand/home
-- Learn (with Subject catalog, Year levels, Math foundations, and published lessons)
-- Practice
-- Tools
-- Community only when the destination contains a usable, approved experience
-- Profile/account control
+1. **Year-Level dropdown**
+   - Show 1st, 2nd, 3rd, and 4th year.
+   - Expanding a year reveals its semester groups; selecting a semester reveals individual subjects.
+   - Use verified curriculum/content metadata. Do not assume a semester field or complete mapping exists in the current schema.
+   - Support mouse, keyboard, and touch. The interaction must not depend on hover alone.
 
-The precise set of labels and whether Learn is a direct link, menu, or landing page are decisions for the IA review. Do not blindly add every route to the global header.
+2. **Review Materials Hub mega-menu**
+   - Formula Sheets.
+   - Problem Sets with Solutions.
+   - Video Tutorials.
+   - Only show real resources and truthful publication/review status. Include source/version and download availability when relevant.
+   - Provide a clear destination to browse all resources within each group.
 
-**Personal-learning grouping:**
-- Learning overview/readiness evidence
-- Saved formulas
-- Progress
-- History
-- Streak (if the PR #44 feature is approved and merged)
+3. **Mock Exam Portal**
+   - Quick access to timed quizzes, approved question sets, past board exam questions only when sourced and lawful reuse is confirmed, and performance analytics from real attempts.
+   - Do not label the site an official board exam simulator without verified format, scope, coverage, and validation.
 
-These may live within Profile or under a clearly named My Learning group, but should retain focused pages where complex tasks benefit from separate routes.
+4. **Student Dashboard**
+   - A private area available only to signed-in students; guests see a sign-in entry and can continue browsing public materials.
+   - Show progress, bookmarked questions, and weak-subject/topic signals only where sufficient reviewed question data and attempt evidence exist.
+   - Enforce privacy at the data/API boundary, not by hiding links.
 
-**Secondary destinations:**
-- About, Contact, Support, Privacy, Feedback, Bug reports, and owner-only tools.
-- Keep owner-only functionality out of student-facing primary navigation and enforce authorization at the server/data boundary.
+5. **Community Forum**
+   - One canonical student discussion destination for difficult problems and collaborative solution threads.
+   - Decide whether reading is public/searchable and participation requires an account. Define moderation, reporting, author identity, privacy, and equation rendering before opening posting.
+   - A route or placeholder page is not proof of a complete forum.
+
+### Avoid duplicate destinations
+
+The Student Dashboard is the website's personal hub. Do not create competing top-level Profile and Dashboard destinations unless research proves they serve distinct needs. Focused Progress, History, and attempt-review pages may remain separate, but should be linked from the Dashboard rather than copied into it. Formula and question bookmarks may share one saved-items area with clear categories.
+
 
 ## 5. Proposed sitemap and page hierarchy
 
-This is a conceptual target, not a list of routes that already exist.
+This is the target structure for planning; it is not a list of shipped routes.
 
-- **Home**
-  - Primary path to browse subjects
-  - Entry to Practice when the reviewed question pool is ready
-  - Entry to Tools
-  - Continue learning only when real, eligible progress data exists
-- **Learn**
-  - Subject catalog and search/filter
-  - Year-level overview
-  - Mathematics foundations
-  - Subject detail
-  - Topic/lesson reading
-  - Contextual links to relevant practice, formulas, and tools
-- **Practice**
-  - Flashcards
-  - Custom quiz setup
-  - Shuffled practice
-  - In-session question/card workflow
-  - Results and incorrect-answer review
-  - Recent attempts/review queue where actual records exist
-- **Tools**
-  - Searchable category directory
-  - Unit converter
-  - Steel-section reference, only after data/licensing validation
-  - Concrete learning references, keeping educational examples separate from validated mix design
-- **Profile / My Learning**
-  - Account and identity (only if the PR #44 account feature is approved)
-  - Learning overview and links to focused Progress/History/Streak pages
-  - Formula bookmarks tied to source content
-  - Learning and quiz preferences
-  - Privacy, retention, and sign-out controls as applicable
-- **Community**
-  - Keep discoverable only when its intended text-post and problem-discussion experience is ready. Do not use a placeholder destination as if full community capabilities are implemented.
-- **Help and policy**
-  - About, Contact, Support, Privacy, Feedback, and Bug reports
+- **Home:** links to Year Levels, Review Materials, Mock Exams, and Tools; personalized continue-learning content appears only when real eligible history exists.
+- **Year-Level dropdown:** 1st Year, 2nd Year, 3rd Year, 4th Year, each containing semesters and individual subjects.
+- **Review Materials Hub:** Formula Sheets, Problem Sets with Solutions, Video Tutorials, with subject/topic discovery, provenance, review status, and authorized download behavior.
+- **Mock Exam Portal:** timed quiz setup, Shuffled Practice, approved practice pools, lawfully reusable past board exam content, question session, result explanation, attempt history, and evidence-aware analytics.
+- **Student Dashboard:** progress summary, weak areas with coverage/sample disclosure, bookmarked questions, saved formulas, attempt history, preferences, privacy controls, and sign-out where applicable.
+- **Community Forum:** searchable discussion list, problem thread and comments, accessible math, posting/editing/reporting controls under approved rules.
+- **Calculator / Tools:** unit converter first; steel-section tables only after source/license checks; concrete education references clearly separated from actual validated mix design.
+- **Help and policy:** About, Contact, Support, Privacy, Feedback, and Bug Reports.
+- **Future mobile app:** independent five-tab structure specified in Section 7.
+
 
 ## 6. Desktop-first website layout plan
 
-### Global shell
+### Global desktop shell
 
-- Retain the canonical logo and CEStudy design tokens.
-- Evaluate header density at 1440px and 1024px before fixing navigation labels or breakpoints.
-- Use direct global links for the highest-value areas and contextual navigation for lower-level destinations.
-- A global search control is a candidate, but should not be added until the searchable content scope and results behavior are specified.
-- Avoid a permanent sidebar across every reading page by default. Compare it on dense Practice/Tools/Personal Learning screens where local navigation might earn its space.
-- Preserve skip-to-content, semantic navigation landmarks, visible keyboard focus, active-route indication, and clear text labels.
+The global navigation target is:
+- CEStudy logo/home.
+- Year-Level dropdown.
+- Review Materials Hub mega-menu.
+- Mock Exam Portal direct tab.
+- Community Forum direct tab.
+- Student Dashboard/account control, private to signed-in students.
 
-### Page layout candidates
+Search is a candidate shared capability. Do not add it until searchable content, result ranking, and empty-state behavior are specified. Help/policy and owner-only destinations remain secondary. A persistent sidebar should only be chosen for dense dashboard/workspace views if usability evidence supports it.
+
+### Year-Level dropdown interaction
+
+- Opening the dropdown shows the four years.
+- Selecting a year reveals semester groups; selecting a semester reveals assigned subject links.
+- Keep the selected year and semester context visible while browsing subjects.
+- Support click/touch and keyboard operation, visible expanded/selected state, Escape to close, focus restoration, and direct destination links.
+- If a mapping is missing or a semester has no eligible subjects, display a useful message rather than an empty panel.
+- Before implementation, verify the curriculum version and actual year/semester/subject relationships. Create a data-model requirement if the current structures cannot represent them.
+
+### Review Materials Hub mega-menu
+
+- Use a readable desktop panel with three labelled groups: Formula Sheets, Problem Sets with Solutions, and Video Tutorials.
+- Include a browse-all path for each resource group and only show current, real content.
+- Keep publication status, source/version, and authorized download states explicit.
+- Support keyboard and screen-reader navigation; do not depend on hover-only behavior.
+- On smaller screens, transform into a full-width panel or accordion rather than shrinking a desktop mega-menu.
+
+### Desktop page hierarchy
 
 | Page/workflow | Desktop structure to evaluate |
 |---|---|
-| Home | Clear primary action and paths into Learn, Practice, and Tools; keep marketing copy secondary |
-| Subject catalog | Search/filter region, result count, readable subject grid/list, visible content availability |
-| Subject/lesson | Reading-focused central content, related topics, formulas, relevant tool links, and optional practice links |
-| Practice landing | Three primary modes (Flashcards, Custom Quiz, Shuffled Practice), then Continue/Review/Recent Results only when data exists |
-| Quiz/flashcard session | Main question/card workspace; progress and session controls; explanation and source visibility; prevent secondary controls from competing with the question |
-| Tools directory | Search, categories, concise cards with scope/limitations |
-| Unit converter | Input quantity and source/target units beside a clearly labelled result; show conversion details and precision |
-| Engineering reference tables | Wide searchable table on desktop with unit controls, source/version metadata, and an accessible comparison flow |
-| Profile | Account and learning summary, saved formulas, settings; detailed records open the focused Progress/History/Streak pages |
-| Progress/History | Dedicated record views with clear empty states, date/order semantics, and links back to relevant lessons or attempts |
+| Home | Main paths into Year Levels, Review Materials, Mock Exams, and Tools |
+| Year/semester/subject | Clear hierarchy, readable subject list, accurate content availability |
+| Review Materials Hub | Search/filter by resource type, subject, topic, and availability |
+| Formula sheet | Formula, variables, units, assumptions, usage notes, source and revision |
+| Problem set | Problem, reviewed worked solution, related formula/tool, source status |
+| Video tutorial | Title, subject/topic, lawful source/embedding, and captions/transcript where available |
+| Mock Exam Portal | Eligible pool count, quiz settings, timed/untimed options, clear start, honest scope |
+| Question session | Main question, accessible answer controls, timer/progress, equation support, explanation |
+| Results/analytics | Score, accuracy, elapsed time, missed questions, topic evidence counts, sample/coverage caveats |
+| Student Dashboard | Progress and bookmarks summary, evidence-backed weak areas, links to detailed records |
+| Community Forum | Search, discussion list, problem thread, comments, reporting/moderation controls |
+| Tools | Tool directory and input/result workspaces with units and explanations |
 
-### Wide-screen behavior
+### Dark Mode
 
-- Evaluate use of whitespace, readable line length, and page-specific max-widths; a reference table may need more space than a lesson.
-- Use multi-column layouts only where they improve scanning and comparison.
-- Do not force dense data tables into a narrow, centered reading column.
-- Avoid duplicating the same action in a page header, global header, card, and footer unless it serves a distinct purpose.
+Dark Mode is a required capability for the website and future app.
+- Keep the white/light theme as the default unless the owner approves a different default.
+- Provide a visible Light/Dark toggle. Whether to include a System choice is an open decision.
+- Reuse semantic tokens for background, surfaces, text, borders, focus, and status colors.
+- Persist the website preference locally at first; account synchronization requires a separate privacy/data decision.
+- Validate menu panels, equations, timers, tables, charts, result states, forum content, focus rings, and downloaded-material states in both themes.
+- Do not assume the dark-mode implementation on PR #44's draft branch is present on main.
 
-## 7. Responsive website strategy (not mobile-first)
 
-Design the desktop information architecture and its primary workflows first. Then adapt the same information hierarchy for tablet and phone browsers. Phone layouts may use a different presentation of navigation, but they should not dictate which destinations the entire website supports or how the desktop hierarchy must be organized.
+## 7. Responsive website strategy and future native app
 
-Compare at least these mobile-web alternatives after the desktop IA is agreed:
-1. A compact header with a navigation drawer/More menu and contextual page shortcuts.
-2. A small quick-navigation bar plus a secondary menu.
-3. A collapsible desktop header and grouped Learn/My Learning menus, without a persistent bottom bar.
+### Responsive website, designed after desktop
 
-Choose based on task frequency, labels, reachability, long-page content, and student testing. Do not assume a bottom bar or hamburger is automatically correct.
+The website's desktop hierarchy comes first. Tablet and phone-browser layouts must remain usable, but do not dictate the whole website IA.
 
-Responsive acceptance criteria:
-- Test the agreed desktop design at 1440px and 1024px, tablet at 768px, and phone browser at 390px and 320px.
-- No horizontal page overflow at supported widths. Wide tables may use an intentional, labelled horizontal scroll container when a card alternative would make comparison worse.
-- Ensure fixed/sticky navigation does not cover page content, keyboard focus, dialogs, or final actions; respect safe-area insets where relevant.
-- Preserve browser back/forward, direct route entry, refresh, and clear active states.
-- Keep target sizes usable, labels visible, and focus indicators clear; test keyboard-only behavior and screen-reader names.
-- Verify light/dark themes and reduced motion if present in the baseline.
-- Treat phone-browser behavior as an acceptance requirement, not the first constraint used to design the site.
+At smaller widths:
+- Convert Year-Level selection to touch- and keyboard-operable nested panels/accordions: year → semester → subject.
+- Convert the Review Materials mega-menu to a full-width sheet or grouped accordion with the same three resource categories.
+- Keep Mock Exam Portal and Community Forum discoverable.
+- Keep Student Dashboard private. Do not automatically reuse the native app tab bar on mobile web.
+- Support long subject labels, quiz questions, formulas, tables, and explanations without page-wide horizontal overflow. Intentional table scrolling must be labelled.
+- Prevent sticky/fixed navigation from covering content, dialogs, focus, or final actions.
 
-Existing 560px and 850px media-query breakpoints are reference points to inspect, not mandatory boundaries. Adjust them only after observing the desktop and intermediate layouts.
+Evaluate desktop at 1440px and 1024px first, then tablet at 768px and phone browsers at 390px and 320px. Existing 560px and 850px breakpoints are references to audit, not mandatory boundaries.
+
+### Future native mobile app tab bar
+
+The requested native app uses five tabs:
+
+1. **Home:** a daily review question drawn from reviewed eligible content, quick-start study streak, and recently opened modules. If no personalized history exists, use an honest generic fallback.
+2. **Subjects / Library:** catalog organized by year and subject, structured reading, and approved reviewer PDFs/formula sheets for offline use.
+3. **Practice:** flashcards, customizable timed quizzes, and Shuffled Practice for board-preparation practice.
+4. **Calculator / Tools:** unit conversion first; add steel references only after dataset/licensing verification and concrete references only with clear educational limitations.
+5. **Profile:** transparent readiness evidence, saved/bookmarked formulas/questions, settings, theme, offline downloads, account/privacy controls.
+
+This is an app-specific target. Framework choice remains deferred. The native app should reuse CEStudy's brand, content taxonomy, learning rules, validation, and data contracts, but its components and navigation should be designed for mobile rather than squeezed from the web UI.
+
+### Offline Access toggle and download manager
+
+Offline Access is a must-have capability, with different technical behavior on web and native app platforms.
+
+Proposed UX:
+- A setting to enable offline access where supported.
+- Per-resource download actions for approved reviewer PDFs, formula sheets, and designated mock-test packages.
+- A download manager listing each item, source/version, status, update availability, and remove action.
+- Clear queued, downloading, downloaded, update available, failed, unsupported offline, and removed states.
+- Storage management, explicit remove/clear actions, and warnings when downloaded content is stale or has been withdrawn.
+
+Website feasibility should be evaluated using service workers and Cache Storage for eligible app-shell/resources, plus appropriate storage for deliberate downloads. Browser storage is not unlimited and cannot be assumed permanent. See [MDN Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) and [MDN PWA offline guidance](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Offline_and_background_operation).
+
+The native app needs its own local-data and synchronization contract. [Android's offline-first guidance](https://developer.android.com/topic/architecture/data-layer/offline-first) recommends a local data source for core offline reads and explicit sync/conflict handling.
+
+Offline requirements:
+- Only approved, legally distributable content may be downloaded.
+- Interactive mock-test packages must include reviewed questions, answer rules, explanations, and required equation-rendering assets.
+- Define timer behavior across suspend/close/reopen and device-clock changes before offline timed tests ship.
+- Save offline answers locally, clearly label unsynced attempts, and define duplicate prevention/conflict behavior before sync.
+- Do not imply community posting or remote-only private records work offline unless specifically designed and tested.
+- Define package versioning, update/expiry, eviction, storage limit, and deletion.
+- A server-side content withdrawal cannot instantly remove a local offline copy. This limitation must inform which content can be downloaded.
+
+### LaTeX/equation support
+
+The inspected main-branch package manifest already includes KaTeX 0.19.0. This verifies a dependency, not complete or correct rendering on every page.
+
+Requirements:
+- Audit and reuse a shared math-rendering path for lessons, formula sheets, problem sets and solutions, questions, explanations, results, forum posts/comments, and approved offline materials.
+- Verify inline/display equations, fractions and nested fractions, radicals, Greek symbols, subscripts/superscripts, matrices, vectors, and engineering units within supported syntax.
+- Bundle required CSS and fonts locally for reliable rendering and offline use; do not rely on a CDN as the only source for downloaded materials.
+- Preserve accessible output. See [KaTeX output options](https://katex.org/docs/options), [browser support](https://katex.org/docs/browser), and [supported syntax](https://katex.org/docs/supported).
+- Safely handle malformed/unsupported input with a readable fallback. Do not interpret forum-supplied text as trusted HTML.
+- Long equations must wrap or scroll in a labelled region without causing page-wide overflow.
+- Choose and test a separate native-app equation-rendering solution when mobile-app work is authorized. The website package alone does not prove native support.
+
+Regression fixtures should cover nested fractions, matrices, vectors, sub/superscripts, Greek letters, multi-line/display math, malformed expressions, long equations, copied output, both themes, offline assets, and layouts at 320px, 390px, 1024px, and 1440px.
+
 
 ## 8. Feature fit and dependencies
 
 ### Practice first
-Practice is the main new examination-preparation experience. It requires reviewed question/card content, correct answers, explanations, stable subject/topic identifiers, publication rules, question-pool behavior, and a defined session lifecycle. Start with Flashcards, a basic quiz, and Shuffled Practice. Do not label the experience an official licensure-exam simulator.
+
+Practice and the Mock Exam Portal form the core examination-preparation experience: flashcards, customizable timed quizzes, Shuffled Practice, explanations, reviewed past-exam material where authorized, and attempt results. Dependencies include approved question content, answers, explanations, subject/topic mappings, difficulty definitions when used, publication policy, and clear session/timer behavior.
+
+Analytics and weak-topic claims must come from actual, eligible attempts and display enough sample/coverage information. Do not advertise official-exam simulation or a licensure pass prediction without valid supporting evidence.
 
 ### Tools second
-Start with a carefully tested unit converter using explicit dimensional compatibility and documented conversion rules. Keep calculation logic independent from UI components. Add steel tables only after sources and redistribution rights are approved. Concrete references must distinguish educational nominal-ratio examples from actual mix design and strength guarantees.
 
-### Profile third
-Reuse existing progress/history/appearance patterns where they exist, but distinguish local records from server-synchronized records. Formula bookmarks should reference stable formula/lesson identifiers and preserve source attribution. A readiness indicator must show coverage and evidence, must be withheld when evidence is insufficient, and must not be described as a validated pass prediction.
+Start with a deterministic unit converter, explicit dimensions, reviewed conversion factors, precision rules, and tests. Steel-section references require verified source/version and redistribution rights. Concrete references must distinguish educational nominal-ratio examples from actual concrete mix design; do not imply that a simple ratio guarantees strength.
 
-### Backend boundary
-This plan creates no data models. Before implementation, re-inspect the full migrations/schema and policies. Establish ownership and RLS for attempts, responses, bookmarks, and preferences if these become server-stored. Reference tables and converter definitions can likely remain version-controlled static data until there is a concrete need for remote management.
+### Profile / Student Dashboard third
+
+Use the requested private Student Dashboard as the web personal-learning area. Integrate existing progress/history patterns only after confirming which branch and data source they live on. Add bookmarked questions and formulas linked to stable content IDs. A readiness indicator must disclose tested coverage and evidence, and be withheld where evidence is insufficient.
+
+### Review Materials and curriculum mapping
+
+The Year-Level hierarchy needs a validated year/semester/subject mapping. The Review Materials Hub requires actual metadata for Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Do not represent future content as currently available; confirm publishing status, source, and permitted distribution first.
+
+### Community Forum
+
+Define public/read-only versus account-required participation, author identity, reporting/moderation, deletion/retention, and equation safety before opening posting. A discussion thread must not expose private account data, and mathematical input must be rendered through a safe, tested path.
+
+### Cross-cutting technical features
+
+- **Offline Access:** define which resources are downloadable, content/version manifest, quota/storage behavior, stale/withdrawn-content handling, deletion, offline attempt storage, and sync policy separately for browser and native app.
+- **LaTeX/equations:** audit the existing KaTeX integration and extend regression coverage before treating equation support as complete.
+- **Dark Mode:** provide an explicit toggle, semantic tokens, persistence policy, and full-page/theme regression checks. PR #44's branch work is not automatically part of main.
+
+### Backend and security boundary
+
+This plan adds no schema. Reinspect migrations, tables, grants, and RLS before implementation. If attempts, bookmarks, preferences, or offline sync state are stored remotely, define owner-scoped policies and deletion behavior. Offline packages must contain only content approved for distribution; local caching is not a substitute for privacy, licensing, or publication review.
+
 
 ## 9. Planning sequence and exit criteria
 
-### Step 1 — Repository and route audit
-**Deliverable:** an updated inventory of the exact target source state (main plus the reviewed PR #44 draft where relevant), routes, shared layout, page-specific patterns, theme tokens, test scripts, and data/security contracts.
+### Step 1 - Baseline and navigation audit
+Deliverable: current-main routes/components and separate PR #44 draft inventory, plus preview-to-commit verification status.
+Exit: shipped versus draft features are clearly distinguished; preview identity is verified or explicitly blocked.
 
-**Exit criteria:** preview-to-commit match is verified or explicitly marked blocked; current production, main, and PR #44 features are separated; no proposed feature is described as shipped by inference.
+### Step 2 - Target website IA
+Deliverable: Year-Level dropdown, Review Materials mega-menu, Mock Exam Portal, private Student Dashboard, and Community Forum sitemap with one canonical destination each.
+Exit: route duplication is resolved; year/semester/subject mapping and the curriculum source are verified or documented as missing requirements.
 
-### Step 2 — Information architecture
-**Deliverable:** an approved sitemap, primary/secondary navigation inventory, route-to-destination mapping, label glossary, and at least two desktop navigation comparisons.
+### Step 3 - Desktop page hierarchy
+Deliverable: textual page trees for each global destination, menu behavior, quiz, result, dashboard, forum, and tools workflows.
+Exit: hover/click/keyboard/touch behavior, focus management, active states, and empty/loading/error states are specified before UI code.
 
-**Exit criteria:** every route has one canonical place; no duplicate Profile/Progress/History function is left unexplained; Practice and Tools are discoverable; community placement reflects actual readiness.
+### Step 4 - Equation and theme foundation
+Deliverable: shared-renderer source audit, equation fixtures, dark-mode token map, and preference persistence decision.
+Exit: supported syntax, malformed-input fallback, long-equation behavior, dark-theme coverage, and mobile web/app distinction are testable.
 
-### Step 3 — Desktop navigation and page hierarchy
-**Deliverable:** textual page trees/wireframes for Home, Learn/catalog, subject/lesson, Practice landing/session/results, Tools directory/unit converter, and Profile/My Learning.
+### Step 5 - Practice engine and Mock Exam Portal
+Deliverable: reviewed question schema requirements, pool-selection behavior, session lifecycle, timer rules, results, attempts, and analytics definitions.
+Exit: eligibility, insufficient pool, duplicate exposure, timeout/interruption, score consistency, user ownership, and RLS tests are explicit.
 
-**Exit criteria:** global versus local navigation is defined; primary actions and empty/loading/error states are listed; shared existing design tokens/components are mapped where verified; no visual implementation begins before design approval.
+### Step 6 - Tools
+Deliverable: unit catalog, dimensional rules, precision/error policy, and sources/license record for proposed engineering references.
+Exit: conversions are independently checked and automated tests are specified; steel/concrete data is not included until approved.
 
-### Step 4 — Responsive-web adaptation
-**Deliverable:** breakpoint/layout behavior and mobile-web navigation comparison based on the approved desktop IA.
+### Step 7 - Student Dashboard and Community Forum
+Deliverable: private dashboard hierarchy, evidence-backed weak-subject behavior, bookmark/source relationships, forum access, moderation, reporting, and retention decisions.
+Exit: privacy boundaries and content safety rules are testable; no arbitrary readiness claims are allowed.
 
-**Exit criteria:** test widths are named; navigation does not overcrowd or cover content; wide tables have an explicit strategy; keyboard, focus, touch, zoom, and reduced-motion checks are accounted for.
+### Step 8 - Offline Access
+Deliverable: downloadable resource manifest, user setting, download manager, version/update/remove rules, storage policy, and local attempt/sync contract.
+Exit: airplane-mode use is defined for each supported resource; download status is accurate; offline material's publication and reuse rights are approved.
 
-### Step 5 — Technical and data mapping
-**Deliverable:** route/component responsibilities, current-versus-proposed data matrix, security boundary notes, and testing matrix.
+### Step 9 - Responsive website adaptation
+Deliverable: tablet and phone-browser layouts based on the approved desktop IA.
+Exit: Year-Level and Review Materials menus remain operable; no page-wide overflow; fixed navigation, equation layout, dark mode, keyboard/focus, and touch use are covered.
 
-**Exit criteria:** each proposed feature has an explicit existing dependency or documented new requirement; no migration or permission is assumed; content publication status remains a release gate.
+### Step 10 - Native mobile-app design
+Deliverable: separate five-tab app flows for Home, Subjects / Library, Practice, Calculator / Tools, and Profile.
+Exit: platform/framework choice is separately approved; offline, equation, and theme behavior are designed natively rather than assumed from website behavior.
 
-### Step 6 — Implementation proposal for future approval
-**Deliverable:** small independent implementation slices, each with acceptance criteria, targeted tests, manual desktop/responsive QA, and rollback boundaries.
+### Step 11 - Implementation authorization
+Deliverable: small implementation slices with acceptance criteria, tests, manual checks, and security review.
+Exit: the owner explicitly authorizes the relevant slice. This plan update alone authorizes no application implementation.
 
-**Exit criteria:** the user explicitly authorizes implementation of the approved slice. Until then, work remains planning/documentation only.
-
-### Step 7 — Future native app planning
-**Deliverable:** a separate mobile-app user journey, navigation model, and platform/framework evaluation when mobile-app work is prioritized.
-
-**Exit criteria:** mobile app navigation is designed for native usage rather than treated as a narrow website viewport; shared design tokens, content taxonomy, validation, and data contracts are identified separately from UI components.
 
 ## 10. Future verification checklist
 
-For every eventual UI implementation PR:
-- Verify the deployed preview corresponds to the exact commit under review.
-- Review desktop at 1440px and 1024px, tablet at 768px, phone browser at 390px and 320px.
-- Test the main user journey via keyboard and touch; verify focus visibility and semantic labels.
-- Check active navigation, direct route loads, refresh, browser back/forward, and not-found behavior.
-- Test both light and dark mode if available, reduced motion, empty/loading/error states, and horizontal overflow.
-- Run repository-defined lint, unit/component tests, production build, database/RLS tests where affected, secret scanning, and the relevant browser smoke suite.
-- Verify educational content and engineering reference data independently before publication.
-- Do not merge PR #44 or change its release-gate status as a side effect of this plan.
+Before merging any later implementation:
+- Confirm the deployed preview corresponds to the exact commit under review.
+- Test desktop at 1440px/1024px, tablet at 768px, and phone browser at 390px/320px.
+- Verify Year-Level dropdown year → semester → subject with mouse, keyboard, and touch; test focus restoration, Escape, expanded state, and empty groups.
+- Verify the Review Materials mega-menu is readable, keyboard-operable, and converts to a usable small-screen panel.
+- Verify Mock Exam Portal question eligibility, timer/interruption rules, answer explanations, correct scoring, and sufficient sample/coverage disclosures.
+- Verify past board exam material has source and reproduction/reuse approval before online display or offline download.
+- Verify Student Dashboard records are owner-scoped in data policies, not only hidden in the UI.
+- Test forum equation rendering, input sanitization, reporting/moderation, and privacy.
+- Download approved content, switch to airplane mode, reopen it, confirm the complete item works, then test failed download, update, stale state, and removal.
+- Verify offline tests save clearly marked unsynced attempts and cannot double-submit when synchronization returns.
+- Run equation fixtures for nested fractions, matrices, units, sub/superscripts, long/malformed inputs, both themes, and offline assets.
+- Test Dark Mode on menus, equations, quizzes, result states, tables, charts, forum pages, and focus indicators.
+- Test direct routes, refresh, back/forward, loading/empty/error states, keyboard-only navigation, zoom, reduced motion, and horizontal overflow.
+- Run repository lint, unit/component tests, build, applicable database/RLS checks, secret scanning, and browser smoke tests.
+- Do not treat a route as evidence that a feature exists or content as approved because it renders.
+- Do not bypass or alter PR #44's release gates through this work.
+
 
 ## 11. Decisions and open questions
 
-### Decided by the product owner on 2026-10-21
-- CEStudy's next design direction is **website-first, not mobile-first**.
-- Reorganizing the current website structure is allowed when required by the planned features.
-- Plan the website and desktop workflows first; make the site responsive for phone browsers afterward.
-- Plan a separate mobile-app interface when native app development begins.
-- This work is planning/documentation only and does not authorize application implementation.
+### Direction provided by the owner on 2026-10-21, revised at 2026-10-21T19:03:29+08:00 (Asia/Manila)
 
-### Recommended, not yet approved
-- Use the hybrid desktop header with contextual subnavigation as the initial IA direction.
-- Group Progress, History, Streak, saved formulas, and readiness evidence under a personal-learning/Profile area, preserving focused destinations where useful.
-- Prioritize Practice, then unit-conversion Tools, then Profile integration; defer reference datasets until verified.
-- Leave the global search placement and exact mobile-web navigation pattern open until the IA and student journeys are reviewed.
+- Website navigation target: Year-Level dropdown by year → semesters → subjects; Review Materials Hub mega-menu for Formula Sheets, Problem Sets with Solutions, and Video Tutorials; direct Mock Exam Portal; private Student Dashboard; Community Forum.
+- Native app target: five tabs named Home, Subjects / Library, Practice, Calculator / Tools, and Profile.
+- Must-have cross-cutting features: Offline Access toggle for downloadable materials, LaTeX/equation rendering on desktop and future app surfaces, and Dark Mode toggle.
+- Website-first remains the development strategy. The app receives its own mobile interaction design.
+- This is still planning and documentation; no app/web feature implementation is authorized by the navigation brief.
 
-### Remaining questions
-- Is Learn best represented by a dedicated landing page, a header menu, or a direct Subject catalog link with secondary shortcuts?
-- Should Community be a top-level destination immediately when implemented, or remain secondary until activity is established?
-- Should Profile be labelled “Profile,” “My Learning,” or provide both an account identity control and a distinct My Learning page?
-- Which navigation tasks are frequent enough to earn a global desktop slot?
-- Which mobile-web alternative should be selected after desktop IA approval and testing?
-- Which existing PR #44 behaviors will be retained, redesigned, or deferred once its release gates are resolved?
+### Recommended implementation order
+
+1. Practice and Mock Exam Portal, once question content is reviewed.
+2. Unit converter and Tools foundation.
+3. Student Dashboard with formulas/questions bookmarks and evidence-aware progress.
+4. Year-Level semester mapping and Review Materials Hub completeness, subject to source/content verification.
+5. Community Forum when access, moderation, privacy, and safe equation handling are defined.
+6. Offline downloads after content rights, storage, versioning, and synchronization rules are approved.
+7. Equation and Dark Mode regression coverage as cross-cutting foundations.
+8. Separate native-app planning when that project is prioritized.
+
+### Remaining decisions
+
+- Which curriculum/version supplies the authoritative semester subject mapping?
+- Which past board exam questions are lawfully reusable, and how will CEStudy cite their source and edition?
+- Is forum reading public/searchable, while posting requires an account? What are the moderation and identity rules?
+- What question coverage qualifies a weak-subject signal or readiness estimate?
+- Does Dark Mode offer Light/Dark only or Light/Dark/System? Does the preference stay local or sync?
+- Which resources can be downloaded, how much storage is allocated, and how are stale/withdrawn packages handled?
+- How should offline timers respond to app suspension, device-clock changes, and network restoration?
+- Which math syntax is required beyond the verified KaTeX support, and how is user-posted markup sanitized?
+- When native app design begins, which framework is appropriate?
 
 ## 12. Scope guard
 
-This is a plan only. It does not add routes, components, application logic, database tables, migrations, RLS policies, question records, reference datasets, or mobile-app code. It does not modify PR #44's branch, status, checks, or deployment. All feature work requires explicit implementation authorization after the applicable design and data decisions have been approved.
+This is a plan only. Last revised 2026-10-21T19:03:29+08:00 (Asia/Manila). It does not add routes, components, application logic, database tables, migrations, RLS policies, question records, reference datasets, offline packages, or mobile-app code. It does not modify PR #44's branch, status, checks, or deployment. All feature work requires explicit implementation authorization after the applicable design and data decisions have been approved.
