@@ -1,7 +1,8 @@
 # CEStudy Website-First Information Architecture and Structure Plan
 
 **Status:** Planning proposal; no application implementation authorized  
-**Prepared at:** 2026-10-21T18:53:21+08:00 (Asia/Manila)  
+**Initially prepared at:** 2026-10-21T18:53:21+08:00 (Asia/Manila)  
+**Last revised at:** 2026-10-21T19:10:04+08:00 (Asia/Manila)  
 **Repository:** [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy)  
 **Main baseline commit:** `e6f657cbbf94467e427fc6183c9714e965098598`  
 **PR #44 head reviewed:** `662e413601cef93100534b8be52f1a76fe35b335` (open, draft, not merged)  
@@ -391,4 +392,4 @@ Before merging any later implementation:
 
 ## 12. Scope guard
 
-This is a plan only. Last revised 2026-10-21T19:03:29+08:00 (Asia/Manila). It does not add routes, components, application logic, database tables, migrations, RLS policies, question records, reference datasets, offline packages, or mobile-app code. It does not modify PR #44's branch, status, checks, or deployment. All feature work requires explicit implementation authorization after the applicable design and data decisions have been approved.
+This is a plan only. Last revised 2026-10-21T19:10:04+08:00 (Asia/Manila). It does not add routes, components, application logic, database tables, migrations, RLS policies, question records, reference datasets, offline packages, or mobile-app code. It does not modify PR #44's branch, status, checks, or deployment. All feature work requires explicit implementation authorization after the applicable design and data decisions have been approved.
