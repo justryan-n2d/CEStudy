@@ -44,7 +44,12 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Shared components
 
-- **Header:** canonical logo, wordmark, concise navigation, white surface, thin border. Year levels opens the overview page, not Year 1.
+- **Header:** canonical logo, wordmark, concise navigation, white surface, thin border.
+- **Year-Level navigation (planned):** hierarchy from 1st to 4th year, then semester and subject, based on verified curriculum/content metadata.
+- **Review Materials mega-menu (planned):** Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Show only available, appropriately reviewed resources.
+- **Equation renderer:** shared rendering path for inline/display math in lessons, formula sheets, problem sets/solutions, quizzes, results, forum discussions, and approved offline material.
+- **Offline/download state:** consistent labels for available to download, downloading, downloaded, update available, failed, unavailable offline, stale, and removed, only where each state is applicable.
+- **Theme toggle:** explicit Light/Dark preference, with a System option only if separately approved. Persist according to the approved privacy/data policy. Year levels opens the overview page, not Year 1.
 - **Primary button:** logo blue with white text; one main action per region.
 - **Secondary button:** white with a neutral border and navy text.
 - **Subject card:** title, relevant year/category metadata, accurate content availability, and one clear destination.
@@ -57,10 +62,14 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 ## Responsive website behavior
 
 - Website-first: establish the desktop information architecture, page hierarchy, and wide-screen workflows first, then design responsive adaptations. Existing 560px and 850px breakpoints are initial references, not mandatory boundaries.
+- Target desktop navigation: Year-Level dropdown (year → semester → subject), Review Materials Hub mega-menu (Formula Sheets, Problem Sets with Solutions, Video Tutorials), direct Mock Exam Portal and Community Forum links, and a private signed-in Student Dashboard control.
+- On tablet/phone browsers, make the year hierarchy and material groups work as panels or accordions. Do not shrink desktop menus or assume the future native-app tab bar is the correct mobile-web navigation.
 - Desktop content should use page-appropriate widths. Reading pages may stay centered and constrained; reference tables and dense study workspaces may need wider containers.
 - Tablet layouts should retain useful hierarchy, readable filters, and adequate content space without cramped labels.
 - Phone browser layouts must remain usable and should prioritize the current task, search, and content. They may use different navigation presentation from desktop without changing the underlying destination model.
 - Keep layouts usable at 320px and verify at 360, 390, 768, 1024, and 1440px. Do not force desktop tables or multi-column layouts into unreadable narrow surfaces.
+- Verify long equations do not cause page-wide overflow; use a deliberate wrapping or labelled horizontal-scroll strategy where necessary.
+- Test light and dark themes across dropdowns, mega-menus, formulas, timers, tables, results, forum content, and focus indicators.
 
 ## Motion and performance
 
@@ -85,6 +94,12 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 ## Acceptance checks
 
 - The real master logo is unchanged and visible against a white theme.
+- The planned website navigation supports year → semester → subject, the three Review Materials groups, Mock Exam Portal, Community Forum, and a private Student Dashboard.
+- The responsive website does not inherit the native app's five-tab structure without separate usability review.
+- Inline/display equations render through the shared path, including fractions, nested fractions, matrices/vectors, subscripts/superscripts, units, and a readable invalid-expression fallback.
+- Dark Mode applies consistently and persists according to the approved preference model.
+- Offline Access only indicates an item is downloaded when its complete package is stored; download, failure, update, stale, remove, and unavailable states are explicit.
+- Content licensing and publication approval are required before protected materials are made downloadable.
 - Logo blue is used sparingly; white remains the default surface.
 - All current routes use the same token, type, spacing, button, card, and focus patterns.
 - Year levels links to an overview that lists all four years.
@@ -94,6 +109,10 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Contrast, keyboard behavior, route refreshes, and catalog/practice behavior remain intact without horizontal page overflow.
 - CI, browser smoke checks, and available accessibility checks pass before merging.
 
+
+## Revision record
+
+- **2026-10-21T19:03:29+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
 
 ## Footer
 
@@ -108,27 +127,44 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 CEStudy uses one design language with two intentionally different interfaces. The future app should not simply squeeze the responsive website into a native shell.
 
+
 ### Shared foundations
-- The master logo, logo blue #0754B5, white surfaces, type hierarchy, semantic color roles, spacing and radius tokens.
-- Consistent meaning for primary and secondary actions, subject availability states, search, filters, progress, feedback, loading, errors and success.
-- Shared subject/content taxonomy, Supabase data contracts, validation rules, and access-control behavior.
-- Motion principles: short, purposeful transitions; no animation blocking study tasks; reduced-motion preferences are respected.
+
+- The master logo, logo blue #0754B5, type and spacing tokens, semantic colors, and purposeful motion constraints.
+- Consistent states for content availability, search/filter, progress, feedback, loading, errors, success, and offline downloads.
+- Shared subject/content taxonomy, validation, formula conventions, data contracts, and access-control behavior.
+- Website equations must use an audited shared renderer. Native app math rendering must be selected and tested independently.
+- Light and dark themes use semantic tokens across all pages. The existing light theme remains the default unless the owner changes that decision.
+- Offline packages need explicit version, availability, update, and removal states. Browser service workers/storage and native app local storage/synchronization are different technical implementations.
 - Brand/service logos are sourced from SVGL (https://svgl.app/) when available and stored locally. Generic interface icons remain simple and visually consistent.
 
+
 ### Website-specific structure (current baseline, subject to redesign)
-- Main-branch baseline: brand header, desktop links for Subject catalog, Year levels, and Math foundations, with additional destinations available through secondary navigation/footer patterns. The documented mobile web pattern has a four-item quick-navigation bar (Home, Subjects, Years, Math) plus a More menu.
-- PR #44 is an unmerged draft and proposes related account/profile/history/streak/community routes and a five-destination mobile navigation pattern including Menu. Keep this distinct from current main and preserve PR #44's release gates.
-- Treat the current desktop and mobile-web structures as audit baselines, not fixed requirements. The approved website-first IA may reorganize, group, rename, replace, or remove navigation elements after review.
-- The mobile web navigation must not cover final content; allow room for safe-area insets on gesture-navigation devices.
-- The homepage uses a responsive hero photograph with appropriate srcset widths and reserved dimensions. Only the primary hero is loaded eagerly.
-- Scroll reveal applies only to major content sections. Use IntersectionObserver, unobserve after the first reveal, animate only opacity/transform, and show content immediately if reduced motion is requested or the API is unavailable. See MDN: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API.
+
+- Current main baseline: a brand header with Subject catalog, Year levels, and Math foundations, plus secondary navigation. The documented mobile-web pattern uses a compact quick-navigation bar and a More menu. These are audit baselines, not immutable constraints.
+- PR #44 remains a separate unmerged draft with its own account/profile/history/streak/community routes and navigation implementation. Do not treat draft functionality as shipped on main or change its release gates through this plan.
+- Target website navigation: Year-Level dropdown for 1st, 2nd, 3rd, and 4th year with semester and subject levels; Review Materials Hub mega-menu for Formula Sheets, Problem Sets with Solutions, and Video Tutorials; direct Mock Exam Portal and Community Forum destinations; private signed-in Student Dashboard control.
+- Dashboard progress/bookmarks must be private to the correct user, and weak-subject signals must show evidence/coverage rather than implying mastery from a tiny sample.
+- Resource menus show real availability, review state, and provenance. Download only content whose source and redistribution rights have been approved.
+- At tablet/phone widths, the year dropdown and resource mega-menu become operable panels/accordions. The mobile-browser navigation is decided separately from the native app tab bar.
+- Offline Access should include a download manager for approved reviewer PDFs, formula sheets, and mock-test packages. Specify storage, source/version, update, removal, and offline-attempt synchronization before implementation.
+- Use equation rendering across lessons, formula sheets, problem sets, quizzes, results, and forum posts/comments. Offline materials need local access to any required rendering assets.
+
 
 ### Future native mobile app
-- Use a study-first home screen: Continue studying when progress exists, search, subjects, and practice reachable without a deep menu.
-- Use native bottom tabs and touch-first patterns, not the website DOM, header, footer, or mobile web menu.
-- Reuse the same brand, type/spacing tokens, statuses, data contracts, and interaction semantics; rebuild visual components in the future mobile framework.
-- Defer the framework decision until app implementation. Do not add React Native, Expo, or another mobile framework to the current website.
-- Use photography selectively; repeated study screens should stay content-first and lighter than the website homepage.
+
+- The app Home supports a reviewed daily question, quick-start study streak, and recently opened modules where real content/history exists.
+- The target native tab bar has five tabs: **Home**, **Subjects / Library**, **Practice**, **Calculator / Tools**, and **Profile**.
+- **Home:** daily review question, streak entry, recent modules.
+- **Subjects / Library:** year/subject catalog, structured reading, authorized reviewer PDFs and formula sheets for offline use.
+- **Practice:** flashcards, customizable timed quizzes, and Shuffled Practice.
+- **Calculator / Tools:** unit converter first; verified steel references and bounded concrete-learning references only after source review.
+- **Profile:** evidence-aware readiness indicator, saved formulas/questions, settings, Dark Mode, Offline Access manager, account and privacy controls.
+- Offline timed-test packages need local question/answer/explanation data, math-rendering assets, clear timer behavior, and an explicit unsynced-attempt policy.
+- Provide a Dark Mode toggle using shared semantic tokens and define whether its preference is local or account-synchronized.
+- Reuse brand, typography, statuses, content taxonomy, validation rules, and data contracts; rebuild UI components for native mobile interaction instead of simply squeezing the responsive website into an app shell.
+- Choose and verify native equation rendering separately. The website's KaTeX dependency does not establish native rendering support.
+- Defer platform/framework selection until app development is authorized. Do not add mobile framework dependencies to the current website.
 
 ## Photography and service icons
 - Homepage bridge photograph: Juan Coronel on Unsplash, https://unsplash.com/photos/an-aerial-view-of-a-bridge-over-a-river-RFJb724c660. Delivered through Unsplash's image CDN using responsive widths. Browser smoke tests check loading and CSP.
