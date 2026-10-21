@@ -1,6 +1,6 @@
 # CEStudy UX/UI Design System
 
-**Status:** Brand foundations established; website information architecture and theme default are under decision review  
+**Status:** Brand foundations established; owner has approved the Light/Dark toggle, website navigation direction, and Practice workspace layout. No application implementation is authorized by this document.  
 **Platforms:** Website-first responsive web now; native Android and iOS later  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
 
@@ -10,7 +10,7 @@
 
 1. **Website-first information architecture.** Design the desktop website structure and primary workflows first. Adapt them responsively for tablet and phone browsers afterward; mobile-browser usability remains required but does not set the overall architecture.
 2. **Logo-led, not logo-disconnected.** Retain the canonical master logo and its geometry. The exact logo blue is `#0754B5`; use its transparent blue-art variant on pale or white surfaces when a larger brand mark is useful.
-3. **Theme default under review.** The existing token table records the earlier light-theme baseline. The proposed modern direction draws inspiration from **Discord** (community and navigation), **Duolingo** (quests, XP, streak feedback, and learning rewards), **GitHub** (structured activity and progress), and **Autodesk AutoCAD** (precision engineering-workspace styling, dark drafting canvas, and technical panels). These references must inform CEStudy's own design system, not be copied. Compare light-first and dark-first concepts and do not treat the default as settled until the companion decision plan is approved.
+3. **Theme toggle approved.** Provide a clear Light/Dark toggle and keep the existing light-default baseline for this plan. Do not switch to a dark-first default or add a System option without a separate owner decision. The modern direction draws inspiration from **Discord** (community and navigation), **Duolingo** (quests, XP, streak feedback, and learning rewards), **GitHub** (structured activity and progress), and **Autodesk AutoCAD** (precision engineering-workspace styling, dark drafting canvas, and technical panels). These references inform CEStudy's own design system and must not be copied.
 4. **Brand accents with restraint.** Use CEStudy blue for primary actions, links, focus indicators, and small selected states. Evaluate proposed electric green, cyan/neon blue, and safety orange only for appropriate semantic roles and verified contrast. Avoid large full-width blue panels, excessive glow, and neon colors as the sole way to convey status.
 5. **Useful copy only.** Text must help students navigate, understand a content status, learn a concept, or recover from a problem. Remove repeated claims, filler slogans, generic marketing copy, and statistics that do not help a student make a decision.
 6. **Motion with purpose.** Motion may show hover, focus, selection, feedback, or the arrival of content. It must not delay studying or act as decoration.
@@ -46,12 +46,14 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Shared components
 
-- **Header:** canonical logo, wordmark, concise navigation, white surface, thin border.
+- **Header:** canonical logo, wordmark, concise global navigation, white/light default surface, thin border. The approved public-page navigation uses the hybrid header; a collapsible sidebar is reserved for dense signed-in workspaces.
 - **Year-Level navigation (planned):** hierarchy from 1st to 4th year, then semester and subject, based on verified curriculum/content metadata.
 - **Review Materials mega-menu (planned):** Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Show only available, appropriately reviewed resources.
 - **Equation renderer:** shared rendering path for inline/display math in lessons, formula sheets, problem sets/solutions, quizzes, results, forum discussions, and approved offline material.
 - **Offline/download state:** consistent labels for available to download, downloading, downloaded, update available, failed, unavailable offline, stale, and removed, only where each state is applicable.
-- **Theme toggle:** explicit Light/Dark preference, with a System option only if separately approved. Persist according to the approved privacy/data policy. Year levels opens the overview page, not Year 1.
+- **Theme toggle:** explicit Light/Dark preference; no System option is approved. Keep light as the initial default baseline and decide preference persistence (device-local versus account-synchronized) before implementation. Year levels opens the overview page, not Year 1.
+- **Gamification controls:** XP/rewards, quests, streak freezes, badges, leaderboards, and retry-related reward behavior should be independently toggleable. Privacy and opt-in controls are user-respecting; anti-abuse/integrity safeguards remain mandatory while a reward feature is active.
+- **Practice workspace:** target a flexible approximate 70/30 question/tools layout on desktop, with a collapsible/dockable tools panel. At narrow widths, use a single-column question view and move tools into a drawer, tab, or opened sheet.
 - **Primary button:** logo blue with white text; one main action per region.
 - **Secondary button:** white with a neutral border and navy text.
 - **Subject card:** title, relevant year/category metadata, accurate content availability, and one clear destination.
@@ -81,7 +83,8 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 | Cards | Small lift/border/shadow change on hover-capable devices | Avoid layout shifts |
 | Page entry | One short opacity/translate transition where it helps orientation | No continuous animation |
 | Loading | Skeleton or existing branded loader matching the expected content | No blocking delay |
-| Reduced motion | Disable nonessential transitions and entrance effects | Respect OS preference |
+| Reduced motion | Disable nonessential transitions and entrance effects | Respect OS preference and provide an accessible in-app control where needed |
+| Sound effects | Optional supplemental feedback | Never autoplay; always provide visible/accessibility-equivalent feedback and a reliable mute path |
 
 - Prefer `transform` and `opacity` over animations that trigger layout.
 - Avoid continuous parallax, autoplay, large video backgrounds, excessive backdrop blur, and new animation libraries without a demonstrated need.
@@ -102,7 +105,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Dark Mode applies consistently and persists according to the approved preference model.
 - Offline Access only indicates an item is downloaded when its complete package is stored; download, failure, update, stale, remove, and unavailable states are explicit.
 - Content licensing and publication approval are required before protected materials are made downloadable.
-- Logo blue is used sparingly in both themes. Light-theme white surfaces remain part of the supported design; the site's default theme is an open decision until the companion plan is approved.
+- Logo blue is used sparingly in both themes. Light-theme white surfaces remain part of the supported design and remain the initial default baseline; Dark Mode is available through the approved Light/Dark toggle.
 - All current routes use the same token, type, spacing, button, card, and focus patterns.
 - Year levels links to an overview that lists all four years.
 - No filler marketing statements or non-actionable metrics appear on the homepage.
@@ -115,7 +118,8 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 ## Revision record
 
 - **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
-- **2026-10-21:** Linked the modern gamified UX/UI decision plan and marked the light-versus-dark default as open. Added planning gates for quests, rewards, healthy engagement, exam evidence, and responsive navigation. Documentation-only change.
+- **2026-10-21:** Linked the modern gamified UX/UI decision plan and documented planning gates for quests, rewards, healthy engagement, exam evidence, and responsive navigation. Documentation-only change.
+- **2026-10-22:** Recorded owner decisions: explicit Light/Dark toggle with existing light-default baseline; independently toggleable gamification mechanics; approved healthy-engagement safeguards including optional Night Owl; exam-specific PRC mapping, a dedicated past-question sourcing/permissions workflow, the proposed 100-question challenge and readiness measures deferred; hybrid global navigation, workspace-only collapsible sidebar and flexible 70/30 Practice layout approved. Documentation-only change.
 
 ## Footer
 
@@ -137,7 +141,7 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 - Consistent states for content availability, search/filter, progress, feedback, loading, errors, success, and offline downloads.
 - Shared subject/content taxonomy, validation, formula conventions, data contracts, and access-control behavior.
 - Website equations must use an audited shared renderer. Native app math rendering must be selected and tested independently.
-- Light and dark themes use semantic tokens across all pages. The prior light-theme default is under review against the newer dark-first proposal. The design references are Discord for community/navigation, Duolingo for learning quests/rewards, GitHub for activity/progress, and Autodesk AutoCAD for a precise technical-workspace aesthetic. See the modern gamified UX/UI decision plan before locking the default or preference persistence model.
+- Keep the existing light-default baseline and provide the approved Light/Dark toggle. Preference persistence still needs a separate decision. The design references are Discord for community/navigation, Duolingo for learning quests/rewards, GitHub for activity/progress, and Autodesk AutoCAD for a precise technical-workspace aesthetic. Use these references to inform CEStudy's own design, not to copy other interfaces.
 - Offline packages need explicit version, availability, update, and removal states. Browser service workers/storage and native app local storage/synchronization are different technical implementations.
 - Brand/service logos are sourced from SVGL (https://svgl.app/) when available and stored locally. Generic interface icons remain simple and visually consistent.
 
@@ -162,7 +166,7 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 - **Subjects / Library:** year/subject catalog, structured reading, authorized reviewer PDFs and formula sheets for offline use.
 - **Practice:** flashcards, customizable timed quizzes, and Shuffled Practice.
 - **Calculator / Tools:** unit converter first; verified steel references and bounded concrete-learning references only after source review.
-- **Profile:** evidence-aware readiness indicator, saved formulas/questions, settings, Dark Mode, Offline Access manager, account and privacy controls.
+- **Profile:** saved formulas/questions, settings, Light/Dark toggle, Offline Access manager, account and privacy controls. Board-readiness measurements are not approved in the current plan.
 - Offline timed-test packages need local question/answer/explanation data, math-rendering assets, clear timer behavior, and an explicit unsynced-attempt policy.
 - Provide a Dark Mode toggle using shared semantic tokens and define whether its preference is local or account-synchronized.
 - Reuse brand, typography, statuses, content taxonomy, validation rules, and data contracts; rebuild UI components for native mobile interaction instead of simply squeezing the responsive website into an app shell.
