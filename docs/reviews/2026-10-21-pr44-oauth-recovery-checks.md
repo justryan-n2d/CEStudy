@@ -96,3 +96,30 @@ References reviewed on 2026-10-21:
 - [Supabase Auth redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls): Site URL, redirect allowlist matching, and guidance to use exact production URLs and scoped preview/development wildcards.
 
 **Gate decision:** Gate 3 is not passed yet. The documented setup is structurally aligned, but a read-only repository review cannot confirm the live dashboard values. Complete the three console checks above before marking Gate 3 passed. Gate 2's controlled real callback-failure test remains separately open for the scheduled desktop session. Keep PR #44 open and in draft.
+
+
+## Gate 2 diagnostic note: PKCE token-exchange failure (2026-10-21)
+
+**Status: test hypothesis, not a reproduced defect.** A source review identified a case Gate 2 should explicitly exercise instead of relying only on the mobile airplane-mode attempt or URL-injected `server_error`.
+
+Evidence in the current application code:
+
+- `src/lib/supabase.ts` configures `detectSessionInUrl: true` and `flowType: "pkce"`, so the browser Supabase client attempts to exchange the returned authorization code while processing the callback URL.
+- `src/pages/LoginPage.tsx` initializes the visible recovery alert from the `error` and `error_description` query parameters. It has no explicit branch for a failed PKCE exchange when the URL contains a `code` parameter but no explicit error parameter.
+- `src/contexts/AuthContext.tsx` subscribes to auth-state changes and checks `getSession()`, but does not provide a dedicated callback-exchange error to `LoginPage`.
+
+This does not prove the UI will fail: the actual behavior depends on the SDK callback processing and the browser/runtime response. It does establish a concrete test target for the controlled Gate 2 attempt. Supabase's current documentation confirms the PKCE flow processes an authorization code after redirect and relies on the stored code verifier; see [Supabase Google sign-in](https://supabase.com/docs/guides/auth/social-login/auth-google) and [PKCE flow](https://supabase.com/docs/guides/auth/sessions/pkce-flow).
+
+### Desktop test details
+
+1. Use the deployed PR preview while signed out. In Chrome DevTools Network Request Blocking, temporarily block `*://qqmdwltfgpqtcvdbcmto.supabase.co/auth/v1/token*`.
+2. Begin Google sign-in and finish at Google's provider screen so the browser actually returns to CEStudy with a PKCE callback. Confirm in DevTools that the Supabase token-exchange request was blocked. If no such request occurs, the test is inconclusive.
+3. After the blocked callback, record whether the app displays a readable `role="alert"` message, ends loading, stays signed out, and leaves **Continue with Google** enabled. Do not copy/share a callback URL containing a `code` value.
+4. Refresh with the block still enabled and record whether the page stays usable and offers recovery.
+5. Remove the block and retry from the Login page. Confirm a new OAuth attempt can complete successfully, then sign out.
+
+**Pass criteria:** the failed callback produces clear, actionable feedback; the app remains signed out without a stuck spinner or false success; refresh remains usable; and removing the block permits a fresh successful retry.
+
+**If no alert appears or the page gets stuck:** mark Gate 2 failed. Add an automated regression test that models a PKCE callback with `code` but no explicit `error` parameter before changing application code, then fix the smallest verified gap. Do not merge until the fix's tests and the controlled preview retest pass.
+
+Never store callback codes, tokens, request bodies, or personal Google account data in the public repository or this record.
