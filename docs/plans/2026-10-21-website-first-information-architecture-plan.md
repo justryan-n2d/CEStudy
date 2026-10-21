@@ -2,11 +2,12 @@
 
 **Status:** Planning proposal; no application implementation authorized  
 **Initially prepared at:** 2026-10-21T18:53:21+08:00 (Asia/Manila)  
-**Last revised at:** 2026-10-21T19:10:04+08:00 (Asia/Manila)  
+**Last revised:** 2026-10-21 (Asia/Manila)  
 **Repository:** [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy)  
 **Main baseline commit:** `e6f657cbbf94467e427fc6183c9714e965098598`  
 **PR #44 head reviewed:** `662e413601cef93100534b8be52f1a76fe35b335` (open, draft, not merged)  
-**Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md)
+**Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md)  
+**Related decision plan:** [Modern Gamified UX/UI Decision Plan](./2026-10-21-modern-gamified-ux-decision-plan.md)
 
 
 ## 1. Executive summary
@@ -139,7 +140,7 @@ The global navigation target is:
 - Community Forum direct tab.
 - Student Dashboard/account control, private to signed-in students.
 
-Search is a candidate shared capability. Do not add it until searchable content, result ranking, and empty-state behavior are specified. Help/policy and owner-only destinations remain secondary. A persistent sidebar should only be chosen for dense dashboard/workspace views if usability evidence supports it.
+Search is a candidate shared capability. Do not add it until searchable content, result ranking, and empty-state behavior are specified. Help/policy and owner-only destinations remain secondary. A persistent sidebar should only be chosen for dense dashboard/workspace views if usability evidence supports it. The later Discord-inspired collapsible-sidebar proposal is a design option, not approval to replace this global navigation on every page. Compare the models and viewport behavior in the [Modern Gamified UX/UI Decision Plan](./2026-10-21-modern-gamified-ux-decision-plan.md).
 
 ### Year-Level dropdown interaction
 
@@ -175,15 +176,15 @@ Search is a candidate shared capability. Do not add it until searchable content,
 | Community Forum | Search, discussion list, problem thread, comments, reporting/moderation controls |
 | Tools | Tool directory and input/result workspaces with units and explanations |
 
-### Dark Mode
+### Theme mode and visual direction
 
-Dark Mode is a required capability for the website and future app.
-- Keep the white/light theme as the default unless the owner approves a different default.
-- Provide a visible Light/Dark toggle. Whether to include a System choice is an open decision.
-- Reuse semantic tokens for background, surfaces, text, borders, focus, and status colors.
-- Persist the website preference locally at first; account synchronization requires a separate privacy/data decision.
-- Validate menu panels, equations, timers, tables, charts, result states, forum content, focus rings, and downloaded-material states in both themes.
-- Do not assume the dark-mode implementation on PR #44's draft branch is present on main.
+Theme support is required for the website and future app, but the default is now an explicit open decision. The earlier requirement selected a white/light default with dark mode as an option. The owner's later modern engineering UI direction favors a dark-first CAD-inspired appearance. Do not treat the older default as final or silently switch the default in the design system.
+
+Compare light-first, dark-first, and system-led initial themes on the same representative flows, including Home, Review Materials, Dashboard, Practice, Community, equations, charts, dialogs, and empty/error states. The dark-first concept may use deep slate or midnight surfaces, existing CEStudy blue, and restrained electric green, cyan/neon blue, and safety orange accents, but the palette is not finalized. Check semantic contrast and readable status/focus states in both themes.
+
+Provide an explicit theme control. Whether the choices are Light/Dark or Light/Dark/System, and whether preference is local or account-synchronized, remain open. Keep theme tokens semantic rather than styling each page independently. Validate both themes across menus, equations, timers, tables, charts, result states, forum content, focus rings, motion, and downloaded-material states. Do not assume PR #44's draft-branch theme behavior is present on main.
+
+Resolve the theme choice using the [Modern Gamified UX/UI Decision Plan](./2026-10-21-modern-gamified-ux-decision-plan.md) before implementation.
 
 
 ## 7. Responsive website strategy and future native app
@@ -274,6 +275,10 @@ Use the requested private Student Dashboard as the web personal-learning area. I
 
 The Year-Level hierarchy needs a validated year/semester/subject mapping. The Review Materials Hub requires actual metadata for Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Do not represent future content as currently available; confirm publishing status, source, and permitted distribution first.
 
+### Gamified progress and quests
+
+The owner has proposed Daily Quests, XP, badges, streaks/streak freezes, weekly XP and streak leaderboards, and a future token concept. These are planning proposals, not existing functionality or approved reward rules. Define qualifying events, retry and anti-abuse rules, date/timezone behavior, privacy, and healthy-engagement safeguards before implementation. Keep leaderboard values evidence-backed and do not use XP or streaks as substitutes for mastery or board readiness. See the [Modern Gamified UX/UI Decision Plan](./2026-10-21-modern-gamified-ux-decision-plan.md).
+
 ### Community Forum
 
 Define public/read-only versus account-required participation, author identity, reporting/moderation, deletion/retention, and equation safety before opening posting. A discussion thread must not expose private account data, and mathematical input must be rendered through a safe, tested path.
@@ -359,13 +364,18 @@ Before merging any later implementation:
 
 ## 11. Decisions and open questions
 
-### Direction provided by the owner on 2026-10-21, revised at 2026-10-21T19:03:29+08:00 (Asia/Manila)
+### Direction provided by the owner on 2026-10-21
 
 - Website navigation target: Year-Level dropdown by year → semesters → subjects; Review Materials Hub mega-menu for Formula Sheets, Problem Sets with Solutions, and Video Tutorials; direct Mock Exam Portal; private Student Dashboard; Community Forum.
 - Native app target: five tabs named Home, Subjects / Library, Practice, Calculator / Tools, and Profile.
 - Must-have cross-cutting features: Offline Access toggle for downloadable materials, LaTeX/equation rendering on desktop and future app surfaces, and Dark Mode toggle.
 - Website-first remains the development strategy. The app receives its own mobile interaction design.
-- This is still planning and documentation; no app/web feature implementation is authorized by the navigation brief.
+- Modern UI direction: evaluate Discord-inspired community/navigation, Duolingo-inspired quests and rewards, GitHub-inspired activity/progress, and a CAD-inspired dark visual language. Treat the inspiration as design references, not a request to clone those products.
+- Dashboard ideas include a streak header/calendar and available freezes, evidence-backed Board Readiness Gauge, Daily Blueprint Challenge, and weakest-topic refresher. Readiness must show its evidence and adequate-sample limits.
+- Desktop practice concept: a flexible approximate 70/30 question and tools/rewards split, with complete equations/diagrams and a collapsible/dockable right panel.
+- Proposed rewards include Daily Load (+20 XP), Stress Test (+50 XP), Night Owl (+30 XP), Group Study (+100 XP), and a 100-question Board Simulator challenge (+500 XP plus a proposed badge). The values and eligibility are not approved; Night Owl and the 100-question format require specific review.
+- Leaderboards may offer weekly XP or streak views with Nationwide/My School filters only after opt-in/privacy, affiliation verification, abuse controls, and reset rules are defined. Public author identity remains CEStudy and email addresses must not be exposed.
+- This is still planning and documentation; no app/web feature implementation is authorized by these requests. See the [Modern Gamified UX/UI Decision Plan](./2026-10-21-modern-gamified-ux-decision-plan.md).
 
 ### Recommended implementation order
 
@@ -384,7 +394,14 @@ Before merging any later implementation:
 - Which past board exam questions are lawfully reusable, and how will CEStudy cite their source and edition?
 - Is forum reading public/searchable, while posting requires an account? What are the moderation and identity rules?
 - What question coverage qualifies a weak-subject signal or readiness estimate?
-- Does Dark Mode offer Light/Dark only or Light/Dark/System? Does the preference stay local or sync?
+- Should the site default to Light, Dark, or a system-led theme? Should the control offer Light/Dark or Light/Dark/System, and should the choice be device-local or synchronized?
+- What are the exact quest instance, completion, XP uniqueness, repeat-attempt, offline-sync, and abuse-review rules?
+- What activity maintains a streak, which timezone defines the study day, and how should streak freezes work?
+- Should Night Owl remain optional with safeguards or be replaced by a student-selected study-time challenge?
+- Which rewards and badge criteria are approved, and should public XP/streak leaderboards be opt-in? What evidence proves eligible school membership?
+- What does the 100-question Board Simulator represent: a CEStudy custom challenge or a verified official-format simulation?
+- Which current PRC subject labels, Tables of Specifications, question counts, item rights, and timing rules are authoritative for each exam area?
+- Which navigation model should use a collapsible sidebar, and how should the right-hand tools panel collapse at 1024px and narrower?
 - Which resources can be downloaded, how much storage is allocated, and how are stale/withdrawn packages handled?
 - How should offline timers respond to app suspension, device-clock changes, and network restoration?
 - Which math syntax is required beyond the verified KaTeX support, and how is user-posted markup sanitized?
@@ -392,4 +409,4 @@ Before merging any later implementation:
 
 ## 12. Scope guard
 
-This is a plan only. Last revised 2026-10-21T19:10:04+08:00 (Asia/Manila). It does not add routes, components, application logic, database tables, migrations, RLS policies, question records, reference datasets, offline packages, or mobile-app code. It does not modify PR #44's branch, status, checks, or deployment. All feature work requires explicit implementation authorization after the applicable design and data decisions have been approved.
+This is a plan only. Revised 2026-10-21 (Asia/Manila). See the companion Modern Gamified UX/UI Decision Plan for the theme, quest/reward, healthy-engagement, exam-evidence, and responsive-navigation decisions still to resolve. This work does not add routes, components, application logic, database tables, migrations, RLS policies, question records, reference datasets, offline packages, or mobile-app code. It does not modify PR #44's branch, status, checks, or deployment. All feature work requires explicit implementation authorization after the applicable design and data decisions have been approved.
