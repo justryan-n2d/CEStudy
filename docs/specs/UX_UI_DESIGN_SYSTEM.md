@@ -1,17 +1,17 @@
 # CEStudy UX/UI Design System
 
-**Status:** Approved visual direction; website information architecture is being revised  
+**Status:** Brand foundations established; website information architecture and theme default are under decision review  
 **Platforms:** Website-first responsive web now; native Android and iOS later  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
 
-**Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md).
+**Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md) and the [modern gamified UX/UI decision plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md).
 
 ## Design principles
 
 1. **Website-first information architecture.** Design the desktop website structure and primary workflows first. Adapt them responsively for tablet and phone browsers afterward; mobile-browser usability remains required but does not set the overall architecture.
 2. **Logo-led, not logo-disconnected.** Retain the canonical master logo and its geometry. The exact logo blue is `#0754B5`; use its transparent blue-art variant on pale or white surfaces when a larger brand mark is useful.
-3. **White by default.** The website and future app launch in a white theme. Do not add a dark default or large full-width blue panels.
-4. **Blue with restraint.** Use the logo blue for primary actions, links, focus indicators, and small selected states. Pale blue supports selected surfaces. Keep body text in dark neutral colors and retain teal for limited semantic accents.
+3. **Theme default under review.** The existing token table records the earlier light-theme baseline. A later owner request proposes a dark-first, CAD-inspired visual direction. Keep both themes in the design comparison and do not treat the default as settled until the companion decision plan is approved.
+4. **Brand accents with restraint.** Use CEStudy blue for primary actions, links, focus indicators, and small selected states. Evaluate proposed electric green, cyan/neon blue, and safety orange only for appropriate semantic roles and verified contrast. Avoid large full-width blue panels, excessive glow, and neon colors as the sole way to convey status.
 5. **Useful copy only.** Text must help students navigate, understand a content status, learn a concept, or recover from a problem. Remove repeated claims, filler slogans, generic marketing copy, and statistics that do not help a student make a decision.
 6. **Motion with purpose.** Motion may show hover, focus, selection, feedback, or the arrival of content. It must not delay studying or act as decoration.
 7. **Performance is a design requirement.** Prefer CSS and existing dependencies; avoid large animations, continuous effects, unnecessary image payloads, repeated data fetching, and gratuitous blur or shadow.
@@ -31,6 +31,8 @@
 | Page background | `#FFFFFF` | Default page surface |
 | Card background | `#FFFFFF` | Cards and panels |
 | Soft section surface | `#F7F9FC` | Low-emphasis grouping only |
+
+The color rows above are the existing light-theme baseline, not a decision that light mode must remain the default. Define a matching dark semantic-token map during theme comparison. Both mappings must cover page/surface backgrounds, text, borders, focus, success, warning, error, disabled, hover, selected, equations, diagrams, charts, and dialogs.
 
 Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes responsive. Use consistent 4px/8px spacing increments and a restrained set of radii.
 
@@ -93,14 +95,14 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Acceptance checks
 
-- The real master logo is unchanged and visible against a white theme.
+- The real master logo is unchanged and legible against both the light and dark theme concepts.
 - The planned website navigation supports year → semester → subject, the three Review Materials groups, Mock Exam Portal, Community Forum, and a private Student Dashboard.
 - The responsive website does not inherit the native app's five-tab structure without separate usability review.
 - Inline/display equations render through the shared path, including fractions, nested fractions, matrices/vectors, subscripts/superscripts, units, and a readable invalid-expression fallback.
 - Dark Mode applies consistently and persists according to the approved preference model.
 - Offline Access only indicates an item is downloaded when its complete package is stored; download, failure, update, stale, remove, and unavailable states are explicit.
 - Content licensing and publication approval are required before protected materials are made downloadable.
-- Logo blue is used sparingly; white remains the default surface.
+- Logo blue is used sparingly in both themes. Light-theme white surfaces remain part of the supported design; the site's default theme is an open decision until the companion plan is approved.
 - All current routes use the same token, type, spacing, button, card, and focus patterns.
 - Year levels links to an overview that lists all four years.
 - No filler marketing statements or non-actionable metrics appear on the homepage.
@@ -113,6 +115,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 ## Revision record
 
 - **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
+- **2026-10-21:** Linked the modern gamified UX/UI decision plan and marked the light-versus-dark default as open. Added planning gates for quests, rewards, healthy engagement, exam evidence, and responsive navigation. Documentation-only change.
 
 ## Footer
 
@@ -134,7 +137,7 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 - Consistent states for content availability, search/filter, progress, feedback, loading, errors, success, and offline downloads.
 - Shared subject/content taxonomy, validation, formula conventions, data contracts, and access-control behavior.
 - Website equations must use an audited shared renderer. Native app math rendering must be selected and tested independently.
-- Light and dark themes use semantic tokens across all pages. The existing light theme remains the default unless the owner changes that decision.
+- Light and dark themes use semantic tokens across all pages. The prior light-theme default is under review against the newer dark-first proposal. See the modern gamified UX/UI decision plan before locking the default or preference persistence model.
 - Offline packages need explicit version, availability, update, and removal states. Browser service workers/storage and native app local storage/synchronization are different technical implementations.
 - Brand/service logos are sourced from SVGL (https://svgl.app/) when available and stored locally. Generic interface icons remain simple and visually consistent.
 
