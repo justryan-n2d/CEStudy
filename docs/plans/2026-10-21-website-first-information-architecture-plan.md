@@ -211,7 +211,7 @@ The requested native app uses five tabs:
 2. **Subjects / Library:** catalog organized by year and subject, structured reading, and approved reviewer PDFs/formula sheets for offline use.
 3. **Practice:** flashcards, customizable timed quizzes, and Shuffled Practice for board-preparation practice.
 4. **Calculator / Tools:** unit conversion first; add steel references only after dataset/licensing verification and concrete references only with clear educational limitations.
-5. **Profile:** transparent readiness evidence, saved/bookmarked formulas/questions, settings, theme, offline downloads, account/privacy controls.
+5. **Profile:** saved/bookmarked formulas/questions, settings, theme, offline downloads, account/privacy controls. Board-readiness measurements are out of scope.
 
 This is an app-specific target. Framework choice remains deferred. The native app should reuse CEStudy's brand, content taxonomy, learning rules, validation, and data contracts, but its components and navigation should be designed for mobile rather than squeezed from the web UI.
 
