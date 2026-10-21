@@ -17,7 +17,7 @@ CEStudy follows a website-first, not mobile-first, design strategy. The website'
 The owner's requested target for website navigation is:
 - Year-Level dropdown: 1st, 2nd, 3rd, and 4th year, each expanding into semesters and the individual subjects within each semester.
 - Review Materials Hub mega-menu: Formula Sheets, Problem Sets with Solutions, and Video Tutorials.
-- Mock Exam Portal: timed quizzes, properly sourced and reuse-approved past board exam questions, and performance analytics based on actual attempt history.
+- Mock Exam Portal: timed quizzes using approved CEStudy practice pools, result explanations, and performance summaries based on actual attempt history.
 - Student Dashboard: a private signed-in area for progress, evidence-backed weak-subject insights, and bookmarked questions.
 - Community Forum: peer discussion boards for difficult problems and collaborative solution discussions.
 
@@ -95,7 +95,7 @@ The user's requested navigation is now the target to develop. The comparison bel
    - Provide a clear destination to browse all resources within each group.
 
 3. **Mock Exam Portal**
-   - Quick access to timed quizzes, approved question sets, past board exam questions only when sourced and lawful reuse is confirmed, and performance analytics from real attempts.
+   - Quick access to timed quizzes, approved CEStudy practice question sets, result explanations, and performance analytics from real attempts.
    - Do not label the site an official board exam simulator without verified format, scope, coverage, and validation.
 
 4. **Student Dashboard**
@@ -120,7 +120,7 @@ This is the target structure for planning; it is not a list of shipped routes.
 - **Home:** links to Year Levels, Review Materials, Mock Exams, and Tools; personalized continue-learning content appears only when real eligible history exists.
 - **Year-Level dropdown:** 1st Year, 2nd Year, 3rd Year, 4th Year, each containing semesters and individual subjects.
 - **Review Materials Hub:** Formula Sheets, Problem Sets with Solutions, Video Tutorials, with subject/topic discovery, provenance, review status, and authorized download behavior.
-- **Mock Exam Portal:** timed quiz setup, Shuffled Practice, approved practice pools, lawfully reusable past board exam content, question session, result explanation, attempt history, and evidence-aware analytics.
+- **Mock Exam Portal:** timed quiz setup, Shuffled Practice, approved CEStudy practice pools, question session, result explanation, attempt history, and ordinary performance summaries.
 - **Student Dashboard:** progress summary, weak areas with coverage/sample disclosure, bookmarked questions, saved formulas, attempt history, preferences, privacy controls, and sign-out where applicable.
 - **Community Forum:** searchable discussion list, problem thread and comments, accessible math, posting/editing/reporting controls under approved rules.
 - **Calculator / Tools:** unit converter first; steel-section tables only after source/license checks; concrete education references clearly separated from actual validated mix design.
@@ -259,7 +259,7 @@ Regression fixtures should cover nested fractions, matrices, vectors, sub/supers
 
 ### Practice first
 
-Practice and the Mock Exam Portal form the core examination-preparation experience: flashcards, customizable timed quizzes, Shuffled Practice, explanations, reviewed past-exam material where authorized, and attempt results. Dependencies include approved question content, answers, explanations, subject/topic mappings, difficulty definitions when used, publication policy, and clear session/timer behavior.
+Practice and the Mock Exam Portal form the core examination-preparation experience: flashcards, customizable timed quizzes, Shuffled Practice, explanations, and attempt results. Dependencies include approved CEStudy practice content, answers, explanations, subject/topic mappings, difficulty definitions when used, publication policy, and clear session/timer behavior.
 
 Analytics and weak-topic claims must come from actual, eligible attempts and display enough sample/coverage information. Do not advertise official-exam simulation or a licensure pass prediction without valid supporting evidence.
 
