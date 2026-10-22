@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
@@ -68,6 +68,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   cleanup();
   localStorage.clear();
 });
@@ -96,6 +97,21 @@ describe("Blueprint Academy hybrid navigation", () => {
     expect(within(panel).getByRole("link", { name: /Calculus 1/ })).toHaveAttribute("href", "/subjects/calculus-1");
     expect(within(panel).queryByText("Basic and Advanced Algebra")).not.toBeInTheDocument();
     expect(fetchCatalogSubjectsMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows an accessible recovery path when the catalog request stalls", async () => {
+    vi.useFakeTimers();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    fetchCatalogSubjectsMock.mockReturnValueOnce(new Promise<CatalogSubject[]>(() => {}));
+    renderLayout();
+
+    await user.click(screen.getByRole("button", { name: "Year Levels" }));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(5000);
+    });
+
+    expect(screen.getByRole("alert")).toHaveTextContent(/catalog request timed out/i);
+    expect(screen.getByRole("link", { name: "Open Subject Catalog" })).toHaveAttribute("href", "/catalog");
   });
 
   it("reuses successfully loaded catalog data when the Year Levels menu is reopened", async () => {
