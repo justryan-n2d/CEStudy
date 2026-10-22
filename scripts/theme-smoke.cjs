@@ -287,10 +287,12 @@ async function main() {
         await yearPanel.waitFor({ state: "visible", timeout: 5000 });
         check("Year Levels menu exposes overview destination: " + activeRoute,
           await yearPanel.getByRole("link", { name: "Browse all year levels" }).isVisible().catch(() => false));
-        await page.waitForFunction(() => {
+        const yearMenuStateReady = await page.waitForFunction(() => {
           const panel = document.querySelector("#year-level-navigation");
           return Boolean(panel?.querySelector(".year-level-menu-year") || panel?.querySelector(".navigation-panel-error"));
-        }, { timeout: 8000 });
+        }, { timeout: 8000 }).then(() => true).catch(() => false);
+        check("Year Levels menu reaches a content or recoverable error state: " + activeRoute,
+          yearMenuStateReady, yearMenuStateReady ? "" : "Neither catalog entries nor a recovery panel appeared within 8 seconds.");
         const loadedYearSections = await yearPanel.locator(".year-level-menu-year > summary").count();
         if (loadedYearSections > 0) {
           const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
@@ -303,7 +305,8 @@ async function main() {
         } else {
           const errorAlert = yearPanel.getByRole("alert");
           check("Year Levels menu provides recovery when catalog data is unavailable: " + activeRoute,
-            await errorAlert.isVisible().catch(() => false) &&
+            yearMenuStateReady &&
+              await errorAlert.isVisible().catch(() => false) &&
               await yearPanel.getByRole("link", { name: "Open Subject Catalog" }).isVisible().catch(() => false));
           const recoveryTargets = await yearPanel.locator("a").evaluateAll((nodes) =>
             nodes.filter((node) => node.getClientRects().length > 0)
