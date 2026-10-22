@@ -1,6 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { ThemeProvider } from "./contexts/ThemeContext";
 import { HomePage } from "./pages/HomePage";
 import { AboutPage } from "./pages/AboutPage";
 import { PrivacyPage } from "./pages/PrivacyPage";
@@ -21,8 +20,7 @@ import { ContentReviewPage } from "./pages/ContentReviewPage";
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
+    <BrowserRouter>
         <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -46,7 +44,6 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>
-      </BrowserRouter>
-    </ThemeProvider>
+    </BrowserRouter>
   );
 }
