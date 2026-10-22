@@ -116,7 +116,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Slice | Status | Scope / exit condition |
 |---|---|---|
 | Phase 0: Canonical plan and baseline | **incomplete** | Main/PR metadata, source paths, and existing GitHub CI evidence are recorded. Direct visual preview capture and a fresh local test run remain blocked and must be resolved or explicitly accepted before declaring the baseline fully complete. |
-| Phase 1: Shared foundation and theme tokens | **current** | Build the reusable semantic theme foundation and explicit Light/Dark control for the existing app, preserve Light as default and do not silently decide theme persistence. Add tests and verify the actual changed app paths. |
+| Phase 1: Shared foundation and theme tokens | **complete** | Implemented on `feat/blueprint-academy-theme-foundation`; light-default and explicit Light/Dark controls, semantic token roles, current-surface dark styling, and automated tests. CI run `39772810292` passed, including 850/850 browser assertions over 10 routes, both themes, and five viewports; secret scan `39772810372` passed. PR #56 remains open for owner review and is not merged. |
 | Phase 2: Navigation and route focus | **not started** | Implement the approved hybrid header, nested year navigation, resource mega-menu, focus handoff, and responsive behavior. |
 | Phase 3: Catalog, subject and lesson consistency | **not started** | Unify browse/read experiences and verify shared math rendering in both themes. |
 | Phase 4: Practice workspace | **not started** | Implement and verify the responsive question/tools workspace while preserving current question/answer behavior. |
@@ -463,7 +463,7 @@ Example reward values in PR #51 are draft planning examples, not approved consta
 
 Each slice must be separately scoped, reviewed, and tested. The owner explicitly authorized application code changes on 2026-10-22. That authorization is bounded by the approved roadmap and does not authorize automatic merge, deployment, production configuration/data changes, or weakening any existing safeguards. Keep the implementation status tracker current and mark a slice complete only after its acceptance criteria and verification are satisfied.
 
-### Phase 0: Canonical plan and baseline (current)
+### Phase 0: Canonical plan and baseline (incomplete)
 
 **Status:** Source inspection and existing CI evidence recorded. Direct preview capture and a fresh local run are blocked by the available environment. Do not describe the baseline as a complete live visual audit.
 
@@ -479,6 +479,8 @@ Exit criteria:
 - Direct preview screenshots or fresh local/browser checks are collected before visual implementation review if the tool/environment becomes available.
 
 ### Phase 1: Shared foundation and theme tokens
+
+**Status: complete on branch, pending owner review/merge.** Verification: PR #56 CI run `39772810292` passed; its built-production-preview browser step passed 850/850 assertions across 10 routes, five viewports (320/390/768/1024/1440px) and both themes. The secret scan `39772810372` passed. Supabase migration/RLS tests, lint, unit tests, build, routing/security-header packaging, dependency audit, and backup checks passed. Direct local execution and independent visual preview capture remain unavailable in this environment.
 
 **Priority:** first implementation candidate. **Relative effort:** Medium. **Risk:** Medium due theme-wide regression potential.
 
@@ -656,7 +658,7 @@ These official references guide technical verification; they do not replace the 
 
 ## 17. Final implementation prompt
 
-When the owner authorizes implementation in a later conversation, start with the repository and branch baseline, then use the approved design decision and the relevant phase from this document. Do not attempt the whole roadmap in one PR.
+The owner has authorized application code changes for the roadmap. For each subsequent slice or later conversation, start with the repository and branch baseline, then implement only the next scoped phase from this document. Do not attempt the whole roadmap in one PR.
 
 ```text
 Implement the authorized CEStudy UX/UI redesign slice from docs/MASTER_ROADMAP_FOR_CESTUDY.md.
@@ -676,7 +678,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
-| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner then authorized application code changes. Phase 0 remains incomplete due to blocked direct preview capture and fresh local execution; Phase 1 is current. |
+| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner authorized roadmap-bounded application changes. Phase 0 remains incomplete because direct preview capture and fresh local execution are blocked. Phase 1 was implemented on PR #56 and passed CI, RLS tests, secret scan, and 850/850 browser assertions; PR #56 remains open and unmerged. |
 
 ---
 
