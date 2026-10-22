@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { Link, MemoryRouter } from "react-router-dom";
 
 const { fetchCatalogSubjectsMock } = vi.hoisted(() => ({ fetchCatalogSubjectsMock: vi.fn() }));
 vi.mock("../data/catalog-api", () => ({ fetchCatalogSubjects: fetchCatalogSubjectsMock }));
@@ -90,7 +90,7 @@ describe("Blueprint Academy hybrid navigation", () => {
     expect(within(panel).getByText("Second semester", { selector: ".year-level-menu-semester > summary" })).toBeInTheDocument();
 
     await user.click(within(panel).getByText("First semester", { selector: "summary" }));
-    expect(within(panel).getByRole("link", { name: "Calculus 1" })).toHaveAttribute("href", "/subjects/calculus-1");
+    expect(within(panel).getByRole("link", { name: /Calculus 1/ })).toHaveAttribute("href", "/subjects/calculus-1");
     expect(within(panel).queryByText("Basic and Advanced Algebra")).not.toBeInTheDocument();
     expect(fetchCatalogSubjectsMock).toHaveBeenCalledTimes(1);
   });
@@ -155,11 +155,16 @@ describe("Blueprint Academy hybrid navigation", () => {
 
   it("closes an open global navigation panel when a route is changed", async () => {
     const user = userEvent.setup();
-    renderLayout();
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <Layout><Link to="/catalog">Change route</Link></Layout>
+      </MemoryRouter>,
+    );
 
     await user.click(screen.getByRole("button", { name: "Review Materials Hub" }));
     expect(await screen.findByRole("region", { name: "Review Materials Hub navigation" })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("link", { name: /browse all review materials/i }));
+    await user.click(screen.getByRole("link", { name: "Change route" }));
+    await waitFor(() => expect(screen.queryByRole("region", { name: "Review Materials Hub navigation" })).not.toBeInTheDocument());
   });
 });
