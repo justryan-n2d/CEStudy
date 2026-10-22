@@ -1288,7 +1288,9 @@ body {
 
 .year-level-menu-semester li a {
   display: flex;
+  min-height: 44px;
   flex-direction: column;
+  justify-content: center;
   gap: .12rem;
   min-width: 0;
   border-radius: 8px;
