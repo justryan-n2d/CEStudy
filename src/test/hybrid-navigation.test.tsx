@@ -86,12 +86,13 @@ describe("Blueprint Academy hybrid navigation", () => {
     expect(within(panel).getByRole("link", { name: "Browse all year levels" })).toHaveAttribute("href", "/years");
 
     await user.click(within(panel).getByText("First year", { selector: ".year-level-menu-year-title" }));
-    expect(within(panel).getByText("First semester", { selector: ".year-level-menu-semester > summary" })).toBeInTheDocument();
-    expect(within(panel).getByText("Second semester", { selector: ".year-level-menu-semester > summary" })).toBeInTheDocument();
-
     const firstYearSection = within(panel).getByText("First year", { selector: ".year-level-menu-year-title" }).closest("details");
     expect(firstYearSection).not.toBeNull();
-    await user.click(within(firstYearSection as HTMLElement).getByText("First semester", { selector: ".year-level-menu-semester > summary" }));
+    const firstYear = within(firstYearSection as HTMLElement);
+    expect(firstYear.getByText("First semester", { selector: ".year-level-menu-semester > summary" })).toBeInTheDocument();
+    expect(firstYear.getByText("Second semester", { selector: ".year-level-menu-semester > summary" })).toBeInTheDocument();
+
+    await user.click(firstYear.getByText("First semester", { selector: ".year-level-menu-semester > summary" }));
     expect(within(panel).getByRole("link", { name: /Calculus 1/ })).toHaveAttribute("href", "/subjects/calculus-1");
     expect(within(panel).queryByText("Basic and Advanced Algebra")).not.toBeInTheDocument();
     expect(fetchCatalogSubjectsMock).toHaveBeenCalledTimes(1);
@@ -143,8 +144,9 @@ describe("Blueprint Academy hybrid navigation", () => {
     const user = userEvent.setup();
     renderLayout();
 
-    expect(screen.getByRole("link", { name: "Mock Exam Portal" })).toHaveAttribute("href", "/mock-exam-portal");
-    expect(screen.getByRole("link", { name: "Community Forum" })).toHaveAttribute("href", "/community");
+    const mainNavigation = within(screen.getByRole("navigation", { name: "Main navigation" }));
+    expect(mainNavigation.getByRole("link", { name: "Mock Exam Portal" })).toHaveAttribute("href", "/mock-exam-portal");
+    expect(mainNavigation.getByRole("link", { name: "Community Forum" })).toHaveAttribute("href", "/community");
 
     const mobileToggle = screen.getByRole("button", { name: "Open more pages menu" });
     await user.click(mobileToggle);
