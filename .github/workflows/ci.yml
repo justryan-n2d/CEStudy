@@ -43,6 +43,8 @@ jobs:
         run: |
           test -f dist/_redirects
           test -f dist/_headers
+          test -f dist/theme-init.js
+          grep -q "theme-init.js" dist/index.html
           grep -q "Content-Security-Policy" dist/_headers
           grep -q "X-Content-Type-Options: nosniff" dist/_headers
           grep -Fq "style-src 'self'" dist/_headers
