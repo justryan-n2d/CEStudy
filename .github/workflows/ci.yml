@@ -48,6 +48,42 @@ jobs:
           grep -Fq "style-src 'self'" dist/_headers
           grep -Fq "style-src-attr 'unsafe-inline'" dist/_headers
           grep -Fq "script-src 'self'" dist/_headers
+      - name: Install temporary Playwright dependency for theme checks
+        run: npm install --prefix /tmp/cestudy-playwright --no-package-lock playwright@1.64.0
+      - name: Install Chromium for theme checks
+        run: /tmp/cestudy-playwright/node_modules/.bin/playwright install --with-deps chromium
+      - name: Start built production preview for theme checks
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/cestudy-theme-preview.log 2>&1 &
+          echo $! > /tmp/cestudy-theme-preview.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/cestudy-theme-preview.log
+          exit 1
+      - name: Verify theme and responsive behavior in Chromium
+        env:
+          CESTUDY_BASE_URL: http://127.0.0.1:4173
+          PLAYWRIGHT_MODULE_PATH: /tmp/cestudy-playwright/node_modules/playwright
+        run: node scripts/theme-smoke.cjs
+      - name: Stop built theme preview
+        if: always()
+        run: |
+          if [ -f /tmp/cestudy-theme-preview.pid ]; then
+            kill "$(cat /tmp/cestudy-theme-preview.pid)" 2>/dev/null || true
+          fi
+      - name: Upload theme check screenshots and summary on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cestudy-theme-smoke-failure
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Set up Python for backup encryption tests
         uses: actions/setup-python@v5
         with:
