@@ -117,7 +117,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 |---|---|---|
 | Phase 0: Canonical plan and baseline | **incomplete** | Main/PR metadata, source paths, and existing GitHub CI evidence are recorded. Direct visual preview capture and a fresh local test run remain blocked and must be resolved or explicitly accepted before declaring the baseline fully complete. |
 | Phase 1: Shared foundation and theme tokens | **complete** | Implemented on `feat/blueprint-academy-theme-foundation`; light-default and explicit Light/Dark controls, semantic token roles, current-surface dark styling, and automated tests. CI run `39772810292` passed, including 850/850 browser assertions over 10 routes, both themes, and five viewports; secret scan `39772810372` passed. PR #56 remains open for owner review and is not merged. |
-| Phase 2: Navigation and route focus | **current** | In progress on `feat/blueprint-academy-hybrid-navigation`. Test-first slice covers catalog-driven Year Levels navigation, Review Materials mega-menu, direct Mock Exam and Community destinations, mobile More-menu discoverability, and Escape/focus behavior. Destination pages must remain honest placeholders where functionality/data is not implemented. |
+| Phase 2: Navigation and route focus | **current** | Public hybrid navigation implementation and automated verification are green on `feat/blueprint-academy-hybrid-navigation` at commit `b91c82a6d0433b06bf731abc4f3cc094a512602b` (PR #57 remains draft/open). Chromium smoke passed 1,679/1,679 assertions across 13 routes and 320/390/768/1024/1440px; 26 test files and 146 unit tests passed; lint, dependency audit, build, Pages security-header packaging, backup checks and Supabase migration/RLS tests passed. Independent review is still pending. Signed-in Dashboard/account control is **paused** until the real auth/session contract from PR #44 is separately reviewed and available; do not add a fake signed-in state. Destinations without data/functionality remain explicitly labeled placeholders. |
 | Phase 3: Catalog, subject and lesson consistency | **not started** | Unify browse/read experiences and verify shared math rendering in both themes. |
 | Phase 4: Practice workspace | **not started** | Implement and verify the responsive question/tools workspace while preserving current question/answer behavior. |
 | Phase 5: Progress and account integration | **not started** | Reconcile PR #44 only after review; preserve device-local disclosures, OAuth safeguards and data boundaries. |
@@ -508,6 +508,11 @@ Dependencies and blockers:
 
 Primary paths: `src/components/Layout.tsx`, `src/App.tsx`, `src/styles/global.css`, navigation tests, and PR #54 candidate changes.
 
+| Sub-slice | Status | Evidence / blocker |
+|---|---|---|
+| Public hybrid navigation, honest destination placeholders, route focus and responsive behavior | **current** | Automated CI passed at `b91c82a6d0433b06bf731abc4f3cc094a512602b`: 26 test files / 146 unit tests and 1,679/1,679 Chromium assertions over 13 routes, both themes and the five required viewport widths. Lint, dependency audit, build, Pages security-header packaging, backup tests, and Supabase migration/RLS tests passed in [CI run 39788686255](https://github.com/justryan-n2d/CEStudy/actions/runs/39788686255). Awaiting independent code review; PR #57 is still a draft. |
+| Signed-in Student Dashboard/account control | **paused** | Main and the Phase 1 base do not provide an approved authenticated-user contract; those routes/context are draft-only in PR #44. Resume only after that auth slice is separately reviewed and integrated. Do not infer login state or show a fake signed-in destination. |
+
 Acceptance criteria:
 - Hybrid public header contains the approved destinations with clear active states.
 - Year/semester/subject hierarchy uses verified content metadata.
@@ -678,7 +683,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
-| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner authorized roadmap-bounded application changes. Phase 0 remains incomplete because direct preview capture and fresh local execution are blocked. Phase 1 was implemented on PR #56 and passed CI, RLS tests, secret scan, and 850/850 browser assertions; PR #56 remains open and unmerged. Phase 2 started separately on `feat/blueprint-academy-hybrid-navigation` with navigation behavior tests written before its implementation. |
+| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner authorized roadmap-bounded application changes. Phase 0 remains incomplete because direct preview capture and fresh local execution are blocked. Phase 1 was implemented on PR #56 and passed CI, RLS tests, secret scan, and 850/850 browser assertions; PR #56 remains open and unmerged. Phase 2 public navigation is implemented on PR #57's branch and passed CI run `39788686255` with 146 unit tests and 1,679/1,679 Chromium assertions; PR #57 remains draft/open pending independent review. Signed-in Dashboard/account controls are paused until the separately reviewed auth contract is available from PR #44. |
 
 ---
 
