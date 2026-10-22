@@ -38,10 +38,11 @@ export function YearLevelDropdown({
 }: YearLevelDropdownProps) {
   const [subjects, setSubjects] = useState<CatalogSubject[]>([]);
   const [loading, setLoading] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || hasLoaded) return;
 
     let active = true;
     setLoading(true);
@@ -54,6 +55,7 @@ export function YearLevelDropdown({
           .filter((item) => item.category === "year-level" && item.yearLevel !== null)
           .slice()
           .sort((left, right) => left.displayOrder - right.displayOrder));
+        setHasLoaded(true);
       })
       .catch((reason: unknown) => {
         if (active) {
@@ -67,7 +69,7 @@ export function YearLevelDropdown({
       });
 
     return () => { active = false; };
-  }, [isOpen]);
+  }, [isOpen, hasLoaded]);
 
   return (
     <div className="nav-dropdown year-level-nav">
