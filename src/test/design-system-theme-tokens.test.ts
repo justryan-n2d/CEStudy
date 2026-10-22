@@ -52,10 +52,10 @@ describe("shared semantic theme token foundation", () => {
 
   it("uses semantic tokens in shared shell, action, form, and error surfaces", () => {
     expect(stylesheet).toMatch(/\.site-header\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
-    expect(stylesheet).toMatch(/\.site-footer\s*\{[^}]*background:\s*var\(--ui-surface-muted\)/s);
+    expect(stylesheet).toMatch(/\.site-footer\s*\{[^}]*background:\s*var\(--ui-footer-bg\)/s);
     expect(stylesheet).toMatch(/\.button-primary\s*\{[^}]*background:\s*var\(--ui-brand\)/s);
     expect(stylesheet).toMatch(/\.button-secondary\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
-    expect(stylesheet).toMatch(/input,select\s*\{[^}]*border:\s*1px solid var\(--ui-border\)/s);
+    expect(stylesheet).toMatch(/input,select\s*\{width:100%;[^}]*border:1px solid var\(--ui-control-border\)/s);
     expect(stylesheet).toMatch(/\.state-error\s*\{[^}]*background:\s*var\(--ui-error-bg\)/s);
   });
 });
