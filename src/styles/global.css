@@ -1579,3 +1579,17 @@ body {
   .header-inner { gap: .3rem; }
   .brand { gap: .32rem; }
 }
+
+@media (max-width: 680px) {
+  .mobile-help-menu {
+    max-height: calc(100dvh - 130px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .mobile-menu-group a {
+    min-height: 44px;
+  }
+}
