@@ -15,6 +15,9 @@ const routes = [
   "/practice/basic-algebra",
   "/progress",
   "/privacy",
+  "/review-materials",
+  "/mock-exam-portal",
+  "/community",
 ];
 const checks = [];
 const failures = [];
