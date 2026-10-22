@@ -101,6 +101,25 @@ async function main() {
             JSON.stringify({ theme: dark.theme, colorScheme: dark.colorScheme }));
           check("Dark page background uses semantic token: " + activeRoute,
             dark.bodyBackground === "rgb(11, 20, 33)", dark.bodyBackground);
+          const darkSurfaces = await page.evaluate(() => {
+            const selectors = [
+              ".subject-card", ".year-card", ".filters-panel", ".detail-hero",
+              ".detail-panel", ".study-lesson", ".review-gate", ".state-panel",
+              ".privacy-content > section", ".surface-form", ".answer-option",
+              ".answer-feedback",
+            ];
+            return selectors.flatMap((selector) =>
+              [...document.querySelectorAll(selector)].slice(0, 3).map((node) => ({
+                selector,
+                background: getComputedStyle(node).backgroundColor,
+                text: getComputedStyle(node).color,
+              })),
+            );
+          });
+          const whiteSurfaces = darkSurfaces.filter((surface) => surface.background === "rgb(255, 255, 255)");
+          check("Detected content surfaces avoid white-on-dark mismatches: " + activeRoute,
+            whiteSurfaces.length === 0,
+            JSON.stringify({ surfaces: darkSurfaces, whiteSurfaces }));
           check("Dark toggle state is explicit: " + activeRoute,
             dark.selectedLabel === "Dark" && dark.selectedPressed === "true",
             JSON.stringify({ label: dark.selectedLabel, pressed: dark.selectedPressed }));
