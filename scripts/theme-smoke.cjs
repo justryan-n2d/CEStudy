@@ -239,14 +239,32 @@ async function main() {
         await yearPanel.waitFor({ state: "visible", timeout: 5000 });
         check("Year Levels menu exposes overview destination: " + activeRoute,
           await yearPanel.getByRole("link", { name: "Browse all year levels" }).isVisible().catch(() => false));
-        await yearPanel.locator(".year-level-menu-year > summary").first().waitFor({ state: "visible", timeout: 5000 });
-        const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
-          nodes.filter((node) => node.getClientRects().length > 0)
-            .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
-        );
-        check("Visible Year Levels menu targets are at least 44px: " + activeRoute,
-          yearTargets.length >= 5 && yearTargets.every((target) => target.height >= 44),
-          JSON.stringify(yearTargets));
+        await page.waitForFunction(() => {
+          const panel = document.querySelector("#year-level-navigation");
+          return Boolean(panel?.querySelector(".year-level-menu-year") || panel?.querySelector(".navigation-panel-error"));
+        }, { timeout: 5000 });
+        const loadedYearSections = await yearPanel.locator(".year-level-menu-year > summary").count();
+        if (loadedYearSections > 0) {
+          const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
+            nodes.filter((node) => node.getClientRects().length > 0)
+              .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+          );
+          check("Loaded Year Levels menu targets are at least 44px: " + activeRoute,
+            yearTargets.length >= 7 && yearTargets.every((target) => target.height >= 44),
+            JSON.stringify(yearTargets));
+        } else {
+          const errorAlert = yearPanel.getByRole("alert");
+          check("Year Levels menu provides recovery when catalog data is unavailable: " + activeRoute,
+            await errorAlert.isVisible().catch(() => false) &&
+              await yearPanel.getByRole("link", { name: "Open Subject Catalog" }).isVisible().catch(() => false));
+          const recoveryTargets = await yearPanel.locator("a").evaluateAll((nodes) =>
+            nodes.filter((node) => node.getClientRects().length > 0)
+              .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+          );
+          check("Visible Year Levels recovery links have 44px targets: " + activeRoute,
+            recoveryTargets.length >= 3 && recoveryTargets.every((target) => target.height >= 44),
+            JSON.stringify(recoveryTargets));
+        }
         const yearOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
         check("Year Levels menu does not cause horizontal overflow: " + activeRoute, yearOverflow);
         await page.keyboard.press("Escape");
