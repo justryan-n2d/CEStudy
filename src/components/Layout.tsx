@@ -22,6 +22,8 @@ function NavigationGlyph({ name }: { name: GlyphName }) {
 export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const headerRef = useRef<HTMLElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
+  const previousPathnameRef = useRef(location.pathname);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
   const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
@@ -36,6 +38,12 @@ export function Layout({ children }: { children: ReactNode }) {
     { to: "/years", label: "Years", name: "layers" as const, active: location.pathname === "/years" || location.pathname.startsWith("/year/") },
     { to: "/math-foundations", label: "Math", name: "math" as const, active: location.pathname === "/math-foundations" },
   ];
+
+  useEffect(() => {
+    if (previousPathnameRef.current === location.pathname) return;
+    previousPathnameRef.current = location.pathname;
+    mainRef.current?.focus();
+  }, [location.pathname]);
 
   useEffect(() => setMobileMenuOpen(false), [location.pathname]);
 
@@ -130,7 +138,7 @@ export function Layout({ children }: { children: ReactNode }) {
           {feedbackInboxUnlocked && <Link to="/feedbacks" onClick={() => setMobileMenuOpen(false)} className="mobile-feedbacks-link"><span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>Feedbacks</Link>}
         </nav>
       </header>
-      <main id="main-content" className="main-content">{children}</main>
+      <main ref={mainRef} id="main-content" className="main-content" tabIndex={-1}>{children}</main>
       <footer className="site-footer">
         <div className="footer-inner">
           <section className="footer-brand" aria-label="About CEStudy">
