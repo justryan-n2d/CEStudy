@@ -946,7 +946,7 @@ body {
 
 .theme-toggle-option {
   display: inline-flex;
-  min-height: 36px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: .35rem;
@@ -987,7 +987,7 @@ body {
   .brand-copy small { display: none; }
   .main-nav { gap: .08rem; }
   .nav-link { padding: .45rem .5rem; font-size: .76rem; }
-  .theme-toggle-option { min-height: 34px; padding: .35rem .45rem; }
+  .theme-toggle-option { min-height: 44px; padding: .35rem .45rem; }
 }
 
 @media (max-width: 420px) {
