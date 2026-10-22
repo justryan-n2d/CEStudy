@@ -19,12 +19,14 @@ function renderThemeControls() {
 }
 
 beforeEach(() => {
+  window.localStorage.clear();
   delete document.documentElement.dataset.theme;
   document.documentElement.style.colorScheme = "";
 });
 
 afterEach(() => {
   cleanup();
+  window.localStorage.clear();
   delete document.documentElement.dataset.theme;
   document.documentElement.style.colorScheme = "";
 });
@@ -51,6 +53,36 @@ describe("Light/Dark theme foundation", () => {
     expect(document.documentElement.style.colorScheme).toBe("dark");
     expect(screen.getByRole("button", { name: "Light" })).toHaveAttribute("aria-pressed", "false");
     expect(screen.getByRole("button", { name: "Dark" })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("persists the selected theme and restores it after a provider remount", async () => {
+    const user = userEvent.setup();
+    const firstRender = renderThemeControls();
+
+    await user.click(screen.getByRole("button", { name: "Dark" }));
+
+    expect(window.localStorage.getItem("cestudy:theme:v1")).toBe("dark");
+
+    firstRender.unmount();
+    delete document.documentElement.dataset.theme;
+    document.documentElement.style.colorScheme = "";
+
+    renderThemeControls();
+
+    expect(screen.getByTestId("current-theme")).toHaveTextContent("dark");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(document.documentElement.style.colorScheme).toBe("dark");
+    expect(screen.getByRole("button", { name: "Dark" })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("falls back to Light when the stored theme is invalid", () => {
+    window.localStorage.setItem("cestudy:theme:v1", "sepia");
+
+    renderThemeControls();
+
+    expect(screen.getByTestId("current-theme")).toHaveTextContent("light");
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(screen.getByRole("button", { name: "Light" })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("can return from Dark to Light without reloading", async () => {
