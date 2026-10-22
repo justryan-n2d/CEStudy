@@ -75,7 +75,7 @@ describe("homepage and year-level navigation", () => {
     expect(stylesheet).toContain("@media (min-width:681px) and (max-width:850px)");
     expect(stylesheet).toContain(".main-nav .nav-link");
     expect(stylesheet).toContain("min-height:44px");
-    expect(stylesheet).toContain(".main-nav{gap:.5rem}");
+    expect(stylesheet).toMatch(/\\.main-nav\\s*\\{\\s*gap:\\s*\\.5rem;/);
   });
 
   it("points the shared navigation to the year-level overview", () => {
