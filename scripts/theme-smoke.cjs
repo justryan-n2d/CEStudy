@@ -223,6 +223,10 @@ async function main() {
         check("Desktop/tablet navigation controls have 44px targets: " + activeRoute,
           navTargets.length >= 5 && navTargets.every((target) => target.height >= 44),
           JSON.stringify(navTargets));
+        if (width > 680 && width <= 850) {
+          const tabletGap = await mainNav.evaluate((node) => Number.parseFloat(getComputedStyle(node).columnGap));
+          check("Tablet navigation keeps 8px target separation: " + activeRoute, tabletGap >= 8, String(tabletGap));
+        }
         if (width > 1100) {
           check("Wide-desktop navigation labels stay on one line: " + activeRoute,
             navTargets.every((target) => target.height <= 48),
