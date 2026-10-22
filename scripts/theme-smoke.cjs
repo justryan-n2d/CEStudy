@@ -273,7 +273,10 @@ async function main() {
         check("Route change hands focus to main content: " + activeRoute,
           await page.locator("#main-content").evaluate((node) => node === document.activeElement));
       } else {
-        const moreToggle = page.getByRole("button", { name: /Open more pages menu/ });
+        const moreToggle = page.locator(".mobile-menu-toggle");
+        const initialToggleLabel = await moreToggle.getAttribute("aria-label");
+        check("Mobile More control has its open-state accessible name: " + activeRoute,
+          /^Open more pages menu/.test(initialToggleLabel || ""), initialToggleLabel || "missing aria-label");
         const toggleHeight = await moreToggle.evaluate((node) => Math.round(node.getBoundingClientRect().height));
         check("Mobile More control has a 44px target: " + activeRoute, toggleHeight >= 44, String(toggleHeight));
         await moreToggle.click();
