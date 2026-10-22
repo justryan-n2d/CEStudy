@@ -45,20 +45,21 @@ export function YearLevelDropdown({
     if (!isOpen || hasLoaded) return;
 
     let active = true;
-    let timeoutId: number | undefined;
+    let settled = false;
     setLoading(true);
     setError(null);
 
-    const catalogRequest = fetchCatalogSubjects();
-    const timeoutRequest = new Promise<CatalogSubject[]>((_resolve, reject) => {
-      timeoutId = window.setTimeout(() => {
-        reject(new Error("The catalog request timed out. Please open Subject Catalog and try again."));
-      }, 5000);
-    });
+    const timeoutId = window.setTimeout(() => {
+      if (!active || settled) return;
+      settled = true;
+      setError("The catalog request timed out. Please open Subject Catalog and try again.");
+      setLoading(false);
+    }, 5000);
 
-    Promise.race([catalogRequest, timeoutRequest])
+    fetchCatalogSubjects()
       .then((items) => {
-        if (!active) return;
+        if (!active || settled) return;
+        settled = true;
         setSubjects(items
           .filter((item) => item.category === "year-level" && item.yearLevel !== null)
           .slice()
@@ -66,20 +67,20 @@ export function YearLevelDropdown({
         setHasLoaded(true);
       })
       .catch((reason: unknown) => {
-        if (active) {
-          setError(reason instanceof Error
-            ? reason.message
-            : "The year-level subjects could not be loaded.");
-        }
+        if (!active || settled) return;
+        settled = true;
+        setError(reason instanceof Error
+          ? reason.message
+          : "The year-level subjects could not be loaded.");
       })
       .finally(() => {
-        if (timeoutId !== undefined) window.clearTimeout(timeoutId);
-        if (active) setLoading(false);
+        window.clearTimeout(timeoutId);
+        if (active && !settled) setLoading(false);
       });
 
     return () => {
       active = false;
-      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      window.clearTimeout(timeoutId);
     };
   }, [isOpen, hasLoaded]);
 
