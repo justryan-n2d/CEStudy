@@ -139,6 +139,30 @@ async function main() {
             Math.max(dark.documentWidth, dark.bodyWidth) <= dark.viewportWidth + 1,
             "viewport=" + dark.viewportWidth + ", document=" + dark.documentWidth + ", body=" + dark.bodyWidth);
 
+          if (route === "/" && width === 1440) {
+            const storedTheme = await page.evaluate(() => window.localStorage.getItem("cestudy:theme:v1"));
+            check("Dark preference is saved locally before refresh: " + activeRoute,
+              storedTheme === "dark", String(storedTheme));
+            await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+            await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
+            const restoredTheme = await page.evaluate(() => ({
+              theme: document.documentElement.dataset.theme || "",
+              colorScheme: getComputedStyle(document.documentElement).colorScheme,
+              themeColor: document.querySelector('meta[name="theme-color"]')?.getAttribute("content") || "",
+              storedTheme: window.localStorage.getItem("cestudy:theme:v1"),
+              selectedLabel: document.querySelector(".theme-toggle-option.is-selected")?.getAttribute("aria-label") || "",
+              selectedPressed: document.querySelector(".theme-toggle-option.is-selected")?.getAttribute("aria-pressed") || "",
+            }));
+            check("Dark preference restores after browser refresh: " + activeRoute,
+              restoredTheme.theme === "dark" &&
+                restoredTheme.colorScheme === "dark" &&
+                restoredTheme.themeColor === "#0B1421" &&
+                restoredTheme.storedTheme === "dark" &&
+                restoredTheme.selectedLabel === "Dark" &&
+                restoredTheme.selectedPressed === "true",
+              JSON.stringify(restoredTheme));
+          }
+
           const lightButton = themeGroup.getByRole("button", { name: "Light" });
           await lightButton.click();
           const light = await page.evaluate(() => {
