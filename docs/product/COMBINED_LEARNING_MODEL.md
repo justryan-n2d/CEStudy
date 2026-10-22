@@ -26,10 +26,12 @@ CEStudy will combine a comprehensive, freely browsable Civil Engineering knowled
 ### 1. First implementation slice
 - Add an optional local progress tracker for published lessons.
 - Show a flame streak based on consecutive local calendar days on which the student completes at least one published lesson.
-- Keep lesson completion status and the distinct local activity-day list in browser local storage; record no server-side student activity.
+- Only authenticated users can see the actual streak count. Signed-out visitors see a muted gray flame with a placeholder count of `0`, never the account's real count. Clicking the preview opens a sign-in dialog that encourages Google login. Google through Supabase Auth is the only sign-in method.
+- Store the distinct activity-day list in local storage under the authenticated Supabase user ID. Signed-out lesson completions do not count toward a streak; activity does not sync across devices yet.
+- Keep lesson completion status in browser local storage; record no server-side student activity.
 - Provide a progress page with links back to completed lessons and a clear-all action.
 - State plainly that progress is stored on this device and is not synced.
-- Do not add sign-in, new Supabase tables, database writes, analytics, or cross-device tracking for this slice.
+- Google sign-in is in scope only to gate streak access and separate each user's local activity history. Do not add new Supabase tables, server-side progress writes, analytics, or cross-device tracking for this slice. A Google OAuth client ID/secret and Supabase provider/redirect configuration must be completed manually before sign-in is live.
 
 ### 2. Strengthen guided learning
 - Make subject-level learning sequences discoverable from the library and subject detail pages.
@@ -59,6 +61,8 @@ CEStudy will combine a comprehensive, freely browsable Civil Engineering knowled
 - A student can mark a published lesson complete and reverse that action.
 - The flame shows the number of consecutive active calendar days; multiple lessons on the same day count as one day.
 - A streak completed yesterday remains current until today ends; a missed day resets the active streak to zero.
+- Signed-out visitors see a gray `0 day streak` preview. Clicking it opens an accessible unlock dialog with a Google sign-in action, keyboard Escape support, a close button, and focus restoration. They never see the authenticated account's actual count until signed in.
+- Activity days are separated by authenticated Supabase user ID so different Google accounts on one browser do not share streak history.
 - Changing a lesson's current completion checkbox later does not erase an activity day when the completion event already happened.
 - The local date is stored separately from the timestamp to avoid UTC midnight shifting the activity day.
 - The progress page displays only records saved in the current browser.
@@ -74,4 +78,4 @@ CEStudy will combine a comprehensive, freely browsable Civil Engineering knowled
 - Do not rebuild the existing website from scratch.
 - Do not copy Mathalino or textbook content, illustrations, branding, or distinctive presentation. Use external references for research and make original learning material with citations.
 - Do not add paid services or additional database infrastructure without a clear need and cost review.
-- Keep native Android/iOS apps, student accounts, cross-device syncing, and student-facing AI as separate later decisions.
+- Keep native Android/iOS apps, general account/profile features beyond Google sign-in for streaks, cross-device syncing, and student-facing AI as separate later decisions.

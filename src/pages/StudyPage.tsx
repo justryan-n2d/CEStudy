@@ -4,8 +4,9 @@ import { BrandLoader } from "../components/BrandLoader";
 import { MarkdownContent } from "../components/MarkdownContent";
 import { fetchPublishedLessons } from "../data/lesson-api";
 import type { SubjectLesson } from "../types/lesson-content";
-import { readCompletedLessons, readLearningActivityDays, setLessonCompleted, type CompletedLesson } from "../data/learning-progress";
-import { LearningStreakBadge } from "../components/LearningStreakBadge";
+import { readCompletedLessons, setLessonCompleted, type CompletedLesson } from "../data/learning-progress";
+import { recordOpenedLesson } from "../data/learning-history";
+import { useAuth } from "../contexts/AuthContext";
 
 function searchText(lesson:SubjectLesson):string {
   return [lesson.title,lesson.slug,...lesson.learningObjectives,lesson.lessonMarkdown].join(" ").normalize("NFKC").toLowerCase();
@@ -25,13 +26,13 @@ function topicSnippet(lesson:SubjectLesson,query:string):string {
 
 export function StudyPage() {
   const { slug, unit } = useParams();
+  const { user } = useAuth();
   const subjectSlug = slug ?? "";
   const [lessons, setLessons] = useState<SubjectLesson[]>([]);
   const [topicQuery,setTopicQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
-  const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
 
   useEffect(() => {
     let active = true;
@@ -39,7 +40,6 @@ export function StudyPage() {
     setError(null);
     setTopicQuery("");
     setCompletedLessons(readCompletedLessons());
-    setActivityDays(readLearningActivityDays());
     fetchPublishedLessons(subjectSlug)
       .then((items) => { if (active) setLessons(items); })
       .catch((reason: unknown) => {
@@ -62,6 +62,16 @@ export function StudyPage() {
     return queryTerms.length===0 ? lessons : lessons.filter(lesson=>queryTerms.every(term=>searchText(lesson).includes(term)));
   }, [lessons,normalizedQuery]);
   const showActiveLesson=activeLesson!==null&&(!normalizedQuery||visibleLessons.some(lesson=>lesson.id===activeLesson.id));
+
+  useEffect(() => {
+    if (!activeLesson || !showActiveLesson) return;
+    recordOpenedLesson({
+      lessonId: activeLesson.id,
+      subjectSlug: activeLesson.subjectSlug,
+      unitNumber: activeLesson.unitNumber,
+      title: activeLesson.title,
+    });
+  }, [activeLesson, showActiveLesson]);
   const activeLessonCompleted = Boolean(activeLesson && completedLessons.some((item) => item.lessonId === activeLesson.id));
   const toggleLessonCompletion = () => {
     if (!activeLesson) return;
@@ -70,9 +80,8 @@ export function StudyPage() {
       subjectSlug: activeLesson.subjectSlug,
       unitNumber: activeLesson.unitNumber,
       title: activeLesson.title,
-    }, !activeLessonCompleted);
+    }, !activeLessonCompleted, user?.id);
     setCompletedLessons(next);
-    setActivityDays(readLearningActivityDays());
   };
 
   return (
@@ -128,7 +137,6 @@ export function StudyPage() {
               <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
               <h2>{activeLesson.title}</h2>
               <MarkdownContent markdown={activeLesson.lessonMarkdown} />
-              <LearningStreakBadge activityDays={activityDays} />
               <div className="study-lesson-completion">
                 <button
                   type="button"

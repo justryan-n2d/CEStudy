@@ -31,6 +31,30 @@
 
 Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes responsive. Use consistent 4px/8px spacing increments and a restrained set of radii.
 
+## Theme system
+
+Light mode remains the default. Students can switch to dark mode from Menu; the choice is saved locally and applied before the application renders. Both themes must use the same component, spacing, typography, and navigation system. Dark mode is a coordinated color change, not a page-by-page redesign.
+
+| Semantic role | Light | Dark |
+|---|---|---|
+| Page background | `#FFFFFF` | `#0B1421` |
+| Card and panel surface | `#FFFFFF` | `#121F30` |
+| Raised surface and inputs | `#F7F9FC` | `#172538` |
+| Header and bottom navigation | `#FFFFFF` | `#101C2B` |
+| Primary text | `#24384B` | `#E5EDF6` |
+| Headings | `#0B263D` | `#F3F7FB` |
+| Supporting text | `#637487` | `#B6C4D4` |
+| Border and divider | `#DCE5EC` | `#2B3D51` |
+| Focus and link accent | `#0754B5` | `#90C4FF` |
+| Selected surface | `#E8F0F8` | `#1B3147` |
+
+- Use a deep navy background rather than pure black. Do not carry over the purple palette from the visual reference; retain CEStudy's blue identity, neutral surfaces, and restrained teal/green success cues.
+- All card, form, dialog, empty, loading, error, selected, and disabled states must be readable in both themes. Use semantic tokens instead of adding unrelated colors to individual pages.
+- Keep text and control contrast at WCAG AA targets where applicable. Focus indicators must remain clearly visible on dark surfaces, and status must not rely on color alone. Use the semantic `--ui-focus` token for keyboard focus rings and streak-calendar state outlines such as today, selected day, and the matching legend marker; never hardcode a light-theme blue outline for those states.
+- Keep the official blue-and-white logo artwork unchanged. White tiles behind the Google mark and payment QR/brand assets are intentional exceptions.
+- The saved preference must not depend on sign-in or clear history/progress. Update the browser's `theme-color` alongside the document color scheme, and initialize the saved theme before first paint without inline script because the site uses a restrictive Content Security Policy.
+
+
 ## Logo use
 
 - Keep `public/branding/cestudy-master-logo.svg` as the full logo in the site header.
@@ -38,6 +62,14 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Keep `public/branding/cestudy-app-icon-rounded.svg` as favicon/app-icon source.
 - Never redraw, stretch, rotate, independently recolor, or replace the canonical artwork with generated substitute artwork.
 - Keep sufficient contrast around the blue-background master logo and preserve its proportions.
+
+## Authentication and account access
+
+- Browsing the engineering library never requires sign-in. Google sign-in is optional and is currently limited to activating/account-separating the streak feature; it does not turn local history or progress into cloud sync.
+- Keep `/login` as the authentication route and `/profile` as the account destination. A guest sees a clear Google sign-in action on Profile. A signed-in user sees account status, study shortcuts, and a sign-out action.
+- After OAuth, return students to the destination they were trying to open when safe; otherwise use Profile. Show a useful retryable error if sign-in fails. Never interrupt lesson browsing with a forced registration wall.
+- Use a local copy of the multicolor Google G sourced from SVGL at `public/branding/icons/google.svg`; do not use a typed letter, emoji, monochrome mark, or an external runtime image URL.
+- Use a plainly labelled `Continue with Google` button. Keep the G at its original proportions and on a white tile. The button uses a light outlined treatment in light mode and a dark neutral treatment in dark mode, aligned with [Google Identity branding guidance](https://developers.google.com/identity/branding-guidelines).
 
 ## Shared components
 
@@ -113,12 +145,18 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 
 ### Website-specific structure
 - Desktop: compact top navigation and multi-column subject lists.
-- Mobile web: persistent four-item quick navigation (Home, Subjects, Years, Math) plus a More menu for Contact, Support, Bug reports, and Feedback.
-- The mobile quick bar must not cover final content; allow room for safe-area insets on gesture-navigation devices.
+- Mobile web: persistent five-item quick navigation (Home, Subjects, Years, Math, Menu), with safe-area spacing for gesture-navigation devices.
+- The Menu page contains Profile, History (recently opened lessons), Streak (study-day calendar), Progress, Community, About, Contact, Support, Feedback, and bug reporting, plus a persistent light/dark appearance switch. The retired More popover must not return.
+- Place a compact global streak shortcut at the header's right edge. Show the consecutive-day count before the flame. Use gray for zero/inactive and warm animated flame styling only for a signed-in active streak; honor reduced-motion preferences. Active signed-in streaks link to their calendar; signed-out inactive streaks prompt for Google sign-in.
+- Keep the flame movement subtle: a small sway (about -3° to +3°) with a very small scale change, plus a soft low-amplitude glow. The motion should feel like gentle feedback, not an attention-grabbing notification. Do not animate a zero/locked streak, do not change layout while animating, and disable the flame and glow animations when `prefers-reduced-motion: reduce` is active.
+- History and appearance preferences are device-local at this stage; do not imply cross-device sync. The mobile quick bar must not cover final content; allow room for safe-area insets on gesture-navigation devices.
 - The homepage uses a responsive hero photograph with appropriate srcset widths and reserved dimensions. Only the primary hero is loaded eagerly.
 - Scroll reveal applies only to major content sections. Use IntersectionObserver, unobserve after the first reveal, animate only opacity/transform, and show content immediately if reduced motion is requested or the API is unavailable. See MDN: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API.
 
 ### Future native mobile app
+- Treat the user's mobile dashboard reference as an information-structure reference, not a color reference: profile/greeting near the top, a compact learner summary, weekly study activity, a prominent Continue Learning section, and persistent bottom navigation.
+- Use CEStudy's own blue/white brand direction with navy/neutral dark surfaces; do not copy the reference's purple gradient palette, icons, or branded artwork.
+- Keep statistics only when backed by real user data. Until progress data exists, prioritize search, year/subject browsing, and Continue Learning rather than fabricated course totals.
 - Use a study-first home screen: Continue studying when progress exists, search, subjects, and practice reachable without a deep menu.
 - Use native bottom tabs and touch-first patterns, not the website DOM, header, footer, or mobile web menu.
 - Reuse the same brand, type/spacing tokens, statuses, data contracts, and interaction semantics; rebuild visual components in the future mobile framework.

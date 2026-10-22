@@ -32,7 +32,24 @@ Set these values in a private local environment file or the Cloudflare Pages bui
 
 Only a publishable key belongs in a browser build. A publishable key is not a permission boundary: explicit grants and RLS must remain the enforcement point. Never expose a Supabase secret/service-role key, database password, or access token in browser code or a `VITE_*` variable.
 
-## 4. Remote verification gate
+## 4. Optional Google sign-in setup
+
+Google sign-in is optional and only unlocks the local learning-streak feature. Browsing lessons remains available without an account. Study progress and history stay in this browser; signing in does not create server-side progress or cross-device sync.
+
+To enable sign-in, configure Google OAuth in Google Cloud and the dedicated CEStudy Supabase project:
+
+1. In [Google Auth Platform](https://console.cloud.google.com/auth/overview), configure the consent screen and create an OAuth client ID with application type **Web application**.
+2. Add these **Authorized JavaScript origins**:
+   - `https://cestudy.pages.dev`
+   - `http://localhost:5173` for local development only.
+3. Add the Supabase callback as an **Authorized redirect URI** in Google Cloud: `https://qqmdwltfgpqtcvdbcmto.supabase.co/auth/v1/callback`.
+4. In the [CEStudy Supabase Auth providers dashboard](https://supabase.com/dashboard/project/qqmdwltfgpqtcvdbcmto/auth/providers), enable **Google** and enter the OAuth client ID and client secret. Store the secret only in Supabase provider settings, never in Git, frontend source, a `VITE_*` variable, or chat.
+5. In Supabase **Authentication → URL Configuration**, set the Site URL to `https://cestudy.pages.dev` and add `https://cestudy.pages.dev/login` to allowed redirect URLs. Add `http://localhost:5173/login` for local testing only.
+6. Save the provider configuration and test sign-in, sign-out, cancellation, and safe return destinations on the production and local URLs. Do not claim OAuth is production-ready until a real end-to-end test passes.
+
+See the [Supabase Google sign-in guide](https://supabase.com/docs/guides/auth/social-login/auth-google).
+
+## 5. Remote verification gate
 
 After configuring the project:
 

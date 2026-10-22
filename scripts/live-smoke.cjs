@@ -79,6 +79,13 @@ async function main() {
     { path: "/bug-reports", heading: /Report a bug/ },
     { path: "/feedback", heading: /Feedback/ },
     { path: "/privacy", heading: /Privacy notice/ },
+    { path: "/login", heading: /Sign in to CEStudy|Checking your sign-in/ },
+    { path: "/profile", heading: /Your profile/ },
+    { path: "/menu", heading: /Menu/ },
+    { path: "/history", heading: /Lesson history/ },
+    { path: "/streak", heading: /Streak calendar/ },
+    { path: "/progress", heading: /Your learning progress/ },
+    { path: "/community", heading: /CEStudy community/ },
   ];
 
   let lastResponse;
@@ -124,6 +131,65 @@ async function main() {
   }
 
 
+  // Exercise the shared dark theme on the new account and study screens.
+  activeRoute = "dark theme setup";
+  try {
+    await page.goto(baseUrl + "/menu", { waitUntil: "networkidle", timeout: 45000 });
+    await page.evaluate(() => window.localStorage.setItem("cestudy:theme:v1", "dark"));
+    await page.reload({ waitUntil: "networkidle", timeout: 45000 });
+  } catch (error) {
+    check("Set persisted dark theme for PR #44 screens", false, error.message);
+  }
+
+  const darkThemeRoutes = [
+    { path: "/", surface: ".home-progress-entry" },
+    { path: "/privacy", surface: ".privacy-content > section" },
+    { path: "/login", surface: ".login-panel" },
+    { path: "/profile", surface: ".profile-account-card" },
+    { path: "/menu", surface: ".menu-link-card" },
+    { path: "/history", surface: ".history-list-item, .history-empty" },
+    { path: "/streak", surface: ".streak-calendar-card" },
+    { path: "/progress", surface: ".progress-empty, .progress-list-item" },
+    { path: "/community", surface: ".community-launch-panel" },
+  ];
+
+  for (const route of darkThemeRoutes) {
+    activeRoute = route.path + " [dark]";
+    try {
+      lastResponse = await page.goto(baseUrl + route.path, { waitUntil: "networkidle", timeout: 45000 });
+      const state = await page.evaluate((surfaceSelector) => {
+        const surface = document.querySelector(surfaceSelector);
+        return {
+          theme: document.documentElement.dataset.theme || "",
+          colorScheme: document.documentElement.style.colorScheme,
+          bodyBackground: getComputedStyle(document.body).backgroundColor,
+          themeColor: document.querySelector('meta[name="theme-color"]')?.getAttribute("content") || "",
+          surfaceBackground: surface ? getComputedStyle(surface).backgroundColor : "missing",
+          hasSurface: Boolean(surface),
+        };
+      }, route.surface);
+
+      check("Dark theme selected: " + route.path, state.theme === "dark" && state.colorScheme === "dark",
+        "data-theme=" + state.theme + ", color-scheme=" + state.colorScheme);
+      check("Dark page background: " + route.path, state.bodyBackground === "rgb(11, 20, 33)",
+        "background=" + state.bodyBackground);
+      check("Dark content surface is present and not white: " + route.path,
+        state.hasSurface && state.surfaceBackground !== "rgb(255, 255, 255)" && state.surfaceBackground !== "missing",
+        "surface=" + state.surfaceBackground);
+      check("Dark browser theme color: " + route.path, state.themeColor === "#0B1421",
+        "theme-color=" + state.themeColor);
+
+      if (route.path === "/privacy") {
+        check("Privacy sections use the shared dark surface", state.surfaceBackground === "rgb(18, 31, 48)",
+          "surface=" + state.surfaceBackground);
+      }
+    } catch (error) {
+      check("Dark-theme route check: " + route.path, false, error.message);
+    }
+  }
+
+  await page.evaluate(() => window.localStorage.removeItem("cestudy:theme:v1"));
+
   for (const [label, href] of [
     ["Contact CEStudy", "/contact"],
     ["Support us", "/support"],
@@ -156,11 +222,11 @@ async function main() {
         await page.goto(baseUrl + "/", { waitUntil: "networkidle", timeout: 45000 });
         const bottomTabs = page.getByRole("navigation", { name: "Quick navigation" });
         check("Mobile quick navigation is visible at 320px", await bottomTabs.isVisible().catch(() => false), "viewport=320");
-        check("Mobile navigation has four destinations", await bottomTabs.locator("a").count() === 4, "expected=4 tabs");
-        await page.getByRole("button", { name: "Open more pages menu" }).click();
-        const helpMenu = page.getByRole("navigation", { name: "More CEStudy pages" });
-        check("More menu opens by tap", await helpMenu.isVisible().catch(() => false), "menu opened");
-        check("More menu includes support and feedback", await helpMenu.getByRole("link", { name: "Support us" }).count() === 1 && await helpMenu.getByRole("link", { name: "Send feedback" }).count() === 1, "routes present");
+        check("Mobile navigation has five destinations", await bottomTabs.locator("a").count() === 5, "expected=5 tabs");
+        await page.getByRole("link", { name: "Menu" }).click();
+        const menuPage = page.getByRole("navigation", { name: "Account and help pages" });
+        check("Menu page opens from mobile navigation", await page.getByRole("heading", { name: "Menu", exact: true }).isVisible().catch(() => false), "Menu page loaded");
+        check("Menu includes support and feedback", await menuPage.getByRole("link", { name: /Support us/ }).count() === 1 && await menuPage.getByRole("link", { name: /Send feedback/ }).count() === 1, "routes present");
       }
     } catch (error) {
       check("Responsive check at " + width + "px", false, error.message);

@@ -4,7 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 const { invokeMock } = vi.hoisted(() => ({ invokeMock: vi.fn() }));
-vi.mock("../lib/supabase", () => ({ supabase: { functions: { invoke: invokeMock } } }));
+vi.mock("../lib/supabase", () => ({
+  hasSupabaseConfig: false,
+  supabase: { functions: { invoke: invokeMock } },
+}));
 
 import { Layout } from "../components/Layout";
 import { FeedbacksPage } from "../pages/FeedbacksPage";
@@ -142,11 +145,11 @@ describe("owner-only feedback inbox", () => {
     })));
     await waitFor(() => expect(screen.queryByRole("status", { name: "Unread feedback" })).not.toBeInTheDocument());
   });
-  it("shows an unread dot on the More menu button while new feedback is unread", async () => {
+  it("shows an unread dot on the Menu tab while new feedback is unread", async () => {
     render(<MemoryRouter><Layout><HomePage /></Layout></MemoryRouter>);
     await unlockFeedbackInbox("test-owner-access-key-at-least-32-characters");
-    const menuButton = await screen.findByRole("button", { name: /Open more pages menu/ });
-    await waitFor(() => expect(menuButton.querySelector(".feedback-unread-dot")).toBeInTheDocument());
+    const menuLink = await screen.findByRole("link", { name: /Menu, unread feedback/i });
+    await waitFor(() => expect(menuLink.querySelector(".feedback-unread-dot")).toBeInTheDocument());
   });
 
   it("pins a message at the top and restores chronological order when unpinned", async () => {

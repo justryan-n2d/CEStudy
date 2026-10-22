@@ -71,3 +71,31 @@ Gitleaks reference: [configuration and allowlists](https://github.com/gitleaks/g
 ---
 
 **Scope note:** This record reflects repository state and test results available at the timestamp above. Recheck PR heads, branch divergence, and checks before making a merge decision.
+
+
+
+## PR #44 OAuth recovery and deployed-preview checks (refreshed 2026-10-21)
+
+**Live PR metadata checked before this documentation sync:** PR #44 is open, draft, and unmerged. GitHub reports mergeable/clean. Branch: `feature/google-auth-streak-gate-rebased`. Verified application/test head: `18276056fbecae2e2ea80068f3298ea184b2d77b`. Base: `main` at `e6f657cbbf94467e427fc6183c9714e965098598`.
+
+Fresh checks on that exact application/test head passed:
+- [CI run 39461277462](https://github.com/justryan-n2d/CEStudy/actions/runs/39461277462): passed, including `Lint, test, and build` and `Supabase migration and RLS tests`.
+- [Full-history secret scan 39461277393](https://github.com/justryan-n2d/CEStudy/actions/runs/39461277393): passed.
+- [Cloudflare Pages check 118761260082](https://github.com/justryan-n2d/CEStudy/runs/118761260082): passed for the same SHA; preview deployment [becd5395.cestudy.pages.dev](https://becd5395.cestudy.pages.dev).
+- Unit tests: **199 passed across 32 files**. Lint, dependency audit, production build, backup verification/retention tests, and isolated Supabase migration/RLS tests passed.
+- Chromium smoke on built production preview: **159/159 assertions passed** at 320 px and 1440 px.
+- Chromium smoke on deployed branch preview: **157/157 assertions passed** at 320 px and 1440 px, with no browser page errors reported.
+
+Automated OAuth coverage passes for injected `access_denied` and `server_error` callbacks, recovery/retry behavior, and five unsafe return-target forms. It validates the app's response after callback parameters reach Login, but it does not exercise the real Google provider cancellation screen or induce a live provider/Supabase callback failure.
+
+### Manual merge gates still open
+
+1. Start Google sign-in and cancel at the actual Google provider screen. Verify the app returns to a usable signed-out Login page, remains signed out, has no stuck spinner or false success state, and permits retry.
+2. Exercise one controlled real provider/callback failure. Verify readable feedback, retry, and recovery after refresh.
+3. Review Google consent-screen Testing-mode/publishing requirements and production Supabase redirect allowlists before enabling the account feature for general availability.
+
+**Documentation-only sync note:** the run IDs above validate the application/test head. After committing this documentation update, refresh PR #44 and verify new CI, full-history secret-scan, and Cloudflare Pages results for the resulting latest PR head. Do not infer that the pre-sync run IDs test a later docs-only commit.
+
+PR #44 must remain open and in draft until all three manual gates are completed and recorded. No merge or production deployment is approved by this record. Keep draft lessons and practice questions unpublished.
+
+These OAuth gates are distinct from CEStudy's broad-launch gates: physical-device/accessibility QA, corrected live backup verification and recovery, human review of educational content, and the controlled student pilot remain open.

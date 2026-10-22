@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  checks: read
 concurrency:
   group: cestudy-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -48,6 +49,63 @@ jobs:
           grep -Fq "style-src 'self'" dist/_headers
           grep -Fq "style-src-attr 'unsafe-inline'" dist/_headers
           grep -Fq "script-src 'self'" dist/_headers
+      - name: Install temporary browser test dependency
+        run: npm install --prefix /tmp/cestudy-playwright --no-package-lock playwright@1.64.0
+      - name: Install Chromium for rendered UI checks
+        run: /tmp/cestudy-playwright/node_modules/.bin/playwright install --with-deps chromium
+      - name: Start built production preview
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/cestudy-vite-preview.log 2>&1 &
+          echo $! > /tmp/cestudy-vite-preview.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/cestudy-vite-preview.log
+          exit 1
+      - name: Verify dark-mode and keyboard behavior in Chromium
+        env:
+          CESTUDY_BASE_URL: http://127.0.0.1:4173
+          PLAYWRIGHT_MODULE_PATH: /tmp/cestudy-playwright/node_modules/playwright
+        run: node scripts/ui-theme-smoke.cjs
+      - name: Stop built production preview
+        if: always()
+        run: |
+          if [ -f /tmp/cestudy-vite-preview.pid ]; then
+            kill "$(cat /tmp/cestudy-vite-preview.pid)" 2>/dev/null || true
+          fi
+      - name: Wait for this commit's Cloudflare Pages preview
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          for attempt in $(seq 1 60); do
+            result="$(curl --fail --silent --show-error \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$PR_HEAD_SHA/check-runs" \
+              | jq -r '[.check_runs[] | select(.name == "Cloudflare Pages")] | last | (.conclusion // .status // "")')"
+            if [ "$result" = "success" ]; then
+              echo "Cloudflare Pages check passed for $PR_HEAD_SHA"
+              exit 0
+            fi
+            if [ "$result" = "failure" ] || [ "$result" = "cancelled" ] || [ "$result" = "timed_out" ]; then
+              echo "::error::Cloudflare Pages preview failed for $PR_HEAD_SHA (result=$result)"
+              exit 1
+            fi
+            sleep 5
+          done
+          echo "::error::Timed out waiting for the Cloudflare Pages check for $PR_HEAD_SHA"
+          exit 1
+      - name: Verify the deployed PR preview in Chromium
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          CESTUDY_BASE_URL: https://feature-google-auth-streak-g-2k99.cestudy.pages.dev
+          PLAYWRIGHT_MODULE_PATH: /tmp/cestudy-playwright/node_modules/playwright
+        run: node scripts/ui-theme-smoke.cjs
       - name: Set up Python for backup encryption tests
         uses: actions/setup-python@v5
         with:
