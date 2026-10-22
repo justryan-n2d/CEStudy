@@ -116,8 +116,8 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Slice | Status | Scope / exit condition |
 |---|---|---|
 | Phase 0: Canonical plan and baseline | **incomplete** | Main/PR metadata, source paths, and existing GitHub CI evidence are recorded. Direct visual preview capture and a fresh local test run remain blocked and must be resolved or explicitly accepted before declaring the baseline fully complete. |
-| Phase 1: Shared foundation and theme tokens | **complete** | Implemented on `feat/blueprint-academy-theme-foundation`; light-default and explicit Light/Dark controls, semantic token roles, current-surface dark styling, and automated tests. CI run `39772810292` passed, including 850/850 browser assertions over 10 routes, both themes, and five viewports; secret scan `39772810372` passed. PR #56 remains open for owner review and is not merged. |
-| Phase 2: Navigation and route focus | **current** | Public hybrid navigation implementation and automated verification are green on `feat/blueprint-academy-hybrid-navigation` at commit `b91c82a6d0433b06bf731abc4f3cc094a512602b` (PR #57 remains draft/open). Chromium smoke passed 1,679/1,679 assertions across 13 routes and 320/390/768/1024/1440px; 26 test files and 146 unit tests passed; lint, dependency audit, build, Pages security-header packaging, backup checks and Supabase migration/RLS tests passed. Independent review is still pending. Signed-in Dashboard/account control is **paused** until the real auth/session contract from PR #44 is separately reviewed and available; do not add a fake signed-in state. Destinations without data/functionality remain explicitly labeled placeholders. |
+| Phase 1: Shared foundation and theme tokens | **current** | The theme-refresh defect was reproduced by the new regression test at commit `4481059` (CI showed `localStorage` was `null` after selecting Dark). Device-local persistence and pre-React bootstrap are implemented on `feat/blueprint-academy-theme-foundation` at code commit `d37a3148203e2b666e12396f01232d2a9d1072ac`. Current-head app checks passed: 134 unit tests, lint, build, Pages/security-header packaging, 852/852 Chromium assertions across the five required viewports, backup checks, and Supabase migration/RLS tests. Secret scan `39793272981` passed. Independent review and aggregate workflow finalization remain pending; PR #56 remains open and unmerged. |
+| Phase 2: Navigation and route focus | **current** | Public hybrid navigation is implemented on `feat/blueprint-academy-hybrid-navigation`, PR #57, and is now synchronized with Phase 1's device-local theme persistence fix. The prior Phase 2 head at `b91c82a6d0433b06bf731abc4f3cc094a512602b` passed 146 unit tests and 1,679/1,679 Chromium assertions. The synchronized feature-branch head needs a fresh combined CI run before independent review. Signed-in Dashboard/account control is **paused** until the real auth/session contract from PR #44 is separately reviewed and available; do not add a fake signed-in state. Destinations without data/functionality remain explicitly labeled placeholders. |
 | Phase 3: Catalog, subject and lesson consistency | **not started** | Unify browse/read experiences and verify shared math rendering in both themes. |
 | Phase 4: Practice workspace | **not started** | Implement and verify the responsive question/tools workspace while preserving current question/answer behavior. |
 | Phase 5: Progress and account integration | **not started** | Reconcile PR #44 only after review; preserve device-local disclosures, OAuth safeguards and data boundaries. |
@@ -158,7 +158,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 **Recorded checks for PR #44:** current PR-head [CI run 39578952302](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952302), [secret scan 39578952309](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952309), and [Cloudflare deployment check 119151620066](https://github.com/justryan-n2d/CEStudy/runs/119151620066) are reported as successful in the PR description. The description also records successful browser smoke assertions at 320px and 1440px on the tested feature branch. These are evidence from the branch's automated checks, not a manual visual approval or a merge/release approval.
 
-**Persistence decision remains open.** Device-local preference using the PR #44 key is a viable candidate, but do not silently change this into account synchronization. The owner has approved a Light/Dark toggle, light-default baseline, and no System option, not a server-side preference model.
+**Persistence decision: approved device-local.** Store the explicit Light/Dark selection in this browser using `cestudy:theme:v1` and restore it before React starts. Light remains the fallback when no valid saved choice exists or storage is blocked. Account synchronization and cross-device persistence are not approved.
 
 ### 4.3 Equation rendering baseline
 
@@ -212,7 +212,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Visual direction | **Approved: Blueprint Academy**, 2026-10-22. |
 | Brand | Preserve canonical logo geometry and `#0754B5` brand-blue baseline. Do not generate a replacement logo. |
 | Theme | Explicit Light/Dark toggle; retain light default; do not add a System option. |
-| Theme persistence | Unresolved. Device-local persistence is a candidate; do not assume account synchronization. |
+| Theme persistence | Approved | Device-local preference under `cestudy:theme:v1`; no account synchronization or cross-device sync. |
 | Public navigation | Hybrid header with Year Levels dropdown, Review Materials Hub mega-menu, direct Mock Exam Portal and Community Forum entries, and signed-in Student Dashboard/account control. |
 | Sidebar | Collapsible sidebar only for dense signed-in workspaces, not for every public page. |
 | Duplicate destinations | Avoid competing Dashboard and Profile roles. Separate learning overview from account/settings only when the use case is clear. |
@@ -371,7 +371,7 @@ This is a layout convention, not authorization to rewrite mathematical source co
 | Practice | Existing, limited pool | Preserve current answer flow; improve question/tools layout, feedback and responsive access. Main live smoke currently expects zero published questions. |
 | Results / Progress | Existing progress and per-session results | Separate current-session score from stored history; show device-local scope and only real values. |
 | Student Dashboard | Proposed | Private hub for progress, recent activity, bookmarks, saved formulas, history and settings. No fake insights or cross-device claims. |
-| Account / Settings | Privacy exists; extra account pages draft-only | Clear privacy, theme, sound, motion, authentication and storage disclosures. Theme persistence remains undecided. |
+| Account / Settings | Privacy exists; extra account pages draft-only | Clearly disclose device-local theme preference, sound, motion, authentication, and storage behavior. Do not imply account-synced theme settings. |
 | Community | Draft route in PR #44 is a placeholder, not a working forum | Future searchable discussions, problem threads, math comments, reporting and moderation only after backend and permission decisions. Public identity must not expose email. |
 | Calculator / Tools | Proposed | Unit converter first. Validate units, inputs, conversion factors and outputs. More engineering tools need sources and technical validation. |
 | Offline manager | Cross-cutting proposal | Do not display as implemented until local storage, resource versions, download rights and sync rules are designed and verified. |
@@ -480,7 +480,7 @@ Exit criteria:
 
 ### Phase 1: Shared foundation and theme tokens
 
-**Status: complete on branch, pending owner review/merge.** Verification: PR #56 CI run `39772810292` passed; its built-production-preview browser step passed 850/850 assertions across 10 routes, five viewports (320/390/768/1024/1440px) and both themes. The secret scan `39772810372` passed. Supabase migration/RLS tests, lint, unit tests, build, routing/security-header packaging, dependency audit, and backup checks passed. Direct local execution and independent visual preview capture remain unavailable in this environment.
+**Status: current on branch, pending independent review.** The refresh defect was reproduced first by a failing regression test: Dark selected but `localStorage` remained empty. Fixed by lazy-reading and saving `cestudy:theme:v1`, setting a safe Light fallback, synchronizing browser `color-scheme` and mobile browser theme color, and loading `public/theme-init.js` before the app module to prevent a Light flash on refresh. Current-head CI step results passed 134 unit tests, lint, production build, Pages/security-header packaging, backup checks, Supabase migration/RLS tests, and 852/852 Chromium assertions including Dark preference save/refresh restoration. Secret scan passed. Direct local checkout and manual visual preview remain unavailable; PR #56 is open and unmerged.
 
 **Priority:** first implementation candidate. **Relative effort:** Medium. **Risk:** Medium due theme-wide regression potential.
 
@@ -491,14 +491,14 @@ User outcome: a stable visual base where common surfaces, text, borders, focus a
 Acceptance criteria:
 - Preserve canonical logo and brand blue.
 - Keep Light as default; support explicit Light/Dark only, with no System option.
-- Theme persistence follows a separately approved decision; do not silently add account synchronization.
+- Use the approved device-local `cestudy:theme:v1` preference and early bootstrap; do not add account synchronization.
 - Use shared semantic tokens and remove avoidable page-specific token contradictions.
 - Do not regress current main pages or PR #44's auth/streak design where it is later integrated.
 - Add theme contrast/component tests and browser checks for home, catalog, study, practice, forms, dialog, tables and equation error/overflow states.
 - Test at 320px, 390px, 768px, 1024px and 1440px.
 
 Dependencies and blockers:
-- Agree whether PR #44's existing localStorage approach is accepted for the first release.
+- Device-local theme preference is approved under `cestudy:theme:v1`; do not integrate account synchronization or cross-device preference sync.
 - Inspect full dark token coverage and verify theme initialization before React paints.
 - Do not integrate draft authentication simply to obtain ThemeProvider; isolate or deliberately port theme work only after branch integration review.
 
@@ -510,7 +510,7 @@ Primary paths: `src/components/Layout.tsx`, `src/App.tsx`, `src/styles/global.cs
 
 | Sub-slice | Status | Evidence / blocker |
 |---|---|---|
-| Public hybrid navigation, honest destination placeholders, route focus and responsive behavior | **current** | Automated CI passed at `b91c82a6d0433b06bf731abc4f3cc094a512602b`: 26 test files / 146 unit tests and 1,679/1,679 Chromium assertions over 13 routes, both themes and the five required viewport widths. Lint, dependency audit, build, Pages security-header packaging, backup tests, and Supabase migration/RLS tests passed in [CI run 39788686255](https://github.com/justryan-n2d/CEStudy/actions/runs/39788686255). Awaiting independent code review; PR #57 is still a draft. |
+| Public hybrid navigation, honest destination placeholders, route focus and responsive behavior | **current** | The prior Phase 2 head at `b91c82a6d0433b06bf731abc4f3cc094a512602b` passed 26 test files / 146 unit tests and 1,679/1,679 Chromium assertions over 13 routes, both themes and the five required viewport widths in [CI run 39788686255](https://github.com/justryan-n2d/CEStudy/actions/runs/39788686255). The synchronized branch includes Phase 1 theme persistence and an explicit refresh regression assertion. Run combined CI for the merge commit before independent review; PR #57 remains a draft. |
 | Signed-in Student Dashboard/account control | **paused** | Main and the Phase 1 base do not provide an approved authenticated-user contract; those routes/context are draft-only in PR #44. Resume only after that auth slice is separately reviewed and integrated. Do not infer login state or show a fake signed-in destination. |
 
 Acceptance criteria:
@@ -632,7 +632,7 @@ For each implementation PR:
 |---|---|---|
 | Blueprint Academy | Approved | Use as primary visual direction |
 | Theme default and options | Approved | Light default; Light/Dark toggle only; no System option |
-| Theme persistence | Open | Owner confirms device-local or account-synchronized. Device-local is the lower-complexity candidate. |
+| Theme persistence | Decided | Owner approved device-local persistence under `cestudy:theme:v1`; account/cross-device synchronization remains out of scope. |
 | Final token values | Proposed | Validate contrast and real component rendering in both themes |
 | Phone-web navigation presentation | Partially specified | Compare current four-item quick nav plus menu sheet against a grouped sheet/accordion without copying native tabs |
 | PR #44 integration | Draft-only | Review branch status, OAuth/recovery safeguards, local data behavior and theme tokens before deciding how to port/merge |
@@ -683,7 +683,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
-| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner authorized roadmap-bounded application changes. Phase 0 remains incomplete because direct preview capture and fresh local execution are blocked. Phase 1 was implemented on PR #56 and passed CI, RLS tests, secret scan, and 850/850 browser assertions; PR #56 remains open and unmerged. Phase 2 public navigation is implemented on PR #57's branch and passed CI run `39788686255` with 146 unit tests and 1,679/1,679 Chromium assertions; PR #57 remains draft/open pending independent review. Signed-in Dashboard/account controls are paused until the separately reviewed auth contract is available from PR #44. |
+| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner authorized roadmap-bounded application changes. Phase 0 remains incomplete because direct preview capture and fresh local execution are blocked. Phase 1 theme persistence was added after a regression test reproduced the refresh reset, using device-local storage with an early bootstrap; current-head tests and 852/852 Chromium assertions passed, with independent review pending on PR #56. Phase 2 remains current in PR #57 and has been synchronized with Phase 1 for combined verification; no PR has been merged and nothing was deployed. |
 
 ---
 
