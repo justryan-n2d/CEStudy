@@ -8,6 +8,7 @@ export function ThemeToggle() {
       <button
         className={`theme-toggle-option${theme === "light" ? " is-selected" : ""}`}
         type="button"
+        aria-label="Light"
         aria-pressed={theme === "light"}
         onClick={() => setTheme("light")}
       >
@@ -20,6 +21,7 @@ export function ThemeToggle() {
       <button
         className={`theme-toggle-option${theme === "dark" ? " is-selected" : ""}`}
         type="button"
+        aria-label="Dark"
         aria-pressed={theme === "dark"}
         onClick={() => setTheme("dark")}
       >
