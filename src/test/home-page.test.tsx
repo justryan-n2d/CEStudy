@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
@@ -63,7 +63,7 @@ describe("homepage and year-level navigation", () => {
       </MemoryRouter>,
     );
 
-    await user.click(screen.getByRole("link", { name: "Subject catalog" }));
+    await user.click(within(screen.getByRole("navigation", { name: "Main navigation" })).getByRole("link", { name: "Subject catalog" }));
 
     const main = screen.getByRole("main");
     expect(screen.getByRole("heading", { name: "Subject catalog page" })).toBeInTheDocument();
