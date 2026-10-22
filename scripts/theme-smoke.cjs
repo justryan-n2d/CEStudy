@@ -266,6 +266,33 @@ async function main() {
           check("No page-wide horizontal overflow in Light: " + activeRoute,
             Math.max(light.documentWidth, light.bodyWidth) <= light.viewportWidth + 1,
             "viewport=" + light.viewportWidth + ", document=" + light.documentWidth + ", body=" + light.bodyWidth);
+
+          if (route === "/" && width === 1440) {
+            await page.waitForFunction(
+              () => window.localStorage.getItem("cestudy:theme:v1") === "light",
+              { timeout: 5000 },
+            );
+            await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+            await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
+            const restoredLight = await page.evaluate(() => ({
+              theme: document.documentElement.dataset.theme || "",
+              colorScheme: getComputedStyle(document.documentElement).colorScheme,
+              bodyBackground: getComputedStyle(document.body).backgroundColor,
+              themeColor: document.querySelector('meta[name="theme-color"]')?.getAttribute("content") || "",
+              storedTheme: window.localStorage.getItem("cestudy:theme:v1"),
+              selectedLabel: document.querySelector(".theme-toggle-option.is-selected")?.getAttribute("aria-label") || "",
+              selectedPressed: document.querySelector(".theme-toggle-option.is-selected")?.getAttribute("aria-pressed") || "",
+            }));
+            check("Light preference restores after browser refresh: " + activeRoute,
+              restoredLight.theme === "light" &&
+                restoredLight.colorScheme === "light" &&
+                restoredLight.bodyBackground === "rgb(255, 255, 255)" &&
+                restoredLight.themeColor === "#FFFFFF" &&
+                restoredLight.storedTheme === "light" &&
+                restoredLight.selectedLabel === "Light" &&
+                restoredLight.selectedPressed === "true",
+              JSON.stringify(restoredLight));
+          }
         } catch (error) {
           check("Browser route/theme check: " + activeRoute, false, error.message);
           try {
