@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import stylesheet from "../styles/global.css?raw";
 
+const lightTokenBlock = stylesheet.match(/:root\\s*\\{(?=[^}]*--ui-page-bg)[^}]+\\}/)?.[0] ?? "";
+const darkTokenBlock = stylesheet.match(/:root\\[data-theme="dark"\\]\\s*\\{([^}]+)\\}/)?.[1] ?? "";
+
 describe("semantic theme token foundation", () => {
   it("defines the required light and dark semantic color roles", () => {
     for (const token of [
@@ -20,8 +23,8 @@ describe("semantic theme token foundation", () => {
       "--ui-error-bg",
       "--ui-disabled-bg",
     ]) {
-      expect(stylesheet, `missing light token ${token}`).toContain(token);
-      expect(stylesheet, `missing dark semantic token block for ${token}`).toContain(':root[data-theme="dark"]');
+      expect(lightTokenBlock, `missing light token ${token}`).toContain(token);
+      expect(darkTokenBlock, `missing dark token ${token}`).toContain(token);
     }
   });
 
