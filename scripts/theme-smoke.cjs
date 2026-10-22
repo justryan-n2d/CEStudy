@@ -90,6 +90,9 @@ async function main() {
               selectedPressed: selected?.getAttribute("aria-pressed") || "",
               selectedText: selectedStyle?.color || "",
               selectedBackground: selectedStyle?.backgroundColor || "",
+              headingText: getComputedStyle(document.querySelector("h1")).color,
+              bodyText: getComputedStyle(document.querySelector(".page-intro > p") || document.querySelector(".hero-copy > p") || document.querySelector("main p")).color,
+              bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
             };
           });
 
@@ -105,6 +108,14 @@ async function main() {
             contrastRatio(dark.selectedText, dark.selectedBackground) >= 4.5,
             JSON.stringify({ foreground: dark.selectedText, background: dark.selectedBackground,
               ratio: contrastRatio(dark.selectedText, dark.selectedBackground) }));
+          check("Dark page heading contrast is readable: " + activeRoute,
+            contrastRatio(dark.headingText, dark.bodyBackgroundForText) >= 3,
+            JSON.stringify({ foreground: dark.headingText, background: dark.bodyBackgroundForText,
+              ratio: contrastRatio(dark.headingText, dark.bodyBackgroundForText) }));
+          check("Dark introductory/body text contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(dark.bodyText, dark.bodyBackgroundForText) >= 4.5,
+            JSON.stringify({ foreground: dark.bodyText, background: dark.bodyBackgroundForText,
+              ratio: contrastRatio(dark.bodyText, dark.bodyBackgroundForText) }));
           check("No page-wide horizontal overflow in Dark: " + activeRoute,
             Math.max(dark.documentWidth, dark.bodyWidth) <= dark.viewportWidth + 1,
             "viewport=" + dark.viewportWidth + ", document=" + dark.documentWidth + ", body=" + dark.bodyWidth);
@@ -125,6 +136,9 @@ async function main() {
               selectedPressed: selected?.getAttribute("aria-pressed") || "",
               selectedText: selectedStyle?.color || "",
               selectedBackground: selectedStyle?.backgroundColor || "",
+              headingText: getComputedStyle(document.querySelector("h1")).color,
+              bodyText: getComputedStyle(document.querySelector(".page-intro > p") || document.querySelector(".hero-copy > p") || document.querySelector("main p")).color,
+              bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
             };
           });
 
@@ -140,6 +154,14 @@ async function main() {
             contrastRatio(light.selectedText, light.selectedBackground) >= 4.5,
             JSON.stringify({ foreground: light.selectedText, background: light.selectedBackground,
               ratio: contrastRatio(light.selectedText, light.selectedBackground) }));
+          check("Light page heading contrast is readable: " + activeRoute,
+            contrastRatio(light.headingText, light.bodyBackgroundForText) >= 3,
+            JSON.stringify({ foreground: light.headingText, background: light.bodyBackgroundForText,
+              ratio: contrastRatio(light.headingText, light.bodyBackgroundForText) }));
+          check("Light introductory/body text contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(light.bodyText, light.bodyBackgroundForText) >= 4.5,
+            JSON.stringify({ foreground: light.bodyText, background: light.bodyBackgroundForText,
+              ratio: contrastRatio(light.bodyText, light.bodyBackgroundForText) }));
           check("No page-wide horizontal overflow in Light: " + activeRoute,
             Math.max(light.documentWidth, light.bodyWidth) <= light.viewportWidth + 1,
             "viewport=" + light.viewportWidth + ", document=" + light.documentWidth + ", body=" + light.bodyWidth);
