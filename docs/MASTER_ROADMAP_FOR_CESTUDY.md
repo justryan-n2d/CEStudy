@@ -8,7 +8,7 @@
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
-> **Repository note:** This file is being proposed through a documentation-only pull request. Until that pull request is merged, the file is available on its branch rather than `main`. For planning in the meantime, treat this version as the working canonical roadmap. Do not merge stale or contradictory planning changes merely to make their documents appear current.
+> **Repository note:** This canonical file was merged to `main` through [PR #55](https://github.com/justryan-n2d/CEStudy/pull/55) on 2026-10-22. Use the version on `main` as the canonical roadmap. The implementation-status tracker below is maintained as work progresses. A branch or PR is not considered complete until its required checks and acceptance criteria are verified.
 
 ## 1. Purpose and product outcome
 
@@ -59,12 +59,12 @@ This roadmap controls the intended product design, scope, decision register, and
 |---|---|
 | Repository | [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy), public repository |
 | Default branch | `main` |
-| Inspected `main` SHA | `ffbabc6072d46bcd12af1358d17b169a0f8abbc9` |
+| Inspected `main` SHA | `0862b5f243ca0e39f8bb82131c31fef28fbbab98` (merge of PR #55; application source baseline remains the same as its parent `ffbabc6072d46bcd12af1358d17b169a0f8abbc9`) |
 | Latest commit message | `docs: add UI UX Pro Max integration guidance` |
 | Stack declared by `package.json` | React 19, TypeScript 5.9, Vite 7, Tailwind CSS 4, React Router 7, Supabase JS, KaTeX 0.19, Vitest and Testing Library |
-| Main CI run | [39758495387, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495387) |
-| Main full-history secret scan | [39758495402, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495402) |
-| Main live website Chromium smoke | [39758768389, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758768389) |
+| Main CI run | [39768669548, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39768669548) |
+| Main full-history secret scan | [39768669550, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39768669550) |
+| Main live website Chromium smoke | [39768932356, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39768932356) |
 
 The main workflows above passed on the exact inspected main commit. This is fresh GitHub Actions evidence, not a claim that this assistant ran the tests locally.
 
@@ -441,9 +441,35 @@ Example reward values in PR #51 are draft planning examples, not approved consta
 
 Each slice must be separately scoped, reviewed, tested, and authorized. This roadmap does not authorize code changes.
 
-### Phase 0: Canonical plan and baseline (current)
+### 13.0 Live implementation status tracker
 
-**Status:** Source inspection and existing CI evidence recorded. Direct preview capture and a fresh local run are blocked by the available environment. Do not describe the baseline as a complete live visual audit.
+Update these labels as implementation progresses. Keep the labels exactly as one of: **current**, **complete**, **paused**, **incomplete**, or **not started**.
+
+- **current:** implementation or active verification is underway.
+- **complete:** the slice's acceptance criteria and required verification are satisfied; a draft or unmerged PR alone is not enough.
+- **paused:** intentionally stopped while awaiting a product decision, external dependency, or owner direction.
+- **incomplete:** work has started, but acceptance criteria or required checks remain unmet.
+- **not started:** implementation has not begun.
+
+| Phase | Status | Current evidence / next gate |
+|---|---|---|
+| Phase 0: Canonical plan and baseline | **complete** | Source-level baseline and current-main CI references recorded. Direct preview capture, fresh local execution, and physical-device/screen-reader review remain explicitly incomplete. |
+| Phase 1: Shared foundation and theme tokens | **current** | Branch `redesign/phase-1-semantic-theme-foundation`. Shared token test contract and CSS refactor are in progress. Await targeted CI and full PR review before marking complete. |
+| Phase 2: Navigation and route focus | **not started** | Start only after Phase 1 is accepted and the responsive-navigation scope is separately reviewed. |
+| Phase 3: Catalog, subject and lesson consistency | **not started** | Depends on the semantic design foundation and a verified content/navigation contract. |
+| Phase 4: Practice workspace | **not started** | Depends on verified question/content behavior and responsive tools requirements. |
+| Phase 5: Progress and account integration | **not started** | Depends on authenticated/local data contract and security review. |
+| Phase 6: Review Materials Hub | **not started** | Depends on real resource metadata, source rights, review status and download contract. |
+| Phase 7: Community | **not started** | Depends on moderation, publication, identity and database access decisions. |
+| Phase 8: Tools | **not started** | Unit converter requires validated conversion definitions and tests. |
+| Phase 9: Gamification | **not started** | Reward eligibility, retry, privacy, time-zone and anti-abuse decisions are blockers. |
+| Phase 10: Offline access and native app | **not started** | Separate architecture and product-design projects. |
+
+Status is tracked at the phase level. If a phase is split into multiple implementation PRs, record the PR link and its tests in the phase notes. Never mark a whole phase complete while required checks, human review or unresolved blockers remain.
+
+### Phase 0: Canonical plan and baseline
+
+**Status: complete** for the source-level baseline gate. Theme, equation renderer, PR #44 integration points, responsive navigation, and current GitHub CI evidence have been inspected. **Incomplete:** direct preview screenshots, fresh local execution, and physical-device/screen-reader review remain blocked or outstanding. The baseline must not be described as a complete live visual audit.
 
 Work:
 - Keep this roadmap as the canonical record once the documentation PR is merged.
@@ -458,7 +484,9 @@ Exit criteria:
 
 ### Phase 1: Shared foundation and theme tokens
 
-**Priority:** first implementation candidate. **Relative effort:** Medium. **Risk:** Medium due theme-wide regression potential.
+**Status: current**. Implementation is active on `redesign/phase-1-semantic-theme-foundation`. The current slice establishes shared light/dark semantic tokens and refactors existing shared CSS to use them. It does not add the theme toggle or decide theme persistence.
+
+**Priority:** first implementation slice. **Relative effort:** Medium. **Risk:** Medium due theme-wide regression potential.
 
 Primary paths to inspect: `src/styles/global.css`, `src/components/Layout.tsx`, `src/App.tsx`, PR #44's `src/contexts/ThemeContext.tsx`, `public/theme-init.js`, relevant tests, and `scripts/ui-theme-smoke.cjs`.
 
@@ -655,6 +683,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 | Date | Change |
 |---|---|
 | 2026-10-22 | Created the master roadmap; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions; recorded a focused source/CI baseline of main theme, equation rendering, PR #44, responsive navigation, and current related PRs. No application source was changed. |
+| 2026-10-22 | After PR #55 merged, updated the source snapshot/CI links and added live phase statuses. Began Phase 1 semantic theme-token implementation on `redesign/phase-1-semantic-theme-foundation`; first implementation PR remains in progress. |
 
 ---
 
