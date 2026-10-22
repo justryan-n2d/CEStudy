@@ -14,7 +14,7 @@ describe("planned learning destinations", () => {
       expect(screen.getByRole("heading", { name: category })).toBeInTheDocument();
     }
     expect(screen.getAllByText("Not available yet")).toHaveLength(3);
-    expect(screen.getAllByText(/No download is offered from this placeholder/)).toHaveLength(3);
+    expect(screen.getAllByText(/This page does not offer downloads/)).toHaveLength(3);
     expect(screen.getByRole("link", { name: /browse subject catalog/i })).toHaveAttribute("href", "/catalog");
     expect(screen.queryByRole("button", { name: /download/i })).not.toBeInTheDocument();
   });
