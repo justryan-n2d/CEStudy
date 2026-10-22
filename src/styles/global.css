@@ -1612,3 +1612,11 @@ body {
   .main-nav .nav-link,
   .main-nav .nav-dropdown-trigger { white-space: nowrap; flex-shrink: 0; }
 }
+
+/* Final responsive overrides for the Blueprint Academy navigation. */
+@media (min-width: 681px) and (max-width: 850px) {
+  .main-nav {
+    column-gap: .5rem;
+    row-gap: .5rem;
+  }
+}
