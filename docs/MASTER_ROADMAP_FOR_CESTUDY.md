@@ -109,6 +109,28 @@ Verified route registration is in `src/App.tsx` at the inspected main commit.
 
 Retain and improve these foundations where they are fit for purpose. Do not introduce a parallel design system or alternate equation renderer without a specific, tested reason.
 
+## 3.5 Implementation status tracker
+
+Statuses use the owner's exact labels: **current**, **complete**, **paused**, **incomplete**, and **not started**. A status describes this implementation effort, not whether a related draft PR or proposal exists. Mark a slice complete only after required code review and verification results are recorded.
+
+| Slice | Status | Scope / exit condition |
+|---|---|---|
+| Phase 0: Canonical plan and baseline | **incomplete** | Main/PR metadata, source paths, and existing GitHub CI evidence are recorded. Direct visual preview capture and a fresh local test run remain blocked and must be resolved or explicitly accepted before declaring the baseline fully complete. |
+| Phase 1: Shared foundation and theme tokens | **current** | Build the reusable semantic theme foundation and explicit Light/Dark control for the existing app, preserve Light as default and do not silently decide theme persistence. Add tests and verify the actual changed app paths. |
+| Phase 2: Navigation and route focus | **not started** | Implement the approved hybrid header, nested year navigation, resource mega-menu, focus handoff, and responsive behavior. |
+| Phase 3: Catalog, subject and lesson consistency | **not started** | Unify browse/read experiences and verify shared math rendering in both themes. |
+| Phase 4: Practice workspace | **not started** | Implement and verify the responsive question/tools workspace while preserving current question/answer behavior. |
+| Phase 5: Progress and account integration | **not started** | Reconcile PR #44 only after review; preserve device-local disclosures, OAuth safeguards and data boundaries. |
+| Phase 6: Review Materials Hub | **not started** | Build only after resource metadata, review status, provenance and rights rules are confirmed. |
+| Phase 7: Community | **not started** | Remains blocked on data contracts, publication rules, identity and moderation/access controls. |
+| Phase 8: Tools | **not started** | Start with a validated unit converter and tested unit definitions. |
+| Phase 9: Gamification | **not started** | Blocked until the affected reward, eligibility, privacy, retry and anti-abuse rules are approved. |
+| Phase 10: Offline access and native app | **not started** | Separate future architecture and design work; excluded from the current website theme foundation. |
+
+**Active implementation branch:** `feat/blueprint-academy-theme-foundation`.
+**Verified main at implementation start:** `0862b5f243ca0e39f8bb82131c31fef28fbbab98`.
+**Current implementation authorization:** The owner explicitly authorized application code changes in the conversation dated 2026-10-22. This authorizes work within the master roadmap, but does not authorize automatic merge, deployment, production data/configuration changes, or bypassing existing safeguards.
+
 ## 4. Focused baseline verification
 
 ### 4.1 Audit result summary
@@ -439,14 +461,14 @@ Example reward values in PR #51 are draft planning examples, not approved consta
 
 ## 13. Prioritized implementation roadmap
 
-Each slice must be separately scoped, reviewed, tested, and authorized. This roadmap does not authorize code changes.
+Each slice must be separately scoped, reviewed, and tested. The owner explicitly authorized application code changes on 2026-10-22. That authorization is bounded by the approved roadmap and does not authorize automatic merge, deployment, production configuration/data changes, or weakening any existing safeguards. Keep the implementation status tracker current and mark a slice complete only after its acceptance criteria and verification are satisfied.
 
 ### Phase 0: Canonical plan and baseline (current)
 
 **Status:** Source inspection and existing CI evidence recorded. Direct preview capture and a fresh local run are blocked by the available environment. Do not describe the baseline as a complete live visual audit.
 
 Work:
-- Keep this roadmap as the canonical record once the documentation PR is merged.
+- Keep this roadmap as the canonical record. PR #55 was merged to `main` at commit `0862b5f243ca0e39f8bb82131c31fef28fbbab98`.
 - Confirm current main SHA, PR states, routes, existing components, test setup and CI.
 - Record theme, equation, PR #44, and responsive-navigation baselines.
 - Preserve the current passing main CI/live-smoke/secret-scan gate.
@@ -654,7 +676,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
-| 2026-10-22 | Created the master roadmap; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions; recorded a focused source/CI baseline of main theme, equation rendering, PR #44, responsive navigation, and current related PRs. No application source was changed. |
+| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner then authorized application code changes. Phase 0 remains incomplete due to blocked direct preview capture and fresh local execution; Phase 1 is current. |
 
 ---
 
