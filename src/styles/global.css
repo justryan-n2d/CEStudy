@@ -1549,3 +1549,33 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .nav-dropdown-chevron { transition: none; }
 }
+
+
+/* Keep the expanded hybrid header within tablet and compact-desktop widths. */
+@media (max-width: 1100px) {
+  .header-inner { gap: .5rem; }
+  .brand-logo { width: 44px; height: 44px; }
+  .brand-copy small { display: none; }
+  .main-nav { gap: .04rem; }
+  .main-nav .nav-link,
+  .main-nav .nav-dropdown-trigger {
+    padding: .32rem .24rem;
+    font-size: .67rem;
+  }
+  .nav-dropdown-chevron { width: 10px; height: 10px; }
+  .theme-toggle-option {
+    min-height: 34px;
+    gap: .2rem;
+    padding: .3rem .34rem;
+    font-size: .7rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .header-inner { gap: .38rem; }
+}
+
+@media (max-width: 360px) {
+  .header-inner { gap: .3rem; }
+  .brand { gap: .32rem; }
+}
