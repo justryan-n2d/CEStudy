@@ -1536,7 +1536,7 @@ body {
     flex: 1 0 100%;
     flex-wrap: wrap;
     width: 100%;
-    gap: .25rem;
+    gap: .5rem;
     overflow: visible;
   }
   .main-nav .nav-link,
