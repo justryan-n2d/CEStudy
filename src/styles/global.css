@@ -1054,3 +1054,498 @@ body {
   border-color: var(--ui-border);
   box-shadow: var(--ui-shadow);
 }
+
+
+/* Blueprint Academy: hybrid public navigation */
+.nav-dropdown {
+  position: static;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+.nav-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #52687b;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.nav-dropdown-trigger:hover,
+.nav-dropdown-trigger[aria-expanded="true"],
+.nav-dropdown-trigger.active {
+  color: var(--navy);
+  background: var(--blue-soft);
+}
+
+.nav-dropdown-chevron {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 160ms ease;
+}
+
+.nav-dropdown-trigger[aria-expanded="true"] .nav-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+.year-level-menu,
+.review-materials-menu {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + .45rem);
+  max-height: min(72vh, 640px);
+  overflow: auto;
+  padding: 1.1rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 18px;
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  box-shadow: var(--ui-shadow);
+}
+
+.year-level-menu[hidden],
+.review-materials-menu[hidden] {
+  display: none !important;
+}
+
+.year-level-menu {
+  left: max(12px, calc((100vw - 1120px) / 2));
+  width: min(520px, calc(100vw - 24px));
+}
+
+.review-materials-menu {
+  left: 50%;
+  width: min(720px, calc(100vw - 24px));
+  transform: translateX(-50%);
+}
+
+.navigation-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: .9rem;
+}
+
+.navigation-panel-heading h2 {
+  margin: .3rem 0 .25rem;
+  color: var(--ui-heading);
+  font-size: 1.2rem;
+  letter-spacing: -.025em;
+}
+
+.navigation-panel-heading p {
+  max-width: 420px;
+  margin: .25rem 0 0;
+  color: var(--ui-text-muted);
+  font-size: .82rem;
+  line-height: 1.5;
+}
+
+.navigation-panel-heading > a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  border-radius: 9px;
+  padding: .5rem .65rem;
+  color: var(--ui-link);
+  font-size: .78rem;
+  font-weight: 750;
+}
+
+.navigation-panel-heading > a:hover,
+.navigation-panel-heading > a:focus-visible {
+  background: var(--ui-hover);
+}
+
+.navigation-panel-status {
+  color: var(--ui-text-muted);
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+.navigation-panel-error {
+  margin-block: .6rem;
+  padding: .85rem;
+  border: 1px solid var(--ui-error-text);
+  border-radius: 12px;
+  background: var(--ui-error-bg);
+  color: var(--ui-error-text);
+  font-size: .82rem;
+}
+
+.navigation-panel-error p {
+  margin: .2rem 0 .55rem;
+  color: inherit;
+}
+
+.navigation-panel-error a {
+  color: var(--ui-link);
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.year-level-menu-years {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .6rem;
+}
+
+.year-level-menu-year {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  background: var(--ui-surface);
+}
+
+.year-level-menu-year > summary {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: .45rem;
+  padding: .55rem .65rem;
+  cursor: pointer;
+  color: var(--ui-heading);
+  font-size: .82rem;
+  font-weight: 750;
+  list-style-position: inside;
+}
+
+.year-level-menu-year > summary:focus-visible,
+.year-level-menu-semester > summary:focus-visible {
+  outline: 3px solid var(--ui-focus);
+  outline-offset: -3px;
+}
+
+.year-level-menu-number {
+  color: var(--ui-link);
+  font-size: .68rem;
+  font-weight: 850;
+  letter-spacing: .04em;
+}
+
+.year-level-menu-year-title {
+  min-width: 0;
+  flex: 1;
+}
+
+.year-level-menu-count {
+  color: var(--ui-text-muted);
+  font-size: .65rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.year-level-menu-year-content {
+  padding: 0 .6rem .65rem;
+}
+
+.year-level-menu-overview {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  color: var(--ui-link);
+  font-size: .75rem;
+  font-weight: 750;
+}
+
+.year-level-menu-semester {
+  border-top: 1px solid var(--ui-border);
+}
+
+.year-level-menu-semester > summary {
+  min-height: 40px;
+  padding: .55rem .2rem;
+  cursor: pointer;
+  color: var(--ui-text);
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+.year-level-menu-semester ul {
+  display: grid;
+  gap: .2rem;
+  margin: 0 0 .55rem;
+  padding: 0;
+  list-style: none;
+}
+
+.year-level-menu-semester li a {
+  display: flex;
+  flex-direction: column;
+  gap: .12rem;
+  min-width: 0;
+  border-radius: 8px;
+  padding: .5rem .45rem;
+  color: var(--ui-text);
+  font-size: .75rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.year-level-menu-semester li a:hover,
+.year-level-menu-semester li a:focus-visible {
+  background: var(--ui-hover);
+}
+
+.year-level-menu-semester li small {
+  color: var(--ui-text-muted);
+  font-size: .66rem;
+}
+
+.navigation-panel-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  border-top: 1px solid var(--ui-border);
+  margin-top: .95rem;
+  padding-top: .75rem;
+}
+
+.navigation-panel-footer a {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  border-radius: 9px;
+  padding: .45rem .65rem;
+  color: var(--ui-link);
+  font-size: .76rem;
+  font-weight: 750;
+}
+
+.navigation-panel-footer a:hover,
+.navigation-panel-footer a:focus-visible {
+  background: var(--ui-hover);
+}
+
+.review-materials-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .7rem;
+}
+
+.review-materials-menu-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: .9rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 13px;
+  background: var(--ui-surface-muted);
+}
+
+.review-materials-menu-status {
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: .25rem .45rem;
+  background: var(--ui-disabled-bg);
+  color: var(--ui-disabled-text);
+  font-size: .64rem;
+  font-weight: 750;
+}
+
+.review-materials-menu-card h3 {
+  margin: .65rem 0 .35rem;
+  color: var(--ui-heading);
+  font-size: .9rem;
+  line-height: 1.35;
+  letter-spacing: -.01em;
+}
+
+.review-materials-menu-card p {
+  flex: 1;
+  margin: 0 0 .8rem;
+  color: var(--ui-text-muted);
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.review-materials-menu-card > a {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: .35rem;
+  color: var(--ui-link);
+  font-size: .74rem;
+  font-weight: 750;
+}
+
+.review-materials-menu-card > a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.navigation-panel-note {
+  margin: .85rem 0 0;
+  color: var(--ui-text-muted);
+  font-size: .72rem;
+  line-height: 1.5;
+}
+
+.mobile-menu-group {
+  display: grid;
+  gap: .18rem;
+  padding: .35rem 0 .55rem;
+}
+
+.mobile-menu-group + .mobile-menu-group {
+  border-top: 1px solid var(--ui-border);
+}
+
+.mobile-menu-group h2 {
+  margin: .3rem .8rem .2rem;
+  color: var(--ui-text-muted);
+  font-size: .68rem;
+  font-weight: 850;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.review-materials-page-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.review-materials-page-card {
+  min-width: 0;
+  padding: 1.15rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 18px;
+  background: var(--ui-surface);
+  color: var(--ui-text);
+}
+
+.review-materials-page-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.review-materials-number {
+  color: var(--ui-link);
+  font-size: .75rem;
+  font-weight: 850;
+  letter-spacing: .1em;
+}
+
+.review-materials-page-card h2 {
+  margin: 1rem 0 .5rem;
+  color: var(--ui-heading);
+  font-size: 1.12rem;
+  line-height: 1.35;
+  letter-spacing: -.025em;
+}
+
+.review-materials-page-card p {
+  color: var(--ui-text-muted);
+  font-size: .86rem;
+  line-height: 1.6;
+}
+
+.review-materials-page-card .review-materials-availability {
+  margin-top: 1rem;
+  border-top: 1px solid var(--ui-border);
+  padding-top: .8rem;
+  font-size: .76rem;
+}
+
+.review-materials-next {
+  margin-top: 1.5rem;
+  background: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+}
+
+.review-materials-next p {
+  color: var(--ui-text-muted);
+}
+
+.mock-exam-portal-status {
+  max-width: 780px;
+  margin: 1.4rem auto;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+}
+
+.mock-exam-portal-status h2 {
+  color: var(--ui-heading);
+  font-size: 1.35rem;
+}
+
+.mock-exam-portal-status p {
+  color: var(--ui-text-muted);
+}
+
+.mock-exam-portal-symbol {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--ui-surface-muted);
+  color: var(--ui-text-muted);
+  font-size: 1.4rem;
+}
+
+.mock-exam-portal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  margin-top: 1rem;
+}
+
+.community-launch-panel {
+  max-width: 780px;
+  margin-inline: auto;
+  background: var(--ui-surface);
+  border-color: var(--ui-border);
+}
+
+.community-launch-panel h2 {
+  color: var(--ui-heading);
+}
+
+.community-launch-panel p {
+  color: var(--ui-text-muted);
+}
+
+@media (max-width: 850px) {
+  .main-nav { gap: .08rem; }
+  .main-nav .nav-link,
+  .main-nav .nav-dropdown-trigger { padding: .45rem .45rem; font-size: .73rem; }
+  .nav-dropdown-chevron { width: 11px; height: 11px; }
+  .review-materials-menu { width: min(680px, calc(100vw - 24px)); }
+}
+
+@media (max-width: 680px) {
+  .review-materials-page-grid { grid-template-columns: minmax(0, 1fr); }
+  .review-materials-menu-grid { grid-template-columns: minmax(0, 1fr); }
+  .review-materials-menu { max-height: calc(100vh - 88px); }
+  .navigation-panel-heading { flex-direction: column; }
+  .navigation-panel-heading > a { justify-content: flex-start; }
+  .year-level-menu-years { grid-template-columns: minmax(0, 1fr); }
+  .mock-exam-portal-actions { flex-direction: column; }
+  .mock-exam-portal-actions .button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-dropdown-chevron { transition: none; }
+}
