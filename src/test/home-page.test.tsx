@@ -50,6 +50,34 @@ describe("homepage and year-level navigation", () => {
     expect(quickNav?.querySelector('a[href="/math-foundations"]')).toHaveTextContent("Math");
   });
 
+  it("moves focus to the main content after route navigation", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<h1>Home page</h1>} />
+            <Route path="/catalog" element={<h1>Subject catalog page</h1>} />
+          </Routes>
+        </Layout>
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByRole("link", { name: "Subject catalog" }));
+
+    const main = screen.getByRole("main");
+    expect(screen.getByRole("heading", { name: "Subject catalog page" })).toBeInTheDocument();
+    expect(main).toHaveAttribute("tabindex", "-1");
+    expect(main).toHaveFocus();
+  });
+
+  it("defines 44px touch targets and 8px spacing for tablet top navigation", () => {
+    expect(stylesheet).toContain("@media (min-width:681px) and (max-width:850px)");
+    expect(stylesheet).toContain(".main-nav .nav-link");
+    expect(stylesheet).toContain("min-height:44px");
+    expect(stylesheet).toContain(".main-nav{gap:.5rem}");
+  });
+
   it("points the shared navigation to the year-level overview", () => {
     render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
     expect(screen.getByRole("navigation", { name: "Main navigation" }).querySelector('a[href="/years"]')).toHaveTextContent("Year levels");
