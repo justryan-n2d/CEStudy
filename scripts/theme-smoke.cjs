@@ -232,10 +232,10 @@ async function main() {
           await yearPanel.getByRole("link", { name: "Browse all year levels" }).isVisible().catch(() => false));
         const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
           nodes.filter((node) => node.getClientRects().length > 0)
-            .map((node) => ({ label: node.textContent.trim().replace(/\\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+            .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
         );
         check("Visible Year Levels menu targets are at least 44px: " + activeRoute,
-          yearTargets.every((target) => target.height >= 44),
+          yearTargets.length >= 5 && yearTargets.every((target) => target.height >= 44),
           JSON.stringify(yearTargets));
         const yearOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
         check("Year Levels menu does not cause horizontal overflow: " + activeRoute, yearOverflow);
@@ -256,7 +256,7 @@ async function main() {
           visibleGroups.every(Boolean), JSON.stringify({ requiredGroups, visibleGroups }));
         const materialsTargets = await materialsPanel.locator("a").evaluateAll((nodes) =>
           nodes.filter((node) => node.getClientRects().length > 0)
-            .map((node) => ({ label: node.textContent.trim().replace(/\\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+            .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
         );
         check("Visible Review Materials links have 44px targets: " + activeRoute,
           materialsTargets.length >= 4 && materialsTargets.every((target) => target.height >= 44),
@@ -287,7 +287,7 @@ async function main() {
           visibleLinks.every(Boolean), JSON.stringify({ requiredLinks, visibleLinks }));
         const moreTargets = await moreMenu.locator("a").evaluateAll((nodes) =>
           nodes.filter((node) => node.getClientRects().length > 0)
-            .map((node) => ({ label: node.textContent.trim().replace(/\\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+            .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
         );
         check("Mobile More links have 44px targets: " + activeRoute,
           moreTargets.length >= 10 && moreTargets.every((target) => target.height >= 44),
