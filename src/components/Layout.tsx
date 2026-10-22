@@ -151,7 +151,7 @@ export function Layout({ children }: { children: ReactNode }) {
             <nav className="main-nav" aria-label="Main navigation">
               <NavLink
                 to="/catalog"
-                className={({ isActive }) => isActive || location.pathname.startsWith("/subjects/") ? "nav-link active" : "nav-link"}
+                className={({ isActive }) => isActive || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/study/") || location.pathname.startsWith("/practice/") ? "nav-link active" : "nav-link"}
               >
                 Subject Catalog
               </NavLink>
