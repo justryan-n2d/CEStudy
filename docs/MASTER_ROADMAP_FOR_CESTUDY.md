@@ -2,9 +2,9 @@
 
 **Document status:** Owner-approved direction; canonical planning document for CEStudy UX/UI redesign and roadmap tracking.
 **Owner approval:** Blueprint Academy selected on 2026-10-22 (Asia/Manila).
-**Baseline snapshot:** `main` at `ffbabc6072d46bcd12af1358d17b169a0f8abbc9`, inspected 2026-10-22.
+**Baseline snapshot:** `main` at `0862b5f243ca0e39f8bb82131c31fef28fbbab98` after PR #55 merged on 2026-10-22; application code matches its parent `ffbabc6072d46bcd12af1358d17b169a0f8abbc9`.
 **Scope of this record:** Product direction, UX/UI decisions, verified baseline, implementation sequence, acceptance criteria, and release safeguards.
-**Application implementation status:** No application code changes are authorized by this document.
+**Application implementation status:** The owner authorized redesign implementation on 2026-10-22. Each slice remains independently scoped, tested, reviewed, and tracked; the roadmap alone does not authorize merges or deployments.
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
@@ -119,7 +119,7 @@ Retain and improve these foundations where they are fit for purpose. Do not intr
 | Equation rendering | Verified: shared KaTeX renderer, lazy wrapper, inline/plain-text math detection, limited Markdown parser, representative tests, and horizontal overflow CSS exist. | `src/components/LatexMath.tsx`; `LazyLatexMath.tsx`; `InlineMathText.tsx`; `MarkdownContent.tsx`; `src/test/latex-rendering.test.tsx`; `src/styles/global.css`. | No fresh local run was possible. Keyboard access to overflowed display equations, accessible fallback announcements, and dark-theme equation coverage are not proven by the inspected test names. |
 | PR #44 integration points | Verified: branch adds ThemeProvider, AuthProvider, Google-only auth context, local theme persistence, profile/history/streak/menu/community routes, and browser tests. | PR #44 current source and PR description. Current-head CI and secret scan passed. | PR remains draft. A direct visual preview inspection was blocked. Rebase/synchronize and review code, tests, OAuth gates and theme coverage before merge. |
 | Responsive navigation | Verified: main uses a desktop header, a More menu, a four-item mobile quick-navigation bar, and CSS breakpoints around 850px, 680px, and 560px. | `src/components/Layout.tsx`, `src/styles/global.css`, `scripts/live-smoke.cjs`. | Main live smoke tests layout overflow at 320px and 1440px only. 390px, 768px, 1024px, full keyboard flow, and redesigned menu behavior remain to be checked. |
-| Main CI / live smoke | Pass on inspected main SHA. | [CI](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495387), [secret scan](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495402), [live smoke](https://github.com/justryan-n2d/CEStudy/actions/runs/39758768389). | These checks do not constitute a WCAG certification or all-target-width redesign test. |
+| Main CI / live smoke | Pass on inspected post-PR #55 main SHA. | [CI](https://github.com/justryan-n2d/CEStudy/actions/runs/39768669548), [secret scan](https://github.com/justryan-n2d/CEStudy/actions/runs/39768669550), [live smoke](https://github.com/justryan-n2d/CEStudy/actions/runs/39768932356). | These checks do not constitute a WCAG certification or all-target-width redesign test. |
 
 ### 4.2 Theme baseline: main and PR #44
 
