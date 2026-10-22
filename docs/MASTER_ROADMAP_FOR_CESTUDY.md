@@ -117,7 +117,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 |---|---|---|
 | Phase 0: Canonical plan and baseline | **incomplete** | Main/PR metadata, source paths, and existing GitHub CI evidence are recorded. Direct visual preview capture and a fresh local test run remain blocked and must be resolved or explicitly accepted before declaring the baseline fully complete. |
 | Phase 1: Shared foundation and theme tokens | **complete** | Implemented on `feat/blueprint-academy-theme-foundation`; light-default and explicit Light/Dark controls, semantic token roles, current-surface dark styling, and automated tests. CI run `39772810292` passed, including 850/850 browser assertions over 10 routes, both themes, and five viewports; secret scan `39772810372` passed. PR #56 remains open for owner review and is not merged. |
-| Phase 2: Navigation and route focus | **not started** | Implement the approved hybrid header, nested year navigation, resource mega-menu, focus handoff, and responsive behavior. |
+| Phase 2: Navigation and route focus | **current** | In progress on `feat/blueprint-academy-hybrid-navigation`. Test-first slice covers catalog-driven Year Levels navigation, Review Materials mega-menu, direct Mock Exam and Community destinations, mobile More-menu discoverability, and Escape/focus behavior. Destination pages must remain honest placeholders where functionality/data is not implemented. |
 | Phase 3: Catalog, subject and lesson consistency | **not started** | Unify browse/read experiences and verify shared math rendering in both themes. |
 | Phase 4: Practice workspace | **not started** | Implement and verify the responsive question/tools workspace while preserving current question/answer behavior. |
 | Phase 5: Progress and account integration | **not started** | Reconcile PR #44 only after review; preserve device-local disclosures, OAuth safeguards and data boundaries. |
@@ -127,7 +127,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 9: Gamification | **not started** | Blocked until the affected reward, eligibility, privacy, retry and anti-abuse rules are approved. |
 | Phase 10: Offline access and native app | **not started** | Separate future architecture and design work; excluded from the current website theme foundation. |
 
-**Active implementation branch:** `feat/blueprint-academy-theme-foundation`.
+**Active implementation branch:** `feat/blueprint-academy-hybrid-navigation` (Phase 2); Phase 1 remains in `feat/blueprint-academy-theme-foundation` and is awaiting owner review/merge.
 **Verified main at implementation start:** `0862b5f243ca0e39f8bb82131c31fef28fbbab98`.
 **Current implementation authorization:** The owner explicitly authorized application code changes in the conversation dated 2026-10-22. This authorizes work within the master roadmap, but does not authorize automatic merge, deployment, production data/configuration changes, or bypassing existing safeguards.
 
@@ -502,7 +502,7 @@ Dependencies and blockers:
 - Inspect full dark token coverage and verify theme initialization before React paints.
 - Do not integrate draft authentication simply to obtain ThemeProvider; isolate or deliberately port theme work only after branch integration review.
 
-### Phase 2: Navigation and route focus
+### Phase 2: Navigation and route focus (current)
 
 **Relative effort:** Large. **Risk:** High because this touches the global shell and every route.
 
@@ -678,7 +678,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
-| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner authorized roadmap-bounded application changes. Phase 0 remains incomplete because direct preview capture and fresh local execution are blocked. Phase 1 was implemented on PR #56 and passed CI, RLS tests, secret scan, and 850/850 browser assertions; PR #56 remains open and unmerged. |
+| 2026-10-22 | Created and merged the master roadmap through PR #55; recorded the owner-approved Blueprint Academy direction; consolidated PR #51 decisions and the theme/equation/PR #44/navigation baseline. Owner authorized roadmap-bounded application changes. Phase 0 remains incomplete because direct preview capture and fresh local execution are blocked. Phase 1 was implemented on PR #56 and passed CI, RLS tests, secret scan, and 850/850 browser assertions; PR #56 remains open and unmerged. Phase 2 started separately on `feat/blueprint-academy-hybrid-navigation` with navigation behavior tests written before its implementation. |
 
 ---
 
