@@ -85,9 +85,9 @@ describe("Blueprint Academy hybrid navigation", () => {
     const panel = await screen.findByRole("region", { name: "Year-level navigation" });
     expect(within(panel).getByRole("link", { name: "Browse all year levels" })).toHaveAttribute("href", "/years");
 
-    await user.click(within(panel).getByText("First year", { selector: "summary" }));
-    expect(within(panel).getByText("First semester", { selector: "summary" })).toBeInTheDocument();
-    expect(within(panel).getByText("Second semester", { selector: "summary" })).toBeInTheDocument();
+    await user.click(within(panel).getByText("First year", { selector: ".year-level-menu-year-title" }));
+    expect(within(panel).getByText("First semester", { selector: ".year-level-menu-semester > summary" })).toBeInTheDocument();
+    expect(within(panel).getByText("Second semester", { selector: ".year-level-menu-semester > summary" })).toBeInTheDocument();
 
     await user.click(within(panel).getByText("First semester", { selector: "summary" }));
     expect(within(panel).getByRole("link", { name: "Calculus 1" })).toHaveAttribute("href", "/subjects/calculus-1");
