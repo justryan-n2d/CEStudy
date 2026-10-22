@@ -75,7 +75,7 @@ export function YearLevelDropdown({
       })
       .finally(() => {
         window.clearTimeout(timeoutId);
-        if (active && !settled) setLoading(false);
+        if (active) setLoading(false);
       });
 
     return () => {
