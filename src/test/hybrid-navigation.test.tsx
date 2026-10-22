@@ -98,6 +98,23 @@ describe("Blueprint Academy hybrid navigation", () => {
     expect(fetchCatalogSubjectsMock).toHaveBeenCalledTimes(1);
   });
 
+  it("reuses successfully loaded catalog data when the Year Levels menu is reopened", async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const trigger = screen.getByRole("button", { name: "Year Levels" });
+    await user.click(trigger);
+    await screen.findByRole("region", { name: "Year-level navigation" });
+    await waitFor(() => expect(fetchCatalogSubjectsMock).toHaveBeenCalledTimes(1));
+
+    await user.click(trigger);
+    await waitFor(() => expect(screen.queryByRole("region", { name: "Year-level navigation" })).not.toBeInTheDocument());
+    await user.click(trigger);
+    await screen.findByRole("region", { name: "Year-level navigation" });
+
+    expect(fetchCatalogSubjectsMock).toHaveBeenCalledTimes(1);
+  });
+
   it("shows a useful recovery path if catalog data fails to load in the Year Levels menu", async () => {
     const user = userEvent.setup();
     fetchCatalogSubjectsMock.mockRejectedValueOnce(new Error("Catalog unavailable"));
