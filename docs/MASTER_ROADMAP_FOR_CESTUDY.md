@@ -116,8 +116,8 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Slice | Status | Scope / exit condition |
 |---|---|---|
 | Phase 0: Canonical plan and baseline | **incomplete** | Main/PR metadata, source paths, and existing GitHub CI evidence are recorded. Direct visual preview capture and a fresh local test run remain blocked and must be resolved or explicitly accepted before declaring the baseline fully complete. |
-| Phase 1: Shared foundation and theme tokens | **current** | Implementation is ready for independent review on PR #56. Device-local persistence uses `cestudy:theme:v1`; `public/theme-init.js` restores the saved choice before React starts and synchronizes browser theme color. Latest code head `e0fb7e068e1bdf5fcd39a346fb2b20c7f5b79031` passed [CI run 39800431377](https://github.com/justryan-n2d/CEStudy/actions/runs/39800431377): 24 test files / 134 unit tests, production build, Pages/security-header packaging, backup checks, Supabase migration/RLS tests, and **853/853 Chromium assertions** across 10 routes and 320/390/768/1024/1440px. Chromium confirmed both Dark and Light persist through a real browser refresh. [Secret scan 39800431864](https://github.com/justryan-n2d/CEStudy/actions/runs/39800431864) passed. PR #56 is open and unmerged; no independent review is recorded, so the overall phase remains **current**, not complete. |
-| Phase 2: Navigation and route focus | **current** | Public hybrid navigation remains on draft PR #57. Latest code/test commit `61b81a911d2eb9dc52bfe25b940008ffeb267dc6` passed ESLint, dependency audit, **148 unit tests**, production build, Pages/security-header packaging, backup checks, and **1,682/1,682 Chromium assertions** across 13 routes, both themes, and all five required widths. Its Supabase migration/RLS job also passed. The aggregate CI run `39798399747` still reports `in_progress` despite both jobs being successful. Independent review is pending, and the signed-in Dashboard/account sub-slice remains **paused** pending the reviewed auth/session contract from PR #44. |
+| Phase 1: Shared foundation and theme tokens | **current** | Implementation is ready for independent review on PR #56. Device-local persistence uses `cestudy:theme:v1`; `public/theme-init.js` restores the saved choice before React starts and synchronizes browser theme color. Code head `e0fb7e068e1bdf5fcd39a346fb2b20c7f5b79031` passed [CI run 39800431377](https://github.com/justryan-n2d/CEStudy/actions/runs/39800431377): 24 test files / 134 unit tests, production build, Pages/security-header packaging, backup checks, Supabase migration/RLS tests, and **853/853 Chromium assertions** across 10 routes and 320/390/768/1024/1440px. Chromium confirmed both Dark and Light persist through a real browser refresh. [Secret scan 39800431864](https://github.com/justryan-n2d/CEStudy/actions/runs/39800431864) passed. PR #56 remains open and unmerged; no independent review is recorded, so the overall phase remains **current**, not complete. |
+| Phase 2: Navigation and route focus | **current** | The latest synchronized Phase 2 head `ad1d5e8fd0ca8c11ce1ef5fc3dd5c6fd1c135c11` passed [CI run 39800575615](https://github.com/justryan-n2d/CEStudy/actions/runs/39800575615): ESLint, dependency audit, 26 test files / 148 unit tests, production build, Pages/security-header packaging, backup checks, Supabase migration/RLS tests, and **1,682/1,682 Chromium assertions** across 13 routes, both themes, and all five required widths. The public navigation scope remains open for independent review; PR #57 remains draft. Signed-in Dashboard/account control remains **paused** pending the separately reviewed auth/session contract from PR #44. |
 | Phase 3: Catalog, subject and lesson consistency | **not started** | Unify browse/read experiences and verify shared math rendering in both themes. |
 | Phase 4: Practice workspace | **not started** | Implement and verify the responsive question/tools workspace while preserving current question/answer behavior. |
 | Phase 5: Progress and account integration | **not started** | Reconcile PR #44 only after review; preserve device-local disclosures, OAuth safeguards and data boundaries. |
@@ -127,7 +127,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 9: Gamification | **not started** | Blocked until the affected reward, eligibility, privacy, retry and anti-abuse rules are approved. |
 | Phase 10: Offline access and native app | **not started** | Separate future architecture and design work; excluded from the current website theme foundation. |
 
-**Active implementation branch:** `feat/blueprint-academy-theme-foundation`.
+**Active implementation branch:** `feat/blueprint-academy-hybrid-navigation` (Phase 2); Phase 1 is maintained separately on PR #56.
 **Verified main at implementation start:** `0862b5f243ca0e39f8bb82131c31fef28fbbab98`.
 **Current implementation authorization:** The owner explicitly authorized application code changes in the conversation dated 2026-10-22. This authorizes work within the master roadmap, but does not authorize automatic merge, deployment, production data/configuration changes, or bypassing existing safeguards.
 
@@ -480,7 +480,7 @@ Exit criteria:
 
 ### Phase 1: Shared foundation and theme tokens
 
-**Status: current on branch, pending independent review.** The refresh defect was reproduced by a regression test and is fixed by reading/writing `cestudy:theme:v1`, using a Light fallback for invalid or inaccessible storage, synchronizing `color-scheme` and browser theme color, and loading `public/theme-init.js` before the app module to prevent a Light flash. Latest code-head CI run [39800431377](https://github.com/justryan-n2d/CEStudy/actions/runs/39800431377) passed 134 unit tests, lint, dependency audit, production build, Pages/security-header packaging, backup checks, Supabase migration/RLS tests, and **853/853 Chromium assertions** including real Dark and Light refresh restoration. [Secret scan 39800431864](https://github.com/justryan-n2d/CEStudy/actions/runs/39800431864) passed. Direct local checkout and manual live-preview inspection remain unavailable. PR #56 remains open and unmerged pending independent review.
+**Status: current on branch, pending independent review.** The refresh defect was reproduced by regression tests and fixed by reading/writing `cestudy:theme:v1`, using Light as the safe fallback, synchronizing `color-scheme` and browser theme color, and loading `public/theme-init.js` before the app module. [CI run 39800431377](https://github.com/justryan-n2d/CEStudy/actions/runs/39800431377) passed 24 test files / 134 unit tests, lint, dependency audit, production build, Pages/security-header packaging, backup checks, Supabase migration/RLS tests, and 853/853 Chromium assertions with actual Dark/Light refresh restoration. [Secret scan 39800431864](https://github.com/justryan-n2d/CEStudy/actions/runs/39800431864) passed. Manual visual preview review remains unavailable; PR #56 is open and unmerged.
 
 **Priority:** first implementation candidate. **Relative effort:** Medium. **Risk:** Medium due theme-wide regression potential.
 
@@ -498,15 +498,20 @@ Acceptance criteria:
 - Test at 320px, 390px, 768px, 1024px and 1440px.
 
 Dependencies and blockers:
-- Agree whether PR #44's existing localStorage approach is accepted for the first release.
+- Device-local theme preference is approved under `cestudy:theme:v1`; do not integrate account synchronization or cross-device preference sync.
 - Inspect full dark token coverage and verify theme initialization before React paints.
 - Do not integrate draft authentication simply to obtain ThemeProvider; isolate or deliberately port theme work only after branch integration review.
 
-### Phase 2: Navigation and route focus
+### Phase 2: Navigation and route focus (current)
 
 **Relative effort:** Large. **Risk:** High because this touches the global shell and every route.
 
 Primary paths: `src/components/Layout.tsx`, `src/App.tsx`, `src/styles/global.css`, navigation tests, and PR #54 candidate changes.
+
+| Sub-slice | Status | Evidence / blocker |
+|---|---|---|
+| Public hybrid navigation, honest destination placeholders, route focus and responsive behavior | **current** | The current synchronized Phase 2 head `ad1d5e8fd0ca8c11ce1ef5fc3dd5c6fd1c135c11` passed [CI run 39800575615](https://github.com/justryan-n2d/CEStudy/actions/runs/39800575615): 26 test files / 148 unit tests and **1,682/1,682 Chromium assertions** across 13 routes, both themes, and 320/390/768/1024/1440px. Lint, dependency audit, build, Pages/security-header packaging, backup checks, and Supabase migration/RLS tests passed. Independent review remains pending; PR #57 remains draft. |
+| Signed-in Student Dashboard/account control | **paused** | Main and the Phase 1 base do not provide an approved authenticated-user contract; those routes/context are draft-only in PR #44. Resume only after that auth slice is separately reviewed and integrated. Do not infer login state or show a fake signed-in destination. |
 
 Acceptance criteria:
 - Hybrid public header contains the approved destinations with clear active states.
@@ -678,7 +683,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
-| 2026-10-22 | PR #55 merged the canonical roadmap. Owner authorized roadmap-bounded implementation. Phase 0 remains incomplete because local clone/manual live-preview inspection are unavailable. Phase 1 device-local theme persistence is implemented and verified at code head `e0fb7e068e1bdf5fcd39a346fb2b20c7f5b79031`: 24 test files / 134 unit tests, 853/853 Chromium assertions including actual Dark/Light refresh restoration, database and backup checks passed, and secret scan passed. Phase 1 remains current pending independent review. Phase 2 public navigation passed 148 unit tests and 1,682/1,682 Chromium assertions at code/test commit `61b81a911d2eb9dc52bfe25b940008ffeb267dc6`; job results are green but aggregate run status needs a fresh final run for the latest synced head. Phase 2 remains current pending review; signed-in Dashboard/account remains paused pending PR #44's reviewed auth/session contract. No merge or deployment was performed. |
+| 2026-10-22 | PR #55 merged the canonical roadmap. Owner authorized roadmap-bounded implementation. Phase 0 remains incomplete because local checkout and manual live-preview inspection are unavailable. Phase 1 device-local Light/Dark persistence is implemented and verified at code head `e0fb7e068e1bdf5fcd39a346fb2b20c7f5b79031`: 24 test files / 134 unit tests, 853/853 Chromium assertions including actual Dark/Light refresh restoration, database and backup checks passed, and secret scan passed. Phase 1 remains current pending independent review. Phase 2 public navigation is implemented and verified at synchronized head `ad1d5e8fd0ca8c11ce1ef5fc3dd5c6fd1c135c11`: 148 unit tests and 1,682/1,682 Chromium assertions passed with database and backup checks. Phase 2 remains current pending independent review; signed-in Dashboard/account remains paused pending PR #44's auth contract. No merge or deployment was performed. |
 
 ---
 
