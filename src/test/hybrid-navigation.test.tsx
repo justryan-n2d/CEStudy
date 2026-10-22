@@ -101,13 +101,13 @@ describe("Blueprint Academy hybrid navigation", () => {
 
   it("shows an accessible recovery path when the catalog request stalls", async () => {
     vi.useFakeTimers();
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     fetchCatalogSubjectsMock.mockReturnValueOnce(new Promise<CatalogSubject[]>(() => {}));
     renderLayout();
 
-    await user.click(screen.getByRole("button", { name: "Year Levels" }));
+    fireEvent.click(screen.getByRole("button", { name: "Year Levels" }));
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(5000);
+      vi.advanceTimersByTime(5000);
+      await Promise.resolve();
     });
 
     expect(screen.getByRole("alert")).toHaveTextContent(/catalog request timed out/i);
