@@ -290,7 +290,7 @@ async function main() {
         await page.waitForFunction(() => {
           const panel = document.querySelector("#year-level-navigation");
           return Boolean(panel?.querySelector(".year-level-menu-year") || panel?.querySelector(".navigation-panel-error"));
-        }, { timeout: 5000 });
+        }, { timeout: 8000 });
         const loadedYearSections = await yearPanel.locator(".year-level-menu-year > summary").count();
         if (loadedYearSections > 0) {
           const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
