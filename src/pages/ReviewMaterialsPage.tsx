@@ -36,7 +36,7 @@ export function ReviewMaterialsPage() {
             </div>
             <h2 id={`${section.id}-title`}>{section.title}</h2>
             <p>{section.description}</p>
-            <p className="review-materials-availability">Resources in this category are not available yet. No download is offered from this placeholder.</p>
+            <p className="review-materials-availability">Items appear here only after review and publication. This page does not offer downloads.</p>
           </article>
         ))}
       </section>
