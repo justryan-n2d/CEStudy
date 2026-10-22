@@ -23,8 +23,8 @@ describe("semantic theme token foundation", () => {
       "--ui-error-bg",
       "--ui-disabled-bg",
     ]) {
-      expect(lightTokenBlock, \`missing light token \${token}\`).toContain(token);
-      expect(darkTokenBlock, \`missing dark token \${token}\`).toContain(token);
+      expect(lightTokenBlock, "missing light token " + token).toContain(token);
+      expect(darkTokenBlock, "missing dark token " + token).toContain(token);
     }
   });
 
