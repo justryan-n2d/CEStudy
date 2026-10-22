@@ -166,5 +166,6 @@ describe("Blueprint Academy hybrid navigation", () => {
 
     await user.click(screen.getByRole("link", { name: "Subject Catalog" }));
     await waitFor(() => expect(screen.queryByRole("region", { name: "Review Materials Hub navigation" })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
   });
 });
