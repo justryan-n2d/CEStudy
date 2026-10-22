@@ -109,7 +109,8 @@ async function main() {
               ".subject-card", ".year-card", ".filters-panel", ".detail-hero",
               ".detail-panel", ".study-lesson", ".review-gate", ".state-panel",
               ".privacy-content > section", ".surface-form", ".answer-option",
-              ".answer-feedback",
+              ".answer-feedback", ".year-level-menu-year", ".review-materials-menu-card",
+              ".review-materials-page-card",
             ];
             return selectors.flatMap((selector) =>
               [...document.querySelectorAll(selector)].slice(0, 3).map((node) => ({
