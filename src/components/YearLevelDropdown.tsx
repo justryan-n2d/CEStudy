@@ -45,10 +45,18 @@ export function YearLevelDropdown({
     if (!isOpen || hasLoaded) return;
 
     let active = true;
+    let timeoutId: number | undefined;
     setLoading(true);
     setError(null);
 
-    fetchCatalogSubjects()
+    const catalogRequest = fetchCatalogSubjects();
+    const timeoutRequest = new Promise<CatalogSubject[]>((_resolve, reject) => {
+      timeoutId = window.setTimeout(() => {
+        reject(new Error("The catalog request timed out. Please open Subject Catalog and try again."));
+      }, 5000);
+    });
+
+    Promise.race([catalogRequest, timeoutRequest])
       .then((items) => {
         if (!active) return;
         setSubjects(items
@@ -65,10 +73,14 @@ export function YearLevelDropdown({
         }
       })
       .finally(() => {
+        if (timeoutId !== undefined) window.clearTimeout(timeoutId);
         if (active) setLoading(false);
       });
 
-    return () => { active = false; };
+    return () => {
+      active = false;
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
   }, [isOpen, hasLoaded]);
 
   return (
