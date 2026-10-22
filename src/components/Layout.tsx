@@ -52,7 +52,8 @@ export function Layout({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    closeNavigation();
+    setDesktopPanel(null);
+    setMobileMenuOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
