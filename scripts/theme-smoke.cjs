@@ -201,6 +201,111 @@ async function main() {
       }
     }
 
+    for (const width of viewports) {
+      activeRoute = "hybrid navigation at " + width + "px";
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
+
+      const themeTargets = await page.locator(".theme-toggle-option").evaluateAll((nodes) =>
+        nodes.map((node) => Math.round(node.getBoundingClientRect().height)),
+      );
+      check("Theme controls have 44px targets: " + activeRoute,
+        themeTargets.length === 2 && themeTargets.every((height) => height >= 44),
+        JSON.stringify(themeTargets));
+
+      if (width > 680) {
+        const mainNav = page.getByRole("navigation", { name: "Main navigation" });
+        const navTargets = await mainNav.locator("a.nav-link, button.nav-dropdown-trigger").evaluateAll((nodes) =>
+          nodes.filter((node) => node.getClientRects().length > 0)
+            .map((node) => ({ label: node.textContent.trim(), height: Math.round(node.getBoundingClientRect().height) })),
+        );
+        check("Desktop/tablet navigation controls have 44px targets: " + activeRoute,
+          navTargets.length >= 5 && navTargets.every((target) => target.height >= 44),
+          JSON.stringify(navTargets));
+
+        const yearTrigger = mainNav.getByRole("button", { name: "Year Levels" });
+        await yearTrigger.click();
+        const yearPanel = page.getByRole("region", { name: "Year-level navigation" });
+        await yearPanel.waitFor({ state: "visible", timeout: 5000 });
+        check("Year Levels menu exposes overview destination: " + activeRoute,
+          await yearPanel.getByRole("link", { name: "Browse all year levels" }).isVisible().catch(() => false));
+        const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
+          nodes.filter((node) => node.getClientRects().length > 0)
+            .map((node) => ({ label: node.textContent.trim().replace(/\\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+        );
+        check("Visible Year Levels menu targets are at least 44px: " + activeRoute,
+          yearTargets.every((target) => target.height >= 44),
+          JSON.stringify(yearTargets));
+        const yearOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
+        check("Year Levels menu does not cause horizontal overflow: " + activeRoute, yearOverflow);
+        await page.keyboard.press("Escape");
+        check("Escape closes Year Levels and restores focus: " + activeRoute,
+          await yearTrigger.getAttribute("aria-expanded") === "false" &&
+            await yearTrigger.evaluate((node) => node === document.activeElement));
+
+        const materialsTrigger = mainNav.getByRole("button", { name: "Review Materials Hub" });
+        await materialsTrigger.click();
+        const materialsPanel = page.getByRole("region", { name: "Review Materials Hub navigation" });
+        await materialsPanel.waitFor({ state: "visible", timeout: 5000 });
+        const requiredGroups = ["Formula Sheets", "Problem Sets with Solutions", "Video Tutorials"];
+        const visibleGroups = await Promise.all(requiredGroups.map((name) =>
+          materialsPanel.getByRole("heading", { name }).isVisible().catch(() => false),
+        ));
+        check("Review Materials menu exposes the three approved categories: " + activeRoute,
+          visibleGroups.every(Boolean), JSON.stringify({ requiredGroups, visibleGroups }));
+        const materialsTargets = await materialsPanel.locator("a").evaluateAll((nodes) =>
+          nodes.filter((node) => node.getClientRects().length > 0)
+            .map((node) => ({ label: node.textContent.trim().replace(/\\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+        );
+        check("Visible Review Materials links have 44px targets: " + activeRoute,
+          materialsTargets.length >= 4 && materialsTargets.every((target) => target.height >= 44),
+          JSON.stringify(materialsTargets));
+        const materialsOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
+        check("Review Materials menu does not cause horizontal overflow: " + activeRoute, materialsOverflow);
+        await page.keyboard.press("Escape");
+        check("Escape closes Review Materials and restores focus: " + activeRoute,
+          await materialsTrigger.getAttribute("aria-expanded") === "false" &&
+            await materialsTrigger.evaluate((node) => node === document.activeElement));
+
+        await mainNav.getByRole("link", { name: "Subject Catalog" }).click();
+        await page.waitForFunction(() => window.location.pathname === "/catalog" && document.activeElement?.id === "main-content");
+        check("Route change hands focus to main content: " + activeRoute,
+          await page.locator("#main-content").evaluate((node) => node === document.activeElement));
+      } else {
+        const moreToggle = page.getByRole("button", { name: /Open more pages menu/ });
+        const toggleHeight = await moreToggle.evaluate((node) => Math.round(node.getBoundingClientRect().height));
+        check("Mobile More control has a 44px target: " + activeRoute, toggleHeight >= 44, String(toggleHeight));
+        await moreToggle.click();
+        const moreMenu = page.getByRole("navigation", { name: "More CEStudy pages" });
+        await moreMenu.waitFor({ state: "visible", timeout: 5000 });
+        const requiredLinks = ["Review Materials Hub", "Mock Exam Portal", "Community Forum"];
+        const visibleLinks = await Promise.all(requiredLinks.map((name) =>
+          moreMenu.getByRole("link", { name }).isVisible().catch(() => false),
+        ));
+        check("Mobile More menu exposes all approved destinations: " + activeRoute,
+          visibleLinks.every(Boolean), JSON.stringify({ requiredLinks, visibleLinks }));
+        const moreTargets = await moreMenu.locator("a").evaluateAll((nodes) =>
+          nodes.filter((node) => node.getClientRects().length > 0)
+            .map((node) => ({ label: node.textContent.trim().replace(/\\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+        );
+        check("Mobile More links have 44px targets: " + activeRoute,
+          moreTargets.length >= 10 && moreTargets.every((target) => target.height >= 44),
+          JSON.stringify(moreTargets));
+        check("Mobile More menu does not cause horizontal overflow: " + activeRoute,
+          await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
+        await page.keyboard.press("Escape");
+        check("Escape closes More and restores focus: " + activeRoute,
+          await moreToggle.getAttribute("aria-expanded") === "false" &&
+            await moreToggle.evaluate((node) => node === document.activeElement));
+        await moreToggle.click();
+        await moreMenu.getByRole("link", { name: "Review Materials Hub" }).click();
+        await page.waitForFunction(() => window.location.pathname === "/review-materials" && document.activeElement?.id === "main-content");
+        check("Mobile destination navigation hands focus to main content: " + activeRoute,
+          await page.locator("#main-content").evaluate((node) => node === document.activeElement));
+      }
+    }
+
     const summary = {
       baseUrl,
       viewports,
