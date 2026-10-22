@@ -17,15 +17,21 @@ import { FeedbacksPage } from "./pages/FeedbacksPage";
 import { StudyPage } from "./pages/StudyPage";
 import { ProgressPage } from "./pages/ProgressPage";
 import { ContentReviewPage } from "./pages/ContentReviewPage";
+import { ReviewMaterialsPage } from "./pages/ReviewMaterialsPage";
+import { MockExamPortalPage } from "./pages/MockExamPortalPage";
+import { CommunityPage } from "./pages/CommunityPage";
 
 export default function App() {
   return (
     <BrowserRouter>
-        <Layout>
-          <Routes>
+      <Layout>
+        <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/review-materials" element={<ReviewMaterialsPage />} />
+            <Route path="/mock-exam-portal" element={<MockExamPortalPage />} />
+            <Route path="/community" element={<CommunityPage />} />
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/years" element={<YearLevelsPage />} />
             <Route path="/year/:year" element={<YearLevelPage />} />
@@ -42,8 +48,8 @@ export default function App() {
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/feedbacks" element={<FeedbacksPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Layout>
+        </Routes>
+      </Layout>
     </BrowserRouter>
   );
 }
