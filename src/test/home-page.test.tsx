@@ -74,7 +74,7 @@ describe("homepage and year-level navigation", () => {
   it("defines 44px touch targets and 8px spacing for tablet top navigation", () => {
     expect(stylesheet).toContain("@media (min-width:681px) and (max-width:850px)");
     expect(stylesheet).toContain(".main-nav .nav-link");
-    expect(stylesheet).toContain("min-height:44px");
+    expect(stylesheet).toMatch(/min-height:\\s*44px/);
     expect(stylesheet).toMatch(/\\.main-nav\\s*\\{\\s*gap:\\s*\\.5rem;/);
   });
 
