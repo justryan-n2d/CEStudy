@@ -141,6 +141,13 @@ describe("Blueprint Academy hybrid navigation", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("keeps Subject Catalog active while reading or practicing a subject", () => {
+    renderLayout("/study/basic-algebra");
+
+    const mainNavigation = within(screen.getByRole("navigation", { name: "Main navigation" }));
+    expect(mainNavigation.getByRole("link", { name: "Subject Catalog" })).toHaveClass("active");
+  });
+
   it("opens a Review Materials mega-menu with all three approved resource categories", async () => {
     const user = userEvent.setup();
     renderLayout();
