@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { Link } from "react-router-dom";
 import { fetchCatalogSubjects } from "../data/catalog-api";
@@ -38,11 +38,11 @@ export function YearLevelDropdown({
 }: YearLevelDropdownProps) {
   const [subjects, setSubjects] = useState<CatalogSubject[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const hasLoadedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isOpen || hasLoaded) return;
+    if (!isOpen || hasLoadedRef.current) return;
 
     let active = true;
     let settled = false;
@@ -64,7 +64,7 @@ export function YearLevelDropdown({
           .filter((item) => item.category === "year-level" && item.yearLevel !== null)
           .slice()
           .sort((left, right) => left.displayOrder - right.displayOrder));
-        setHasLoaded(true);
+        hasLoadedRef.current = true;
       })
       .catch((reason: unknown) => {
         if (!active || settled) return;
@@ -82,7 +82,7 @@ export function YearLevelDropdown({
       active = false;
       window.clearTimeout(timeoutId);
     };
-  }, [isOpen, hasLoaded]);
+  }, [isOpen]);
 
   return (
     <div className="nav-dropdown year-level-nav">
