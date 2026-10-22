@@ -223,6 +223,11 @@ async function main() {
         check("Desktop/tablet navigation controls have 44px targets: " + activeRoute,
           navTargets.length >= 5 && navTargets.every((target) => target.height >= 44),
           JSON.stringify(navTargets));
+        if (width > 1100) {
+          check("Wide-desktop navigation labels stay on one line: " + activeRoute,
+            navTargets.every((target) => target.height <= 48),
+            JSON.stringify(navTargets));
+        }
 
         const yearTrigger = mainNav.getByRole("button", { name: "Year Levels" });
         await yearTrigger.click();
@@ -230,6 +235,7 @@ async function main() {
         await yearPanel.waitFor({ state: "visible", timeout: 5000 });
         check("Year Levels menu exposes overview destination: " + activeRoute,
           await yearPanel.getByRole("link", { name: "Browse all year levels" }).isVisible().catch(() => false));
+        await yearPanel.locator(".year-level-menu-year > summary").first().waitFor({ state: "visible", timeout: 5000 });
         const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
           nodes.filter((node) => node.getClientRects().length > 0)
             .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
