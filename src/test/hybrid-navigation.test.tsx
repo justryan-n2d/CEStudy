@@ -174,6 +174,25 @@ describe("Blueprint Academy hybrid navigation", () => {
     expect(screen.queryByRole("button", { name: /start mock exam/i })).not.toBeInTheDocument();
   });
 
+  it("closes desktop and mobile navigation panels on outside pointer interaction", async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const materialsTrigger = screen.getByRole("button", { name: "Review Materials Hub" });
+    await user.click(materialsTrigger);
+    expect(await screen.findByRole("region", { name: "Review Materials Hub navigation" })).toBeVisible();
+    fireEvent.pointerDown(document.body);
+    await waitFor(() => expect(screen.queryByRole("region", { name: "Review Materials Hub navigation" })).not.toBeInTheDocument());
+    expect(materialsTrigger).toHaveAttribute("aria-expanded", "false");
+
+    const mobileToggle = screen.getByRole("button", { name: "Open more pages menu" });
+    await user.click(mobileToggle);
+    expect(screen.getByRole("navigation", { name: "More CEStudy pages" })).toBeVisible();
+    fireEvent.pointerDown(document.body);
+    await waitFor(() => expect(screen.queryByRole("navigation", { name: "More CEStudy pages" })).not.toBeInTheDocument());
+    expect(mobileToggle).toHaveAttribute("aria-expanded", "false");
+  });
+
   it("closes an open global navigation panel when a route is changed", async () => {
     const user = userEvent.setup();
     renderLayout();
