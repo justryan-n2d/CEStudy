@@ -85,6 +85,7 @@ describe("Blueprint Academy hybrid navigation", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     const panel = await screen.findByRole("region", { name: "Year-level navigation" });
     expect(within(panel).getByRole("link", { name: "Browse all year levels" })).toHaveAttribute("href", "/years");
+    await within(panel).findByText("First year", { selector: ".year-level-menu-year-title" });
 
     await user.click(within(panel).getByText("First year", { selector: ".year-level-menu-year-title" }));
     const firstYearSection = within(panel).getByText("First year", { selector: ".year-level-menu-year-title" }).closest("details");
@@ -162,7 +163,7 @@ describe("Blueprint Academy hybrid navigation", () => {
 
     await user.click(screen.getByRole("button", { name: "Year Levels" }));
     const panel = await screen.findByRole("region", { name: "Year-level navigation" });
-    expect(within(panel).getByRole("alert")).toHaveTextContent(/could not load year-level subjects/i);
+    expect(await within(panel).findByRole("alert")).toHaveTextContent(/could not load year-level subjects/i);
     expect(within(panel).getByRole("link", { name: "Browse all year levels" })).toHaveAttribute("href", "/years");
   });
 
