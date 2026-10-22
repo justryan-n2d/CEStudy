@@ -96,6 +96,14 @@ async function main() {
               headingText: getComputedStyle(document.querySelector("h1")).color,
               bodyText: getComputedStyle(document.querySelector(".page-intro > p") || document.querySelector(".hero-copy > p") || document.querySelector("main p")).color,
               bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
+              navText: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu a") : document.querySelector(".main-nav .nav-link")).color,
+              navBackground: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu") : document.querySelector(".site-header")).backgroundColor,
+              yearMenuLinkText: getComputedStyle(document.querySelector("#year-level-navigation .navigation-panel-heading > a")).color,
+              yearMenuBackground: getComputedStyle(document.querySelector("#year-level-navigation")).backgroundColor,
+              reviewMenuLinkText: getComputedStyle(document.querySelector("#review-materials-navigation .navigation-panel-heading > a")).color,
+              reviewMenuBackground: getComputedStyle(document.querySelector("#review-materials-navigation")).backgroundColor,
+              reviewCardText: getComputedStyle(document.querySelector(".review-materials-menu-card p")).color,
+              reviewCardBackground: getComputedStyle(document.querySelector(".review-materials-menu-card")).backgroundColor,
             };
           });
 
@@ -139,6 +147,22 @@ async function main() {
             contrastRatio(dark.bodyText, dark.bodyBackgroundForText) >= 4.5,
             JSON.stringify({ foreground: dark.bodyText, background: dark.bodyBackgroundForText,
               ratio: contrastRatio(dark.bodyText, dark.bodyBackgroundForText) }));
+          check("Dark primary navigation text contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(dark.navText, dark.navBackground) >= 4.5,
+            JSON.stringify({ foreground: dark.navText, background: dark.navBackground,
+              ratio: contrastRatio(dark.navText, dark.navBackground) }));
+          check("Dark Year Levels menu link contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(dark.yearMenuLinkText, dark.yearMenuBackground) >= 4.5,
+            JSON.stringify({ foreground: dark.yearMenuLinkText, background: dark.yearMenuBackground,
+              ratio: contrastRatio(dark.yearMenuLinkText, dark.yearMenuBackground) }));
+          check("Dark Review Materials link contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(dark.reviewMenuLinkText, dark.reviewMenuBackground) >= 4.5,
+            JSON.stringify({ foreground: dark.reviewMenuLinkText, background: dark.reviewMenuBackground,
+              ratio: contrastRatio(dark.reviewMenuLinkText, dark.reviewMenuBackground) }));
+          check("Dark Review Materials card text contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(dark.reviewCardText, dark.reviewCardBackground) >= 4.5,
+            JSON.stringify({ foreground: dark.reviewCardText, background: dark.reviewCardBackground,
+              ratio: contrastRatio(dark.reviewCardText, dark.reviewCardBackground) }));
           check("No page-wide horizontal overflow in Dark: " + activeRoute,
             Math.max(dark.documentWidth, dark.bodyWidth) <= dark.viewportWidth + 1,
             "viewport=" + dark.viewportWidth + ", document=" + dark.documentWidth + ", body=" + dark.bodyWidth);
@@ -162,6 +186,14 @@ async function main() {
               headingText: getComputedStyle(document.querySelector("h1")).color,
               bodyText: getComputedStyle(document.querySelector(".page-intro > p") || document.querySelector(".hero-copy > p") || document.querySelector("main p")).color,
               bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
+              navText: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu a") : document.querySelector(".main-nav .nav-link")).color,
+              navBackground: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu") : document.querySelector(".site-header")).backgroundColor,
+              yearMenuLinkText: getComputedStyle(document.querySelector("#year-level-navigation .navigation-panel-heading > a")).color,
+              yearMenuBackground: getComputedStyle(document.querySelector("#year-level-navigation")).backgroundColor,
+              reviewMenuLinkText: getComputedStyle(document.querySelector("#review-materials-navigation .navigation-panel-heading > a")).color,
+              reviewMenuBackground: getComputedStyle(document.querySelector("#review-materials-navigation")).backgroundColor,
+              reviewCardText: getComputedStyle(document.querySelector(".review-materials-menu-card p")).color,
+              reviewCardBackground: getComputedStyle(document.querySelector(".review-materials-menu-card")).backgroundColor,
             };
           });
 
@@ -185,6 +217,22 @@ async function main() {
             contrastRatio(light.bodyText, light.bodyBackgroundForText) >= 4.5,
             JSON.stringify({ foreground: light.bodyText, background: light.bodyBackgroundForText,
               ratio: contrastRatio(light.bodyText, light.bodyBackgroundForText) }));
+          check("Light primary navigation text contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(light.navText, light.navBackground) >= 4.5,
+            JSON.stringify({ foreground: light.navText, background: light.navBackground,
+              ratio: contrastRatio(light.navText, light.navBackground) }));
+          check("Light Year Levels menu link contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(light.yearMenuLinkText, light.yearMenuBackground) >= 4.5,
+            JSON.stringify({ foreground: light.yearMenuLinkText, background: light.yearMenuBackground,
+              ratio: contrastRatio(light.yearMenuLinkText, light.yearMenuBackground) }));
+          check("Light Review Materials link contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(light.reviewMenuLinkText, light.reviewMenuBackground) >= 4.5,
+            JSON.stringify({ foreground: light.reviewMenuLinkText, background: light.reviewMenuBackground,
+              ratio: contrastRatio(light.reviewMenuLinkText, light.reviewMenuBackground) }));
+          check("Light Review Materials card text contrast meets WCAG AA: " + activeRoute,
+            contrastRatio(light.reviewCardText, light.reviewCardBackground) >= 4.5,
+            JSON.stringify({ foreground: light.reviewCardText, background: light.reviewCardBackground,
+              ratio: contrastRatio(light.reviewCardText, light.reviewCardBackground) }));
           check("No page-wide horizontal overflow in Light: " + activeRoute,
             Math.max(light.documentWidth, light.bodyWidth) <= light.viewportWidth + 1,
             "viewport=" + light.viewportWidth + ", document=" + light.documentWidth + ", body=" + light.bodyWidth);
