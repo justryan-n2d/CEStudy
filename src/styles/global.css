@@ -602,3 +602,16 @@ a.subject-card:focus-visible{outline:3px solid var(--brand-blue);outline-offset:
 .privacy-content .text-link{overflow-wrap:anywhere}
 .privacy-actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem}
 @media(max-width:560px){.privacy-content>section{padding:1rem}.privacy-actions{flex-direction:column}.privacy-actions .button{width:100%}}
+
+/* Tablet navigation: comfortable touch targets without changing the mobile quick navigation. */
+@media (min-width: 681px) and (max-width: 850px) {
+  .main-nav {
+    gap: .5rem;
+  }
+
+  .main-nav .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
