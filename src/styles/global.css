@@ -262,7 +262,7 @@
 
 
 /* Small, one-shot dropdown motion and a responsive hamburger-to-close transition */
-@keyframes ce-menu-drop-in{from{opacity:0;transform:translateY(-7px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes ce-menu-drop-in{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
 .mobile-menu-toggle .navigation-glyph{transition:transform 180ms cubic-bezier(.2,.7,.2,1)}
 .mobile-menu-toggle[aria-expanded="true"] .navigation-glyph{transform:rotate(90deg)}
 .payment-mark-gcash{overflow:hidden;padding:0;background:#fff;border:1px solid #e6edf4}
@@ -1604,4 +1604,11 @@ body {
   .mobile-menu-group a {
     min-height: 44px;
   }
+}
+
+/* Keep desktop navigation labels on one line without shrinking tap targets. */
+@media (min-width: 1101px) {
+  .header-inner { width: min(1320px, calc(100% - 40px)); }
+  .main-nav .nav-link,
+  .main-nav .nav-dropdown-trigger { white-space: nowrap; flex-shrink: 0; }
 }
