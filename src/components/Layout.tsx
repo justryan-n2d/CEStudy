@@ -33,6 +33,8 @@ type DesktopPanel = "years" | "materials" | null;
 export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const headerRef = useRef<HTMLElement>(null);
+  const mainContentRef = useRef<HTMLElement>(null);
+  const previousPathRef = useRef(location.pathname);
   const yearTriggerRef = useRef<HTMLButtonElement>(null);
   const materialsTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileToggleRef = useRef<HTMLButtonElement>(null);
@@ -54,6 +56,12 @@ export function Layout({ children }: { children: ReactNode }) {
   useEffect(() => {
     setDesktopPanel(null);
     setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (previousPathRef.current === location.pathname) return;
+    previousPathRef.current = location.pathname;
+    mainContentRef.current?.focus();
   }, [location.pathname]);
 
   useEffect(() => {
@@ -224,7 +232,7 @@ export function Layout({ children }: { children: ReactNode }) {
           </nav>
         </header>
 
-        <main id="main-content" className="main-content">{children}</main>
+        <main ref={mainContentRef} id="main-content" className="main-content" tabIndex={-1}>{children}</main>
 
         <footer className="site-footer">
           <div className="footer-inner">
