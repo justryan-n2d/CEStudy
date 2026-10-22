@@ -114,6 +114,30 @@ describe("Blueprint Academy hybrid navigation", () => {
     expect(screen.getByRole("link", { name: "Open Subject Catalog" })).toHaveAttribute("href", "/catalog");
   });
 
+  it("does not replace the timeout message with a late catalog response", async () => {
+    vi.useFakeTimers();
+    let resolveCatalog: (items: CatalogSubject[]) => void = () => {};
+    fetchCatalogSubjectsMock.mockReturnValueOnce(new Promise<CatalogSubject[]>((resolve) => {
+      resolveCatalog = resolve;
+    }));
+    renderLayout();
+
+    fireEvent.click(screen.getByRole("button", { name: "Year Levels" }));
+    await act(async () => {
+      vi.advanceTimersByTime(5000);
+      await Promise.resolve();
+    });
+    expect(screen.getByRole("alert")).toHaveTextContent(/catalog request timed out/i);
+
+    await act(async () => {
+      resolveCatalog(catalog);
+      await Promise.resolve();
+    });
+
+    expect(screen.getByRole("alert")).toHaveTextContent(/catalog request timed out/i);
+    expect(screen.queryByText("Calculus 1")).not.toBeInTheDocument();
+  });
+
   it("reuses successfully loaded catalog data when the Year Levels menu is reopened", async () => {
     const user = userEvent.setup();
     renderLayout();
