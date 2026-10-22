@@ -7,4 +7,5 @@ Start with the project scope, roadmap, security requirements, implementation pla
 - [Syllabus availability inventory](research/syllabus-availability-inventory.md): public syllabus-search results and evidence limits.
 - [Contact, support, bug reports, and private feedback](specs/CONTACT_SUPPORT_FEEDBACK_PAGES.md): page behavior, server-side recipient allowlist, required configuration, privacy rules, and deployment order.
 - [UX/UI design system](specs/UX_UI_DESIGN_SYSTEM.md): shared branding, components, responsiveness, motion, and performance rules.
+- [UI UX Pro Max integration plan](plans/2026-10-22-ui-ux-pro-max-integration-plan.md): free-first Android workflow, upstream reference, optional coding-agent setup, and safeguards.
 - [SVGL icon asset log](branding/svgl-icons.md): source history and rules for brand/service SVGs.
