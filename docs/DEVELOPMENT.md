@@ -23,6 +23,13 @@ When a dependency changes, update `package.json` and commit the corresponding `p
 
 CI must use `npm ci`, not `npm install`, for routine checks once the lockfile is committed. Do not hand-edit lockfile contents.
 
+For Supabase Edge Function changes, install Deno 2 and run the security test module as well:
+
+```bash
+deno check supabase/functions/security_test.ts
+deno test --allow-env=ALLOWED_ORIGINS,FEEDBACK_INBOX_ACCESS_KEY,SUPABASE_SERVICE_ROLE_KEY,SUPABASE_URL supabase/functions/security_test.ts
+```
+
 ## Local Supabase
 
 Install the Supabase CLI following its current official instructions. Start a local stack, apply the migration and seed, and run the row-level security tests:
@@ -46,4 +53,4 @@ The CI workflow already starts an isolated Supabase stack and runs `supabase tes
 
 ## CI entry point
 
-The GitHub Actions workflow `CEStudy CI` checks ESLint, frontend/data tests, the Vite production build, and Supabase migration/RLS tests. A passing local or CI build does not prove that a real Pages deployment or remote Supabase project's settings are correct; follow the deployment and release checklists separately.
+The GitHub Actions workflow `CEStudy CI` checks ESLint, frontend/data tests, the Vite production build, Supabase migration/RLS tests, and Deno Edge Function origin and owner-token security tests. A passing local or CI build does not prove that a real Pages deployment or remote Supabase project's settings are correct; follow the deployment and release checklists separately.

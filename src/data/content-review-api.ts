@@ -63,18 +63,29 @@ export function clearContentReviewSession(notify = true) {
 }
 
 async function readFunctionError(error: unknown): Promise<never> {
-  const context = error && typeof error === "object"
-    ? (error as { context?: Response }).context
+  const candidate = error && typeof error === "object"
+    ? (error as { context?: unknown }).context
     : undefined;
-  const body = context ? await context.clone().json().catch(() => null) as { message?: unknown } | null : null;
-  if (typeof body?.message === "string" && body.message.trim()) {
-    if (context?.status === 401) clearContentReviewSession();
-    throw new Error(body.message.trim());
+  const context = candidate && typeof candidate === "object" ? candidate as { status?: unknown; clone?: unknown } : undefined;
+  const status = typeof context?.status === "number" ? context.status : undefined;
+  let message = "";
+  if (status === 401) clearContentReviewSession();
+  if (typeof context?.clone === "function") {
+    try {
+      const cloned = (context.clone as () => unknown).call(candidate);
+      if (cloned && typeof cloned === "object" && "json" in cloned && typeof (cloned as { json?: unknown }).json === "function") {
+        const body = await (cloned as { json: () => Promise<unknown> }).json().catch(() => null) as { message?: unknown } | null;
+        if (typeof body?.message === "string" && body.message.trim()) message = body.message.trim();
+      }
+    } catch {
+      // Malformed error bodies should fall back to a stable client-side message.
+    }
   }
-  if (context?.status === 429) throw new Error("Too many unlock attempts. Wait before trying again.");
+  if (message) throw new Error(message);
+  if (status === 401) throw new Error("Your owner session has expired. Unlock content review again.");
+  if (status === 429) throw new Error("Too many unlock attempts. Wait before trying again.");
   throw new Error("Content review is temporarily unavailable. Check your connection and try again.");
 }
-
 async function invokeReview(body: Record<string, unknown>, ownerAction: boolean): Promise<ApiReply> {
   if (!supabase) throw new Error("Content review is not configured yet.");
   const token = ownerAction ? getContentReviewSessionToken() : null;

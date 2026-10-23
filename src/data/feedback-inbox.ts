@@ -25,15 +25,27 @@ export function clearFeedbackInboxSession() {
   notifySessionChange();
 }
 async function throwFunctionError(error: unknown, ownerAction: boolean): Promise<never> {
-  const context = error && typeof error === "object" ? (error as { context?: Response }).context : undefined;
+  const candidate = error && typeof error === "object"
+    ? (error as { context?: unknown }).context
+    : undefined;
+  const context = candidate && typeof candidate === "object" ? candidate as { status?: unknown; clone?: unknown } : undefined;
+  const status = typeof context?.status === "number" ? context.status : undefined;
   let message = "";
-  if (context) {
-    const body = await context.clone().json().catch(() => null) as { message?: unknown } | null;
-    if (typeof body?.message === "string" && body.message.trim()) message = body.message.trim();
+  if (ownerAction && status === 401) clearFeedbackInboxSession();
+  if (typeof context?.clone === "function") {
+    try {
+      const cloned = (context.clone as () => unknown).call(candidate);
+      if (cloned && typeof cloned === "object" && "json" in cloned && typeof (cloned as { json?: unknown }).json === "function") {
+        const body = await (cloned as { json: () => Promise<unknown> }).json().catch(() => null) as { message?: unknown } | null;
+        if (typeof body?.message === "string" && body.message.trim()) message = body.message.trim();
+      }
+    } catch {
+      // Parsing an unusual error context must not replace the original API failure.
+    }
   }
-  if (ownerAction && context?.status === 401) clearFeedbackInboxSession();
   if (message) throw new Error(message);
-  if (context?.status === 429) throw new Error("Too many unlock attempts. Wait before trying again.");
+  if (status === 401 && ownerAction) throw new Error("Your owner session has expired. Unlock the inbox again.");
+  if (status === 429) throw new Error("Too many unlock attempts. Wait before trying again.");
   throw new Error("The feedback inbox is temporarily unavailable. Check your connection and try again.");
 }
 async function invokeInbox(body: Record<string, unknown>, ownerAction: boolean): Promise<InboxReply> {
