@@ -3,6 +3,7 @@ import { cleanup,render,screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter,Route,Routes } from "react-router-dom";
 import type { SubjectLesson } from "../types/lesson-content";
+import { readLessonHistory } from "../data/learning-history";
 
 const { fetchPublishedLessonsMock } = vi.hoisted(() => ({ fetchPublishedLessonsMock: vi.fn() }));
 vi.mock("../data/lesson-api", () => ({ fetchPublishedLessons: fetchPublishedLessonsMock }));
@@ -50,6 +51,13 @@ describe("student lesson reader",()=>{
     expect(await screen.findByRole("heading",{name:"Published Test Lesson"})).toBeInTheDocument();
     expect(screen.queryByText("Identify a test objective")).not.toBeInTheDocument();
     expect(screen.getByRole("article")).toHaveTextContent("This lesson is published.");
+    expect(readLessonHistory()).toEqual([expect.objectContaining({
+      lessonId: "public-test-lesson",
+      subjectSlug: "basic-algebra",
+      unitNumber: 1,
+      path: "/study/basic-algebra/1",
+      title: "Published Test Lesson",
+    })]);
   });
 
   it("finds a topic inside the reviewer and opens its matching lesson",async()=>{

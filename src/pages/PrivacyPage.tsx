@@ -6,13 +6,19 @@ export function PrivacyPage() {
       <section className="page-intro">
         <span className="kicker">Privacy</span>
         <h1>Privacy notice</h1>
-        <p>Last updated October 18, 2026. This notice describes the current CEStudy website.</p>
+        <p>Last updated October 23, 2026. This notice describes the current CEStudy website.</p>
       </section>
 
       <div className="privacy-content">
         <section aria-labelledby="privacy-browse-title">
           <h2 id="privacy-browse-title">Browsing and study progress</h2>
-          <p>You can browse the public engineering catalog without creating an account. In the current website, completed-lesson progress and study-day history stay in your browser on this device. They are not synced to CEStudy's servers or across devices. Clearing this site's browser storage can remove that local data.</p>
+          <p>You can browse the public engineering catalog without creating an account. Recently opened lesson history and completed-lesson progress stay in this browser on this device. Streak activity is also stored locally, separately under the signed-in Supabase user ID. Appearance preferences stay on this device. None of this activity is stored in a student account database or synced across devices. Clearing this site's browser storage can remove local history, progress, streak records, and appearance preferences.</p>
+        </section>
+
+        <section aria-labelledby="privacy-google-title">
+          <h2 id="privacy-google-title">Optional Google sign-in and account sessions</h2>
+          <p>Google sign-in is optional. If you choose to sign in, Google provides basic account information, such as your email address, through Supabase Auth so CEStudy can identify the signed-in account and show your profile. CEStudy does not require an account to browse the public study library.</p>
+          <p>CEStudy keeps an authentication session in this browser so you can stay signed in between page visits. Use the Sign out control on your profile to end the current browser session; this does not sign out other browsers or devices. Signing out does not erase local lesson history, completed-lesson progress, appearance preferences, or any streak history recorded for your device and account ID. A new device starts without this browser's local activity.</p>
         </section>
 
         <section aria-labelledby="privacy-feedback-title">
