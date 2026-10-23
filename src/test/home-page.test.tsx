@@ -50,9 +50,13 @@ describe("homepage and year-level navigation", () => {
     expect(quickNav?.querySelector('a[href="/math-foundations"]')).toHaveTextContent("Math");
   });
 
-  it("points the shared navigation to the year-level overview", () => {
+  it("provides a direct year-level overview link inside the Year Levels dropdown", async () => {
+    const user = userEvent.setup();
     render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
-    expect(screen.getByRole("navigation", { name: "Main navigation" }).querySelector('a[href="/years"]')).toHaveTextContent("Year levels");
+    const trigger = screen.getByRole("button", { name: "Year Levels" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await user.click(trigger);
+    expect(await screen.findByRole("link", { name: "Browse all year levels" })).toHaveAttribute("href", "/years");
   });
   it("opens the More menu with an animated dropdown and reduced-motion fallback", async () => {
     const user = userEvent.setup();
