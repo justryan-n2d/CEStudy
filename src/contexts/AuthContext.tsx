@@ -20,7 +20,12 @@ function googleAuthenticatedUser(user: User | null | undefined): User | null {
   if (!user) return null;
   const primaryProvider = user.app_metadata?.provider;
   const hasGoogleIdentity = user.identities?.some((identity) => identity.provider === "google") ?? false;
-  return primaryProvider === "google" || hasGoogleIdentity ? user : null;
+
+  // An explicitly non-Google primary provider must not be presented as a Google account
+  // merely because a Google identity is linked to the same Supabase user.
+  return primaryProvider === "google" || (primaryProvider == null && hasGoogleIdentity)
+    ? user
+    : null;
 }
 
 const AuthContext = createContext<AuthContextValue>({
