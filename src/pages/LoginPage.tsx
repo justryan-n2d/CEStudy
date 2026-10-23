@@ -13,7 +13,7 @@ export function LoginPage() {
   const returnTo = safeInternalReturnPath(params.get("next"), "/profile", window.location.origin);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(() =>
-    params.has("error") || params.has("error_description") || params.has("code")
+    params.has("error") || params.has("error_description") || params.has("error_code") || params.has("code")
       || callbackParams.has("error") || callbackParams.has("error_description") || callbackParams.has("error_code")
       ? "Google sign-in was canceled or could not be completed. Please try again."
       : null,
