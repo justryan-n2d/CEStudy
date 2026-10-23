@@ -9,7 +9,7 @@ export function LoginPage() {
   const params = new URLSearchParams(location.search);
   // Supabase OAuth providers can return errors in either the query string or
   // fragment. Check both so a cancelled consent screen has the same recovery UI.
-  const callbackParams = new URLSearchParams(location.hash.replace(/^#\\?/, ""));
+  const callbackParams = new URLSearchParams(location.hash.replace(/^#\\??/, ""));
   const returnTo = safeInternalReturnPath(params.get("next"), "/profile", window.location.origin);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(() =>
