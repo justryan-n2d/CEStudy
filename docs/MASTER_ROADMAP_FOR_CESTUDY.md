@@ -70,21 +70,20 @@ The main workflows above passed on the exact inspected main commit. This is fres
 
 ### 3.2 Relevant open pull requests
 
-The PR state below was rechecked on 2026-10-23. Statuses are expressed as gates rather than as claims that prior green runs remain valid after branch changes.
+The PR state below was rechecked on 2026-10-23. Historical CI evidence is not treated as current evidence after branch changes.
 
 | PR | Current role and state | Roadmap-aligned handling |
 |---|---|---|
-| [#58 Canonical roadmap/status reconciliation](https://github.com/justryan-n2d/CEStudy/pull/58) | Open documentation-only PR; checks are being rerun after roadmap/status reconciliation. | Reconcile this roadmap's authority note and status tracker before merging implementation slices. |
-| [#59 Gitleaks fixture allowlist](https://github.com/justryan-n2d/CEStudy/pull/59) | Open replacement branch based on current `main`; adds `regexTarget = "line"` and a full-history PR scan. Latest checks must be rerun after the workflow change. | Review the exact commit/path/source-line/AND restriction and verify the full-history scan reaches the historical fixture. |
-| [#47 Historical Gitleaks fixture allowlist](https://github.com/justryan-n2d/CEStudy/pull/47) | Open but stale; its branch is behind current `main` and lacks the line-target correction. | Do not merge. Close as superseded only after replacement PR #59 is verified and merged. |
-| [#51 Website-first information architecture](https://github.com/justryan-n2d/CEStudy/pull/51) | Open, draft, documentation-only. Its owner-approved decisions are consolidated here, but three supporting documents require reconciliation with this roadmap and current implementation decisions. | Review the supporting IA, gamification decision plan, and design-system specification; merge only as a documentation-only slice if aligned. |
+| [#51 Website-first information architecture](https://github.com/justryan-n2d/CEStudy/pull/51) | Open, draft, documentation-only. Its supporting documents have been updated to match the canonical theme decision and current application baseline; branch synchronization and final checks remain. | Review and merge only as a documentation-only slice. This roadmap remains the single authority. |
 | [#56 Theme foundation](https://github.com/justryan-n2d/CEStudy/pull/56) | Open, not merged. Recorded head `c5772cd8d3896335ace60c9c51f367ba246cb6da` had passing CI and secret-scan runs; recheck latest SHA and required checks before merge. | First UI implementation slice. Keep Light as default, Dark as explicit alternative, and device-local `cestudy:theme:v1` persistence. |
-| [#57 Hybrid public navigation](https://github.com/justryan-n2d/CEStudy/pull/57) | Open, draft, stacked on PR #56. Recorded head `a54382022640cd6b43f8afcd5573e05f015c1781` had passing CI; secret scan must run after retargeting to `main`. | Merge only after #56, retarget to `main`, rerun CI and secret scanning, and verify required widths/routes/keyboard states. |
+| [#57 Hybrid public navigation](https://github.com/justryan-n2d/CEStudy/pull/57) | Open, draft, stacked on PR #56. Recorded head `a54382022640cd6b43f8afcd5573e05f015c1781` had passing CI; full-history secret scan must pass after retargeting to `main`. | Merge only after #56, retarget to `main`, rerun CI and secret scanning, and verify required widths/routes/keyboard states. |
 | [#54 Route focus and tablet navigation accessibility](https://github.com/justryan-n2d/CEStudy/pull/54) | Open, draft, targeting the previous navigation structure. | Preserve useful route-focus handoff and touch-target improvements by adapting them into #57; do not merge competing navigation styling separately. |
 | [#44 Google sign-in and local learning activity](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, and contains overlapping theme/navigation/layout changes. | Preserve only the confirmed scope: Google OAuth, profile, streak, learning history, and required session, privacy, and sign-out behavior. Refactor to this roadmap's structure. Keep draft until OAuth and security gates pass. |
 | [#32 Production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open proposal for a production Chromium visual-test harness. | Evaluate independently; it is not part of the current theme/navigation merge sequence until reviewed. |
 
-**Merge order:** security baseline and documentation reconciliation first, then PR #56, then PR #57 with selected #54 accessibility improvements, then focused PR #44 feature slices. Verify the current base/head SHAs, required CI, full-history secret scan, relevant security tests, and review status immediately before each merge. A stale green run, a mergeable flag, or a draft's existence is not release approval.
+**Completed security/documentation gates:** PR #58 merged the roadmap/status reconciliation. PR #59 merged the narrow Gitleaks allowlist and pull-request full-history scan after CI and secret scanning passed; the full-history scan covered 1,014 commits with no leaks. PR #47 is closed as superseded.
+
+**Merge order:** supporting documentation is reconciled; the Gitleaks baseline is verified. Next merge PR #56, then PR #57 with selected #54 accessibility improvements, then focused PR #44 feature slices. Verify current base/head SHAs, required CI, full-history secret scan, relevant security tests, and review status immediately before each merge. A stale green run, a mergeable flag, or a draft's existence is not release approval.
 
 ### 3.3 Existing route inventory on `main`
 
