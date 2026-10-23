@@ -177,6 +177,7 @@ describe("Supabase Google authentication", () => {
     await user.click(screen.getByRole("button", { name: "Sign out" }));
 
     expect(authMocks.signOut).toHaveBeenCalledOnce();
+    expect(authMocks.signOut).toHaveBeenCalledWith({ scope: "local" });
   });
 
   it("unsubscribes from auth state changes when the provider unmounts", async () => {
