@@ -49,7 +49,7 @@ export function LoginPage() {
         <button className="button button-primary google-signin-button" type="button"
           onClick={() => void handleGoogleSignIn()} disabled={!configured || pending}>
           <span className="google-signin-icon-wrap" aria-hidden="true">
-            <img className="google-signin-icon" src="/branding/icons/google.svg" alt="" width={20} height={20} />
+            <img className="google-signin-icon" src="/branding/google.svg" alt="" width={20} height={20} />
           </span>
           {pending ? "Opening Google…" : "Continue with Google"}
         </button>
