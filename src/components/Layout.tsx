@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { LearningStreakHeaderBadge } from "./LearningStreakHeaderBadge";
 import { useAuth } from "../contexts/AuthContext";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { ReviewMaterialsMegaMenu } from "./ReviewMaterialsMegaMenu";
@@ -197,6 +198,7 @@ export function Layout({ children }: { children: ReactNode }) {
               )}
             </nav>
 
+            <LearningStreakHeaderBadge />
             <ThemeToggle />
             <button
               ref={mobileToggleRef}
