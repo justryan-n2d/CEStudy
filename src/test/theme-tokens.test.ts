@@ -33,6 +33,36 @@ describe("semantic theme token foundation", () => {
     expect(stylesheet).toContain("outline:3px solid var(--ui-focus)");
   });
 
+
+  it("provides dark-theme overrides for the owner content-review workspace", () => {
+    for (const selector of [
+      ".review-summary-strip > div",
+      ".review-summary-strip strong",
+      ".review-summary-strip span",
+      ".content-review-header p", 
+      ".content-review-tabs",
+      ".content-review-tabs button",
+      ".content-review-tabs button.active",
+      ".content-review-tabs button span", 
+      ".content-review-list",
+      ".content-review-list-item",
+      ".content-review-list-item.active", 
+      ".content-review-detail",
+      ".review-detail-card",
+      ".review-detail-card p",
+      ".review-source-note", 
+      ".review-answer-details",
+      ".review-answer-details summary", 
+      ".review-answer-body",
+      ".review-action-panel textarea",
+      ".review-confirm-check",
+      ".review-action-panel .form-field small", 
+    ]) {
+      expect(stylesheet, "missing dark-theme override for " + selector)
+        .toContain(':root[data-theme="dark"] ' + selector);
+    }
+  });
+
   it("styles the theme selector and existing app surfaces for dark mode", () => {
     expect(stylesheet).toContain(".theme-toggle");
     expect(stylesheet).toContain(':root[data-theme="dark"] .site-header');
