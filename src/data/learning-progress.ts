@@ -1,5 +1,6 @@
 export const LEARNING_PROGRESS_STORAGE_KEY = "cestudy:completed-lessons:v1";
-export const LEARNING_ACTIVITY_DAYS_STORAGE_KEY = "cestudy:learning-activity-days:v1";
+export const LEARNING_ACTIVITY_DAYS_STORAGE_KEY = "cestudy:learning-activity-days:v2:";
+export const LEARNING_ACTIVITY_CHANGED_EVENT = "cestudy:learning-activity-changed";
 
 export interface LessonCompletionInput {
   lessonId: string;
@@ -23,19 +24,26 @@ export function formatLocalDateKey(date: Date): string {
 }
 
 export function isValidCalendarDateKey(value: unknown): value is string {
-  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  if (typeof value !== "string" || !/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
   const [year, month, day] = value.split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day));
+  const date = new Date(0);
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCFullYear(year, month - 1, day);
   return date.getUTCFullYear() === year
     && date.getUTCMonth() === month - 1
     && date.getUTCDate() === day;
+}
+
+/** Activity is isolated by the stable Supabase user ID and remains in this browser. */
+export function learningActivityStorageKey(userId: string): string {
+  return `${LEARNING_ACTIVITY_DAYS_STORAGE_KEY}${encodeURIComponent(userId.trim())}`;
 }
 
 function parseCompletedLesson(value: unknown): CompletedLesson | null {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
   if (typeof record.lessonId !== "string" || !record.lessonId.trim()
-    || typeof record.subjectSlug !== "string" || !record.subjectSlug.trim()
+    || typeof record.subjectSlug !== "string" || !/^[a-z0-9-]+$/.test(record.subjectSlug)
     || typeof record.unitNumber !== "number" || !Number.isInteger(record.unitNumber) || record.unitNumber < 0
     || typeof record.title !== "string" || !record.title.trim()
     || typeof record.completedAt !== "string" || !Number.isFinite(new Date(record.completedAt).getTime())) {
@@ -58,28 +66,30 @@ function parseCompletedLesson(value: unknown): CompletedLesson | null {
   };
 }
 
-export function readLearningActivityDays(): string[] {
-  if (typeof window === "undefined") return [];
+/** Signed-out callers get an empty list, never another account's learning days. */
+export function readLearningActivityDays(userId?: string | null): string[] {
+  if (typeof window === "undefined" || !userId?.trim()) return [];
   try {
-    const stored = window.localStorage.getItem(LEARNING_ACTIVITY_DAYS_STORAGE_KEY);
+    const stored = window.localStorage.getItem(learningActivityStorageKey(userId));
     if (!stored) return [];
     const parsed: unknown = JSON.parse(stored);
     if (!Array.isArray(parsed)) return [];
-    return [...new Set(parsed.filter(isValidCalendarDateKey))];
+    return [...new Set(parsed.filter(isValidCalendarDateKey))].sort();
   } catch {
     return [];
   }
 }
 
-function recordLearningActivityDay(day: string): string[] {
-  const days = readLearningActivityDays();
+function recordLearningActivityDay(day: string, userId: string): string[] {
+  const days = readLearningActivityDays(userId);
   if (days.includes(day)) return days;
   const next = [...days, day].filter(isValidCalendarDateKey).sort();
   if (typeof window !== "undefined") {
     try {
-      window.localStorage.setItem(LEARNING_ACTIVITY_DAYS_STORAGE_KEY, JSON.stringify(next));
+      window.localStorage.setItem(learningActivityStorageKey(userId), JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent(LEARNING_ACTIVITY_CHANGED_EVENT, { detail: { userId } }));
     } catch {
-      // Keep the current screen usable when browser storage is unavailable.
+      // Browser storage may be blocked or full. Do not break lesson reading.
     }
   }
   return next;
@@ -91,18 +101,32 @@ export function readCompletedLessons(): CompletedLesson[] {
     const stored = window.localStorage.getItem(LEARNING_PROGRESS_STORAGE_KEY);
     if (!stored) return [];
     const parsed: unknown = JSON.parse(stored);
-    return Array.isArray(parsed)
-      ? parsed.map(parseCompletedLesson).filter((item): item is CompletedLesson => item !== null)
-      : [];
+    if (!Array.isArray(parsed)) return [];
+    const unique = new Map<string, CompletedLesson>();
+    for (const value of parsed) {
+      const lesson = parseCompletedLesson(value);
+      if (lesson) unique.set(lesson.lessonId, lesson);
+    }
+    return [...unique.values()];
   } catch {
     return [];
   }
 }
 
+/**
+ * Completed-lesson status is device-local for all visitors. Streak activity is
+ * recorded only for a signed-in Google user and never uses a shared anonymous key.
+ */
 export function setLessonCompleted(
   lesson: LessonCompletionInput,
   completed: boolean,
+  userId?: string | null,
 ): CompletedLesson[] {
+  if (!lesson.lessonId.trim() || !/^[a-z0-9-]+$/.test(lesson.subjectSlug)
+    || !Number.isInteger(lesson.unitNumber) || lesson.unitNumber < 0 || !lesson.title.trim()) {
+    return readCompletedLessons();
+  }
+
   const current = readCompletedLessons();
   const remaining = current.filter((item) => item.lessonId !== lesson.lessonId);
   const now = new Date();
@@ -111,24 +135,31 @@ export function setLessonCompleted(
     ? [...remaining, { ...lesson, completedAt: now.toISOString(), completedOn }]
     : remaining;
 
-  if (completed) recordLearningActivityDay(completedOn);
+  if (completed && userId?.trim()) recordLearningActivityDay(completedOn, userId);
 
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(LEARNING_PROGRESS_STORAGE_KEY, JSON.stringify(next));
     } catch {
-      // Keep the current screen usable when browser storage is unavailable.
+      // Keep the lesson page usable if browser storage is blocked or full.
     }
   }
   return next;
 }
 
-export function clearLessonProgress(): void {
+/** Clears local lesson progress and, only when supplied, that user's streak days. */
+export function clearLessonProgress(userId?: string | null): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.removeItem(LEARNING_PROGRESS_STORAGE_KEY);
-    window.localStorage.removeItem(LEARNING_ACTIVITY_DAYS_STORAGE_KEY);
   } catch {
-    // The page remains usable if browser storage is blocked.
+    // Continue to the current user's streak cleanup even if progress storage fails.
+  }
+  if (!userId?.trim()) return;
+  try {
+    window.localStorage.removeItem(learningActivityStorageKey(userId));
+    window.dispatchEvent(new CustomEvent(LEARNING_ACTIVITY_CHANGED_EVENT, { detail: { userId } }));
+  } catch {
+    // The page remains usable if storage is unavailable.
   }
 }
