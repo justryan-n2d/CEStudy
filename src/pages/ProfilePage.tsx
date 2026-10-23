@@ -2,6 +2,19 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
+function ProfileStudyShortcuts() {
+  return (
+    <section className="profile-shortcuts-section" aria-labelledby="profile-study-shortcuts-title">
+      <h2 id="profile-study-shortcuts-title">Study activity</h2>
+      <nav className="profile-actions" aria-label="Study activity pages">
+        <Link className="button button-secondary" to="/history">Lesson history</Link>
+        <Link className="button button-secondary" to="/progress">Learning progress</Link>
+        <Link className="button button-secondary" to="/streak">Streak calendar</Link>
+      </nav>
+    </section>
+  );
+}
+
 export function ProfilePage() {
   const { user, loading, configured, signOut } = useAuth();
   const [signingOut, setSigningOut] = useState(false);
@@ -65,6 +78,7 @@ export function ProfilePage() {
           {!configured && <p className="auth-note" role="status">Google sign-in is not configured for this deployment yet.</p>}
         </section>
       )}
+      <ProfileStudyShortcuts />
     </div>
   );
 }

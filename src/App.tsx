@@ -23,6 +23,8 @@ import { MockExamPortalPage } from "./pages/MockExamPortalPage";
 import { CommunityPage } from "./pages/CommunityPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { HistoryPage } from "./pages/HistoryPage";
+import { StreakPage } from "./pages/StreakPage";
 
 export default function App() {
   return (
@@ -35,6 +37,8 @@ export default function App() {
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/streak" element={<StreakPage />} />
             <Route path="/review-materials" element={<ReviewMaterialsPage />} />
             <Route path="/mock-exam-portal" element={<MockExamPortalPage />} />
             <Route path="/community" element={<CommunityPage />} />
