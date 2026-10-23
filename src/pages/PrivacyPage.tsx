@@ -18,7 +18,7 @@ export function PrivacyPage() {
         <section aria-labelledby="privacy-google-title">
           <h2 id="privacy-google-title">Optional Google sign-in and account sessions</h2>
           <p>Google sign-in is optional. If you choose to sign in, Google provides basic account information, such as your email address, through Supabase Auth so CEStudy can identify the signed-in account and show your profile. CEStudy does not require an account to browse the public study library.</p>
-          <p>CEStudy keeps an authentication session in this browser so you can stay signed in between page visits. You can end that session using the Sign out control on your profile. Signing out ends the active CEStudy session but does not erase local lesson history, completed-lesson progress, appearance preferences, or any streak history recorded for your device and account ID. A new device starts without this browser's local activity.</p>
+          <p>CEStudy keeps an authentication session in this browser so you can stay signed in between page visits. Use the Sign out control on your profile to end the current browser session; this does not sign out other browsers or devices. Signing out does not erase local lesson history, completed-lesson progress, appearance preferences, or any streak history recorded for your device and account ID. A new device starts without this browser's local activity.</p>
         </section>
 
         <section aria-labelledby="privacy-feedback-title">
