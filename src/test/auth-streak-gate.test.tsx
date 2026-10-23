@@ -54,7 +54,7 @@ describe("authenticated learning streak", () => {
     const googleButton = screen.getByRole("button", { name: /continue with google/i });
     const icon = googleButton.querySelector("img.google-signin-icon");
 
-    expect(icon).toHaveAttribute("src", "/branding/icons/google.svg");
+    expect(icon).toHaveAttribute("src", "/branding/google.svg");
     expect(icon).toHaveAttribute("alt", "");
   });
 
