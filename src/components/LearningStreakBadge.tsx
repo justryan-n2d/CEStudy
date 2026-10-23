@@ -85,7 +85,7 @@ export function LearningStreakBadge() {
     setSignInPending(true);
     try {
       await signInWithGoogle("/streak");
-    } catch (reason) {
+    } catch {
       // Keep provider/runtime details out of UI and avoid exposing callback data.
       setSignInError("Google sign-in could not be started. Check your connection and try again.");
       setSignInPending(false);
