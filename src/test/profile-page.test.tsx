@@ -40,7 +40,7 @@ describe("Profile page", () => {
     expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
     expect(screen.getByText(/streak activity is also local and keyed to your Supabase user ID/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /lesson history/i })).toHaveAttribute("href", "/history");
-    expect(screen.getByRole("link", { name: /learning progress/i })).toHaveAttribute("href", "/progress");
+    expect(screen.getAllByRole("link", { name: /learning progress/i }).map((link) => link.getAttribute("href"))).toEqual(["/progress", "/progress"]);
     expect(screen.getByRole("link", { name: /streak calendar/i })).toHaveAttribute("href", "/streak");
   });
 
