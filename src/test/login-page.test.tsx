@@ -151,6 +151,16 @@ describe("Google sign-in page", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
+  it("shows recoverable feedback for a callback error_code query without an error description", () => {
+    render(
+      <MemoryRouter initialEntries={["/login?error_code=access_denied"]}>
+        <LoginPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent(/canceled or could not be completed/i);
+  });
+
   it("shows recovery when PKCE callback has a code but no explicit error and no session was established", () => {
     mockUseAuth.mockReturnValue({
       user: null,
