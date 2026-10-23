@@ -1,11 +1,21 @@
 /**
- * Restrict post-authentication destinations to paths on the current origin.
- * OAuth callback URLs must never become an open redirect.
+ * Restrict post-authentication destinations to routes on the current origin.
+ * OAuth callback URLs must never become an open redirect or a login loop.
  */
+function isLoginPathname(pathname: string): boolean {
+  let decoded = pathname;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    // Keep the original path if it contains malformed escapes.
+  }
+  return decoded.replace(/\/+$/, "").toLowerCase() === "/login";
+}
+
 export function safeInternalReturnPath(
   value: string | null | undefined,
   fallback = "/profile",
-  origin = window.location.origin,
+  origin = typeof window !== "undefined" ? window.location.origin : "https://cestudy.invalid",
 ): string {
   let base: URL;
   try {
@@ -17,7 +27,7 @@ export function safeInternalReturnPath(
   const resolveFallback = (): string => {
     try {
       const candidate = new URL(fallback, base);
-      if (candidate.origin === base.origin && candidate.pathname !== "/login") {
+      if (candidate.origin === base.origin && !isLoginPathname(candidate.pathname)) {
         return candidate.pathname + candidate.search + candidate.hash;
       }
     } catch {
@@ -31,7 +41,7 @@ export function safeInternalReturnPath(
 
   try {
     const candidate = new URL(value, base);
-    if (candidate.origin !== base.origin || candidate.pathname === "/login") {
+    if (candidate.origin !== base.origin || isLoginPathname(candidate.pathname)) {
       return safeFallback;
     }
     return candidate.pathname + candidate.search + candidate.hash;
