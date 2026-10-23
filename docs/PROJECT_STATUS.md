@@ -11,7 +11,7 @@
 
 - **Source of truth:** [MASTER_ROADMAP_FOR_CESTUDY.md](MASTER_ROADMAP_FOR_CESTUDY.md) is already present on `main`. Its approved Blueprint Academy direction, implementation sequence, acceptance criteria, and release safeguards take priority over conflicting PR layouts or styling.
 - **Supporting design decisions:** PR #51 is documentation-only and remains open. Reconcile its supporting IA/design-system documents with the canonical roadmap before merging; do not merge it merely to duplicate the roadmap.
-- **Stage 0, security baseline:** Reconcile PR #47 with current `main`, fix the documented Gitleaks `regexTarget = "line"` mismatch, and rerun full-history scanning. A prior green scan on its old head is not sufficient.
+- **Stage 0, security baseline:** PR #59 is the replacement for stale PR #47. It starts from current `main` and adds the documented Gitleaks `regexTarget = "line"` correction. Require fresh CI, full-history scanning, and evidence that the narrow exception works as intended. Do not merge old PR #47.
 - **Stage 1, theme foundation:** PR #56 is the candidate. Its recorded head `c5772cd8d3896335ace60c9c51f367ba246cb6da` had passing CI and secret-scan runs. Recheck current head, required checks, and review state immediately before merge.
 - **Stage 2, public navigation:** PR #57 is stacked on PR #56 and remains draft. Its recorded head `a54382022640cd6b43f8afcd5573e05f015c1781` had passing CI, including theme refresh and responsive browser assertions. After Stage 1 is merged, retarget this PR to `main`, rerun CI and secret scanning, and reconcile any route/layout conflicts before considering merge.
 - **Accessibility:** PR #54 remains draft. Carry forward route-change focus handoff and validated touch-target improvements into the roadmap-aligned navigation implementation. Do not merge its old navigation styling as a separate competing layout.
@@ -23,7 +23,8 @@
 
 | PR | Current role | State and next gate |
 |---|---|---|
-| [#47](https://github.com/justryan-n2d/CEStudy/pull/47) | Historical Gitleaks fixture exception | Open. Reconcile with current `main`, correct line-target matching, then pass fresh full-history secret scan. |
+| [#47](https://github.com/justryan-n2d/CEStudy/pull/47) | Superseded Gitleaks fixture exception | Open but stale and 8 commits behind current `main`; its line-target correction is missing. Do not merge. Close after replacement #59 is verified. |
+| [#59](https://github.com/justryan-n2d/CEStudy/pull/59) | Reconciled Gitleaks fixture exception | Open on current `main` with `regexTarget = "line"`; fresh CI and full-history secret scan are still pending. Verify expected allowlist behavior before merge. |
 | [#51](https://github.com/justryan-n2d/CEStudy/pull/51) | Supporting IA and design-system documentation | Open, draft. Align its three documentation files with the canonical roadmap and merge as a docs-only slice if no conflicts remain. |
 | [#54](https://github.com/justryan-n2d/CEStudy/pull/54) | Route focus and tablet accessibility | Open, draft. Selectively adapt useful changes into the new navigation structure. |
 | [#56](https://github.com/justryan-n2d/CEStudy/pull/56) | Phase 1 shared theme foundation | Open. Prior recorded CI and secret scan passed; verify current SHA/checks/review before merge. |
