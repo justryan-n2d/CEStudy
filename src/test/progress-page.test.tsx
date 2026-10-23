@@ -27,7 +27,7 @@ describe("student progress page", () => {
 
     expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Learning streak" })).not.toBeInTheDocument();
-    expect(screen.getByText(/saved in this browser/i)).toBeInTheDocument();
+    expect(screen.getByText(/stay in this browser on this device/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Browse the library" })).toHaveAttribute("href", "/catalog");
   });
 
