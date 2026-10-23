@@ -7,10 +7,14 @@ export function LoginPage() {
   const { user, loading, configured, signInWithGoogle } = useAuth();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
+  // Supabase OAuth providers can return errors in either the query string or
+  // fragment. Check both so a cancelled consent screen has the same recovery UI.
+  const callbackParams = new URLSearchParams(location.hash.replace(/^#\\?/, ""));
   const returnTo = safeInternalReturnPath(params.get("next"), "/profile", window.location.origin);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(() =>
     params.has("error") || params.has("error_description") || params.has("code")
+      || callbackParams.has("error") || callbackParams.has("error_description") || callbackParams.has("error_code")
       ? "Google sign-in was canceled or could not be completed. Please try again."
       : null,
   );
