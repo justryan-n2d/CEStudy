@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!supabase) {
       throw new Error("Supabase configuration is required to sign out.");
     }
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut({ scope: "local" });
     if (error) throw error;
   };
 
