@@ -1054,3 +1054,73 @@ body {
   border-color: var(--ui-border);
   box-shadow: var(--ui-shadow);
 }
+
+
+/* Keep the owner content-review workspace readable in the shared Dark theme.
+   These legacy admin surfaces previously retained hard-coded light colors. */
+:root[data-theme="dark"] .review-summary-strip > div,
+:root[data-theme="dark"] .content-review-detail,
+:root[data-theme="dark"] .review-detail-card,
+:root[data-theme="dark"] .review-answer-details {
+  background: var(--ui-surface);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+  box-shadow: none;
+}
+:root[data-theme="dark"] .content-review-list,
+:root[data-theme="dark"] .content-review-tabs {
+  background: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+}
+:root[data-theme="dark"] .content-review-header p,
+:root[data-theme="dark"] .review-summary-strip span,
+:root[data-theme="dark"] .content-review-list-item .status,
+:root[data-theme="dark"] .content-review-question-preview,
+:root[data-theme="dark"] .review-source-note,
+:root[data-theme="dark"] .review-action-panel .form-field small,
+:root[data-theme="dark"] .content-review-footer > span {
+  color: var(--ui-text-muted);
+}
+:root[data-theme="dark"] .review-summary-strip strong,
+:root[data-theme="dark"] .content-review-tabs button.active,
+:root[data-theme="dark"] .review-answer-details summary,
+:root[data-theme="dark"] .content-review-list-item strong {
+  color: var(--ui-heading);
+}
+:root[data-theme="dark"] .content-review-tabs button {
+  color: var(--ui-text-muted);
+}
+:root[data-theme="dark"] .content-review-tabs button.active {
+  background: var(--ui-surface-raised);
+  box-shadow: none;
+}
+:root[data-theme="dark"] .content-review-tabs button span {
+  background: var(--ui-surface-raised);
+  color: var(--ui-text-muted);
+}
+:root[data-theme="dark"] .content-review-list-item {
+  background: var(--ui-surface-raised);
+  border-color: transparent;
+  color: var(--ui-text);
+}
+:root[data-theme="dark"] .content-review-list-item:hover {
+  border-color: var(--ui-focus);
+}
+:root[data-theme="dark"] .content-review-list-item.active {
+  background: var(--ui-hover);
+  border-color: var(--ui-focus);
+  box-shadow: inset 0 0 0 1px var(--ui-focus);
+}
+:root[data-theme="dark"] .review-detail-card p,
+:root[data-theme="dark"] .review-answer-body,
+:root[data-theme="dark"] .review-confirm-check {
+  color: var(--ui-text);
+}
+:root[data-theme="dark"] .review-answer-body {
+  border-top-color: var(--ui-border);
+}
+:root[data-theme="dark"] .review-action-panel textarea {
+  background: var(--ui-surface-raised);
+  border-color: var(--ui-border);
+  color: var(--ui-text);
+}
