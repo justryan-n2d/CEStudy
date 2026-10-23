@@ -1,7 +1,8 @@
 # CEStudy UX/UI Design System
 
 **Status:** Brand foundations established; owner has approved the Light/Dark toggle, website navigation direction, and Practice workspace layout. No application implementation is authorized by this document.  
-**Platforms:** Website-first responsive web now; native Android and iOS later  
+**Platforms:** Website-first responsive web now; native Android and iOS later
+**Decision update:** 2026-10-23, device-local theme preference approved for the first release  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
 
 **Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md) and the [modern gamified UX/UI decision plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md).
@@ -51,7 +52,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - **Review Materials mega-menu (planned):** Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Show only available, appropriately reviewed resources.
 - **Equation renderer:** shared rendering path for inline/display math in lessons, formula sheets, problem sets/solutions, quizzes, results, forum discussions, and approved offline material.
 - **Offline/download state:** consistent labels for available to download, downloading, downloaded, update available, failed, unavailable offline, stale, and removed, only where each state is applicable.
-- **Theme toggle:** explicit Light/Dark preference; no System option is approved. Keep light as the initial default baseline and decide preference persistence (device-local versus account-synchronized) before implementation. Year levels opens the overview page, not Year 1.
+- **Theme toggle:** explicit Light/Dark preference; no System option is approved. Keep light as the initial default baseline and use approved device-local `cestudy:theme:v1` persistence with pre-React initialization; account synchronization is out of scope for the first release. Year levels opens the overview page, not Year 1.
 - **Gamification controls:** XP/rewards, quests, streak freezes, badges, leaderboards, and retry-related reward behavior should be independently toggleable. Privacy and opt-in controls are user-respecting; anti-abuse/integrity safeguards remain mandatory while a reward feature is active.
 - **Practice workspace:** target a flexible approximate 70/30 question/tools layout on desktop, with a collapsible/dockable tools panel. At narrow widths, use a single-column question view and move tools into a drawer, tab, or opened sheet.
 - **Primary button:** logo blue with white text; one main action per region.
@@ -120,6 +121,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
 - **2026-10-21:** Linked the modern gamified UX/UI decision plan and documented planning gates for quests, rewards, healthy engagement, exam evidence, and responsive navigation. Documentation-only change.
 - **2026-10-22:** Recorded owner decisions: explicit Light/Dark toggle with existing light-default baseline; independently toggleable gamification mechanics; approved healthy-engagement safeguards including optional Night Owl; exam-specific PRC mapping, a dedicated past-question sourcing/permissions workflow, the proposed 100-question challenge and readiness measures deferred; hybrid global navigation, workspace-only collapsible sidebar and flexible 70/30 Practice layout approved. Documentation-only change.
+- **2026-10-23:** Approved device-local theme persistence using `cestudy:theme:v1` and pre-React initialization for the first release. Account synchronization and cross-device theme sync remain out of scope.
 
 ## Footer
 
@@ -141,7 +143,7 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 - Consistent states for content availability, search/filter, progress, feedback, loading, errors, success, and offline downloads.
 - Shared subject/content taxonomy, validation, formula conventions, data contracts, and access-control behavior.
 - Website equations must use an audited shared renderer. Native app math rendering must be selected and tested independently.
-- Keep the existing light-default baseline and provide the approved Light/Dark toggle. Preference persistence still needs a separate decision. The design references are Discord for community/navigation, Duolingo for learning quests/rewards, GitHub for activity/progress, and Autodesk AutoCAD for a precise technical-workspace aesthetic. Use these references to inform CEStudy's own design, not to copy other interfaces.
+- Keep the existing light-default baseline and provide the approved Light/Dark toggle. Use device-local `cestudy:theme:v1` persistence with pre-React initialization; account synchronization is out of scope. The design references are Discord for community/navigation, Duolingo for learning quests/rewards, GitHub for activity/progress, and Autodesk AutoCAD for a precise technical-workspace aesthetic. Use these references to inform CEStudy's own design, not to copy other interfaces.
 - Offline packages need explicit version, availability, update, and removal states. Browser service workers/storage and native app local storage/synchronization are different technical implementations.
 - Brand/service logos are sourced from SVGL (https://svgl.app/) when available and stored locally. Generic interface icons remain simple and visually consistent.
 
@@ -168,7 +170,7 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 - **Calculator / Tools:** unit converter first; verified steel references and bounded concrete-learning references only after source review.
 - **Profile:** saved formulas/questions, settings, Light/Dark toggle, Offline Access manager, account and privacy controls. Board-readiness measurements are not approved in the current plan.
 - Offline timed-test packages need local question/answer/explanation data, math-rendering assets, clear timer behavior, and an explicit unsynced-attempt policy.
-- Provide a Dark Mode toggle using shared semantic tokens and define whether its preference is local or account-synchronized.
+- Provide a Dark Mode toggle using shared semantic tokens and verify device-local `cestudy:theme:v1` preference restoration after refresh.
 - Reuse brand, typography, statuses, content taxonomy, validation rules, and data contracts; rebuild UI components for native mobile interaction instead of simply squeezing the responsive website into an app shell.
 - Choose and verify native equation rendering separately. The website's KaTeX dependency does not establish native rendering support.
 - Defer platform/framework selection until app development is authorized. Do not add mobile framework dependencies to the current website.
