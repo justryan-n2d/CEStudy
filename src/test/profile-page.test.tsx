@@ -23,6 +23,7 @@ describe("Profile page", () => {
     expect(screen.getByRole("heading", { name: /your profile/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /continue with google/i })).toHaveAttribute("href", "/login?next=%2Fprofile");
     expect(screen.getByRole("link", { name: /browse the library/i })).toHaveAttribute("href", "/catalog");
+    expect(screen.getByRole("link", { name: /view lesson history/i })).toHaveAttribute("href", "/history");
   });
 
   it("shows a loading state while the session is checked", () => {
@@ -38,8 +39,9 @@ describe("Profile page", () => {
     expect(screen.getByText("student@example.com")).toBeInTheDocument();
     expect(screen.getByText(/google account connected/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /lesson history/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /streak calendar/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /lesson history/i })).toHaveAttribute("href", "/history");
+    expect(screen.getByRole("link", { name: /learning progress/i })).toHaveAttribute("href", "/progress");
+    expect(screen.getByRole("link", { name: /streak calendar/i })).toHaveAttribute("href", "/streak");
   });
 
   it("returns to the guest profile state after successful sign-out", async () => {
