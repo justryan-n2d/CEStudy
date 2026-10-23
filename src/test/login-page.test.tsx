@@ -147,7 +147,7 @@ describe("Google sign-in page", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole("alert")).toHaveTextContent(/sign-in could not be completed/i);
+    expect(screen.getByRole("alert")).toHaveTextContent(/canceled or could not be completed/i);
     expect(screen.getByRole("button", { name: /continue with google/i })).toBeEnabled();
     expect(screen.queryByText(/opaque-regression-code/)).not.toBeInTheDocument();
   });
