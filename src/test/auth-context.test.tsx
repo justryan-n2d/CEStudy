@@ -96,6 +96,25 @@ describe("Supabase Google authentication", () => {
     expect(screen.getByText("No Google account")).toBeInTheDocument();
   });
 
+  it("does not label a non-Google primary provider as Google when identities are linked", async () => {
+    authMocks.getSession.mockResolvedValue({
+      data: {
+        session: {
+          user: {
+            id: "email-primary-user",
+            app_metadata: { provider: "email" },
+            identities: [{ provider: "google" }],
+          },
+        },
+      },
+      error: null,
+    });
+    render(<AuthProvider><AuthHarness /></AuthProvider>);
+
+    expect(await screen.findByText("Auth ready")).toBeInTheDocument();
+    expect(screen.getByText("No Google account")).toBeInTheDocument();
+  });
+
   it("recognizes an authenticated Google identity", async () => {
     authMocks.getSession.mockResolvedValue({
       data: {
