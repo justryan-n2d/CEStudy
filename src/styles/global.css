@@ -1690,3 +1690,110 @@ body {
   border-color: var(--ui-border);
   color: var(--ui-text);
 }
+
+
+/* Account pages use the shared Blueprint tokens. */
+.auth-panel {
+  max-width: 680px;
+  margin-inline: auto;
+  padding: clamp(1.15rem, 3.5vw, 2rem);
+  border: 1px solid var(--ui-border);
+  border-radius: 20px;
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  box-shadow: 0 12px 32px rgba(18, 52, 81, 0.07);
+}
+.auth-panel h2,
+.auth-panel h3 {
+  color: var(--ui-heading);
+}
+.auth-panel p {
+  color: var(--ui-text-muted);
+  line-height: 1.65;
+}
+.profile-account-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 15px;
+  background: var(--ui-surface-raised);
+}
+.profile-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--ui-hover);
+  color: var(--ui-heading);
+  font-size: 1.1rem;
+  font-weight: 850;
+}
+.profile-account-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.profile-account-copy strong {
+  color: var(--ui-heading);
+}
+.profile-account-copy span,
+.profile-connected-status {
+  color: var(--ui-text-muted);
+  font-size: 0.82rem;
+}
+.profile-connected-status {
+  flex: 0 0 auto;
+  border: 1px solid var(--ui-border);
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+}
+.profile-note {
+  margin-block: 1rem 0;
+  padding: 0.9rem 1rem;
+  border-left: 3px solid var(--ui-focus);
+  border-radius: 0 10px 10px 0;
+  background: var(--ui-surface-muted);
+}
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+}
+.auth-error {
+  margin: 1rem 0 0;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #d92d20;
+  border-radius: 10px;
+  background: #fff1f0;
+  color: #8f1d18 !important;
+}
+.auth-note {
+  margin-top: 0.9rem;
+  font-size: 0.85rem;
+}
+:root[data-theme="dark"] .auth-panel {
+  box-shadow: none;
+}
+:root[data-theme="dark"] .auth-error {
+  border-color: #8a3838;
+  background: #351e26;
+  color: #ffcac5 !important;
+}
+@media (max-width: 520px) {
+  .profile-account-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .profile-connected-status {
+    margin-left: 3.4rem;
+  }
+}
