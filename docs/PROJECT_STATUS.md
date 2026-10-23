@@ -1,16 +1,36 @@
 # CEStudy project status
 
-**Last updated:** 2026-10-20  
-**Current phase:** **Phase 7, pre-launch hardening and release gates.**  
-**Release status:** CEStudy is **not approved for a broad student launch**. The 2026-10-20 read-only Supabase check confirms 72 catalog subjects, 52 practice questions and 13 lessons; every question and lesson remains `needs-review`, with zero published rows. The latest live backup [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded and its archive/read-back and retention checks were clean, but it ran pre-fix source `44ceab69364ba0b094399fbd878ccd38d942356c`, which only checked catalog and question tables. PR #48 is now merged into `main` at `6135f4faf6ca1c01c2abc49ca372e40ddfe1bc2b`; the current code requires and logs verification of `catalog_subjects`, `practice_questions`, and `subject_lessons`. The full backup-validation gate stays open until that corrected version completes a live run. Also open: managed-Supabase restore after cost approval, B2 lifecycle and GitHub failure-email confirmation, protected recovery-key copies, physical-device/accessibility and search/filter QA, independent human content review, the student pilot, and Phase 1/2 discovery and UX catch-up. See the [Phase Plan](PHASE_PLAN.md) and [launch checklist](deployment/launch-checklist.md).
+**Last updated:** 2026-10-23  
+**Current workstream:** Canonical roadmap-led UX integration, staged by independently reviewable pull requests.  
+**Operational release phase:** **Phase 7, pre-launch hardening and release gates.**  
+**Release status:** CEStudy is **not approved for a broad student launch**. The latest recorded live content audit has 72 catalog subjects, 52 practice questions and 13 lessons; all questions and lessons remain `needs-review`, with zero published rows. The integration work below does not approve content publication, a broad launch, or production deployment.
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
-## Current pull-request validation (updated 2026-10-20 23:30 +08:00)
+## Canonical roadmap and integration sequence
 
-- **PR #47, Gitleaks fixture allowlist:** CI and secret-scan runs are green on recorded head `07df0feedfdcf81456c97fa79938d97a1ca073a0`, but a fresh compare against current `main` reports 1 commit ahead and 2 behind. The allowlist also needs `regexTarget = "line"` because its regex matches the complete source line while Gitleaks defaults to testing the extracted secret. Do not merge until corrected, reconciled, and validated with a full-history scan. See the [dated OAuth and PR readiness record](reviews/2026-10-20-google-oauth-and-pr-readiness.md).
-- **PR #44, sign-in/profile/streak/theme accessibility:** preview Google sign-in, Profile identity, session persistence on refresh, sign-out, and guest library access were reported as passing on 2026-10-20. GitHub still reports PR #44 as draft and not mergeable; the branch diverges from `main` (92 commits ahead, 2 behind in the fresh comparison). Cancellation/error recovery and manual unsafe-return testing remain open. Reconcile with current `main`, rerun CI/secret scan/preview checks, complete the missing OAuth tests, and keep the PR draft until then. See the [dated OAuth and PR readiness record](reviews/2026-10-20-google-oauth-and-pr-readiness.md).
-- These PR checks are not broad-launch approval. Draft learning content remains unpublished; Phase 7 release gates and a controlled student pilot still apply.
+- **Source of truth:** [MASTER_ROADMAP_FOR_CESTUDY.md](MASTER_ROADMAP_FOR_CESTUDY.md) is already present on `main`. Its approved Blueprint Academy direction, implementation sequence, acceptance criteria, and release safeguards take priority over conflicting PR layouts or styling.
+- **Supporting design decisions:** PR #51 is documentation-only and remains open. Reconcile its supporting IA/design-system documents with the canonical roadmap before merging; do not merge it merely to duplicate the roadmap.
+- **Stage 0, security baseline:** Reconcile PR #47 with current `main`, fix the documented Gitleaks `regexTarget = "line"` mismatch, and rerun full-history scanning. A prior green scan on its old head is not sufficient.
+- **Stage 1, theme foundation:** PR #56 is the candidate. Its recorded head `c5772cd8d3896335ace60c9c51f367ba246cb6da` had passing CI and secret-scan runs. Recheck current head, required checks, and review state immediately before merge.
+- **Stage 2, public navigation:** PR #57 is stacked on PR #56 and remains draft. Its recorded head `a54382022640cd6b43f8afcd5573e05f015c1781` had passing CI, including theme refresh and responsive browser assertions. After Stage 1 is merged, retarget this PR to `main`, rerun CI and secret scanning, and reconcile any route/layout conflicts before considering merge.
+- **Accessibility:** PR #54 remains draft. Carry forward route-change focus handoff and validated touch-target improvements into the roadmap-aligned navigation implementation. Do not merge its old navigation styling as a separate competing layout.
+- **Account and learning activity features:** PR #44 remains draft and is explicitly limited to Google OAuth, profile, streak, learning history, and necessary session, privacy, and sign-out behavior. Refactor those features to use the canonical roadmap structure. Defer unrelated PR #44 layout, theme, navigation, duplicate community route, and styling changes.
+- **PR #44 release gate:** Its recorded branch is behind current `main` and contains overlapping theme/navigation changes. Reconcile it in focused slices; verify OAuth cancellation, error/retry, safe return paths, session refresh, sign-out, guest access, and per-user data boundaries. The controlled PKCE token-exchange failure test and live Google/Supabase redirect configuration verification were previously outstanding. Keep the PR draft until all required release checks pass.
+- **Deployment authorization:** Preview verification only. No production deployment, production auth configuration change, production data mutation, publication of draft content, or weakening of Supabase RLS is authorized by this integration plan.
+
+## Current pull-request state (verified 2026-10-23)
+
+| PR | Current role | State and next gate |
+|---|---|---|
+| [#47](https://github.com/justryan-n2d/CEStudy/pull/47) | Historical Gitleaks fixture exception | Open. Reconcile with current `main`, correct line-target matching, then pass fresh full-history secret scan. |
+| [#51](https://github.com/justryan-n2d/CEStudy/pull/51) | Supporting IA and design-system documentation | Open, draft. Align its three documentation files with the canonical roadmap and merge as a docs-only slice if no conflicts remain. |
+| [#54](https://github.com/justryan-n2d/CEStudy/pull/54) | Route focus and tablet accessibility | Open, draft. Selectively adapt useful changes into the new navigation structure. |
+| [#56](https://github.com/justryan-n2d/CEStudy/pull/56) | Phase 1 shared theme foundation | Open. Prior recorded CI and secret scan passed; verify current SHA/checks/review before merge. |
+| [#57](https://github.com/justryan-n2d/CEStudy/pull/57) | Phase 2 hybrid public navigation | Open, draft, stacked on #56. Retarget to `main` only after #56 merge, then rerun CI and secret scan. |
+| [#44](https://github.com/justryan-n2d/CEStudy/pull/44) | Approved account and learning-activity features only | Open, draft. Preserve the confirmed scope; reconcile structure and pass OAuth/security release gates before merge. |
+
+**Merge rule:** Verify the latest base SHA, head SHA, branch relationship, required CI, full-history secret scan, relevant security tests, and review status immediately before each merge. If a check is missing, stale, or failing, stop and fix the gate instead of bypassing it.
 
 ## Latest production verification (2026-10-18)
 
