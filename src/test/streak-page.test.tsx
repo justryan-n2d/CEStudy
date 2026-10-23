@@ -22,6 +22,21 @@ beforeEach(() => {
 });
 
 describe("learning streak calendar", () => {
+  it("keeps account-specific calendar data hidden while session initialization is pending", () => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      loading: true,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+
+    render(<MemoryRouter><StreakPage /></MemoryRouter>);
+
+    expect(screen.getByRole("status")).toHaveTextContent(/checking the active session/i);
+    expect(screen.queryByRole("heading", { name: "Streak calendar" })).not.toBeInTheDocument();
+  });
+
   it("highlights study days and explains a selected date from the signed-in account's activity history", async () => {
     const today = new Date();
     localStorage.setItem(
@@ -50,7 +65,7 @@ describe("learning streak calendar", () => {
 
     render(<MemoryRouter><StreakPage /></MemoryRouter>);
 
-    expect(screen.getByText(/no study days recorded this month/i)).toBeInTheDocument();
+    expect(screen.getByText(/no study days have been recorded yet/i)).toBeInTheDocument();
   });
 
   it("encourages signed-out visitors to sign in without exposing a private streak count", () => {
