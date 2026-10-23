@@ -6,12 +6,15 @@ export function ProfilePage() {
   const { user, loading, configured, signOut } = useAuth();
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const handleSignOut = async () => {
     setError(null);
+    setNotice(null);
     setSigningOut(true);
     try {
       await signOut();
+      setNotice("You have signed out of CEStudy. Your browser-local learning data remains on this device.");
     } catch {
       setError("You could not sign out. Check your connection and try again.");
     } finally {
@@ -45,9 +48,10 @@ export function ProfilePage() {
             </div>
             <span className="profile-connected-status">Connected</span>
           </section>
-          <p className="profile-note">Signing out ends the active CEStudy Google session in this browser. You can continue using the public library.</p>
+          <p className="profile-note">Completed-lesson progress and appearance preferences stay in this browser on this device. Signing out does not erase this local data.</p>
           {error && <p className="auth-error" role="alert">{error}</p>}
           <div className="profile-actions">
+            <Link className="button button-secondary" to="/progress">Learning progress</Link>
             <button className="button button-secondary" type="button"
               onClick={() => void handleSignOut()} disabled={signingOut}>
               {signingOut ? "Signing out…" : "Sign out"}
@@ -58,6 +62,7 @@ export function ProfilePage() {
         <section className="auth-panel profile-panel">
           <h2>No account connected</h2>
           <p>Sign in with Google only when you want to use account-based study features. No account is needed to browse subjects and lessons.</p>
+          {notice && <p className="auth-note" role="status">{notice}</p>}
           <div className="profile-actions">
             <Link className="button button-primary" to="/login?next=%2Fprofile">Continue with Google</Link>
             <Link className="button button-secondary" to="/catalog">Browse the library</Link>
