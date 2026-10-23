@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
 import { hasSupabaseConfig, supabase } from "../lib/supabase";
@@ -34,6 +34,7 @@ const AuthContext = createContext<AuthContextValue>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(hasSupabaseConfig);
+  const authEventVersion = useRef(0);
 
   useEffect(() => {
     if (!hasSupabaseConfig || !supabase) return;
@@ -41,18 +42,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let active = true;
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
+      authEventVersion.current += 1;
       setUser(googleAuthenticatedUser(session?.user));
       setLoading(false);
     });
 
+    const initialVersion = authEventVersion.current;
     void supabase.auth.getSession()
       .then(({ data, error }) => {
-        if (!active) return;
+        if (!active || authEventVersion.current !== initialVersion) return;
         setUser(error ? null : googleAuthenticatedUser(data.session?.user));
         setLoading(false);
       })
       .catch(() => {
-        if (!active) return;
+        if (!active || authEventVersion.current !== initialVersion) return;
         setUser(null);
         setLoading(false);
       });
