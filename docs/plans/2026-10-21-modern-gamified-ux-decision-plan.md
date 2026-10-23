@@ -2,7 +2,7 @@
 
 **Status:** Owner-reviewed planning record. Selected design directions are approved; feature implementation remains separately gated.  
 **Prepared:** 2026-10-21 (Asia/Manila)  
-**Decision update:** 2026-10-22 (Asia/Manila)  
+**Decision update:** 2026-10-23 (Asia/Manila)  
 **Related plan:** [Website-First Information Architecture and Structure Plan](./2026-10-21-website-first-information-architecture-plan.md)  
 **Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md)
 
@@ -22,7 +22,7 @@ This is a decision plan, not an implementation specification. It adds no routes,
 
 | Area | Owner decision as of 2026-10-22 | Remaining boundary before implementation |
 |---|---|---|
-| Theme and visual language | Approved: explicit Light/Dark toggle. Keep the existing light-default baseline for now; do not silently switch to dark-first. | Decide whether preference is device-local or account-synchronized, then verify shared semantic tokens and contrast in both themes. |
+| Theme and visual language | Approved: explicit Light/Dark toggle. Keep the existing light-default baseline for now; do not silently switch to dark-first. | Use approved device-local `cestudy:theme:v1` persistence with pre-React initialization; account synchronization and cross-device sync are out of scope for the first release. Verify shared semantic tokens and contrast in both themes. |
 | Quest and reward rules | Approved direction: XP, quests, streak freezes, badges, leaderboards, and retry/reward behavior must be independently toggleable. | Exact reward values, eligibility, uniqueness, retry behavior, privacy and anti-abuse rules still need definition. Safety/integrity controls must never be disabled while the related feature is active. |
 | Healthy engagement | Approved: optional sound, reduced-motion support, and an optional Night Owl quest with safeguards. | Convert the approved principles into accessible acceptance checks. |
 | Exam authenticity | Not approved in this plan. Do not scope current PRC CELE mapping, a past-question sourcing/permissions workflow, the proposed 100-question challenge, or readiness measurements here. | No official-format or board-readiness claims. Any future proposal requires a separate owner request. Existing content review/publication safeguards still apply. |
@@ -42,7 +42,7 @@ The owner confirmed on 2026-10-22 that CEStudy should have an explicit **Light/D
 | Dark theme | Approved as a full alternative | Use a coherent technical-workspace aesthetic, restrained accents, and complete semantic token coverage. |
 | User control | Approved | Provide a clear Light/Dark toggle. Do not include a System option unless separately approved. |
 
-The toggle resolves the need to support both preferences without approving a dark-first default change. The preference persistence model remains open and must be decided before implementation.
+The toggle resolves the need to support both preferences without approving a dark-first default change. The first-release preference model is approved: store `cestudy:theme:v1` on this device and restore it before React starts. Do not add account synchronization.
 
 ### Prototype and evaluation scope
 
@@ -69,7 +69,7 @@ Evaluation criteria: text and control contrast, equation/diagram readability, lo
 
 - Approved: explicit Light/Dark toggle; the existing light-default baseline remains in effect.
 - Do not silently switch the site's default to dark-first or add a System choice.
-- Still to decide before implementation: whether the theme preference remains device-local or later synchronizes with an account. PR #44's local preference is not evidence that account synchronization exists.
+- Approved first-release behavior: device-local `cestudy:theme:v1` with pre-React initialization. Account synchronization is out of scope; PR #44's draft implementation is not itself merge approval.
 - Ensure shared semantic tokens keep reading pages, technical workspaces, equations, charts, dialogs, and focus states legible in both themes.
 
 ## 2. Quests, XP, streaks, badges, leaderboards, and future tokens
@@ -187,7 +187,7 @@ Plan and test the main workflows at 1440px, 1024px, 768px, 390px, and 320px. Che
 
 Owner decisions recorded on 2026-10-22:
 
-1. **Theme:** provide a Light/Dark toggle and retain the current light-default baseline. Decide preference persistence before implementation.
+1. **Theme:** provide a Light/Dark toggle, retain the light-default baseline, and use approved device-local `cestudy:theme:v1` persistence with pre-React initialization. Do not add account synchronization.
 2. **Gamification:** make XP/rewards, quests, streak freezes, badges, leaderboards, and retry-related reward behavior independently toggleable. Exact award criteria, anti-abuse rules, retry semantics, date/timezone boundaries, leaderboard privacy, and default feature states remain to be designed. Defer platform tokens.
 3. **Healthy engagement:** optional sound, reduced-motion support, and an optional Night Owl quest are approved with the safeguards in Section 3.
 4. **Exam-specific extensions:** current PRC mapping, the past-question sourcing/permissions workflow, the proposed 100-question challenge, and readiness measurements are explicitly out of scope for this plan.
@@ -199,7 +199,7 @@ Before implementing a feature, write a separate implementation plan with accepta
 
 - Define exact XP/quest completion events, reward uniqueness, retry rules, and streak/timezone/freeze behavior.
 - Define badge criteria and leaderboard privacy, opt-in/opt-out, ranking boundaries, and anti-abuse handling.
-- Define preference persistence and verify both themes, optional audio feedback, reduced-motion behavior, and keyboard/accessibility states.
+- Verify device-local theme persistence through an actual refresh and test both themes, optional audio feedback, reduced-motion behavior, and keyboard/accessibility states.
 - Test the approved navigation model at 1440px, 1024px, 768px, 390px, and 320px, preserving access to the question, timer, answer state, and controls.
 - Apply existing content review and publication requirements to all study materials without treating this plan as approval to publish content.
 
