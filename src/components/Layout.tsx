@@ -237,9 +237,6 @@ export function Layout({ children }: { children: ReactNode }) {
             </section>
             <section className="mobile-menu-group" aria-labelledby="mobile-menu-support-title">
               <h2 id="mobile-menu-support-title">Support</h2>
-              <Link to={user ? "/profile" : "/login"} onClick={closeNavigation}>
-                <NavigationGlyph name="help" />{authLoading ? "Account" : user ? "Your profile" : "Sign in"}
-              </Link>
               <Link to="/about" onClick={closeNavigation}><NavigationGlyph name="help" />About us</Link>
               <Link to="/contact" onClick={closeNavigation}><NavigationGlyph name="help" />Contact CEStudy</Link>
               <Link to="/support" onClick={closeNavigation}><NavigationGlyph name="help" />Support us</Link>
