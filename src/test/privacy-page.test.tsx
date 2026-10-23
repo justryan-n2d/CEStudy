@@ -9,6 +9,9 @@ describe("Privacy notice", () => {
 
     expect(screen.getByRole("heading", { name: "Privacy notice" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /browsing and study progress/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /optional google sign-in and account sessions/i })).toBeInTheDocument();
+    expect(screen.getByText(/Google sign-in is optional/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sign out control on your profile/i)).toBeInTheDocument();
     expect(screen.getByText(/stay in your browser on this device/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /feedback and support confirmations/i })).toBeInTheDocument();
     expect(screen.getByText(/only the authorized cestudy maintainer can read/i)).toBeInTheDocument();
