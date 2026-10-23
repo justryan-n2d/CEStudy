@@ -133,6 +133,18 @@ describe("Google sign-in page", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
+  it("shows recovery when PKCE callback has a code but no explicit error and no session was established", () => {
+    render(
+      <MemoryRouter initialEntries={["/login?code=opaque-regression-code"]}>
+        <LoginPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent(/sign-in could not be completed/i);
+    expect(screen.getByRole("button", { name: /continue with google/i })).toBeEnabled();
+    expect(screen.queryByText(/opaque-regression-code/)).not.toBeInTheDocument();
+  });
+
   it("explains when Supabase is not configured", () => {
     render(<MemoryRouter><LoginPage /></MemoryRouter>);
 
