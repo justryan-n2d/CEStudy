@@ -12,7 +12,10 @@ describe("Privacy notice", () => {
     expect(screen.getByRole("heading", { name: /optional google sign-in and account sessions/i })).toBeInTheDocument();
     expect(screen.getByText(/Google sign-in is optional/i)).toBeInTheDocument();
     expect(screen.getByText(/Sign out control on your profile/i)).toBeInTheDocument();
-    expect(screen.getByText(/stay in your browser on this device/i)).toBeInTheDocument();
+    expect(screen.getByText(/lesson history and completed-lesson progress stay in this browser on this device/i)).toBeInTheDocument();
+    expect(screen.getByText(/separately under the signed-in Supabase user ID/i)).toBeInTheDocument();
+    expect(screen.getByText(/appearance preferences stay on this device/i)).toBeInTheDocument();
+    expect(screen.getByText(/does not erase local lesson history/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /feedback and support confirmations/i })).toBeInTheDocument();
     expect(screen.getByText(/only the authorized cestudy maintainer can read/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "cestudy00@gmail.com" })).toHaveAttribute("href", "mailto:cestudy00@gmail.com");
