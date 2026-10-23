@@ -1,6 +1,6 @@
 # CEStudy documentation
 
-Start with the project scope, roadmap, security requirements, implementation plan, subject catalog design, architecture decision, and Cloudflare Pages deployment guide in the corresponding folders.
+Start with the [repository guide](REPOSITORY_GUIDE.md) for code organization, data flow, security boundaries, checks, and the contributor workflow. Then use the project scope, roadmap, security requirements, implementation plan, subject catalog design, architecture decision, and Cloudflare Pages deployment guide for detailed decisions.
 - [Algebra Foundations syllabus draft](curriculum/algebra-foundations-syllabus.md): one self-paced subject syllabus with readiness review followed by College Algebra. This is a CEStudy draft, not an official university syllabus.
 - [Algebra Foundations academic review](reviews/algebra-foundations-academic-review.md): pre-lesson scope, sequence, outcome, source and assessment desk review; faculty review remains outstanding.
 - [Foundation source map](research/foundation-source-map.md): curriculum distinctions, source coverage, and licensing notes.
