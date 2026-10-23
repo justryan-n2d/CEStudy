@@ -134,6 +134,13 @@ describe("Google sign-in page", () => {
   });
 
   it("shows recovery when PKCE callback has a code but no explicit error and no session was established", () => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
     render(
       <MemoryRouter initialEntries={["/login?code=opaque-regression-code"]}>
         <LoginPage />
