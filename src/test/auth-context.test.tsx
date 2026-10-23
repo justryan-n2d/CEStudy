@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
@@ -112,6 +112,41 @@ describe("Supabase Google authentication", () => {
     render(<AuthProvider><AuthHarness /></AuthProvider>);
 
     expect(await screen.findByText("Auth ready")).toBeInTheDocument();
+    expect(screen.getByText("Google account active")).toBeInTheDocument();
+  });
+
+  it("does not let a stale initial session result overwrite a newer auth-state event", async () => {
+    let resolveInitialSession: ((value: { data: { session: null }; error: null }) => void) | undefined;
+    authMocks.getSession.mockImplementation(() => new Promise((resolve) => {
+      resolveInitialSession = resolve;
+    }));
+
+    render(<AuthProvider><AuthHarness /></AuthProvider>);
+    const notifyAuthStateChange = authMocks.onAuthStateChange.mock.calls[0]?.[0] as (
+      event: string,
+      session: {
+        user: {
+          id: string;
+          app_metadata: { provider: string };
+          identities: Array<{ provider: string }>;
+        };
+      } | null
+    ) => void;
+
+    await act(async () => {
+      notifyAuthStateChange("SIGNED_IN", {
+        user: {
+          id: "current-google-user",
+          app_metadata: { provider: "google" },
+          identities: [{ provider: "google" }],
+        },
+      });
+    });
+    expect(screen.getByText("Google account active")).toBeInTheDocument();
+
+    await act(async () => {
+      resolveInitialSession?.({ data: { session: null }, error: null });
+    });
     expect(screen.getByText("Google account active")).toBeInTheDocument();
   });
 
