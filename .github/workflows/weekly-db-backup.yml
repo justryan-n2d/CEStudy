@@ -50,7 +50,7 @@ jobs:
           rclone version | sed -n '1p'
 
       - name: Set up Python for authenticated backup encryption
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
