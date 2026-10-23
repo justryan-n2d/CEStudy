@@ -42,6 +42,22 @@ describe("Profile page", () => {
     expect(screen.queryByRole("link", { name: /streak calendar/i })).not.toBeInTheDocument();
   });
 
+  it("returns to the guest profile state after successful sign-out", async () => {
+    const signOut = vi.fn().mockResolvedValue(undefined);
+    mockUseAuth.mockReturnValue({
+      user: { id: "google-student-1", email: "student@example.com" },
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut,
+    });
+    const user = userEvent.setup();
+    render(<MemoryRouter><ProfilePage /></MemoryRouter>);
+    await user.click(screen.getByRole("button", { name: /sign out/i }));
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
   it("signs out and reports recoverable errors", async () => {
     const signOut = vi.fn().mockRejectedValue(new Error("network"));
     mockUseAuth.mockReturnValue({ user: { id: "google-student-1", email: "student@example.com" }, loading: false, configured: true, signInWithGoogle: vi.fn(), signOut });
