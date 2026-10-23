@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { readFileSync } from "node:fs";
 
-const stylesheet = readFileSync(new URL("../styles/global.css", import.meta.url), "utf8");
+const stylesheet = readFileSync("src/styles/global.css", "utf8");
 
 const { fetchCatalogSubjectsMock } = vi.hoisted(() => ({ fetchCatalogSubjectsMock: vi.fn() }));
 vi.mock("../data/catalog-api", () => ({ fetchCatalogSubjects: fetchCatalogSubjectsMock }));
