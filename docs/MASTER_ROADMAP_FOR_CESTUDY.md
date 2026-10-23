@@ -145,7 +145,7 @@ Retain and improve these foundations where they are fit for purpose. Do not intr
 
 **Recorded checks for PR #44:** current PR-head [CI run 39578952302](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952302), [secret scan 39578952309](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952309), and [Cloudflare deployment check 119151620066](https://github.com/justryan-n2d/CEStudy/runs/119151620066) are reported as successful in the PR description. The description also records successful browser smoke assertions at 320px and 1440px on the tested feature branch. These are evidence from the branch's automated checks, not a manual visual approval or a merge/release approval.
 
-**Persistence decision remains open.** Device-local preference using the PR #44 key is a viable candidate, but do not silently change this into account synchronization. The owner has approved a Light/Dark toggle, light-default baseline, and no System option, not a server-side preference model.
+**Owner decision (2026-10-23):** the first release uses device-local persistence with the `cestudy:theme:v1` key and pre-React theme initialization. Do not synchronize the preference to an account or server. Cross-device synchronization remains out of scope unless separately approved.
 
 ### 4.3 Equation rendering baseline
 
@@ -199,7 +199,7 @@ Retain and improve these foundations where they are fit for purpose. Do not intr
 | Visual direction | **Approved: Blueprint Academy**, 2026-10-22. |
 | Brand | Preserve canonical logo geometry and `#0754B5` brand-blue baseline. Do not generate a replacement logo. |
 | Theme | Explicit Light/Dark toggle; retain light default; do not add a System option. |
-| Theme persistence | Unresolved. Device-local persistence is a candidate; do not assume account synchronization. |
+| Theme persistence | **Approved 2026-10-23:** device-local `cestudy:theme:v1` persistence and pre-React initialization; no account synchronization. |
 | Public navigation | Hybrid header with Year Levels dropdown, Review Materials Hub mega-menu, direct Mock Exam Portal and Community Forum entries, and signed-in Student Dashboard/account control. |
 | Sidebar | Collapsible sidebar only for dense signed-in workspaces, not for every public page. |
 | Duplicate destinations | Avoid competing Dashboard and Profile roles. Separate learning overview from account/settings only when the use case is clear. |
@@ -358,7 +358,7 @@ This is a layout convention, not authorization to rewrite mathematical source co
 | Practice | Existing, limited pool | Preserve current answer flow; improve question/tools layout, feedback and responsive access. Main live smoke currently expects zero published questions. |
 | Results / Progress | Existing progress and per-session results | Separate current-session score from stored history; show device-local scope and only real values. |
 | Student Dashboard | Proposed | Private hub for progress, recent activity, bookmarks, saved formulas, history and settings. No fake insights or cross-device claims. |
-| Account / Settings | Privacy exists; extra account pages draft-only | Clear privacy, theme, sound, motion, authentication and storage disclosures. Theme persistence remains undecided. |
+| Account / Settings | Privacy exists; extra account pages draft-only | Clear privacy, theme, sound, motion, authentication and storage disclosures. Theme preference is device-local in the first release; account synchronization remains out of scope. |
 | Community | Draft route in PR #44 is a placeholder, not a working forum | Future searchable discussions, problem threads, math comments, reporting and moderation only after backend and permission decisions. Public identity must not expose email. |
 | Calculator / Tools | Proposed | Unit converter first. Validate units, inputs, conversion factors and outputs. More engineering tools need sources and technical validation. |
 | Offline manager | Cross-cutting proposal | Do not display as implemented until local storage, resource versions, download rights and sync rules are designed and verified. |
@@ -476,14 +476,14 @@ User outcome: a stable visual base where common surfaces, text, borders, focus a
 Acceptance criteria:
 - Preserve canonical logo and brand blue.
 - Keep Light as default; support explicit Light/Dark only, with no System option.
-- Theme persistence follows a separately approved decision; do not silently add account synchronization.
+- Use device-local `cestudy:theme:v1` persistence with pre-React initialization; do not add account synchronization.
 - Use shared semantic tokens and remove avoidable page-specific token contradictions.
 - Do not regress current main pages or PR #44's auth/streak design where it is later integrated.
 - Add theme contrast/component tests and browser checks for home, catalog, study, practice, forms, dialog, tables and equation error/overflow states.
 - Test at 320px, 390px, 768px, 1024px and 1440px.
 
 Dependencies and blockers:
-- Agree whether PR #44's existing localStorage approach is accepted for the first release.
+- Implement and verify the approved device-local `cestudy:theme:v1` preference and pre-React initialization.
 - Inspect full dark token coverage and verify theme initialization before React paints.
 - Do not integrate draft authentication simply to obtain ThemeProvider; isolate or deliberately port theme work only after branch integration review.
 
@@ -612,7 +612,7 @@ For each implementation PR:
 |---|---|---|
 | Blueprint Academy | Approved | Use as primary visual direction |
 | Theme default and options | Approved | Light default; Light/Dark toggle only; no System option |
-| Theme persistence | Open | Owner confirms device-local or account-synchronized. Device-local is the lower-complexity candidate. |
+| Theme persistence | **Approved 2026-10-23** | Use device-local `cestudy:theme:v1`; no account synchronization in the first release. |
 | Final token values | Proposed | Validate contrast and real component rendering in both themes |
 | Phone-web navigation presentation | Partially specified | Compare current four-item quick nav plus menu sheet against a grouped sheet/accordion without copying native tabs |
 | PR #44 integration | Draft-only | Review branch status, OAuth/recovery safeguards, local data behavior and theme tokens before deciding how to port/merge |
