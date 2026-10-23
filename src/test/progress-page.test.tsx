@@ -3,9 +3,16 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { ProgressPage } from "../pages/ProgressPage";
-import { setLessonCompleted } from "../data/learning-progress";
+import { learningActivityStorageKey, setLessonCompleted } from "../data/learning-progress";
 
-beforeEach(() => localStorage.clear());
+const mockUseAuth = vi.hoisted(() => vi.fn());
+vi.mock("../contexts/AuthContext", () => ({ useAuth: mockUseAuth }));
+
+beforeEach(() => {
+  localStorage.clear();
+  mockUseAuth.mockReset();
+  mockUseAuth.mockReturnValue({ user: { id: "progress-test-user" } });
+});
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
@@ -60,20 +67,20 @@ describe("student progress page", () => {
       subjectSlug: "basic-algebra",
       unitNumber: 3,
       title: "Factoring",
-    }, true);
+    }, true, "progress-test-user");
     setLessonCompleted({
       lessonId: "lesson-3",
       subjectSlug: "basic-algebra",
       unitNumber: 3,
       title: "Factoring",
-    }, false);
+    }, false, "progress-test-user");
     vi.stubGlobal("confirm", vi.fn(() => true));
 
     render(<MemoryRouter><ProgressPage /></MemoryRouter>);
     expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Clear progress and streak" }));
 
-    expect(localStorage.getItem("cestudy:learning-activity-days:v1")).toBeNull();
+    expect(localStorage.getItem(learningActivityStorageKey("progress-test-user"))).toBeNull();
   });
 
   it("clears local progress after confirmation", async () => {

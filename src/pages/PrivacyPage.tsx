@@ -12,7 +12,7 @@ export function PrivacyPage() {
       <div className="privacy-content">
         <section aria-labelledby="privacy-browse-title">
           <h2 id="privacy-browse-title">Browsing and study progress</h2>
-          <p>You can browse the public engineering catalog without creating an account. In the current website, completed-lesson progress and study-day history stay in your browser on this device. They are not synced to CEStudy's servers or across devices. Clearing this site's browser storage can remove that local data.</p>
+          <p>You can browse the public engineering catalog without creating an account. Opened lesson history and completed-lesson progress stay in your browser on this device. Streak days are stored in a separate browser-storage key scoped to the signed-in Google user ID. Opened lesson history, completed-lesson progress, and streak days are not sent to CEStudy's servers or synced across devices. Clearing this site's browser storage can remove that local data.</p>
         </section>
 
         <section aria-labelledby="privacy-google-title">

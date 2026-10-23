@@ -12,7 +12,9 @@ describe("Privacy notice", () => {
     expect(screen.getByRole("heading", { name: /optional google sign-in and account sessions/i })).toBeInTheDocument();
     expect(screen.getByText(/Google sign-in is optional/i)).toBeInTheDocument();
     expect(screen.getByText(/Sign out control on your profile/i)).toBeInTheDocument();
-    expect(screen.getByText(/stay in your browser on this device/i)).toBeInTheDocument();
+    expect(screen.getByText(/opened lesson history and completed-lesson progress stay in your browser on this device/i)).toBeInTheDocument();
+    expect(screen.getByText(/scoped to the signed-in Google user ID/i)).toBeInTheDocument();
+    expect(screen.getByText(/not sent to CEStudy.s servers or synced across devices/i)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /feedback and support confirmations/i })).toBeInTheDocument();
     expect(screen.getByText(/only the authorized cestudy maintainer can read/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "cestudy00@gmail.com" })).toHaveAttribute("href", "mailto:cestudy00@gmail.com");

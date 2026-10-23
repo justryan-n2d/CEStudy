@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { LearningStreakHeaderBadge } from "./LearningStreakHeaderBadge";
 import { useAuth } from "../contexts/AuthContext";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { ReviewMaterialsMegaMenu } from "./ReviewMaterialsMegaMenu";
@@ -197,6 +198,7 @@ export function Layout({ children }: { children: ReactNode }) {
               )}
             </nav>
 
+            <LearningStreakHeaderBadge />
             <ThemeToggle />
             <button
               ref={mobileToggleRef}
@@ -227,11 +229,14 @@ export function Layout({ children }: { children: ReactNode }) {
               <Link to="/mock-exam-portal" onClick={closeNavigation}><NavigationGlyph name="layers" />Mock Exam Portal</Link>
               <Link to="/community" onClick={closeNavigation}><NavigationGlyph name="messages" />Community Forum</Link>
             </section>
+            <section className="mobile-menu-group" aria-labelledby="mobile-menu-account-title">
+              <h2 id="mobile-menu-account-title">Account and study activity</h2>
+              <Link to={user ? "/profile" : "/login"} onClick={closeNavigation}>{authLoading ? "Checking account…" : user ? "Profile" : "Sign in"}</Link>
+              <Link to="/history" onClick={closeNavigation}>Lesson history</Link>
+              <Link to="/streak" onClick={closeNavigation}>Streak calendar</Link>
+            </section>
             <section className="mobile-menu-group" aria-labelledby="mobile-menu-support-title">
               <h2 id="mobile-menu-support-title">Support</h2>
-              <Link to={user ? "/profile" : "/login"} onClick={closeNavigation}>
-                <NavigationGlyph name="help" />{authLoading ? "Account" : user ? "Your profile" : "Sign in"}
-              </Link>
               <Link to="/about" onClick={closeNavigation}><NavigationGlyph name="help" />About us</Link>
               <Link to="/contact" onClick={closeNavigation}><NavigationGlyph name="help" />Contact CEStudy</Link>
               <Link to="/support" onClick={closeNavigation}><NavigationGlyph name="help" />Support us</Link>

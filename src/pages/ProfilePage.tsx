@@ -45,7 +45,18 @@ export function ProfilePage() {
             </div>
             <span className="profile-connected-status">Connected</span>
           </section>
-          <p className="profile-note">Signing out ends the active CEStudy Google session in this browser. You can continue using the public library.</p>
+          <nav className="profile-shortcut-list" aria-label="Your study tools">
+            <Link className="profile-shortcut" to="/history">
+              <span><strong>Lesson history</strong><small>Return to lessons you opened</small></span><span aria-hidden="true">→</span>
+            </Link>
+            <Link className="profile-shortcut" to="/progress">
+              <span><strong>Learning progress</strong><small>Review completed lessons</small></span><span aria-hidden="true">→</span>
+            </Link>
+            <Link className="profile-shortcut" to="/streak">
+              <span><strong>Streak calendar</strong><small>See your recorded study days</small></span><span aria-hidden="true">→</span>
+            </Link>
+          </nav>
+          <p className="profile-note">Lesson history, progress, and streak activity stay in this browser on this device. Streak days are scoped to the signed-in account and do not sync across devices. Signing out ends the active CEStudy Google session but does not delete the Google account.</p>
           {error && <p className="auth-error" role="alert">{error}</p>}
           <div className="profile-actions">
             <button className="button button-secondary" type="button"
@@ -61,6 +72,7 @@ export function ProfilePage() {
           <div className="profile-actions">
             <Link className="button button-primary" to="/login?next=%2Fprofile">Continue with Google</Link>
             <Link className="button button-secondary" to="/catalog">Browse the library</Link>
+            <Link className="button button-secondary" to="/history">View lesson history</Link>
           </div>
           {!configured && <p className="auth-note" role="status">Google sign-in is not configured for this deployment yet.</p>}
         </section>
