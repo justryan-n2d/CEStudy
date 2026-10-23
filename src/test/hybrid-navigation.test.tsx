@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { readFileSync } from "node:fs";
+
+const stylesheet = readFileSync(new URL("../styles/global.css", import.meta.url), "utf8");
 
 const { fetchCatalogSubjectsMock } = vi.hoisted(() => ({ fetchCatalogSubjectsMock: vi.fn() }));
 vi.mock("../data/catalog-api", () => ({ fetchCatalogSubjects: fetchCatalogSubjectsMock }));
@@ -74,6 +77,14 @@ afterEach(() => {
 });
 
 describe("Blueprint Academy hybrid navigation", () => {
+  it("uses shared semantic theme tokens for navigation panels", () => {
+    expect(stylesheet).toMatch(/\.year-level-menu\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
+    expect(stylesheet).toMatch(/\.review-materials-menu\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
+    expect(stylesheet).toMatch(/\.review-materials-menu-card\s*\{[^}]*background:\s*var\(--ui-surface-muted\)/s);
+    expect(stylesheet).toMatch(/\.navigation-panel-error\s*\{[^}]*background:\s*var\(--ui-error-bg\)/s);
+    expect(stylesheet).toMatch(/\.review-materials-menu-status\s*\{[^}]*background:\s*var\(--ui-disabled-bg\)/s);
+  });
+
   it("opens the Year Levels disclosure and derives semester/subject links from catalog metadata", async () => {
     const user = userEvent.setup();
     renderLayout();
