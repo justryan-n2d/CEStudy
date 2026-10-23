@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clearLessonProgress,
   LEARNING_ACTIVITY_DAYS_STORAGE_KEY,
@@ -20,6 +20,7 @@ const signedInUserId = "auth-user-123";
 beforeEach(() => {
   localStorage.clear();
 });
+afterEach(() => vi.restoreAllMocks());
 
 describe("device-local learning progress", () => {
   it("records a completed lesson regardless of authentication", () => {
@@ -109,6 +110,40 @@ describe("device-local learning progress", () => {
     expect(readLearningActivityDays(signedInUserId)).toHaveLength(1);
     expect(readLearningActivityDays("other-user")).toHaveLength(1);
     expect(learningActivityStorageKey(signedInUserId)).not.toBe(learningActivityStorageKey("other-user"));
+  });
+
+  it("filters malformed calendar days from per-account local storage", () => {
+    localStorage.setItem(learningActivityStorageKey(signedInUserId), JSON.stringify([
+      "2026-10-21",
+      "2026-02-30",
+      "not-a-date",
+      123,
+      null,
+    ]));
+
+    expect(readLearningActivityDays(signedInUserId)).toEqual(["2026-10-21"]);
+  });
+
+  it("keeps the public lesson experience usable when storage reads fail", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    });
+
+    expect(readCompletedLessons()).toEqual([]);
+    expect(readLearningActivityDays(signedInUserId)).toEqual([]);
+    expect(() => clearLessonProgress(signedInUserId)).not.toThrow();
+  });
+
+  it("keeps completion usable when storage writes fail", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage full", "QuotaExceededError");
+    });
+
+    let result: ReturnType<typeof setLessonCompleted> = [];
+    expect(() => {
+      result = setLessonCompleted(lesson, true, signedInUserId);
+    }).not.toThrow();
+    expect(result).toHaveLength(1);
   });
 
   it("clears lesson progress and only the current user's streak data", () => {
