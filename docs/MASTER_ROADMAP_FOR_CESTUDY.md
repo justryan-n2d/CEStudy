@@ -8,7 +8,7 @@
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
-> **Repository note:** This file is being proposed through a documentation-only pull request. Until that pull request is merged, the file is available on its branch rather than `main`. For planning in the meantime, treat this version as the working canonical roadmap. Do not merge stale or contradictory planning changes merely to make their documents appear current.
+> **Repository note (verified 2026-10-23):** This canonical roadmap is present on `main`. Its approved decisions control product direction, UX/UI scope, and implementation order. Supporting plans and feature PRs must be reconciled to this document before merge. Actual source code, data contracts, security controls, and CI/release gates still determine what is implemented and safe to ship.
 
 ## 1. Purpose and product outcome
 
