@@ -32,7 +32,7 @@ describe("Profile page", () => {
     expect(screen.queryByRole("link", { name: /continue with google/i })).not.toBeInTheDocument();
   });
 
-  it("shows the connected Google account and a sign-out action, without dead feature links", () => {
+  it("shows the connected Google account, accurate local-data disclosure, and activity shortcuts", () => {
     mockUseAuth.mockReturnValue({ user: { id: "google-student-1", email: "student@example.com" }, loading: false, configured: true, signInWithGoogle: vi.fn(), signOut: vi.fn() });
     render(<MemoryRouter><ProfilePage /></MemoryRouter>);
     expect(screen.getByText("student@example.com")).toBeInTheDocument();
