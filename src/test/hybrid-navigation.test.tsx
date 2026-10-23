@@ -78,8 +78,8 @@ afterEach(() => {
 
 describe("Blueprint Academy hybrid navigation", () => {
   it("uses shared semantic theme tokens for navigation panels", () => {
-    expect(stylesheet).toMatch(/\.year-level-menu\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
-    expect(stylesheet).toMatch(/\.review-materials-menu\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
+    expect(stylesheet).toMatch(/\.year-level-menu,\s*\.review-materials-menu\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
+    expect(stylesheet).toMatch(/\.year-level-menu-year\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
     expect(stylesheet).toMatch(/\.review-materials-menu-card\s*\{[^}]*background:\s*var\(--ui-surface-muted\)/s);
     expect(stylesheet).toMatch(/\.navigation-panel-error\s*\{[^}]*background:\s*var\(--ui-error-bg\)/s);
     expect(stylesheet).toMatch(/\.review-materials-menu-status\s*\{[^}]*background:\s*var\(--ui-disabled-bg\)/s);
