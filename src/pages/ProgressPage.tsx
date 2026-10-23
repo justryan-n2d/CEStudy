@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { LearningStreakBadge } from "../components/LearningStreakBadge";
 import {
   clearLessonProgress,
   readCompletedLessons,
+  LEARNING_ACTIVITY_CHANGED_EVENT,
   readLearningActivityDays,
   type CompletedLesson,
 } from "../data/learning-progress";
@@ -13,12 +15,20 @@ function subjectLabel(slug: string): string {
 }
 
 export function ProgressPage() {
+  const { user } = useAuth();
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
-  const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
+  const [activityDays, setActivityDays] = useState<string[]>(() => readLearningActivityDays(user?.id));
+
+  useEffect(() => {
+    const refreshActivityDays = () => setActivityDays(readLearningActivityDays(user?.id));
+    refreshActivityDays();
+    window.addEventListener(LEARNING_ACTIVITY_CHANGED_EVENT, refreshActivityDays);
+    return () => window.removeEventListener(LEARNING_ACTIVITY_CHANGED_EVENT, refreshActivityDays);
+  }, [user?.id]);
 
   const clearProgress = () => {
-    if (!window.confirm("Clear all CEStudy lesson progress and streak saved on this device?")) return;
-    clearLessonProgress();
+    if (!window.confirm("Clear lesson progress on this device and streak activity for the signed-in account?")) return;
+    clearLessonProgress(user?.id);
     setCompletedLessons([]);
     setActivityDays([]);
   };
