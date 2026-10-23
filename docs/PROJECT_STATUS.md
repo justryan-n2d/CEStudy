@@ -10,9 +10,9 @@
 ## Canonical roadmap and integration sequence
 
 - **Source of truth:** [MASTER_ROADMAP_FOR_CESTUDY.md](MASTER_ROADMAP_FOR_CESTUDY.md) is already present on `main`. Its approved Blueprint Academy direction, implementation sequence, acceptance criteria, and release safeguards take priority over conflicting PR layouts or styling.
-- **Supporting design decisions:** PR #51 is documentation-only and remains open. Reconcile its supporting IA/design-system documents with the canonical roadmap before merging; do not merge it merely to duplicate the roadmap.
+- **Supporting design decisions:** PR #51 is merged. Its IA, gamified UX, and design-system documents are reconciled with the canonical roadmap and approved device-local theme decision.
 - **Stage 0, Gitleaks security gate: verified complete on 2026-10-23.** PR #59 merged at `a2c05dff7532b8f48838bcda9e73615613599086` after CI, the PR-diff secret scan, and a full-history scan of 1,014 commits / about 3.89 MB passed with no leaks. PR #47 is closed as superseded. This completes the Gitleaks allowlist gate only; Phase 0 and Phase 7 retain their other outstanding checks.
-- **Stage 1, theme foundation:** PR #56 is the candidate. Its recorded head `c5772cd8d3896335ace60c9c51f367ba246cb6da` had passing CI and secret-scan runs. Recheck current head, required checks, and review state immediately before merge.
+- **Stage 1, theme foundation:** PR #56 remains open. A new regression test covers hard-coded light surfaces in the owner content-review workspace; latest head is `bca038c3dad87319665ba55ed8baf5d614d01750`, with fresh CI/secret-scan checks pending. The older passing run does not cover this new test. Complete the red-green fix, sync to current `main`, then recheck all required gates before merge.
 - **Stage 2, public navigation:** PR #57 is stacked on PR #56 and remains draft. Its recorded head `a54382022640cd6b43f8afcd5573e05f015c1781` had passing CI, including theme refresh and responsive browser assertions. After Stage 1 is merged, retarget this PR to `main`, rerun CI and secret scanning, and reconcile any route/layout conflicts before considering merge.
 - **Accessibility:** PR #54 remains draft. Carry forward route-change focus handoff and validated touch-target improvements into the roadmap-aligned navigation implementation. Do not merge its old navigation styling as a separate competing layout.
 - **Account and learning activity features:** PR #44 remains draft and is explicitly limited to Google OAuth, profile, streak, learning history, and necessary session, privacy, and sign-out behavior. Refactor those features to use the canonical roadmap structure. Defer unrelated PR #44 layout, theme, navigation, duplicate community route, and styling changes.
@@ -23,12 +23,12 @@
 
 - PR #58 merged the canonical roadmap/status reconciliation. The roadmap is on `main`, the first-release theme preference is recorded as device-local, and the status tracker now reflects the staged integration order.
 - PR #59 merged the corrected Gitleaks allowlist and PR full-history scan. The full-history job scanned 1,014 commits and reported no leaks. PR #47 is closed as superseded.
+- PR #51 merged the supporting IA, gamified UX, and design-system documents after reconciliation with this roadmap.
 
 ## Current pull-request state (verified 2026-10-23)
 
 | PR | Current role | State and next gate |
 |---|---|---|
-| [#51](https://github.com/justryan-n2d/CEStudy/pull/51) | Supporting IA and design-system documentation | Open, draft. Align its three documentation files with the canonical roadmap and merge as a docs-only slice if no conflicts remain. |
 | [#54](https://github.com/justryan-n2d/CEStudy/pull/54) | Route focus and tablet accessibility | Open, draft. Selectively adapt useful changes into the new navigation structure. |
 | [#56](https://github.com/justryan-n2d/CEStudy/pull/56) | Phase 1 shared theme foundation | Open. Prior recorded CI and secret scan passed; verify current SHA/checks/review before merge. |
 | [#57](https://github.com/justryan-n2d/CEStudy/pull/57) | Phase 2 hybrid public navigation | Open, draft, stacked on #56. Retarget to `main` only after #56 merge, then rerun CI and secret scan. |
