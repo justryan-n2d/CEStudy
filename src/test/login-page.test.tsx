@@ -82,6 +82,24 @@ describe("Google sign-in page", () => {
     expect(screen.queryByText("Unsafe destination reached")).not.toBeInTheDocument();
   });
 
+  it.each([
+    ["hash fragment", "/login#error=access_denied&error_description=User%20canceled"],
+    ["query-style hash fragment", "/login#?error=access_denied&error_description=User%20canceled"],
+  ])("shows recoverable feedback when OAuth cancellation is returned as a %s", (_label, callbackUrl) => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+
+    render(<MemoryRouter initialEntries={[callbackUrl]}><LoginPage /></MemoryRouter>);
+
+    expect(screen.getByRole("alert")).toHaveTextContent(/canceled or could not be completed/i);
+    expect(screen.getByRole("button", { name: /continue with google/i })).toBeEnabled();
+  });
+
   it("shows recoverable feedback after OAuth cancellation and allows retry", async () => {
     const signInWithGoogle = vi.fn().mockResolvedValue(undefined);
     mockUseAuth.mockReturnValue({
