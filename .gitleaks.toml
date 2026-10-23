@@ -1,0 +1,10 @@
+# Narrow exception for one synthetic value used only by an isolated historical security-test commit.
+# The commit, file path, exact source line, and AND condition must all match.
+# regexTarget = "line" is required because the regex intentionally matches the complete source line.
+[[allowlists]]
+description = "Exact synthetic owner-token test fixture in historical security test commit"
+commits = ["b771cc7bdc6598f35a4bcef928691d9eea0f3c85"]
+paths = ['''^supabase/functions/security_test\.ts$''']
+regexes = ['''^  Deno\.env\.set\("FEEDBACK_INBOX_ACCESS_KEY", "test-owner-key-that-is-at-least-32-characters"\);$''']
+regexTarget = "line"
+condition = "AND"
