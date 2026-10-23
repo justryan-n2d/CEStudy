@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { LearningStreakBadge } from "../components/LearningStreakBadge";
+import { useAuth } from "../contexts/AuthContext";
 import {
   clearLessonProgress,
   readCompletedLessons,
@@ -13,14 +13,14 @@ function subjectLabel(slug: string): string {
 }
 
 export function ProgressPage() {
+  const { user } = useAuth();
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
-  const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
+  const activityDays = user?.id ? readLearningActivityDays(user.id) : [];
 
   const clearProgress = () => {
     if (!window.confirm("Clear all CEStudy lesson progress and streak saved on this device?")) return;
-    clearLessonProgress();
+    clearLessonProgress(user?.id);
     setCompletedLessons([]);
-    setActivityDays([]);
   };
 
   const sortedLessons = [...completedLessons].sort(
@@ -36,7 +36,6 @@ export function ProgressPage() {
         <p>Review the published lessons you have completed. Progress is saved in this browser on this device only, not synced to an account.</p>
       </section>
 
-      <LearningStreakBadge activityDays={activityDays} />
 
       {sortedLessons.length === 0 ? (
         <section className="state-panel progress-empty">
