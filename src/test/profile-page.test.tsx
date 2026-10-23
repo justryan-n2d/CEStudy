@@ -38,12 +38,21 @@ describe("Profile page", () => {
     expect(screen.getByText("student@example.com")).toBeInTheDocument();
     expect(screen.getByText(/google account connected/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /learning progress/i })).toHaveAttribute("href", "/progress");
     expect(screen.queryByRole("link", { name: /lesson history/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /streak calendar/i })).not.toBeInTheDocument();
   });
 
-  it("returns to the guest profile state after successful sign-out", async () => {
-    const signOut = vi.fn().mockResolvedValue(undefined);
+  it("shows a signed-out confirmation after a successful sign-out", async () => {
+    const signOut = vi.fn().mockImplementation(async () => {
+      mockUseAuth.mockReturnValue({
+        user: null,
+        loading: false,
+        configured: true,
+        signInWithGoogle: vi.fn(),
+        signOut,
+      });
+    });
     mockUseAuth.mockReturnValue({
       user: { id: "google-student-1", email: "student@example.com" },
       loading: false,
@@ -55,7 +64,8 @@ describe("Profile page", () => {
     render(<MemoryRouter><ProfilePage /></MemoryRouter>);
     await user.click(screen.getByRole("button", { name: /sign out/i }));
     expect(signOut).toHaveBeenCalledOnce();
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(await screen.findByRole("status")).toHaveTextContent(/you have signed out of cestudy/i);
+    expect(screen.getByRole("link", { name: /browse the library/i })).toHaveAttribute("href", "/catalog");
   });
 
   it("signs out and reports recoverable errors", async () => {
