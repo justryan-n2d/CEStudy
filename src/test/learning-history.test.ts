@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   LEARNING_HISTORY_STORAGE_KEY,
   readLessonHistory,
@@ -19,6 +19,7 @@ const secondLesson = {
 };
 
 beforeEach(() => localStorage.clear());
+afterEach(() => vi.restoreAllMocks());
 
 describe("opened lesson history", () => {
   it("records the most recently opened lesson with a working route", () => {
@@ -46,6 +47,34 @@ describe("opened lesson history", () => {
   it("uses a safe empty state for malformed browser storage", () => {
     localStorage.setItem(LEARNING_HISTORY_STORAGE_KEY, "{broken");
 
+    expect(readLessonHistory()).toEqual([]);
+  });
+
+  it("rebuilds safe internal paths instead of trusting stored paths", () => {
+    localStorage.setItem(LEARNING_HISTORY_STORAGE_KEY, JSON.stringify([{
+      ...firstLesson,
+      path: "https://evil.example/steal",
+      lastOpenedAt: "2026-10-17T10:00:00.000Z",
+    }]));
+
+    expect(readLessonHistory()[0].path).toBe("/study/basic-algebra/1");
+  });
+
+  it("ignores malformed timestamps and records", () => {
+    localStorage.setItem(LEARNING_HISTORY_STORAGE_KEY, JSON.stringify([
+      { ...firstLesson, lastOpenedAt: "not-a-date" },
+      { lessonId: "missing-title", subjectSlug: "basic-algebra", unitNumber: 2 },
+    ]));
+
+    expect(readLessonHistory()).toEqual([]);
+  });
+
+  it("keeps navigation usable when local storage is unavailable or full", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage full", "QuotaExceededError");
+    });
+
+    expect(() => recordOpenedLesson(firstLesson)).not.toThrow();
     expect(readLessonHistory()).toEqual([]);
   });
 
