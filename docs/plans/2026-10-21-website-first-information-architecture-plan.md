@@ -2,9 +2,9 @@
 
 **Status:** Owner decisions recorded; planning only, no application implementation authorized  
 **Initially prepared at:** 2026-10-21T18:53:21+08:00 (Asia/Manila)  
-**Last revised:** 2026-10-22 (Asia/Manila)  
+**Last revised:** 2026-10-23 (Asia/Manila)  
 **Repository:** [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy)  
-**Main baseline commit:** `e6f657cbbf94467e427fc6183c9714e965098598`  
+**Main application baseline commit:** `0862b5f243ca0e39f8bb82131c31fef28fbbab98` (docs-only changes may advance `main` without changing the inspected application baseline)  
 **PR #44 head reviewed:** `662e413601cef93100534b8be52f1a76fe35b335` (open, draft, not merged)  
 **Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md)  
 **Related decision plan:** [Modern Gamified UX/UI Decision Plan](./2026-10-21-modern-gamified-ux-decision-plan.md)
@@ -182,9 +182,9 @@ The owner confirmed on 2026-10-22 that the website must provide an explicit Ligh
 
 Provide a coherent dark alternative using deep slate or midnight surfaces, existing CEStudy blue, and restrained semantic accents. Review the dark theme for contrast, readable equations, focus states, and empty/error states across Home, Review Materials, Dashboard, Practice, and Community. Keep both light and dark modes readable and consistent.
 
-Provide an explicit Light/Dark toggle, with no System option in this approved direction. Preference persistence (device-local versus account-synchronized) remains open. Keep theme tokens semantic rather than styling each page independently. Validate both themes across menus, equations, timers, tables, charts, result states, forum content, focus rings, motion, and downloaded-material states. Do not assume PR #44's draft-branch theme behavior is present on main.
+Provide an explicit Light/Dark toggle, with no System option in this approved direction. Preference persistence is approved as device-local under `cestudy:theme:v1`, initialized before React; account synchronization and cross-device sync are out of scope for the first release. Keep theme tokens semantic rather than styling each page independently. Validate both themes across menus, equations, timers, tables, charts, result states, forum content, focus rings, motion, and downloaded-material states. Do not assume PR #44's draft-branch theme behavior is present on main.
 
-The Light/Dark toggle and light-default baseline are owner-approved directions. Resolve preference persistence and token/accessibility acceptance criteria before implementation.
+The Light/Dark toggle, light-default baseline, and device-local `cestudy:theme:v1` persistence with pre-React initialization are owner-approved. Verify shared semantic tokens, contrast, and accessibility before calling the theme slice complete.
 
 
 ## 7. Responsive website strategy and future native app
@@ -287,7 +287,7 @@ Define public/read-only versus account-required participation, author identity, 
 
 - **Offline Access:** define which resources are downloadable, content/version manifest, quota/storage behavior, stale/withdrawn-content handling, deletion, offline attempt storage, and sync policy separately for browser and native app.
 - **LaTeX/equations:** audit the existing KaTeX integration and extend regression coverage before treating equation support as complete.
-- **Theme:** provide an explicit Light/Dark toggle, semantic tokens, a documented preference-persistence decision, and full-page/theme regression checks. The existing light-default baseline remains in place. PR #44's branch work is not automatically part of main.
+- **Theme:** provide an explicit Light/Dark toggle, semantic tokens, device-local `cestudy:theme:v1` persistence with pre-React initialization, and full-page/theme regression checks. The existing light-default baseline remains in place. PR #44's unrelated layout/theme implementation is not automatically part of main.
 
 ### Backend and security boundary
 
@@ -309,7 +309,7 @@ Deliverable: textual page trees for each global destination, menu behavior, quiz
 Exit: hover/click/keyboard/touch behavior, focus management, active states, and empty/loading/error states are specified before UI code.
 
 ### Step 4 - Equation and theme foundation
-Deliverable: shared-renderer source audit, equation fixtures, dark-mode token map, and preference persistence decision.
+Deliverable: shared-renderer source audit, equation fixtures, dark-mode token map, and regression evidence that device-local theme preference survives a real refresh.
 Exit: supported syntax, malformed-input fallback, long-equation behavior, dark-theme coverage, and mobile web/app distinction are testable.
 
 ### Step 5 - Practice engine and Mock Exam Portal
@@ -395,7 +395,7 @@ Before merging any later implementation:
 - What are the exact quest instance, completion, XP uniqueness, repeat-attempt, offline-sync, and abuse-review rules? Which reward examples, if any, are adopted?
 - What activity maintains a streak, which timezone defines the study day, and how should streak freezes work?
 - Which badge criteria are verifiable, and what opt-in/opt-out, privacy, ranking-reset, and school-affiliation rules apply to any leaderboard?
-- Should the theme preference remain device-local or synchronize with an account?
+- Account-synchronized theme preference is out of scope for the first release; revisit only through a separate owner-approved decision.
 - Which resources can be downloaded, how much storage is allocated, and how are stale/withdrawn packages handled?
 - How should offline timers respond to app suspension, device-clock changes, and network restoration?
 - Which math syntax is required beyond verified KaTeX support, and how is user-posted markup sanitized?
