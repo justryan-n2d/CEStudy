@@ -2,9 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { readFileSync } from "node:fs";
 
-const stylesheet = readFileSync("src/styles/global.css", "utf8");
+import stylesheet from "../styles/global.css?raw";
 
 const { fetchCatalogSubjectsMock } = vi.hoisted(() => ({ fetchCatalogSubjectsMock: vi.fn() }));
 vi.mock("../data/catalog-api", () => ({ fetchCatalogSubjects: fetchCatalogSubjectsMock }));
