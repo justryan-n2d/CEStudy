@@ -1,17 +1,21 @@
 # CEStudy UX/UI Design System
 
-**Status:** Approved direction for implementation  
-**Platforms:** Responsive web now; Android and iOS later  
+**Status:** Brand foundations established; owner has approved the Light/Dark toggle, website navigation direction, and Practice workspace layout. No application implementation is authorized by this document.  
+**Platforms:** Website-first responsive web now; native Android and iOS later
+**Decision update:** 2026-10-23, device-local theme preference approved for the first release  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
+
+**Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md) and the [modern gamified UX/UI decision plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md).
 
 ## Design principles
 
-1. **Logo-led, not logo-disconnected.** Retain the canonical master logo and its geometry. The exact logo blue is `#0754B5`; use its transparent blue-art variant on pale or white surfaces when a larger brand mark is useful.
-2. **White by default.** The website and future app launch in a white theme. Do not add a dark default or large full-width blue panels.
-3. **Blue with restraint.** Use the logo blue for primary actions, links, focus indicators, and small selected states. Pale blue supports selected surfaces. Keep body text in dark neutral colors and retain teal for limited semantic accents.
-4. **Useful copy only.** Text must help students navigate, understand a content status, learn a concept, or recover from a problem. Remove repeated claims, filler slogans, generic marketing copy, and statistics that do not help a student make a decision.
-5. **Motion with purpose.** Motion may show hover, focus, selection, feedback, or the arrival of content. It must not delay studying or act as decoration.
-6. **Performance is a design requirement.** Prefer CSS and existing dependencies; avoid large animations, continuous effects, unnecessary image payloads, repeated data fetching, and gratuitous blur or shadow.
+1. **Website-first information architecture.** Design the desktop website structure and primary workflows first. Adapt them responsively for tablet and phone browsers afterward; mobile-browser usability remains required but does not set the overall architecture.
+2. **Logo-led, not logo-disconnected.** Retain the canonical master logo and its geometry. The exact logo blue is `#0754B5`; use its transparent blue-art variant on pale or white surfaces when a larger brand mark is useful.
+3. **Theme toggle approved.** Provide a clear Light/Dark toggle and keep the existing light-default baseline for this plan. Do not switch to a dark-first default or add a System option without a separate owner decision. The modern direction draws inspiration from **Discord** (community and navigation), **Duolingo** (quests, XP, streak feedback, and learning rewards), **GitHub** (structured activity and progress), and **Autodesk AutoCAD** (precision engineering-workspace styling, dark drafting canvas, and technical panels). These references inform CEStudy's own design system and must not be copied.
+4. **Brand accents with restraint.** Use CEStudy blue for primary actions, links, focus indicators, and small selected states. Evaluate proposed electric green, cyan/neon blue, and safety orange only for appropriate semantic roles and verified contrast. Avoid large full-width blue panels, excessive glow, and neon colors as the sole way to convey status.
+5. **Useful copy only.** Text must help students navigate, understand a content status, learn a concept, or recover from a problem. Remove repeated claims, filler slogans, generic marketing copy, and statistics that do not help a student make a decision.
+6. **Motion with purpose.** Motion may show hover, focus, selection, feedback, or the arrival of content. It must not delay studying or act as decoration.
+7. **Performance is a design requirement.** Prefer CSS and existing dependencies; avoid large animations, continuous effects, unnecessary image payloads, repeated data fetching, and gratuitous blur or shadow.
 
 ## Design tokens
 
@@ -29,6 +33,8 @@
 | Card background | `#FFFFFF` | Cards and panels |
 | Soft section surface | `#F7F9FC` | Low-emphasis grouping only |
 
+The color rows above are the existing light-theme baseline, not a decision that light mode must remain the default. Define a matching dark semantic-token map during theme comparison. Both mappings must cover page/surface backgrounds, text, borders, focus, success, warning, error, disabled, hover, selected, equations, diagrams, charts, and dialogs.
+
 Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes responsive. Use consistent 4px/8px spacing increments and a restrained set of radii.
 
 ## Logo use
@@ -41,7 +47,14 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Shared components
 
-- **Header:** canonical logo, wordmark, concise navigation, white surface, thin border. Year levels opens the overview page, not Year 1.
+- **Header:** canonical logo, wordmark, concise global navigation, white/light default surface, thin border. The approved public-page navigation uses the hybrid header; a collapsible sidebar is reserved for dense signed-in workspaces.
+- **Year-Level navigation (planned):** hierarchy from 1st to 4th year, then semester and subject, based on verified curriculum/content metadata.
+- **Review Materials mega-menu (planned):** Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Show only available, appropriately reviewed resources.
+- **Equation renderer:** shared rendering path for inline/display math in lessons, formula sheets, problem sets/solutions, quizzes, results, forum discussions, and approved offline material.
+- **Offline/download state:** consistent labels for available to download, downloading, downloaded, update available, failed, unavailable offline, stale, and removed, only where each state is applicable.
+- **Theme toggle:** explicit Light/Dark preference; no System option is approved. Keep light as the initial default baseline and use approved device-local `cestudy:theme:v1` persistence with pre-React initialization; account synchronization is out of scope for the first release. Year levels opens the overview page, not Year 1.
+- **Gamification controls:** XP/rewards, quests, streak freezes, badges, leaderboards, and retry-related reward behavior should be independently toggleable. Privacy and opt-in controls are user-respecting; anti-abuse/integrity safeguards remain mandatory while a reward feature is active.
+- **Practice workspace:** target a flexible approximate 70/30 question/tools layout on desktop, with a collapsible/dockable tools panel. At narrow widths, use a single-column question view and move tools into a drawer, tab, or opened sheet.
 - **Primary button:** logo blue with white text; one main action per region.
 - **Secondary button:** white with a neutral border and navy text.
 - **Subject card:** title, relevant year/category metadata, accurate content availability, and one clear destination.
@@ -51,13 +64,17 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - **Feedback states:** consistent loading, empty, error, success, focus, and disabled behavior.
 - **Curriculum notice:** preserve important CHED-reference context where it affects a user's interpretation; avoid duplicating notices without a reason.
 
-## Responsive behavior
+## Responsive website behavior
 
-- Mobile-first, with existing 560px and 850px breakpoints as initial reference points.
-- Phone layouts prioritize the main action, search, and subject list. Cards may use two columns when readable.
-- Tablet layouts use compact grids and filters without cramped labels.
-- Desktop content remains centered, with a maximum width around 1120px where appropriate.
-- Keep layouts usable at 320px and verify at 360, 390, 768, 1024, and 1440px.
+- Website-first: establish the desktop information architecture, page hierarchy, and wide-screen workflows first, then design responsive adaptations. Existing 560px and 850px breakpoints are initial references, not mandatory boundaries.
+- Target desktop navigation: Year-Level dropdown (year → semester → subject), Review Materials Hub mega-menu (Formula Sheets, Problem Sets with Solutions, Video Tutorials), direct Mock Exam Portal and Community Forum links, and a private signed-in Student Dashboard control.
+- On tablet/phone browsers, make the year hierarchy and material groups work as panels or accordions. Do not shrink desktop menus or assume the future native-app tab bar is the correct mobile-web navigation.
+- Desktop content should use page-appropriate widths. Reading pages may stay centered and constrained; reference tables and dense study workspaces may need wider containers.
+- Tablet layouts should retain useful hierarchy, readable filters, and adequate content space without cramped labels.
+- Phone browser layouts must remain usable and should prioritize the current task, search, and content. They may use different navigation presentation from desktop without changing the underlying destination model.
+- Keep layouts usable at 320px and verify at 360, 390, 768, 1024, and 1440px. Do not force desktop tables or multi-column layouts into unreadable narrow surfaces.
+- Verify long equations do not cause page-wide overflow; use a deliberate wrapping or labelled horizontal-scroll strategy where necessary.
+- Test light and dark themes across dropdowns, mega-menus, formulas, timers, tables, results, forum content, and focus indicators.
 
 ## Motion and performance
 
@@ -67,7 +84,8 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 | Cards | Small lift/border/shadow change on hover-capable devices | Avoid layout shifts |
 | Page entry | One short opacity/translate transition where it helps orientation | No continuous animation |
 | Loading | Skeleton or existing branded loader matching the expected content | No blocking delay |
-| Reduced motion | Disable nonessential transitions and entrance effects | Respect OS preference |
+| Reduced motion | Disable nonessential transitions and entrance effects | Respect OS preference and provide an accessible in-app control where needed |
+| Sound effects | Optional supplemental feedback | Never autoplay; always provide visible/accessibility-equivalent feedback and a reliable mute path |
 
 - Prefer `transform` and `opacity` over animations that trigger layout.
 - Avoid continuous parallax, autoplay, large video backgrounds, excessive backdrop blur, and new animation libraries without a demonstrated need.
@@ -81,15 +99,29 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Acceptance checks
 
-- The real master logo is unchanged and visible against a white theme.
-- Logo blue is used sparingly; white remains the default surface.
+- The real master logo is unchanged and legible against both the light and dark theme concepts.
+- The planned website navigation supports year → semester → subject, the three Review Materials groups, Mock Exam Portal, Community Forum, and a private Student Dashboard.
+- The responsive website does not inherit the native app's five-tab structure without separate usability review.
+- Inline/display equations render through the shared path, including fractions, nested fractions, matrices/vectors, subscripts/superscripts, units, and a readable invalid-expression fallback.
+- Dark Mode applies consistently and persists according to the approved preference model.
+- Offline Access only indicates an item is downloaded when its complete package is stored; download, failure, update, stale, remove, and unavailable states are explicit.
+- Content licensing and publication approval are required before protected materials are made downloadable.
+- Logo blue is used sparingly in both themes. Light-theme white surfaces remain part of the supported design and remain the initial default baseline; Dark Mode is available through the approved Light/Dark toggle.
 - All current routes use the same token, type, spacing, button, card, and focus patterns.
 - Year levels links to an overview that lists all four years.
 - No filler marketing statements or non-actionable metrics appear on the homepage.
 - Hover/focus states work, and reduced-motion is respected.
-- Contrast, 320px layout, keyboard behavior, route refreshes, and catalog/practice behavior remain intact.
+- Desktop information architecture and primary journeys are clear at 1440px and 1024px; responsive layouts remain usable at 768px, 390px, and 320px.
+- Contrast, keyboard behavior, route refreshes, and catalog/practice behavior remain intact without horizontal page overflow.
 - CI, browser smoke checks, and available accessibility checks pass before merging.
 
+
+## Revision record
+
+- **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
+- **2026-10-21:** Linked the modern gamified UX/UI decision plan and documented planning gates for quests, rewards, healthy engagement, exam evidence, and responsive navigation. Documentation-only change.
+- **2026-10-22:** Recorded owner decisions: explicit Light/Dark toggle with existing light-default baseline; independently toggleable gamification mechanics; approved healthy-engagement safeguards including optional Night Owl; exam-specific PRC mapping, a dedicated past-question sourcing/permissions workflow, the proposed 100-question challenge and readiness measures deferred; hybrid global navigation, workspace-only collapsible sidebar and flexible 70/30 Practice layout approved. Documentation-only change.
+- **2026-10-23:** Approved device-local theme persistence using `cestudy:theme:v1` and pre-React initialization for the first release. Account synchronization and cross-device theme sync remain out of scope.
 
 ## Footer
 
@@ -104,26 +136,44 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 CEStudy uses one design language with two intentionally different interfaces. The future app should not simply squeeze the responsive website into a native shell.
 
+
 ### Shared foundations
-- The master logo, logo blue #0754B5, white surfaces, type hierarchy, semantic color roles, spacing and radius tokens.
-- Consistent meaning for primary and secondary actions, subject availability states, search, filters, progress, feedback, loading, errors and success.
-- Shared subject/content taxonomy, Supabase data contracts, validation rules, and access-control behavior.
-- Motion principles: short, purposeful transitions; no animation blocking study tasks; reduced-motion preferences are respected.
+
+- The master logo, logo blue #0754B5, type and spacing tokens, semantic colors, and purposeful motion constraints.
+- Consistent states for content availability, search/filter, progress, feedback, loading, errors, success, and offline downloads.
+- Shared subject/content taxonomy, validation, formula conventions, data contracts, and access-control behavior.
+- Website equations must use an audited shared renderer. Native app math rendering must be selected and tested independently.
+- Keep the existing light-default baseline and provide the approved Light/Dark toggle. Use device-local `cestudy:theme:v1` persistence with pre-React initialization; account synchronization is out of scope. The design references are Discord for community/navigation, Duolingo for learning quests/rewards, GitHub for activity/progress, and Autodesk AutoCAD for a precise technical-workspace aesthetic. Use these references to inform CEStudy's own design, not to copy other interfaces.
+- Offline packages need explicit version, availability, update, and removal states. Browser service workers/storage and native app local storage/synchronization are different technical implementations.
 - Brand/service logos are sourced from SVGL (https://svgl.app/) when available and stored locally. Generic interface icons remain simple and visually consistent.
 
-### Website-specific structure
-- Desktop: compact top navigation and multi-column subject lists.
-- Mobile web: persistent four-item quick navigation (Home, Subjects, Years, Math) plus a More menu for Contact, Support, Bug reports, and Feedback.
-- The mobile quick bar must not cover final content; allow room for safe-area insets on gesture-navigation devices.
-- The homepage uses a responsive hero photograph with appropriate srcset widths and reserved dimensions. Only the primary hero is loaded eagerly.
-- Scroll reveal applies only to major content sections. Use IntersectionObserver, unobserve after the first reveal, animate only opacity/transform, and show content immediately if reduced motion is requested or the API is unavailable. See MDN: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API.
+
+### Website-specific structure (current baseline, subject to redesign)
+
+- Current main baseline: a brand header with Subject catalog, Year levels, and Math foundations, plus secondary navigation. The documented mobile-web pattern uses a compact quick-navigation bar and a More menu. These are audit baselines, not immutable constraints.
+- PR #44 remains a separate unmerged draft with its own account/profile/history/streak/community routes and navigation implementation. Do not treat draft functionality as shipped on main or change its release gates through this plan.
+- Target website navigation: Year-Level dropdown for 1st, 2nd, 3rd, and 4th year with semester and subject levels; Review Materials Hub mega-menu for Formula Sheets, Problem Sets with Solutions, and Video Tutorials; direct Mock Exam Portal and Community Forum destinations; private signed-in Student Dashboard control.
+- Dashboard progress/bookmarks must be private to the correct user, and weak-subject signals must show evidence/coverage rather than implying mastery from a tiny sample.
+- Resource menus show real availability, review state, and provenance. Download only content whose source and redistribution rights have been approved.
+- At tablet/phone widths, the year dropdown and resource mega-menu become operable panels/accordions. The mobile-browser navigation is decided separately from the native app tab bar.
+- Offline Access should include a download manager for approved reviewer PDFs, formula sheets, and mock-test packages. Specify storage, source/version, update, removal, and offline-attempt synchronization before implementation.
+- Use equation rendering across lessons, formula sheets, problem sets, quizzes, results, and forum posts/comments. Offline materials need local access to any required rendering assets.
+
 
 ### Future native mobile app
-- Use a study-first home screen: Continue studying when progress exists, search, subjects, and practice reachable without a deep menu.
-- Use native bottom tabs and touch-first patterns, not the website DOM, header, footer, or mobile web menu.
-- Reuse the same brand, type/spacing tokens, statuses, data contracts, and interaction semantics; rebuild visual components in the future mobile framework.
-- Defer the framework decision until app implementation. Do not add React Native, Expo, or another mobile framework to the current website.
-- Use photography selectively; repeated study screens should stay content-first and lighter than the website homepage.
+
+- The app Home supports a reviewed daily question, quick-start study streak, and recently opened modules where real content/history exists.
+- The target native tab bar has five tabs: **Home**, **Subjects / Library**, **Practice**, **Calculator / Tools**, and **Profile**.
+- **Home:** daily review question, streak entry, recent modules.
+- **Subjects / Library:** year/subject catalog, structured reading, authorized reviewer PDFs and formula sheets for offline use.
+- **Practice:** flashcards, customizable timed quizzes, and Shuffled Practice.
+- **Calculator / Tools:** unit converter first; verified steel references and bounded concrete-learning references only after source review.
+- **Profile:** saved formulas/questions, settings, Light/Dark toggle, Offline Access manager, account and privacy controls. Board-readiness measurements are not approved in the current plan.
+- Offline timed-test packages need local question/answer/explanation data, math-rendering assets, clear timer behavior, and an explicit unsynced-attempt policy.
+- Provide a Dark Mode toggle using shared semantic tokens and verify device-local `cestudy:theme:v1` preference restoration after refresh.
+- Reuse brand, typography, statuses, content taxonomy, validation rules, and data contracts; rebuild UI components for native mobile interaction instead of simply squeezing the responsive website into an app shell.
+- Choose and verify native equation rendering separately. The website's KaTeX dependency does not establish native rendering support.
+- Defer platform/framework selection until app development is authorized. Do not add mobile framework dependencies to the current website.
 
 ## Photography and service icons
 - Homepage bridge photograph: Juan Coronel on Unsplash, https://unsplash.com/photos/an-aerial-view-of-a-bridge-over-a-river-RFJb724c660. Delivered through Unsplash's image CDN using responsive widths. Browser smoke tests check loading and CSP.
