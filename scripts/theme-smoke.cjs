@@ -14,6 +14,10 @@ const routes = [
   "/study/basic-algebra",
   "/practice/basic-algebra",
   "/progress",
+  "/login",
+  "/profile",
+  "/history",
+  "/streak",
   "/privacy",
   "/review-materials",
   "/mock-exam-portal",
@@ -117,7 +121,8 @@ async function main() {
               ".subject-card", ".year-card", ".filters-panel", ".detail-hero",
               ".detail-panel", ".study-lesson", ".review-gate", ".state-panel",
               ".privacy-content > section", ".surface-form", ".answer-option",
-              ".answer-feedback", ".year-level-menu-year", ".review-materials-menu-card",
+              ".answer-feedback", ".auth-panel", ".login-panel", ".profile-account-card",
+              ".history-list-item", ".streak-calendar-card", ".streak-summary-card", ".streak-unlock-dialog", ".year-level-menu-year", ".review-materials-menu-card",
               ".review-materials-page-card",
             ];
             return selectors.flatMap((selector) =>
