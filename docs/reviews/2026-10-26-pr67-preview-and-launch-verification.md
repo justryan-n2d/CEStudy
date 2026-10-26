@@ -28,7 +28,7 @@ Use the stable branch preview URL above so the origin does not change on every c
    Trust the callback URI displayed in Supabase if it differs.
 5. **Do not add the Pages preview URL as Google's Authorized redirect URI.** Google sends the provider callback to Supabase Auth. The Pages preview is the application origin and final post-auth redirect.
 
-Official reference: [Supabase Google sign-in setup](https://supabase.com/docs/guides/auth/social-login/auth-google).
+Official reference: [Supabase Google sign-in setup](https://supabase.com/docs/guides/auth/social-sign-in/auth-google).
 
 ### Supabase Auth
 
