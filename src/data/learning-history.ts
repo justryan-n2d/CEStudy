@@ -1,4 +1,5 @@
-export const LEARNING_HISTORY_STORAGE_KEY = "cestudy:opened-lesson-history:v1";
+export const LEARNING_HISTORY_STORAGE_KEY = "cestudy:opened-lesson-history:v2:guest";
+const USER_HISTORY_STORAGE_PREFIX = "cestudy:opened-lesson-history:v2:user:";
 const MAX_HISTORY_ENTRIES = 100;
 
 export interface OpenedLessonInput {
@@ -11,6 +12,14 @@ export interface OpenedLessonInput {
 export interface OpenedLesson extends OpenedLessonInput {
   path: string;
   lastOpenedAt: string;
+}
+
+/** Keep guest history separate from the local history for each signed-in account. */
+export function learningHistoryStorageKey(userId?: string | null): string {
+  const normalizedUserId = userId?.trim();
+  return normalizedUserId
+    ? `${USER_HISTORY_STORAGE_PREFIX}${encodeURIComponent(normalizedUserId)}`
+    : LEARNING_HISTORY_STORAGE_KEY;
 }
 
 function isValidOpenedLesson(value: unknown): value is OpenedLesson {
@@ -48,11 +57,11 @@ function safeHistory(value: unknown): OpenedLesson[] {
     .slice(0, MAX_HISTORY_ENTRIES);
 }
 
-/** History stays local to this browser and is available to signed-out visitors. */
-export function readLessonHistory(): OpenedLesson[] {
+/** History is local to this browser and separately keyed for guest mode and accounts. */
+export function readLessonHistory(userId?: string | null): OpenedLesson[] {
   if (typeof window === "undefined") return [];
   try {
-    const stored = window.localStorage.getItem(LEARNING_HISTORY_STORAGE_KEY);
+    const stored = window.localStorage.getItem(learningHistoryStorageKey(userId));
     return stored ? safeHistory(JSON.parse(stored)) : [];
   } catch {
     return [];
@@ -60,13 +69,17 @@ export function readLessonHistory(): OpenedLesson[] {
 }
 
 /** Record a validated published-lesson identity, not an arbitrary URL. */
-export function recordOpenedLesson(input: OpenedLessonInput, now: Date = new Date()): OpenedLesson[] {
+export function recordOpenedLesson(
+  input: OpenedLessonInput,
+  now: Date = new Date(),
+  userId?: string | null,
+): OpenedLesson[] {
   if (typeof input.lessonId !== "string" || !input.lessonId.trim() || input.lessonId.length > 256
     || typeof input.subjectSlug !== "string" || !/^[a-z0-9-]+$/.test(input.subjectSlug)
     || !Number.isSafeInteger(input.unitNumber) || input.unitNumber < 0
     || typeof input.title !== "string" || !input.title.trim()
     || !Number.isFinite(now.getTime())) {
-    return readLessonHistory();
+    return readLessonHistory(userId);
   }
 
   const entry: OpenedLesson = {
@@ -79,12 +92,12 @@ export function recordOpenedLesson(input: OpenedLessonInput, now: Date = new Dat
   };
   const next = [
     entry,
-    ...readLessonHistory().filter((lesson) => lesson.lessonId !== entry.lessonId),
+    ...readLessonHistory(userId).filter((lesson) => lesson.lessonId !== entry.lessonId),
   ].slice(0, MAX_HISTORY_ENTRIES);
 
   if (typeof window !== "undefined") {
     try {
-      window.localStorage.setItem(LEARNING_HISTORY_STORAGE_KEY, JSON.stringify(next));
+      window.localStorage.setItem(learningHistoryStorageKey(userId), JSON.stringify(next));
     } catch {
       // Keep lesson navigation usable if browser storage is unavailable or full.
     }
@@ -92,10 +105,10 @@ export function recordOpenedLesson(input: OpenedLessonInput, now: Date = new Dat
   return next;
 }
 
-export function clearLessonHistory(): void {
+export function clearLessonHistory(userId?: string | null): void {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.removeItem(LEARNING_HISTORY_STORAGE_KEY);
+    window.localStorage.removeItem(learningHistoryStorageKey(userId));
   } catch {
     // The page remains usable if storage is blocked.
   }

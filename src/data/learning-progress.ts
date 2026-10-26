@@ -1,4 +1,5 @@
-export const LEARNING_PROGRESS_STORAGE_KEY = "cestudy:completed-lessons:v1";
+export const LEARNING_PROGRESS_STORAGE_KEY = "cestudy:completed-lessons:v2:guest";
+const USER_PROGRESS_STORAGE_PREFIX = "cestudy:completed-lessons:v2:user:";
 export const LEARNING_ACTIVITY_DAYS_STORAGE_KEY = "cestudy:learning-activity-days:v2:";
 export const LEARNING_ACTIVITY_CHANGED_EVENT = "cestudy:learning-activity-changed";
 
@@ -32,6 +33,14 @@ export function isValidCalendarDateKey(value: unknown): value is string {
   return date.getUTCFullYear() === year
     && date.getUTCMonth() === month - 1
     && date.getUTCDate() === day;
+}
+
+/** Separate guest progress from completed lessons for each signed-in account. */
+export function learningProgressStorageKey(userId?: string | null): string {
+  const normalizedUserId = userId?.trim();
+  return normalizedUserId
+    ? `${USER_PROGRESS_STORAGE_PREFIX}${encodeURIComponent(normalizedUserId)}`
+    : LEARNING_PROGRESS_STORAGE_KEY;
 }
 
 /** Activity is isolated by the stable Supabase user ID and remains in this browser. */
@@ -95,10 +104,10 @@ function recordLearningActivityDay(day: string, userId: string): string[] {
   return next;
 }
 
-export function readCompletedLessons(): CompletedLesson[] {
+export function readCompletedLessons(userId?: string | null): CompletedLesson[] {
   if (typeof window === "undefined") return [];
   try {
-    const stored = window.localStorage.getItem(LEARNING_PROGRESS_STORAGE_KEY);
+    const stored = window.localStorage.getItem(learningProgressStorageKey(userId));
     if (!stored) return [];
     const parsed: unknown = JSON.parse(stored);
     if (!Array.isArray(parsed)) return [];
@@ -124,10 +133,10 @@ export function setLessonCompleted(
 ): CompletedLesson[] {
   if (!lesson.lessonId.trim() || !/^[a-z0-9-]+$/.test(lesson.subjectSlug)
     || !Number.isInteger(lesson.unitNumber) || lesson.unitNumber < 0 || !lesson.title.trim()) {
-    return readCompletedLessons();
+    return readCompletedLessons(userId);
   }
 
-  const current = readCompletedLessons();
+  const current = readCompletedLessons(userId);
   const remaining = current.filter((item) => item.lessonId !== lesson.lessonId);
   const now = new Date();
   const completedOn = formatLocalDateKey(now);
@@ -139,7 +148,7 @@ export function setLessonCompleted(
 
   if (typeof window !== "undefined") {
     try {
-      window.localStorage.setItem(LEARNING_PROGRESS_STORAGE_KEY, JSON.stringify(next));
+      window.localStorage.setItem(learningProgressStorageKey(userId), JSON.stringify(next));
     } catch {
       // Keep the lesson page usable if browser storage is blocked or full.
     }
@@ -151,7 +160,7 @@ export function setLessonCompleted(
 export function clearLessonProgress(userId?: string | null): void {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.removeItem(LEARNING_PROGRESS_STORAGE_KEY);
+    window.localStorage.removeItem(learningProgressStorageKey(userId));
   } catch {
     // Continue to the current user's streak cleanup even if progress storage fails.
   }
