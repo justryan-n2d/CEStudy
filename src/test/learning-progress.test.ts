@@ -5,6 +5,7 @@ import {
   LEARNING_PROGRESS_STORAGE_KEY,
   learningActivityStorageKey,
   learningProgressStorageKey,
+  migrateLegacyGuestProgress,
   readCompletedLessons,
   readLearningActivityDays,
   setLessonCompleted,
@@ -113,6 +114,60 @@ describe("device-local learning progress", () => {
     expect(readCompletedLessons("other-user").map((item) => item.lessonId)).toEqual(["lesson-other"]);
     expect(readCompletedLessons().map((item) => item.lessonId)).toEqual(["lesson-guest"]);
     expect(learningProgressStorageKey(signedInUserId)).not.toBe(learningProgressStorageKey("other-user"));
+  });
+
+  it("migrates legacy completion records to guest progress only on the canonical production origin", () => {
+    localStorage.setItem("cestudy:completed-lessons:v1", JSON.stringify([{
+      ...lesson,
+      completedAt: "2026-10-17T17:00:00.000Z",
+      completedOn: "2026-10-18",
+    }]));
+
+    migrateLegacyGuestProgress("cestudy.pages.dev");
+
+    expect(readCompletedLessons()).toEqual([expect.objectContaining({
+      ...lesson,
+      completedAt: "2026-10-17T17:00:00.000Z",
+      completedOn: "2026-10-18",
+    })]);
+    expect(readCompletedLessons(signedInUserId)).toEqual([]);
+    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toBeNull();
+  });
+
+  it("does not migrate ambiguous legacy completion records on preview origins", () => {
+    localStorage.setItem("cestudy:completed-lessons:v1", JSON.stringify([{
+      ...lesson,
+      completedAt: "2026-10-17T17:00:00.000Z",
+      completedOn: "2026-10-18",
+    }]));
+
+    migrateLegacyGuestProgress("feat-local-history-streak-20-4d7n.cestudy.pages.dev");
+
+    expect(readCompletedLessons()).toEqual([]);
+    expect(readCompletedLessons(signedInUserId)).toEqual([]);
+    expect(localStorage.getItem("cestudy:completed-lessons:v1")).not.toBeNull();
+  });
+
+  it("merges legacy guest completions with existing guest progress without overwriting newer records", () => {
+    const newerLesson = {
+      ...lesson,
+      completedAt: "2026-10-20T17:00:00.000Z",
+      completedOn: "2026-10-21",
+    };
+    localStorage.setItem(learningProgressStorageKey(), JSON.stringify([newerLesson]));
+    localStorage.setItem("cestudy:completed-lessons:v1", JSON.stringify([
+      { ...lesson, completedAt: "2026-10-17T17:00:00.000Z", completedOn: "2026-10-18" },
+      { ...lesson, lessonId: "legacy-other", title: "Legacy other", completedAt: "2026-10-18T17:00:00.000Z", completedOn: "2026-10-19" },
+    ]));
+
+    migrateLegacyGuestProgress("cestudy.pages.dev");
+
+    expect(readCompletedLessons().map((item) => item.lessonId)).toEqual(["lesson-1", "legacy-other"]);
+    expect(readCompletedLessons()[0]).toMatchObject({
+      lessonId: "lesson-1",
+      completedAt: "2026-10-20T17:00:00.000Z",
+    });
+    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toBeNull();
   });
 
   it("does not expose legacy unscoped completion records to any account", () => {
