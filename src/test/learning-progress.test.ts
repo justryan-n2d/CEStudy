@@ -4,6 +4,7 @@ import {
   LEARNING_ACTIVITY_DAYS_STORAGE_KEY,
   LEARNING_PROGRESS_STORAGE_KEY,
   learningActivityStorageKey,
+  learningProgressStorageKey,
   readCompletedLessons,
   readLearningActivityDays,
   setLessonCompleted,
@@ -60,7 +61,7 @@ describe("device-local learning progress", () => {
     setLessonCompleted(lesson, true, signedInUserId);
     setLessonCompleted(lesson, false, signedInUserId);
 
-    expect(readCompletedLessons()).toEqual([]);
+    expect(readCompletedLessons(signedInUserId)).toEqual([]);
     expect(readLearningActivityDays(signedInUserId)).toHaveLength(1);
   });
 
@@ -76,7 +77,7 @@ describe("device-local learning progress", () => {
     setLessonCompleted(lesson, true, signedInUserId);
 
     expect(setLessonCompleted(lesson, false, signedInUserId)).toEqual([]);
-    expect(readCompletedLessons()).toEqual([]);
+    expect(readCompletedLessons(signedInUserId)).toEqual([]);
   });
 
   it("returns an empty list for malformed stored JSON", () => {
@@ -101,6 +102,28 @@ describe("device-local learning progress", () => {
     ]));
 
     expect(readCompletedLessons()).toEqual([]);
+  });
+
+  it("isolates completed lessons between guest and signed-in accounts", () => {
+    setLessonCompleted(lesson, true, signedInUserId);
+    setLessonCompleted({ ...lesson, lessonId: "lesson-other", title: "Other lesson" }, true, "other-user");
+    setLessonCompleted({ ...lesson, lessonId: "lesson-guest", title: "Guest lesson" }, true);
+
+    expect(readCompletedLessons(signedInUserId).map((item) => item.lessonId)).toEqual(["lesson-1"]);
+    expect(readCompletedLessons("other-user").map((item) => item.lessonId)).toEqual(["lesson-other"]);
+    expect(readCompletedLessons().map((item) => item.lessonId)).toEqual(["lesson-guest"]);
+    expect(learningProgressStorageKey(signedInUserId)).not.toBe(learningProgressStorageKey("other-user"));
+  });
+
+  it("does not expose legacy unscoped completion records to any account", () => {
+    localStorage.setItem("cestudy:completed-lessons:v1", JSON.stringify([{
+      ...lesson,
+      completedAt: "2026-10-17T17:00:00.000Z",
+      completedOn: "2026-10-18",
+    }]));
+
+    expect(readCompletedLessons()).toEqual([]);
+    expect(readCompletedLessons(signedInUserId)).toEqual([]);
   });
 
   it("isolates activity history between accounts", () => {
@@ -152,11 +175,14 @@ describe("device-local learning progress", () => {
     setLessonCompleted({ ...lesson, lessonId: "lesson-2" }, true, "other-user");
     clearLessonProgress(signedInUserId);
 
+    expect(readCompletedLessons(signedInUserId)).toEqual([]);
+    expect(readCompletedLessons("other-user")).toHaveLength(1);
     expect(readCompletedLessons()).toEqual([]);
     expect(readLearningActivityDays(signedInUserId)).toEqual([]);
     expect(readLearningActivityDays("other-user")).toHaveLength(1);
     expect(localStorage.getItem(learningActivityStorageKey(signedInUserId))).toBeNull();
     expect(localStorage.getItem(learningActivityStorageKey("other-user"))).not.toBeNull();
+    expect(localStorage.getItem(learningProgressStorageKey("other-user"))).not.toBeNull();
     expect(localStorage.getItem("unrelated-app-data")).toBe("keep");
   });
 });

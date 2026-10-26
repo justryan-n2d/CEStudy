@@ -5,10 +5,61 @@ import { MemoryRouter } from "react-router-dom";
 import { HistoryPage } from "../pages/HistoryPage";
 import { recordOpenedLesson } from "../data/learning-history";
 
-beforeEach(() => localStorage.clear());
+const mockUseAuth = vi.hoisted(() => vi.fn());
+vi.mock("../contexts/AuthContext", () => ({ useAuth: mockUseAuth }));
+
+beforeEach(() => {
+  localStorage.clear();
+  mockUseAuth.mockReset();
+  mockUseAuth.mockReturnValue({
+    user: null,
+    loading: false,
+    configured: true,
+    signInWithGoogle: vi.fn(),
+    signOut: vi.fn(),
+  });
+});
 afterEach(() => vi.unstubAllGlobals());
 
 describe("recently opened lesson history", () => {
+  it("shows only the active account's history and refreshes after account switching", () => {
+    recordOpenedLesson({
+      lessonId: "account-a-lesson",
+      subjectSlug: "basic-algebra",
+      unitNumber: 1,
+      title: "Account A lesson",
+    }, new Date("2026-10-16T10:00:00.000Z"), "account-a");
+    recordOpenedLesson({
+      lessonId: "account-b-lesson",
+      subjectSlug: "basic-algebra",
+      unitNumber: 2,
+      title: "Account B lesson",
+    }, new Date("2026-10-17T10:00:00.000Z"), "account-b");
+
+    mockUseAuth.mockReturnValue({
+      user: { id: "account-a" },
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+
+    const view = render(<MemoryRouter><HistoryPage /></MemoryRouter>);
+    expect(screen.getByRole("heading", { name: "Account A lesson" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Account B lesson" })).not.toBeInTheDocument();
+
+    mockUseAuth.mockReturnValue({
+      user: { id: "account-b" },
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+    view.rerender(<MemoryRouter><HistoryPage /></MemoryRouter>);
+
+    expect(screen.getByRole("heading", { name: "Account B lesson" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Account A lesson" })).not.toBeInTheDocument();
+  });
   it("shows opened lessons in newest-first order with a direct link back to the lesson", () => {
     recordOpenedLesson({
       lessonId: "algebra-1",

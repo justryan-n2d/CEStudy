@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  clearLessonHistory,
   LEARNING_HISTORY_STORAGE_KEY,
+  learningHistoryStorageKey,
   readLessonHistory,
   recordOpenedLesson,
 } from "../data/learning-history";
@@ -76,6 +78,38 @@ describe("opened lesson history", () => {
 
     expect(() => recordOpenedLesson(firstLesson)).not.toThrow();
     expect(readLessonHistory()).toEqual([]);
+  });
+
+  it("keeps guest history separate from each signed-in account", () => {
+    recordOpenedLesson(firstLesson, new Date("2026-10-17T10:00:00.000Z"), "account-a");
+    recordOpenedLesson(secondLesson, new Date("2026-10-17T11:00:00.000Z"), "account-b");
+    recordOpenedLesson({ ...firstLesson, lessonId: "guest-lesson" }, new Date("2026-10-17T12:00:00.000Z"));
+
+    expect(readLessonHistory("account-a").map((lesson) => lesson.lessonId)).toEqual(["algebra-1"]);
+    expect(readLessonHistory("account-b").map((lesson) => lesson.lessonId)).toEqual(["algebra-2"]);
+    expect(readLessonHistory().map((lesson) => lesson.lessonId)).toEqual(["guest-lesson"]);
+    expect(learningHistoryStorageKey("account-a")).not.toBe(learningHistoryStorageKey("account-b"));
+  });
+
+  it("does not expose legacy unscoped history as guest or account history", () => {
+    localStorage.setItem("cestudy:opened-lesson-history:v1", JSON.stringify([{
+      ...firstLesson,
+      path: "/study/basic-algebra/1",
+      lastOpenedAt: "2026-10-17T10:00:00.000Z",
+    }]));
+
+    expect(readLessonHistory()).toEqual([]);
+    expect(readLessonHistory("account-a")).toEqual([]);
+  });
+
+  it("clears only the selected account's history", () => {
+    recordOpenedLesson(firstLesson, new Date("2026-10-17T10:00:00.000Z"), "account-a");
+    recordOpenedLesson(secondLesson, new Date("2026-10-17T11:00:00.000Z"), "account-b");
+
+    clearLessonHistory("account-a");
+
+    expect(readLessonHistory("account-a")).toEqual([]);
+    expect(readLessonHistory("account-b").map((lesson) => lesson.lessonId)).toEqual(["algebra-2"]);
   });
 
   it("limits retained history to the latest 100 unique lessons", () => {
