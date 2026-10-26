@@ -100,6 +100,6 @@ describe("student progress page", () => {
     await user.click(screen.getByRole("button", { name: "Clear progress and streak" }));
 
     expect(screen.getByRole("heading", { name: "No completed lessons yet" })).toBeInTheDocument();
-    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toBeNull();
+    expect(localStorage.getItem(learningProgressStorageKey("progress-test-user"))).toBeNull();
   });
 });

@@ -13,6 +13,8 @@ describe("Privacy notice", () => {
     expect(screen.getByText(/Google sign-in is optional/i)).toBeInTheDocument();
     expect(screen.getByText(/Sign out control on your profile/i)).toBeInTheDocument();
     expect(screen.getByText(/lesson history and completed-lesson progress stay in this browser on this device/i)).toBeInTheDocument();
+    expect(screen.getByText(/guest browsing and each signed-in Supabase user ID use separate local history and completion records/i)).toBeInTheDocument();
+    expect(screen.getByText(/local separation is not a server-side security boundary/i)).toBeInTheDocument();
     expect(screen.getByText(/separately under the signed-in Supabase user ID/i)).toBeInTheDocument();
     expect(screen.getByText(/appearance preferences stay on this device/i)).toBeInTheDocument();
     expect(screen.getByText(/does not erase local lesson history/i)).toBeInTheDocument();
