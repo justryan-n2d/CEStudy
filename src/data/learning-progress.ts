@@ -1,4 +1,5 @@
 export const LEARNING_PROGRESS_STORAGE_KEY = "cestudy:completed-lessons:v2:guest";
+const LEGACY_LEARNING_PROGRESS_STORAGE_KEY = "cestudy:completed-lessons:v1";
 const USER_PROGRESS_STORAGE_PREFIX = "cestudy:completed-lessons:v2:user:";
 export const LEARNING_ACTIVITY_DAYS_STORAGE_KEY = "cestudy:learning-activity-days:v2:";
 export const LEARNING_ACTIVITY_CHANGED_EVENT = "cestudy:learning-activity-changed";
@@ -75,6 +76,49 @@ function parseCompletedLesson(value: unknown): CompletedLesson | null {
   };
 }
 
+/**
+ * Production main used anonymous device-local progress before accounts existed.
+ * Preserve those completions as guest progress only on the canonical production
+ * hostname. Preview-origin v1 records may have been shared by multiple signed-in
+ * accounts, so they are deliberately left untouched and never assigned to guest.
+ */
+export function migrateLegacyGuestProgress(hostname?: string): void {
+  if (typeof window === "undefined") return;
+  if ((hostname ?? window.location.hostname) !== "cestudy.pages.dev") return;
+
+  try {
+    const legacyStored = window.localStorage.getItem(LEGACY_LEARNING_PROGRESS_STORAGE_KEY);
+    if (legacyStored === null) return;
+
+    const legacyParsed: unknown = JSON.parse(legacyStored);
+    if (!Array.isArray(legacyParsed)) return;
+
+    const currentStored = window.localStorage.getItem(LEARNING_PROGRESS_STORAGE_KEY);
+    let currentParsed: unknown[] = [];
+    if (currentStored !== null) {
+      const parsedCurrent: unknown = JSON.parse(currentStored);
+      if (!Array.isArray(parsedCurrent)) return;
+      currentParsed = parsedCurrent;
+    }
+
+    const unique = new Map<string, CompletedLesson>();
+    for (const value of [...currentParsed, ...legacyParsed]) {
+      const lesson = parseCompletedLesson(value);
+      if (!lesson) continue;
+      const previous = unique.get(lesson.lessonId);
+      if (!previous || new Date(lesson.completedAt).getTime() > new Date(previous.completedAt).getTime()) {
+        unique.set(lesson.lessonId, lesson);
+      }
+    }
+
+    // Remove the v1 source only after the v2 guest write succeeds.
+    window.localStorage.setItem(LEARNING_PROGRESS_STORAGE_KEY, JSON.stringify([...unique.values()]));
+    window.localStorage.removeItem(LEGACY_LEARNING_PROGRESS_STORAGE_KEY);
+  } catch {
+    // Keep the old key for a later retry if storage is blocked, corrupt, or full.
+  }
+}
+
 /** Signed-out callers get an empty list, never another account's learning days. */
 export function readLearningActivityDays(userId?: string | null): string[] {
   if (typeof window === "undefined" || !userId?.trim()) return [];
@@ -106,6 +150,7 @@ function recordLearningActivityDay(day: string, userId: string): string[] {
 
 export function readCompletedLessons(userId?: string | null): CompletedLesson[] {
   if (typeof window === "undefined") return [];
+  migrateLegacyGuestProgress();
   try {
     const stored = window.localStorage.getItem(learningProgressStorageKey(userId));
     if (!stored) return [];
