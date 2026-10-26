@@ -4,7 +4,7 @@
 - **Status:** Manual browser/provider-console checks are not yet recorded as complete. Automated checks do not replace them.
 - **Candidate:** [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67), still draft and unmerged.
 - **Stable branch preview:** https://feat-local-history-streak-20-4d7n.cestudy.pages.dev
-- **Commit preview from the checked code/test head:** https://06358ebf.cestudy.pages.dev
+- **Commit preview from the checked code/test head:** https://eff73146.cestudy.pages.dev
 - **Production site:** https://cestudy.pages.dev
 
 ## Safety boundary
@@ -76,17 +76,17 @@ Official reference: [Supabase PKCE flow](https://supabase.com/docs/guides/auth/s
 
 ## 4. Account isolation and account switching
 
-The code now stores history and completed lessons in separate versioned localStorage keys for guest browsing and each Supabase user ID. Streak activity was already keyed by user ID. This is browser-local scope separation, **not server-side authorization or cross-device sync**. Old unscoped v1 history/completion keys are deliberately not migrated because their owner cannot be determined safely.
+The code stores history and completed lessons in separate versioned localStorage keys for guest browsing and each Supabase user ID. Streak activity is keyed by user ID. This is browser-local scope separation, **not server-side authorization or cross-device sync**. Because production `main` had no student accounts, old v1 completion records migrate to the guest key on the canonical production hostname only, with the newest completion kept per lesson. Ambiguous preview-origin v1 completion data remains unassigned; legacy unscoped history/streak records also remain unassigned and hidden.
 
 The current production database has no published lesson, so do not publish content just for testing. On a desktop preview, synthetic browser-local records may be used to verify page-level separation:
 
-1. Sign in as existing test account A. In DevTools **Console**, run the snippet below to seed clearly labeled local-only history/progress fixtures for the currently signed-in user. These fixtures are not sent to Supabase.
+1. Sign in as existing test account A. In Supabase Dashboard, open **Authentication → Users** and copy the UUID for that test account. Paste it into `userId` in the DevTools **Console** snippet below. Do not read or copy the browser's stored access/session token. The synthetic fixtures are local-only and not sent to Supabase.
 
 ```js
-const authKey = Object.keys(localStorage).find((key) => key.endsWith("-auth-token"));
-const authState = authKey ? JSON.parse(localStorage.getItem(authKey) || "null") : null;
-const userId = authState?.user?.id;
-if (!userId) throw new Error("No signed-in Supabase user ID found in this browser.");
+// Copy the UUID of the currently signed-in test user from Supabase Dashboard >
+// Authentication > Users. Do not share the UUID, and use test accounts only.
+const userId = "PASTE_CURRENT_TEST_ACCOUNT_UUID_HERE";
+if (!/^[0-9a-f-]{36}$/i.test(userId)) throw new Error("Enter the signed-in test account UUID first.");
 const suffix = encodeURIComponent(userId);
 const label = `QA account ${userId.slice(0, 8)}`;
 const now = new Date();
