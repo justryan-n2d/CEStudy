@@ -5,23 +5,65 @@ import { MemoryRouter } from "react-router-dom";
 import { ProgressPage } from "../pages/ProgressPage";
 import { learningActivityStorageKey, learningProgressStorageKey, setLessonCompleted } from "../data/learning-progress";
 
-vi.mock("../contexts/AuthContext", () => ({
-  useAuth: () => ({
+const mockUseAuth = vi.hoisted(() => vi.fn());
+
+vi.mock("../contexts/AuthContext", () => ({ useAuth: mockUseAuth }));
+
+beforeEach(() => {
+  localStorage.clear();
+  mockUseAuth.mockReset();
+  mockUseAuth.mockReturnValue({
     user: { id: "progress-test-user", email: "student@example.com" },
     loading: false,
     configured: true,
     signInWithGoogle: vi.fn(),
     signOut: vi.fn(),
-  }),
-}));
-
-beforeEach(() => localStorage.clear());
+  });
+});
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
 });
 
 describe("student progress page", () => {
+  it("shows only the active account's completed lessons after account switching", () => {
+    setLessonCompleted({
+      lessonId: "account-a-lesson",
+      subjectSlug: "basic-algebra",
+      unitNumber: 1,
+      title: "Account A lesson",
+    }, true, "account-a");
+    setLessonCompleted({
+      lessonId: "account-b-lesson",
+      subjectSlug: "basic-algebra",
+      unitNumber: 2,
+      title: "Account B lesson",
+    }, true, "account-b");
+
+    mockUseAuth.mockReturnValue({
+      user: { id: "account-a", email: "a@example.com" },
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+
+    const view = render(<MemoryRouter><ProgressPage /></MemoryRouter>);
+    expect(screen.getByRole("heading", { name: "Account A lesson" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Account B lesson" })).not.toBeInTheDocument();
+
+    mockUseAuth.mockReturnValue({
+      user: { id: "account-b", email: "b@example.com" },
+      loading: false,
+      configured: true,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+    view.rerender(<MemoryRouter><ProgressPage /></MemoryRouter>);
+
+    expect(screen.getByRole("heading", { name: "Account B lesson" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Account A lesson" })).not.toBeInTheDocument();
+  });
   it("explains the empty state and links back to the library", () => {
     render(<MemoryRouter><ProgressPage /></MemoryRouter>);
 
