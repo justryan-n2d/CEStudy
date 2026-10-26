@@ -2,7 +2,19 @@
 
 **Audit date:** 2026-10-20  
 **Live project:** CEStudy Supabase, backed up by the production GitHub Actions workflow  
-**Status:** PR #48 was merged into `main` at `6135f4faf6ca1c01c2abc49ca372e40ddfe1bc2b` on 2026-10-20. A fresh encrypted snapshot was successfully delivered and read back in the latest live run, [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649), but that run used the pre-fix validator and checked only catalog and question tables. The merged `main` script now requires all three content tables and logs each successful check. The Phase 7 archive-validation gate remains open until a fresh run uses the corrected code. A managed-Supabase-target restore also remains untested.
+**Status:** The original 2026-10-20 audit below records the historical two-table-validator gap. A follow-up verification was completed on 2026-10-26 using live backup run [40172509628](https://github.com/justryan-n2d/CEStudy/actions/runs/40172509628); see the current follow-up section before using the older assessment.
+
+## Follow-up verification (2026-10-26)
+
+The corrected three-table validator has now passed against the live CEStudy Supabase database in [weekly backup run 40172509628](https://github.com/justryan-n2d/CEStudy/actions/runs/40172509628), completed 2026-10-25.
+
+- Logs explicitly verified `public.catalog_subjects`, `public.practice_questions`, and `public.subject_lessons`.
+- The encrypted archive and checksum were uploaded to the private Backblaze B2 target and read back for SHA-256 verification.
+- The remote `.verified` marker was read back and compared successfully.
+- Retention completed with four verified backup sets retained and three stale or incomplete artifacts hidden.
+- Result: **the live three-table backup-validation gate is passed**. This does not prove that an archive can be restored into a managed Supabase project.
+
+**Still unverified:** a restore into a separate managed Supabase project after cost approval; the B2 lifecycle rule for hidden/old versions; GitHub Actions failed-workflow email notifications; and the recovery copies of private encryption keys/passphrases.
 
 ## Latest successful live backup
 
@@ -35,14 +47,14 @@ It does **not** prove that the validator explicitly required every application c
 
 The missing table check was first reproduced by [CI run 39430805954](https://github.com/justryan-n2d/CEStudy/actions/runs/39430805954). The per-table log assertion then failed as intended on commit `28f95dbc594bb5595635962612096db6233a41f9`, with [CI run 39434510999](https://github.com/justryan-n2d/CEStudy/actions/runs/39434510999) recording `FAIL: backup logs must name each required table after archive validation.` The script was updated on commit `80d8f9bc4495114a27f27effe3a13544953b22be`. That implementation commit passed [CI run 39434748294](https://github.com/justryan-n2d/CEStudy/actions/runs/39434748294), including lint, unit tests, build, backup crypto/retention/verification tests, and isolated Supabase migration/RLS tests. The matching [full-history secret scan 39434747834](https://github.com/justryan-n2d/CEStudy/actions/runs/39434747834) also passed.
 
-PR #48 is merged. The corrected validator is now on `main`, but it has not yet run against the live database.
+PR #48 is merged. The corrected validator subsequently passed against the live database in run 40172509628 on 2026-10-25.
 
 ## Remaining recovery gates
 
-- [ ] Run **CEStudy weekly database backup** from current `main`. Confirm the logs explicitly name all three required tables, archive/checksum/verification-marker read-back succeeds, retention completes, and there are no summary errors.
+- [x] Run **CEStudy weekly database backup** from current `main`: [run 40172509628](https://github.com/justryan-n2d/CEStudy/actions/runs/40172509628) explicitly named all three required tables, archive/checksum/verification-marker read-back succeeded, and retention completed.
 - [ ] After explicit cost approval, restore the refreshed archive into a **separate managed Supabase test project**, not production. Validate table counts, RLS, grants, column protections, and published-only row visibility. The October 16 local PostgreSQL restore does not test Supabase-managed roles, system schemas, or project settings.
 - [ ] Confirm the Backblaze B2 hidden-version lifecycle rule does not hide current verified sets.
 - [ ] Confirm GitHub Actions failure-email preferences.
 - [ ] Confirm protected private-key and passphrase recovery copies are stored outside GitHub.
 
-**Decision:** Do not mark Phase 7 recovery complete yet. The latest snapshot delivery succeeded, and its logs are clean, but the corrected three-table validator still needs a successful live run and managed-Supabase-target recovery still needs separate proof.
+**Decision:** The corrected live three-table backup-validation gate is passed. Do not mark Phase 7 recovery complete yet: the managed-Supabase-target restore, B2 lifecycle verification, GitHub failure-email check and protected recovery-key copy check still need separate evidence.
