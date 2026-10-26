@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -13,22 +13,47 @@ function subjectLabel(slug: string): string {
 }
 
 export function ProgressPage() {
-  const { user } = useAuth();
-  const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
-  const activityDays = readLearningActivityDays(user?.id);
+  const { user, loading: authLoading } = useAuth();
+  const scopeKey = user?.id?.trim() ? `user:${user.id}` : "guest";
+  const [progressSnapshot, setProgressSnapshot] = useState<{ scopeKey: string; items: CompletedLesson[] }>({
+    scopeKey: "",
+    items: [],
+  });
+
+  useEffect(() => {
+    if (authLoading) return;
+    setProgressSnapshot({ scopeKey, items: readCompletedLessons(user?.id) });
+  }, [authLoading, scopeKey, user?.id]);
+
+  const completedLessons = !authLoading && progressSnapshot.scopeKey === scopeKey
+    ? progressSnapshot.items
+    : [];
+  const activityDays = authLoading ? [] : readLearningActivityDays(user?.id);
 
   const clearProgress = () => {
+    if (authLoading) return;
     const confirmation = user
       ? "Clear completed lessons and this account's streak saved on this device?"
-      : "Clear completed lessons saved in this browser?";
+      : "Clear completed lessons saved for guest browsing on this device?";
     if (!window.confirm(confirmation)) return;
     clearLessonProgress(user?.id);
-    setCompletedLessons([]);
+    setProgressSnapshot({ scopeKey, items: [] });
   };
 
   const sortedLessons = [...completedLessons].sort(
     (a, b) => b.completedAt.localeCompare(a.completedAt),
   );
+
+  if (authLoading) {
+    return (
+      <div className="page-wrap progress-page">
+        <section className="state-panel" role="status">
+          <h1>Checking your progress</h1>
+          <p>CEStudy is checking the active session before showing browser-local completion records.</p>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="page-wrap progress-page">
@@ -36,7 +61,7 @@ export function ProgressPage() {
       <section className="page-intro">
         <span className="kicker">My progress</span>
         <h1>Your learning progress</h1>
-        <p>Completed lessons stay in this browser on this device. When signed in, streak days are stored locally under your Google account ID. Neither syncs across devices.</p>
+        <p>Completed lessons stay in this browser on this device. Guest progress and each signed-in account's completed lessons are stored separately. When signed in, streak days are stored separately under your Google account ID. None of this syncs across devices.</p>
       </section>
 
       <nav className="progress-shortcuts" aria-label="Learning activity pages">

@@ -26,20 +26,31 @@ function topicSnippet(lesson:SubjectLesson,query:string):string {
 
 export function StudyPage() {
   const { slug, unit } = useParams();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const subjectSlug = slug ?? "";
   const [lessons, setLessons] = useState<SubjectLesson[]>([]);
   const [topicQuery,setTopicQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
+  const completedScopeKey = user?.id?.trim() ? `user:${user.id}` : "guest";
+  const [completedSnapshot, setCompletedSnapshot] = useState<{
+    scopeKey: string;
+    items: CompletedLesson[];
+  }>({ scopeKey: "", items: [] });
+  const completedLessons = !authLoading && completedSnapshot.scopeKey === completedScopeKey
+    ? completedSnapshot.items
+    : [];
+
+  useEffect(() => {
+    if (authLoading) return;
+    setCompletedSnapshot({ scopeKey: completedScopeKey, items: readCompletedLessons(user?.id) });
+  }, [authLoading, completedScopeKey, user?.id]);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setError(null);
     setTopicQuery("");
-    setCompletedLessons(readCompletedLessons());
     fetchPublishedLessons(subjectSlug)
       .then((items) => { if (active) setLessons(items); })
       .catch((reason: unknown) => {
@@ -64,25 +75,25 @@ export function StudyPage() {
   const showActiveLesson=activeLesson!==null&&(!normalizedQuery||visibleLessons.some(lesson=>lesson.id===activeLesson.id));
   useEffect(() => {
     // Only a published lesson actually displayed to the learner belongs in history.
-    if (loading || error || !activeLesson || !showActiveLesson || activeLesson.subjectSlug !== subjectSlug) return;
+    if (authLoading || loading || error || !activeLesson || !showActiveLesson || activeLesson.subjectSlug !== subjectSlug) return;
     recordOpenedLesson({
       lessonId: activeLesson.id,
       subjectSlug: activeLesson.subjectSlug,
       unitNumber: activeLesson.unitNumber,
       title: activeLesson.title,
-    });
-  }, [activeLesson, error, loading, showActiveLesson, subjectSlug]);
+    }, new Date(), user?.id);
+  }, [activeLesson, authLoading, error, loading, showActiveLesson, subjectSlug, user?.id]);
 
   const activeLessonCompleted = Boolean(activeLesson && completedLessons.some((item) => item.lessonId === activeLesson.id));
   const toggleLessonCompletion = () => {
-    if (!activeLesson) return;
+    if (!activeLesson || authLoading) return;
     const next = setLessonCompleted({
       lessonId: activeLesson.id,
       subjectSlug: activeLesson.subjectSlug,
       unitNumber: activeLesson.unitNumber,
       title: activeLesson.title,
     }, !activeLessonCompleted, user?.id);
-    setCompletedLessons(next);
+    setCompletedSnapshot({ scopeKey: completedScopeKey, items: next });
   };
 
   return (
@@ -91,7 +102,7 @@ export function StudyPage() {
       <section className="page-intro">
         <span className="kicker">Reviewer</span>
         <h1>{title}</h1>
-        <p>Explore any topic, or follow published lessons in order when you want more structure.</p>
+        <p>Explore any topic, or follow published lessons in order when you want more structure. Guest progress and each signed-in account are stored separately in this browser.</p>
       </section>
 
       {loading ? <div className="state-panel"><BrandLoader label="Loading reviewer…" /></div>
@@ -143,11 +154,12 @@ export function StudyPage() {
                   type="button"
                   className={activeLessonCompleted ? "button button-primary" : "button button-secondary"}
                   aria-pressed={activeLessonCompleted}
+                  disabled={authLoading}
                   onClick={toggleLessonCompletion}
                 >
                   {activeLessonCompleted ? "Mark as incomplete" : "Mark as complete"}
                 </button>
-                <p>{activeLessonCompleted ? "Completed and saved on this device." : "Progress is saved on this device only."} <Link to="/progress">View my progress</Link></p>
+                <p>{authLoading ? "Checking your session before saving progress." : activeLessonCompleted ? user ? "Completed and saved on this device for this account." : "Completed and saved for guest browsing on this device." : user ? "Progress for this account stays on this device." : "Guest progress stays on this device."} <Link to="/progress">View my progress</Link></p>
               </div>
               <div className="study-lesson-navigation">
                 {lessonIndex > 0 ? <Link className="button button-secondary" to={`/study/${subjectSlug}/${lessons[lessonIndex - 1].unitNumber}`}>← Previous</Link> : <span />}
