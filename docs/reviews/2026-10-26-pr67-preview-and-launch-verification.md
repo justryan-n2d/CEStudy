@@ -1,11 +1,11 @@
 # PR #67 preview and launch verification runbook
 
-**Updated:** 2026-10-26  
-**Status:** Manual browser/provider-console checks are not yet recorded as complete. Automated checks do not replace them.  
-**Candidate:** [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67), still draft and unmerged.  
-**Stable branch preview:** https://feat-local-history-streak-20-4d7n.cestudy.pages.dev  
-**Commit preview from the checked code/test head:** https://06358ebf.cestudy.pages.dev  
-**Production site:** https://cestudy.pages.dev
+- **Updated:** 2026-10-26
+- **Status:** Manual browser/provider-console checks are not yet recorded as complete. Automated checks do not replace them.
+- **Candidate:** [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67), still draft and unmerged.
+- **Stable branch preview:** https://feat-local-history-streak-20-4d7n.cestudy.pages.dev
+- **Commit preview from the checked code/test head:** https://06358ebf.cestudy.pages.dev
+- **Production site:** https://cestudy.pages.dev
 
 ## Safety boundary
 
