@@ -2,7 +2,7 @@
 
 **Document status:** Owner-approved direction; canonical planning document for CEStudy UX/UI redesign and roadmap tracking.
 **Owner approval:** Blueprint Academy selected on 2026-10-22 (Asia/Manila).
-**Baseline snapshot:** `main` at `ffbabc6072d46bcd12af1358d17b169a0f8abbc9`, inspected 2026-10-22.
+**Baseline snapshot:** `main` at `887b3f5a0b826ac0019f266de5e53fd6278958d3`, rechecked 2026-10-26 (Asia/Manila).
 **Scope of this record:** Product direction, UX/UI decisions, verified baseline, implementation sequence, acceptance criteria, and release safeguards.
 **Application implementation status:** No application code changes are authorized by this document.
 
@@ -55,53 +55,64 @@ This roadmap controls the intended product design, scope, decision register, and
 
 ### 3.1 Main branch snapshot
 
-| Item | Verified state on 2026-10-22 |
+| Item | Verified state on 2026-10-26 |
 |---|---|
 | Repository | [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy), public repository |
 | Default branch | `main` |
-| Inspected `main` SHA | `ffbabc6072d46bcd12af1358d17b169a0f8abbc9` |
-| Latest commit message | `docs: add UI UX Pro Max integration guidance` |
+| Current `main` SHA | `887b3f5a0b826ac0019f266de5e53fd6278958d3` |
+| Latest main commit | `docs: record Phase 2 navigation merge`, committed 2026-10-23 |
 | Stack declared by `package.json` | React 19, TypeScript 5.9, Vite 7, Tailwind CSS 4, React Router 7, Supabase JS, KaTeX 0.19, Vitest and Testing Library |
-| Main CI run | [39758495387, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495387) |
-| Main full-history secret scan | [39758495402, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495402) |
-| Main live website Chromium smoke | [39758768389, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758768389) |
+| Main CI and Supabase migration/RLS checks | Success on this main SHA: [run 39884056913](https://github.com/justryan-n2d/CEStudy/actions/runs/39884056913) |
+| Main full-history secret scan | Success on this main SHA: [run 39884056672](https://github.com/justryan-n2d/CEStudy/actions/runs/39884056672) |
+| Production Chromium smoke | Success on 2026-10-25 for this main SHA: [run 40240604028](https://github.com/justryan-n2d/CEStudy/actions/runs/40240604028) |
+| Encrypted backup workflow | Success on 2026-10-25: [run 40172509628](https://github.com/justryan-n2d/CEStudy/actions/runs/40172509628) |
 
-The main workflows above passed on the exact inspected main commit. This is fresh GitHub Actions evidence, not a claim that this assistant ran the tests locally.
+These are GitHub-hosted results associated with the inspected main SHA or workflow. The local clone attempt for this audit failed because DNS could not resolve `github.com`; no local test/build command or direct interactive preview inspection was run. That limitation does not invalidate the linked GitHub check records, but it must not be represented as a fresh local run or manual visual approval.
 
-### 3.2 Relevant open pull requests
+### 3.2 Relevant pull requests and current integration state
 
-The PR state below was rechecked on 2026-10-23. Historical CI evidence is not treated as current evidence after branch changes.
+Live GitHub metadata was rechecked on 2026-10-26. PR #67 is the current main-targeted integration candidate. The code/test head immediately before this documentation-only update was `0781c4b6caa09717442c794e757ccda980c35a0c`; the current branch contains the documentation-only reconciliation on top of that candidate. Before the documentation commit, the compare API reported 85 commits ahead and 0 behind, with the merge base equal to main. The latest PR metadata still reports it open, draft, unmerged, and mergeable. A mergeable flag is not release approval.
 
-| PR | Current role and state | Roadmap-aligned handling |
+| PR | Verified state and role | Required handling |
 |---|---|---|
-| [#44 Google sign-in and local learning activity](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, not mergeable. Recorded base SHA `e6f657cbbf94467e427fc6183c9714e965098598`, head `662e413601cef93100534b8be52f1a76fe35b335`; comparison against main `887b3f5a0b826ac0019f266de5e53fd6278958d3` reports 103 commits ahead / 12 behind, 52 changed files, +3,997/-180. | Do not merge this branch wholesale. The approved Google OAuth, session, profile, local-history/streak, privacy and sign-out scope has been recovered into the consolidated main-targeted PR #67. The competing theme/navigation/page design remains excluded. Treat all PR #44 CI and preview results as historical. |
-| [#64 Google auth/session and profile](https://github.com/justryan-n2d/CEStudy/pull/64) | Open, draft, based on main `887b3f5a0b826ac0019f266de5e53fd6278958d3`, head `69cabc3ceb8872163a41202e8e18be72b59e7f5e`. CI run [39901882445](https://github.com/justryan-n2d/CEStudy/actions/runs/39901882445) and full-history scan [39901882365](https://github.com/justryan-n2d/CEStudy/actions/runs/39901882365) passed on this auth-only head. | The auth/profile slice is included in consolidated PR #67 and must not be merged independently. Its prior checks are historical for the combined diff. Manual cancellation, controlled failed token-exchange/retry, and live Google/Supabase redirect configuration remain **NOT VERIFIED**. |
-| [#67 Integrated Google auth and device-local learning activity](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft, targets main `887b3f5a0b826ac0019f266de5e53fd6278958d3`; verified code/test head `9b725ebcc15307473e9b434ba19deacc986070e3` compares 84 commits ahead, 0 behind, with merge base equal to main. | Combined Google auth/session/profile, query and hash-fragment OAuth error recovery, current-browser-only Supabase sign-out, device-local lesson history/progress and user-keyed local streak. CI [39985760608](https://github.com/justryan-n2d/CEStudy/actions/runs/39985760608) passed 215 tests across 35 files, ESLint/dependency audit/build, Pages packaging, 2,182/2,182 Chromium assertions across Light/Dark and five viewport widths with no runtime errors, backup verification and Supabase migration/RLS. Full-history Gitleaks [39985760606](https://github.com/justryan-n2d/CEStudy/actions/runs/39985760606) passed on the same code/test head. Cloudflare preview `https://0dcca39c.cestudy.pages.dev` deployed successfully; direct interaction remains unavailable from this environment. Independent review and real OAuth/redirect gates remain **NOT VERIFIED**. Final docs commit requires fresh CI/Gitleaks. |
-| [#32 Production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open proposal for a production Chromium visual-test harness. | Evaluate independently; it is not part of the current theme/navigation merge sequence until reviewed. |
+| [#44 Google sign-in and local learning activity](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, unmerged, not mergeable. Branch `feature/google-auth-streak-gate-rebased`, head `662e413601cef93100534b8be52f1a76fe35b335`; recorded base SHA `e6f657cbbf94467e427fc6183c9714e965098598`. | Legacy overlapping account implementation. Do not merge wholesale or import its competing theme/navigation shell. Do not change its state without separate authorization. |
+| [#64 Google auth/session and profile](https://github.com/justryan-n2d/CEStudy/pull/64) | Open, draft, unmerged, mergeable. Branch `feat/google-auth-session-profile-2026-10-23`, head `69cabc3ceb8872163a41202e8e18be72b59e7f5e`, base `main` at `887b3f5a0b826ac0019f266de5e53fd6278958d3`. | Source slice for auth/session/profile/privacy now consolidated in #67. Do not merge separately. Preserve its existing state until the owner explicitly authorizes a follow-up. |
+| [#65 device-local lesson history and account-isolated streaks](https://github.com/justryan-n2d/CEStudy/pull/65) | Open, draft, unmerged, not mergeable. Branch `feat/student-learning-history-streak-2026-10-23`, head `af3457b6538f34b8c6cd8910439b531ee61f6843`, stacked on #64's branch at `854f6c68bf0eb068df6a5f10e9229fecc588b74a`. | Older dependent slice, not the integration candidate. Do not merge or close as part of this documentation task. |
+| [#66 device-local learning history and streak](https://github.com/justryan-n2d/CEStudy/pull/66) | Open, draft, unmerged, not mergeable. Branch `feat/learning-history-streak-2026-10-23`, head `9c4a310728abc503e13b8851679f322cd510c845`, stacked on #64's branch at `854f6c68bf0eb068df6a5f10e9229fecc588b74a`. | Older dependent/alternate slice, not the integration candidate. Do not merge or close as part of this documentation task. |
+| [#67 integrated Google auth and device-local learning activity](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft, unmerged, mergeable at the last metadata read. Branch `feat/local-history-streak-2026-10-23b`, base `main` at `887b3f5a0b826ac0019f266de5e53fd6278958d3`. The code/test head before the docs-only reconciliation was `0781c4b6caa09717442c794e757ccda980c35a0c`. | Single main-targeted candidate for approved auth/profile/local activity. Keep draft until independent approval, fresh checks on the latest branch head, preview OAuth checks, account data-isolation review, current-base conflict check, and all release gates pass. |
 
-**Completed security/documentation/UI gates:** PR #58 merged the roadmap/status reconciliation. PR #59 merged the narrow Gitleaks allowlist and pull-request full-history scan after CI and secret scanning passed; the full-history scan covered 1,014 commits with no leaks. PR #47 is closed as superseded. PR #51 merged the supporting IA, gamified UX, and design-system documents. PR #56 merged the shared theme foundation at `6aef33f`; final CI, secret scan, Supabase migration/RLS checks, and 853/853 Chromium assertions passed after the owner content-review dark-theme fix. PR #57 merged the hybrid navigation at `b4b18b2`; CI, full-history secret scan, Supabase migration/RLS, backup checks, and 1,682/1,682 Chromium assertions passed. PR #54 is closed as superseded by #57.
+**Checks on the pre-documentation PR #67 code/test head (these do not validate this documentation-only update):** all four attached GitHub checks showed completed success on `0781c4b6caa09717442c794e757ccda980c35a0c`: [CI and Supabase migration/RLS, run 39991431616](https://github.com/justryan-n2d/CEStudy/actions/runs/39991431616), [full-history Gitleaks, run 39991431565](https://github.com/justryan-n2d/CEStudy/actions/runs/39991431565), and [Cloudflare Pages check](https://github.com/justryan-n2d/CEStudy/runs/120544116525). CI reports 215 tests across 35 files, lint/dependency audit/build, Pages security/redirect packaging, 2,182/2,182 Chromium assertions with zero runtime errors, backup verification, and Supabase migration/RLS checks. Cloudflare reports successful previews at [commit preview](https://50585177.cestudy.pages.dev) and [branch preview](https://feat-local-history-streak-20-4d7n.cestudy.pages.dev). Those successful results apply only to the pre-documentation code/test head. Check the live PR for conclusions from the newer documentation-only commit before considering the branch validated.
 
-**Merge order:** security, supporting documentation, Phase 1 theme implementation, and Phase 2 navigation implementation have merged. Phase 1 and Phase 2 remain **current**, not complete, pending independent review and manual external preview inspection. For account integration, PR #67 is the single main-targeted combined candidate for the code formerly split between #64 and #67. On code/test head `2c837a6103b5423ea7ec732ce33644d1827cfac3`, CI and full-history Gitleaks pass, including query/hash-fragment callback recovery tests; the latest docs-only head must have fresh green checks too. Do not merge #64 separately; after #67 merges, close #64 as superseded. Manual OAuth preview/configuration gates and independent review are still open. Verify exact base/head SHAs and conflict state immediately before merge; a stale green run, a mergeable flag, or a draft's existence is not release approval.
+**Outstanding integration gates:** no independent reviewer approval or requested reviewers are recorded. Manual browser interaction against the latest preview has not been verified. Confirm Google provider cancellation/recovery, a controlled failed PKCE token exchange followed by successful retry, and redirect allow-list configuration for the exact preview origin in Google Auth Platform and Supabase. Do not weaken production security or change production OAuth settings. The current comparison has main as merge base and GitHub currently reports mergeable, but the base/conflict state must be checked again before any later merge.
+
+PR #67 must not be merged, deployed to production, or used to publish content as part of this documentation-only task. Do not close, retarget, or otherwise modify #44, #64, #65, or #66 without the owner's explicit authorization.
+
+**Completed security/documentation/UI gates:** PR #58 merged the roadmap/status reconciliation; PR #59 merged the Gitleaks allowlist and full-history scan; PR #51 merged supporting IA, gamified UX and design-system documents; PR #56 merged the theme foundation; and PR #57 merged canonical hybrid navigation. PR #47 and #54 are recorded as closed/superseded in their respective historical work. Those earlier gates do not replace the current PR #67 review and release requirements.
+
+**Implementation sequencing:** theme and navigation foundations are implemented on `main`; Phases 1 and 2 remain **current**, not complete, while independent review and manual preview/UX checks are outstanding. Phase 5 remains **not started on main** while account integration is still a draft. Do not merge #64 separately; do not close older PRs as part of this task.
 
 ### 3.3 Existing route inventory on `main`
 
-Verified route registration is in `src/App.tsx` at the inspected main commit.
+Route registration was inspected in `src/App.tsx` on the current `main` SHA. Route existence is not proof that a complete workflow or approved content exists.
 
-| Route or page | Status | Notes for redesign |
+| Route or page | Verified status on main | Implementation boundary |
 |---|---|---|
-| `/` | Existing | Home with subject/year entry points, local progress entry, and math foundations |
-| `/catalog` | Existing | Search/filterable subject catalog with loading, error, results, and empty states |
-| `/years`, `/year/:year` | Existing | Year overview and year-specific page; semester/subject hierarchy must rely on verified metadata |
-| `/subjects/:slug` | Existing | Subject metadata, source details, availability and lesson entry points |
-| `/study/:slug`, `/study/:slug/:unit` | Existing | Published lesson reader and local lesson completion |
-| `/practice/basic-algebra` | Existing, content currently guarded by publication state | Live smoke configuration expects zero published practice questions and verifies the empty/review gate |
-| `/progress` | Existing | Explicitly local to the current browser/device in `src/pages/ProgressPage.tsx` |
-| `/math-foundations` | Existing | Mathematics foundation catalog |
-| `/about`, `/privacy` | Existing | Informational and privacy pages |
-| `/contact`, `/support`, `/bug-reports`, `/feedback`, `/feedbacks` | Existing | Support and feedback surfaces, with inbox access tied to its actual gate |
-| `/owner/content-review` | Existing | Privileged content-review surface; preserve its access boundary |
-| `/login`, `/profile`, `/history`, `/streak` | Focused drafts #64/#67; not in main | Authentication routes are proposed in #64 and history/streak routes in dependent #67. `/menu` is excluded as a replacement for the canonical More menu; `/community` is already a current main route and must remain unchanged |
-| Review Materials Hub, Mock Exam Portal, Student Dashboard as a broader learning hub, full Community Forum, unit converter | Proposed | Do not represent these as full working features until separately implemented and verified |
+| `/` | Existing | Homepage entry points to years, catalog, review resources and study surfaces. |
+| `/catalog` | Existing | Search/filter subject catalog with loading, error, results and empty states. |
+| `/years`, `/year/:year` | Existing | Four year levels; the Year Levels dropdown supports year and semester groupings from catalog metadata. |
+| `/subjects/:slug` | Existing | Subject metadata, source details, availability and lesson entry points. |
+| `/study/:slug`, `/study/:slug/:unit` | Existing | Published-lesson reader and device-local lesson completion. |
+| `/practice/basic-algebra` | Existing, publication-gated | Practice UI exists, but no questions were published in the last recorded audit. Keep empty/review states honest. |
+| `/progress` | Existing, device-local | Completion progress remains local to this browser. Main has no account-specific streak route. |
+| `/review-materials` | Existing navigation placeholder | Shows Formula Sheets, Problem Sets with Solutions and Video Tutorials as unavailable until reviewed/published. No downloads or populated resource library. |
+| `/mock-exam-portal` | Existing navigation placeholder | No exam session, timer, result summary or readiness score. |
+| `/community` | Existing launch placeholder | Posting, replies, editing, reporting and moderation are unavailable; data contracts, identity and access controls are not implemented. |
+| `/math-foundations`, `/about`, `/privacy` | Existing | Mathematics foundations and informational/privacy pages. |
+| `/contact`, `/support`, `/bug-reports`, `/feedback`, `/feedbacks` | Existing | Support and feedback flows, with private inbox access controls. |
+| `/owner/content-review` | Existing | Privileged owner content-review surface; preserve its access boundary. |
+| `/login`, `/profile`, `/history`, `/streak` | Not registered on main | Present on unmerged PR #67 only; do not call them shipped. |
+| Student Dashboard/account navigation | Not implemented on main | Approved direction, but not a current working product feature. |
+| Full Review Materials Hub, full Mock Exam Portal, full Community Forum, unit converter | Planned/incomplete | Navigation shells do not equal completed workflows. Build only after metadata, review, provenance, rights, access and validation requirements are satisfied. |
 
 ### 3.4 Existing reusable foundations
 
@@ -143,15 +154,18 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 | Area | Result | Evidence | Remaining gap |
 |---|---|---|---|
-| Main theme | Verified: the shared Light/Dark foundation is merged in PR #56 and present on current main. `ThemeProvider` is owned by canonical `Layout`, `ThemeToggle` uses the shared semantic tokens, and `public/theme-init.js` restores the device-local preference before React renders. | Main foundation commit `6aef33f`; final tested foundation head `8208d8dbd2012a474a20bca5aa5cc0ad4b975146`, CI / secret scan and 853/853 Chromium assertions recorded in this roadmap. | Preserve this one theme implementation; do not import PR #44's competing provider/bootstrap/global CSS. Theme and responsive checks must still run against the final account-feature integration head. |
-| Equation rendering | Verified: shared KaTeX renderer, lazy wrapper, inline/plain-text math detection, limited Markdown parser, representative tests, and horizontal overflow CSS exist. | `src/components/LatexMath.tsx`; `LazyLatexMath.tsx`; `InlineMathText.tsx`; `MarkdownContent.tsx`; `src/test/latex-rendering.test.tsx`; `src/styles/global.css`. | No fresh local run was possible. Keyboard access to overflowed display equations, accessible fallback announcements, and dark-theme equation coverage are not proven by the inspected test names. |
-| PR #44 integration points | The intended scope has been consolidated into one main-targeted candidate, PR #67: Google-only auth/session/profile/privacy plus browser-local history and user-keyed local streak, on the canonical UI. PR #64 is a source slice only and must not merge separately. | Code/test head `2c837a6103b5423ea7ec732ce33644d1827cfac3` passed CI [39984572091](https://github.com/justryan-n2d/CEStudy/actions/runs/39984572091) (215 tests / 35 files, 2,182/2,182 browser assertions, backup and database/RLS checks) and full-history Gitleaks [39984572405](https://github.com/justryan-n2d/CEStudy/actions/runs/39984572405). Cloudflare reported preview deployment success; direct external browser inspection was not possible due environment DNS. | PR #44 remains stale and not mergeable. Manual current-preview Google cancellation, controlled PKCE token-exchange failure/retry, live Google/Supabase redirect configuration, and independent review remain **NOT VERIFIED**. The feature stays draft and Phase 5 remains not started on main. |
-| Responsive navigation | Verified: main uses a desktop header, a More menu, a four-item mobile quick-navigation bar, and CSS breakpoints around 850px, 680px, and 560px. | `src/components/Layout.tsx`, `src/styles/global.css`, `scripts/live-smoke.cjs`. | Main live smoke tests layout overflow at 320px and 1440px only. 390px, 768px, 1024px, full keyboard flow, and redesigned menu behavior remain to be checked. |
-| Main CI / live smoke | Pass on inspected main SHA. | [CI](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495387), [secret scan](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495402), [live smoke](https://github.com/justryan-n2d/CEStudy/actions/runs/39758768389). | These checks do not constitute a WCAG certification or all-target-width redesign test. |
+| Main theme | Verified on current main: explicit Light/Dark toggle, Light fallback/default, device-local `cestudy:theme:v1`, semantic tokens, and early bootstrap. | `src/contexts/ThemeContext.tsx`, `src/components/ThemeToggle.tsx`, `public/theme-init.js`, `src/styles/global.css`; main SHA `887b3f5a0b826ac0019f266de5e53fd6278958d3`. | Manual accessibility and visual inspection remains; do not import PR #44's competing theme implementation. |
+| Hybrid public navigation | Verified on current main: Year Levels dropdown, Review Materials mega-menu, direct Mock Exam Portal and Community Forum links, four-item mobile quick navigation and More menu. | `src/components/Layout.tsx`, `YearLevelDropdown.tsx`, `ReviewMaterialsMegaMenu.tsx`, `src/App.tsx`; PR #57 is merged. | Resource, mock-exam and community pages are placeholders. Student Dashboard/account navigation is not implemented on main. |
+| Learning content | Last recorded audit only: 72 catalog subjects, 52 practice questions and 13 lessons; 52 questions and 13 lessons were `needs-review`, zero published. | [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md); README records read-only reconfirmation on 2026-10-19. | No fresh database read was performed for this documentation update. Human academic review/publication approval remains required. |
+| Equation rendering | Shared KaTeX renderer, lazy wrapper, inline/plain-text math detection, Markdown parser, representative tests and overflow CSS exist. | `src/components/LatexMath.tsx`, `LazyLatexMath.tsx`, `InlineMathText.tsx`, `MarkdownContent.tsx`, `src/test/latex-rendering.test.tsx`, `src/styles/global.css`. | Keyboard/assistive-technology use with overflowed equations, invalid-expression fallback announcements and full dark-theme coverage remain to be verified manually. |
+| Account integration | Google-only auth/session/profile/privacy, local opened-lesson history/completion progress and user-keyed streak are implemented on PR #67 branch, not main. | Pre-documentation code/test head `0781c4b6caa09717442c794e757ccda980c35a0c` had successful CI/Gitleaks/Supabase/Pages checks. | Confirm the checks on the updated branch; independent review, real-preview OAuth recovery/configuration, and account-switching/data-isolation decision remain open. |
+| Main CI and live smoke | Recorded GitHub CI, full-history Gitleaks, Supabase migration/RLS and latest live Chromium check succeeded for the inspected main SHA. | [CI/RLS 39884056913](https://github.com/justryan-n2d/CEStudy/actions/runs/39884056913), [Gitleaks 39884056672](https://github.com/justryan-n2d/CEStudy/actions/runs/39884056672), [live Chromium 40240604028](https://github.com/justryan-n2d/CEStudy/actions/runs/40240604028). | These checks do not constitute WCAG certification, physical-device QA, complete responsive redesign testing or broad-launch approval. |
 
 ### 4.2 Theme baseline: main and PR #44
 
-**Current main (verified 2026-10-23):** Phase 1's shared theme foundation is merged in PR #56 at `6aef33f37ea69c9b53acdbd975edf9b8feb2d0a5`, with verified code/test head `8208d8dbd2012a474a20bca5aa5cc0ad4b975146`. `src/components/Layout.tsx` owns the single `ThemeProvider` and mounts `ThemeToggle`; `src/contexts/ThemeContext.tsx` restores/stores the approved device-local `cestudy:theme:v1` choice and applies the semantic theme; `public/theme-init.js` applies saved Light/Dark before React starts. `src/styles/global.css` already uses shared `--ui-*` semantic tokens, and the current responsive navigation from PR #57 is merged at `b4b18b2`. Main uses the canonical Year Levels dropdown, Review Materials Hub, four-item mobile quick navigation and More menu. Do not assume the old main-only light-theme baseline described in earlier snapshots still applies.
+**Current main (rechecked 2026-10-26; SHA `887b3f5a0b826ac0019f266de5e53fd6278958d3`):** Phase 1's shared theme foundation is merged in PR #56 and present in `main`. `src/components/Layout.tsx` owns the single `ThemeProvider` and mounts the explicit `ThemeToggle`; `src/contexts/ThemeContext.tsx` restores and stores the device-local `cestudy:theme:v1` choice with Light as the fallback; `public/theme-init.js` applies the stored choice before React renders. Light/Dark are the only approved options; there is no System option. Shared `--ui-*` semantic tokens are in `src/styles/global.css`.
+
+The canonical hybrid website navigation is also implemented on main after PR #57: a Year Levels dropdown backed by catalog metadata, a Review Materials Hub mega-menu, direct Mock Exam Portal and Community Forum links, the existing four-item mobile quick-navigation bar, and a More menu. Treat these as navigation and route foundations, not proof that each destination workflow is complete. The `/review-materials` page marks its three resource categories unavailable; `/mock-exam-portal` offers no exam session/timer/results/readiness score; and `/community` explicitly says the forum is not open. A signed-in Student Dashboard/account control and `/login`, `/profile`, `/history`, `/streak` routes are not registered on main.
 
 **PR #44 branch and theme conflict:**
 
@@ -159,7 +173,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 - PR #64 wraps the canonical `Layout` with the single `AuthProvider` while preserving `Layout` as the owner of the existing `ThemeProvider`; this is the intended provider placement.
 - The historical PR #44 file `scripts/ui-theme-smoke.cjs` is not a substitute for current-main verification. The current shared theme/browser checks in CI must be rerun on the final dependent integration head for routes, theme persistence, responsive widths, contrast, keyboard states and reduced motion.
 
-**Recorded checks for PR #44:** current PR-head [CI run 39578952302](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952302), [secret scan 39578952309](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952309), and [Cloudflare deployment check 119151620066](https://github.com/justryan-n2d/CEStudy/runs/119151620066) are reported as successful in the PR description. The description also records successful browser smoke assertions at 320px and 1440px on the tested feature branch. These are evidence from the branch's automated checks, not a manual visual approval or a merge/release approval.
+**Historical checks for PR #44 (not current integration evidence):** [CI run 39578952302](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952302), [secret scan 39578952309](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952309), and [Cloudflare deployment check 119151620066](https://github.com/justryan-n2d/CEStudy/runs/119151620066) were reported as successful in that PR's historical description. The description also records successful browser smoke assertions at 320px and 1440px on the tested feature branch. These are evidence from the branch's automated checks, not a manual visual approval or a merge/release approval.
 
 **Persistence decision: approved device-local.** Store the explicit Light/Dark selection in this browser using `cestudy:theme:v1` and restore it before React starts. Light remains the fallback when no valid saved choice exists or storage is blocked. Account synchronization and cross-device persistence are not approved.
 
@@ -203,9 +217,9 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 ### 4.5 Verification limitations
 
-- Current main CI, secret scan, and live browser smoke returned success for main SHA `ffbabc6072d46bcd12af1358d17b169a0f8abbc9`.
-- Current PR #44 CI and secret scan returned success for its current PR head, as shown in the PR description. PR #44 remains draft.
-- The available web/browser fetch returned a cache-miss response for the PR #44 preview URL. The container could not clone GitHub because DNS resolution for `github.com` failed. Therefore no new local test run or direct screenshot inspection was completed by this audit.
+- On verified main SHA `887b3f5a0b826ac0019f266de5e53fd6278958d3`, GitHub CI/Supabase migration-RLS checks [39884056913](https://github.com/justryan-n2d/CEStudy/actions/runs/39884056913) and full-history Gitleaks [39884056672](https://github.com/justryan-n2d/CEStudy/actions/runs/39884056672) show success. The latest recorded production Chromium smoke for that SHA [40240604028](https://github.com/justryan-n2d/CEStudy/actions/runs/40240604028) passed on 2026-10-25.
+- PR #44 remains an open, unmerged legacy draft with a competing UI shell. Do not treat its historical checks as evidence for PR #67 or the current main baseline.
+- The local clone attempt during this audit failed because DNS could not resolve `github.com`; no local test/build command or direct interactive preview inspection was performed. GitHub source files, PR metadata and existing workflow results were inspected remotely.
 - Treat the PR's recorded Chromium assertions as CI evidence, not as independent manual visual QA. The direct preview capture and physical Android/TalkBack checks remain outstanding.
 
 ## 5. Approved owner decisions
@@ -235,12 +249,12 @@ Home
 │           ├── Lessons / Worked Solutions
 │           └── Available Practice
 ├── Subject Catalog
-├── Review Materials Hub (planned)
+├── Review Materials Hub (current route and navigation placeholder; resource workflows planned)
 │   ├── Formula Sheets
 │   ├── Problem Sets with Solutions
 │   └── Video Tutorials
 ├── Mock Exam Portal (high-level destination, not authorization for expanded exam features)
-├── Community Forum (planned; current PR #44 page is only a launch placeholder)
+├── Community Forum (current main route is a launch placeholder; posting and moderation are planned)
 ├── Student Dashboard (private learning overview, planned)
 │   ├── Progress and History
 │   ├── Saved Questions and Formulas
@@ -370,12 +384,12 @@ This is a layout convention, not authorization to rewrite mathematical source co
 | Subject Catalog | Existing | Search, filters, accurate result counts, availability, useful reset and no-results recovery. Preserve current catalog behavior. |
 | Subject Detail | Existing | Title, summary, source/provenance, availability, relevant lessons, and practice entry only when available. |
 | Lesson / Study | Existing | Comfortable reading width, clear objectives and headings, consistent equation blocks, lesson outline/next links where supported, local completion disclosure. |
-| Review Materials Hub | Planned | Formula Sheets, Problem Sets with Solutions, Video Tutorials; show availability, review state, source/version, and download state only when real data exists. |
+| Review Materials Hub | Navigation/page placeholder; full workflows planned | Formula Sheets, Problem Sets with Solutions, Video Tutorials; show availability, review state, source/version, and download state only when real data exists. No currently populated resource library or downloads. |
 | Practice | Existing, limited pool | Preserve current answer flow; improve question/tools layout, feedback and responsive access. Main live smoke currently expects zero published questions. |
 | Results / Progress | Existing progress and per-session results | Separate current-session score from stored history; show device-local scope and only real values. |
 | Student Dashboard | Proposed | Private hub for progress, recent activity, bookmarks, saved formulas, history and settings. No fake insights or cross-device claims. |
 | Account / Settings | Privacy exists; extra account pages draft-only | Clearly disclose device-local theme preference, sound, motion, authentication, and storage behavior. Do not imply account-synced theme settings. |
-| Community | Draft route in PR #44 is a placeholder, not a working forum | Future searchable discussions, problem threads, math comments, reporting and moderation only after backend and permission decisions. Public identity must not expose email. |
+| Community | Current main route is a placeholder, not a working forum | Future searchable discussions, problem threads, math comments, reporting and moderation only after backend and permission decisions. Public identity must not expose email. |
 | Calculator / Tools | Proposed | Unit converter first. Validate units, inputs, conversion factors and outputs. More engineering tools need sources and technical validation. |
 | Offline manager | Cross-cutting proposal | Do not display as implemented until local storage, resource versions, download rights and sync rules are designed and verified. |
 
@@ -456,7 +470,7 @@ Example reward values in PR #51 are draft planning examples, not approved consta
 - Public library access remains usable while signed out unless a verified current access rule says otherwise.
 - The inspected main progress page is device-local. Do not claim account synchronization or server-backed learning insights unless a verified contract supplies them.
 - Dashboard data must be private to the correct user at the API/database boundary, not just conditionally rendered in React.
-- Authentication stays optional unless separately approved; preserve safe return-path handling and OAuth safeguards from PR #44.
+- Authentication stays optional unless separately approved; preserve safe return-path handling and OAuth safeguards on candidate PR #67. Do not treat the candidate as released until required review and real-preview checks pass.
 - Keep email addresses private. Apply the approved CEStudy public identity on community content when relevant.
 - Do not weaken the content review/publication workflow or expose private review notes, unpublished questions, service-role credentials, or sensitive user data.
 - Never put actual question content into a public seed or publish unpublished learning content solely to make a UI look populated.
@@ -473,7 +487,7 @@ Each slice must be separately scoped, reviewed, and tested. The owner explicitly
 Work:
 - Keep this roadmap as the canonical record. PR #55 was merged to `main` at commit `0862b5f243ca0e39f8bb82131c31fef28fbbab98`.
 - Confirm current main SHA, PR states, routes, existing components, test setup and CI.
-- Record theme, equation, PR #44, and responsive-navigation baselines.
+- Record the current main theme, equation, canonical navigation and PR #67 account-integration baselines. Keep PR #44 as a legacy conflict reference, not the current integration candidate.
 - Preserve the current passing main CI/live-smoke/secret-scan gate.
 
 Exit criteria:
@@ -496,12 +510,12 @@ Acceptance criteria:
 - Keep Light as default; support explicit Light/Dark only, with no System option.
 - Use the approved device-local `cestudy:theme:v1` preference and early bootstrap; do not add account synchronization.
 - Use shared semantic tokens and remove avoidable page-specific token contradictions.
-- Do not regress current main pages or PR #44's auth/streak design where it is later integrated.
+- Do not regress the canonical main UI while integrating PR #67's approved auth/streak slice. PR #44's competing shell and theme/navigation changes remain excluded.
 - Add theme contrast/component tests and browser checks for home, catalog, study, practice, forms, dialog, tables and equation error/overflow states.
 - Test at 320px, 390px, 768px, 1024px and 1440px.
 
 Dependencies and blockers:
-- Agree whether PR #44's existing localStorage approach is accepted for the first release.
+- Resolve the account-switching/data-isolation question before merge: opened-lesson history and completed-lesson records use browser-local keys shared across signed-in accounts, while streak days are keyed by Supabase user ID. Do not claim every local activity record is isolated per account.
 - Inspect full dark token coverage and verify theme initialization before React paints.
 - Do not integrate draft authentication simply to obtain ThemeProvider; isolate or deliberately port theme work only after branch integration review.
 
@@ -554,7 +568,7 @@ Acceptance criteria:
 
 **Relative effort:** Medium to Large. **Risk:** High if data scope is misrepresented.
 
-Primary paths: `src/pages/ProgressPage.tsx`, `src/data/learning-progress.ts`, PR #44 auth/profile/history/streak modules if and when integrated, relevant Supabase policies and CI security tests.
+Primary paths: `src/pages/ProgressPage.tsx`, `src/data/learning-progress.ts`, PR #67 auth/profile/history/streak modules, relevant Supabase policies and CI security tests. The candidate remains unmerged, and the account-switching/data-isolation question must be resolved before release.
 
 Acceptance criteria:
 - Device-local activity remains labelled as local until synchronization is separately built and approved.
@@ -635,7 +649,7 @@ For each implementation PR:
 | Theme persistence | Decided | Owner approved device-local persistence under `cestudy:theme:v1`; account/cross-device synchronization remains out of scope. |
 | Final token values | Proposed | Validate contrast and real component rendering in both themes |
 | Phone-web navigation presentation | Partially specified | Compare current four-item quick nav plus menu sheet against a grouped sheet/accordion without copying native tabs |
-| PR #44 integration | Draft-only | Review branch status, OAuth/recovery safeguards, local data behavior and theme tokens before deciding how to port/merge |
+| PR #67 account integration | Open draft candidate | Review current combined diff, OAuth/recovery safeguards, local data behavior, account-switching/data-isolation decision and current-head checks before any release decision |
 | PR #54 route focus and tablet targets | Closed as superseded | Its focus handoff and 44px targets were incorporated into merged PR #57 |
 | Equation scrolling accessibility | Unverified | Keyboard/screen-reader review of wide display equations and error fallback |
 | Direct preview inspection | Blocked in this audit | Browser fetch returned cache miss; container clone attempt failed because DNS could not resolve GitHub |
@@ -683,6 +697,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
+| 2026-10-26 | Reconciled the baseline and integration tracker against live GitHub state. Current main is `887b3f5a0b826ac0019f266de5e53fd6278958d3`; the canonical theme and hybrid navigation are implemented, while Review Materials, Mock Exam and Community routes remain placeholders. PR #67 is open/draft on `feat/local-history-streak-2026-10-23b`; pre-documentation code/test head `0781c4b6caa09717442c794e757ccda980c35a0c` was 85 commits ahead / 0 behind and had four successful attached check runs. The current branch includes this docs-only reconciliation; check live PR status for results on the updated head before any release decision. No review submissions/requested reviewers/review threads were present at the last metadata check. PR #44, #64, #65 and #66 remain open drafts with their current roles documented above. Content counts remain the last recorded 2026-10-19 audit, not a fresh database read. Manual preview OAuth and account-switching/data-isolation gates remain open. Documentation-only update; no application, database or production configuration changes. |
 | 2026-10-24 | Repaired OAuth callback recovery for query-string errors, `error_code`-only queries, ordinary hash fragments, and `#?` fragments. Added a regression assertion that exposed Supabase's default global sign-out scope; changed `AuthContext` to `signOut({ scope: "local" })` and clarified in the Privacy notice that other devices remain signed in. Final code/test head `9b725ebcc15307473e9b434ba19deacc986070e3` passed [CI 39985760608](https://github.com/justryan-n2d/CEStudy/actions/runs/39985760608): 215 tests across 35 files, lint/audit/build, 2,182/2,182 Chromium assertions with no runtime errors, backup verification and Supabase migration/RLS. Full-history Gitleaks [39985760606](https://github.com/justryan-n2d/CEStudy/actions/runs/39985760606) passed. Cloudflare preview `https://0dcca39c.cestudy.pages.dev` deployed; direct interaction failed DNS resolution from this environment. Independent review and actual Google cancellation, controlled PKCE failure/retry, and live Google/Supabase redirect configuration remain NOT VERIFIED. PR #67 remains draft; PR #64 must not merge separately. No production configuration/data/schema changes or content publication occurred. |
 | 2026-10-23 | PR #44 remains a stale, non-mergeable draft; its competing shell was excluded. PR #67 was consolidated and retargeted to main as the single auth/profile plus device-local history/streak integration candidate, with base SHA `887b3f5a0b826ac0019f266de5e53fd6278958d3` and pre-documentation head `df4b247`. The previously stacked configuration prevented main-targeted full-history Gitleaks from running; retargeting should trigger the required scan and fresh CI. Independent review and actual preview Google cancellation, controlled PKCE exchange failure/retry, and live Google/Supabase redirect settings remain NOT VERIFIED. PR #64 must not merge separately and should be closed as superseded only after #67 merges. Phase 5 remains not started on main; account/Dashboard stays paused. No production deploy/config/data/schema or content publication occurred. |
 | 2026-10-23 | PR #57 merged the roadmap-aligned hybrid public navigation at `b4b18b2b1a2255d88dacdff546a90de2de18238b`. Final head `ae45bc7` passed CI, full-history Gitleaks (1,035 commits, no leaks), Supabase migration/RLS and backup checks, and 1,682/1,682 Chromium assertions across 13 routes, both themes, and five viewport widths. Cloudflare Pages preview deployment succeeded; direct external preview inspection remains unavailable in this environment. PR #54 is closed as superseded. Phase 2 remains current pending independent review/manual preview inspection. No production deployment occurred. |
