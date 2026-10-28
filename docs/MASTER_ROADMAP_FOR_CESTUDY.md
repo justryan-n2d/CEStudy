@@ -38,6 +38,7 @@ Use Duolingo, Discord, GitHub, and Autodesk AutoCAD only as references for selec
 5. **Accessible by construction.** Keyboard operation, visible focus, contrast, zoom, reduced motion, and useful error recovery are requirements.
 6. **Security at the actual boundary.** Hiding a control in the UI does not authorize access to protected data.
 7. **Small reviewable releases.** Prefer focused vertical slices over a high-risk full-site rewrite.
+8. **Intentional, task-based UI.** Follow the binding [anti-AI-slop design standard](specs/UX_UI_DESIGN_SYSTEM.md#anti-ai-slop-design-standard-binding): no default nested-card layouts, generic decorative templates, unsupported metrics, or visually implied functionality. The UX/UI design system is authoritative for layout selection, exceptions, and the review checklist.
 
 ## 2. Source-of-truth and change-control policy
 
@@ -681,6 +682,10 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 ```
 
 ## 18. Revision history
+
+| Date | Change |
+|---|---|
+| 2026-10-29 | Added the binding anti-AI-slop design standard to the UX/UI design system and linked it here as the authoritative detailed rule set. Preserved Blueprint Academy, brand assets, website-first IA, Light/Dark toggle with Light default, no System option, and unresolved gamification/exam-readiness boundaries. Documentation only; no app implementation, merge, or deployment authorized. |
 
 | Date | Change |
 |---|---|
