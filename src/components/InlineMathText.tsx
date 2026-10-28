@@ -131,8 +131,8 @@ function shouldRenderCandidate(candidate: string, left: string, right: string): 
 }
 
 function isSimpleNumericSubtraction(text: string, position: number): boolean {
-  const left = text.slice(0, position).match(/(\\d+(?:\\.\\d+)?)\\s*$/u)?.[1];
-  const right = text.slice(position + 1).match(/^\\s*(\\d+(?:\\.\\d+)?)(?![\\p{L}\\p{N}_])/u)?.[1];
+  const left = text.slice(0, position).match(/(\d+(?:\.\d+)?)\s*$/u)?.[1];
+  const right = text.slice(position + 1).match(/^\s*(\d+(?:\.\d+)?)(?![\p{L}\p{N}_])/u)?.[1];
   return Boolean(left && right);
 }
 
