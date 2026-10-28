@@ -220,7 +220,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Offline Access only indicates an item is downloaded when its complete package is stored; download, failure, update, stale, remove, and unavailable states are explicit.
 - Content licensing and publication approval are required before protected materials are made downloadable.
 - Logo blue is used sparingly in both themes. Light-theme white surfaces remain part of the supported design and remain the initial default baseline; Dark Mode is available through the approved Light/Dark toggle.
-- All current routes use the same token, type, spacing, button, card, and focus patterns.
+- All current routes share the established tokens, typography, spacing, button behavior, and focus patterns. Reuse card patterns only when their semantic purpose matches the page task; do not require every route to use cards.
 - Year levels links to an overview that lists all four years.
 - No filler marketing statements or non-actionable metrics appear on the homepage.
 - Hover/focus states work, and reduced-motion is respected.
