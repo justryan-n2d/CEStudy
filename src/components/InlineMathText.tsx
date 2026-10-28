@@ -130,6 +130,12 @@ function shouldRenderCandidate(candidate: string, left: string, right: string): 
   return SHORT_IDENTIFIER_PATTERN.test(left.trim()) && SHORT_IDENTIFIER_PATTERN.test(right.trim());
 }
 
+function isSimpleNumericSubtraction(text: string, position: number): boolean {
+  const left = text.slice(0, position).match(/(\\d+(?:\\.\\d+)?)\\s*$/u)?.[1];
+  const right = text.slice(position + 1).match(/^\\s*(\\d+(?:\\.\\d+)?)(?![\\p{L}\\p{N}_])/u)?.[1];
+  return Boolean(left && right);
+}
+
 /**
  * Find obvious, existing equation fragments even when older lesson records
  * contain Unicode/plain-text math without explicit LaTeX delimiters.
@@ -158,10 +164,11 @@ function findPlainMathRanges(text: string): MathRange[] {
 
   // Also render clear mathematical expressions that have no equality sign,
   // such as a × 10^n, 3 + 2i, and a standalone square root.
-  const expressionAnchors = /[+×÷√^⁰¹²³⁴⁵⁶⁷⁸⁹±]/gu;
+  const expressionAnchors = /[+\-−×÷√^⁰¹²³⁴⁵⁶⁷⁸⁹±]/gu;
   while ((match = expressionAnchors.exec(text)) !== null) {
     const anchorStart = match.index;
     if (isInsideRawHtmlTag(text, anchorStart)) continue;
+    if ((match[0] === "-" || match[0] === "−") && !isSimpleNumericSubtraction(text, anchorStart)) continue;
 
     const anchorEnd = anchorStart + match[0].length;
     const start = match[0] === "√" ? anchorStart : findLeftBound(text, anchorStart);
