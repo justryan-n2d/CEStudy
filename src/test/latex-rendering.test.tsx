@@ -209,4 +209,13 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
   });
 
+  it("auto-renders plain-text subtraction while leaving hyphenated prose alone", async () => {
+    const lesson = "The difference is 7 - 3. The Unicode form is 8 − 5. This is a well-known example.";
+    render(<MarkdownContent markdown={lesson} />);
+
+    await waitFor(() => expect(document.querySelectorAll(".katex")).toHaveLength(2));
+    expect(document.querySelector(".latex-math-error")).not.toBeInTheDocument();
+    expect(document.querySelector(".markdown-content")?.textContent).toContain("This is a well-known example.");
+  });
+
 });
