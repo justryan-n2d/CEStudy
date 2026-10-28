@@ -2,11 +2,11 @@
 
 **Status:** Owner decisions recorded; planning only, no application implementation authorized  
 **Initially prepared at:** 2026-10-21T18:53:21+08:00 (Asia/Manila)  
-**Last revised:** 2026-10-23 (Asia/Manila)  
+**Last revised:** 2026-10-29 (Asia/Manila)  
 **Repository:** [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy)  
 **Main application baseline commit:** `0862b5f243ca0e39f8bb82131c31fef28fbbab98` (docs-only changes may advance `main` without changing the inspected application baseline)  
 **PR #44 head reviewed:** `662e413601cef93100534b8be52f1a76fe35b335` (open, draft, not merged)  
-**Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md)  
+**Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md), including the binding [anti-AI-slop standard](../specs/UX_UI_DESIGN_SYSTEM.md#anti-ai-slop-design-standard-binding)  
 **Related decision plan:** [Modern Gamified UX/UI Decision Plan](./2026-10-21-modern-gamified-ux-decision-plan.md)
 
 
@@ -402,5 +402,8 @@ Before merging any later implementation:
 - When native app design begins, which framework is appropriate?
 
 ## 12. Scope guard
+
+All page and component proposals must follow the [UX/UI Design System's anti-AI-slop standard](../specs/UX_UI_DESIGN_SYSTEM.md#anti-ai-slop-design-standard-binding). Choose layouts by task rather than reusing a generic card-grid template; preserve technical-content space, truthful feature states, website-first navigation, and the approved theme/brand decisions. Complete the required design review checklist before a significant UI implementation is approved. This addition is documentation guidance only and does not authorize application changes.
+
 
 This is a plan only. Revised 2026-10-22 (Asia/Manila). See the companion Modern Gamified UX/UI Decision Plan for the approved theme toggle, toggleable gamification direction, healthy-engagement safeguards, deferred exam-specific scope, and approved responsive-navigation direction. This work does not add routes, components, application logic, database tables, migrations, RLS policies, question records, reference datasets, offline packages, or mobile-app code. It does not modify PR #44's branch, status, checks, or deployment. All feature work requires separate explicit implementation authorization. The owner-approved design directions in this document do not authorize implementation.

@@ -1,6 +1,6 @@
 # CEStudy project status
 
-**Last updated:** 2026-10-23  
+**Last updated:** 2026-10-29  
 **Current workstream:** Canonical roadmap-led UX integration, staged by independently reviewable pull requests.  
 **Operational release phase:** **Phase 7, pre-launch hardening and release gates.**  
 **Release status:** CEStudy is **not approved for a broad student launch**. The latest recorded live content audit has 72 catalog subjects, 52 practice questions and 13 lessons; all questions and lessons remain `needs-review`, with zero published rows. The integration work below does not approve content publication, a broad launch, or production deployment.
@@ -8,6 +8,8 @@
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
 ## Canonical roadmap and integration sequence
+
+- **2026-10-29 UX/UI planning update:** A documentation-only branch adds a binding anti-AI-slop standard to `docs/specs/UX_UI_DESIGN_SYSTEM.md`, including task-based layout rules, nested-container acceptance criteria, interaction/prototype truth, and a required design-review checklist. The master roadmap and related IA/gamification plans link to that authority. No application files, feature behavior, auth, database, production settings, merge, or production deployment are changed by this work. GitHub's automatic branch checks may build a preview. The branch remains subject to owner review and repository validation.
 
 - **Source of truth:** [MASTER_ROADMAP_FOR_CESTUDY.md](MASTER_ROADMAP_FOR_CESTUDY.md) is already present on `main`. Its approved Blueprint Academy direction, implementation sequence, acceptance criteria, and release safeguards take priority over conflicting PR layouts or styling.
 - **Supporting design decisions:** PR #51 is merged. Its IA, gamified UX, and design-system documents are reconciled with the canonical roadmap and approved device-local theme decision.

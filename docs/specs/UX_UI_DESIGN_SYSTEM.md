@@ -2,7 +2,7 @@
 
 **Status:** Brand foundations established; owner has approved the Light/Dark toggle, website navigation direction, and Practice workspace layout. No application implementation is authorized by this document.  
 **Platforms:** Website-first responsive web now; native Android and iOS later
-**Decision update:** 2026-10-23, device-local theme preference approved for the first release  
+**Decision update:** 2026-10-29, anti-AI-slop design standard added; 2026-10-23, device-local theme preference approved for the first release  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
 
 **Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md) and the [modern gamified UX/UI decision plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md).
@@ -16,6 +16,119 @@
 5. **Useful copy only.** Text must help students navigate, understand a content status, learn a concept, or recover from a problem. Remove repeated claims, filler slogans, generic marketing copy, and statistics that do not help a student make a decision.
 6. **Motion with purpose.** Motion may show hover, focus, selection, feedback, or the arrival of content. It must not delay studying or act as decoration.
 7. **Performance is a design requirement.** Prefer CSS and existing dependencies; avoid large animations, continuous effects, unnecessary image payloads, repeated data fetching, and gratuitous blur or shadow.
+
+## Anti-AI-slop design standard (binding)
+
+**Purpose:** Make CEStudy visually distinctive through deliberate, useful design rather than novelty or decoration. This standard applies to designers and coding agents proposing or changing any meaningful UI.
+
+> **Binding principle:** "Every significant UI element must have a clear purpose grounded in user needs, information hierarchy, product identity, or functionality. Components must not be added simply to make the interface look modern, polished, or visually impressive."
+
+This standard does not ban simplicity, reusable components, cards, shadows, gradients, animation, or visual personality. It requires a reason for each choice. A plain layout is not automatically generic, and a polished layout is not automatically good. Evaluate the interface against its real task, content, and CEStudy identity.
+
+### Binding principles
+
+1. **Task before template.** Identify the user, task, key information, primary action, and important recovery paths before choosing a layout. Do not force every route into a hero-plus-card-grid or dashboard template.
+2. **Content earns the space.** Lessons, questions, equations, diagrams, assumptions, units, worked steps, and explanations take priority over decorative surfaces. Never shrink or fragment technical content to preserve a visual motif.
+3. **Use the least structure that preserves meaning.** Prefer hierarchy, spacing, alignment, and concise labels first. Add a container only when it clarifies grouping, separation, interaction, or state.
+4. **Reuse behavior, not a single page shape.** Share tokens and components where semantics and interaction match. Allow different page structures for reading, scanning, comparing, solving, tracking, and discussion.
+5. **Truth over polish.** Loading, empty, unavailable, error, disabled, and success states must reflect actual product behavior. A mockup must label unimplemented interactions as proposed or nonfunctional.
+6. **Evidence over invented content.** No fabricated engineering facts, placeholder metrics, unsupported readiness claims, fake review statuses, or repetitive filler copy. Technical material requires suitable verification/provenance and clear units, assumptions, notation, and worked reasoning.
+7. **Restraint is contextual.** Brand blue `#0754B5`, semantic color, elevation, borders, radius, iconography, and motion must reinforce meaning or interaction. Color and decoration cannot be the only way to convey state.
+8. **Preserve approved decisions.** Keep Blueprint Academy, canonical logo geometry/assets, website-first IA, Light/Dark toggle with Light as the default, and no System theme option. Inspiration from Duolingo, Discord, GitHub, and AutoCAD must be translated into an original CEStudy system, not copied.
+9. **Accessibility and responsiveness are part of the design.** Keyboard access, visible focus, readable contrast, zoom/reflow, reduced motion, adequate target size, and viewport-specific behavior are acceptance criteria, not polish tasks.
+10. **Inspect before approval.** Generated output is a draft until reviewed against the relevant task, nearby existing pages, content accuracy, interaction states, responsive behavior, accessibility, and maintainability.
+
+### Anti-patterns and acceptance criteria
+
+| Anti-pattern | Why it harms CEStudy | Preferred alternative | Acceptance criterion |
+|---|---|---|---|
+| Nested cards by default | Multiple surfaces, borders, shadows, and radii obscure relationships and add visual noise. | Open layout, one coherent workspace surface, spacing, headings, dividers, or a plain list. | Every additional container level has a documented grouping, boundary, interaction, or state purpose. |
+| One card per statistic, paragraph, button, or navigation item | Makes scanning slower and gives ordinary content false importance. | Inline metric with context, aligned list, table, or typography-led grouping. | Cards represent genuinely distinct, self-contained units, not merely individual DOM/content fragments. |
+| Repetitive card grids across unrelated pages | Hides the difference between reading, comparing, practicing, and discussing. | Choose layout from task: reading column, searchable list, comparison table, problem workspace, thread, or summary. | The page structure can be justified by the primary user task; a sibling page is not copied without review. |
+| Oversized hero or empty whitespace | Pushes useful learning content and navigation below the fold without improving understanding. | Compact purpose statement and immediate route into the relevant task/content. | Above-the-fold space communicates the page purpose and a useful next action or real content. |
+| Generic gradients, glow, blur, floating ornaments | Compete with formulas and content and may reduce contrast or performance. | Neutral surfaces and restrained semantic accents; retain effects only with a clear purpose. | Each decorative effect has a stated purpose and survives a remove-it test: removing it would meaningfully harm comprehension, identity, or feedback. |
+| Unnecessary pills, badges, icons, shadows, borders, and animation | Increases visual emphasis without increasing meaning. | Plain text, spacing, dividers, or static state feedback. | Every badge/icon/effect communicates status, navigation, recognition, or feedback that text/layout alone does not communicate as well. |
+| Arbitrary type combinations or display typography | Weakens hierarchy and technical readability. | Existing Inter/system stack and established type scale; use emphasis only for hierarchy. | Typography has consistent roles, readable line length, and supports equations and long-form reading. |
+| Gamification overload | Rewards can overpower study content and encourage engagement without learning value. | Quiet, optional progress summaries and contextual feedback. | Every mechanic defines what it measures, why it helps learning, how it is verified, and how distraction/privacy are controlled. |
+| Fake functionality or content | Users cannot trust a control, availability label, statistic, or engineering explanation. | Real behavior or explicitly labelled prototype state; verified content and provenance. | All interactive controls have defined behavior and all factual metrics/statuses have an actual source. |
+
+### Choose layout by the job being done
+
+| Pattern | Use when | Avoid when |
+|---|---|---|
+| Open layout | Reading, explaining a concept, displaying a short form or a small number of related controls. | A real boundary or state needs to be unmistakable and cannot be conveyed through hierarchy. |
+| Card / contained surface | A self-contained destination, mixed-content item, independent summary, or workspace whose boundary helps the task. | Items are homogeneous and mainly need scanning, sorting, or comparison; a card is being used just to fill space. |
+| List | Students scan, filter, sort, or move through similar subjects, lessons, questions, or discussions. | Each item has materially different content that benefits from a flexible preview. |
+| Table | Values need side-by-side comparison, engineering reference lookup, or precise row/column relationships. | On narrow screens it becomes unreadable; provide a deliberate responsive alternative or labelled horizontal scrolling where appropriate. |
+| Sidebar | A dense signed-in workspace has several persistent destinations or tools and users benefit from context switching. | Public reading pages or simple flows would gain little from persistent secondary navigation. Public pages retain the approved hybrid header direction. |
+| Tabs | A small set of peer views within the same task/context, with easy switching and no need to compare all panels at once. | The content represents distinct destinations that need direct links, browser history, or independent sharing. |
+| Accordion | Secondary detail is optional, long, or repeatedly hides content users do not always need. | Core instructions, critical assumptions, or step-by-step solutions should be visible to understand the task. |
+| Modal/dialog | A focused, short decision or interruption requires attention and the underlying task should remain contextually present. | The task is lengthy, navigational, or requires comparing background content. Prefer a route, inline form, or suitable drawer. |
+| Drawer/sheet | Contextual tools or secondary navigation must temporarily occupy limited space, especially in narrow practice layouts. | The content is central to the task and would be unnecessarily hidden behind another action. |
+| Badge/status | A compact, meaningful state or category must be recognized at a glance. | It repeats a heading, adds decoration, or reports an unverified state. Use ordinary text for low-priority metadata. |
+| Animation | It explains state change, preserves orientation, or provides useful feedback. | It delays reading or action, repeats celebration for routine steps, causes layout shift, or distracts. Respect reduced-motion preferences. |
+
+### Visual hierarchy, spacing, density, and color
+
+- **Hierarchy:** Give each region one clear primary focus. Use heading levels, alignment, proximity, and whitespace before adding color, borders, shadows, or badges. Do not create several competing primary actions in one region.
+- **Spacing:** Continue the existing 4px/8px spacing increments. Use consistent spacing to show relatedness; do not add empty space simply to make a screen look premium or force content below the fold.
+- **Typography:** Continue the Inter/system fallback stack, 16px starting body size, and responsive headings. Prioritize readable line length and line height for technical explanations; distinguish equation labels, assumptions, units, intermediate steps, and final answers without decorative type.
+- **Density:** Use comfortable density for reading pages and progressive density for technical workspaces. Keep the question, answer state, diagram, and necessary tools visible in the approved flexible desktop Practice layout. On narrow screens, prioritize the question and place secondary tools in an accessible drawer, tab, or sheet.
+- **Color:** Use `#0754B5` for primary actions, links, focus, and selected states as defined by semantic tokens. Keep status distinguishable without color alone. Do not introduce a new palette or theme option without documenting and approving it.
+- **Surface effects:** Shadows, gradients, borders, blur, and rounded corners are allowed when they signal a meaningful boundary or interaction. Avoid stacking several of these on the same region without a reason.
+- **Responsive behavior:** Preserve the website's information architecture while adapting presentation. Validate at the existing target widths of 320, 360, 390, 768, 1024, and 1440px; do not force a mobile-native tab bar onto the website.
+- **Engineering content:** Use adequate space for equations, units, diagrams, tables, assumptions, source/provenance notes, and sequential solution steps. Avoid page-wide overflow; use a deliberate wrapping or labelled horizontal-scroll treatment for technical expressions where needed.
+
+### Interaction and prototype truth
+
+For each interactive element, document its trigger, result, available states, and recovery behavior. Consider loading, empty, success, error, disabled, focus, and permission/unavailable states where relevant. At minimum:
+
+- Buttons and links have distinguishable actions and labels; do not style a nonfunctional placeholder as an active primary action.
+- Menus and drawers define opening, closing, keyboard operation, focus handling, and narrow-screen behavior.
+- Forms define validation, errors, disabled/submitting state, success feedback, and whether user input is preserved after recoverable failure.
+- Filters show active selections, result counts where meaningful, and a clear/reset path.
+- Progress, review, publication, offline, and reward states are derived from real data and clearly scoped; do not imply backend persistence when state is local or simulated.
+- Prototypes identify unimplemented behavior. A screenshot or polished static prototype is not evidence that the feature exists.
+
+### Gamification guardrail
+
+Gamification must remain secondary to learning content and useful feedback. Each proposed XP, quest, streak, badge, leaderboard, or animation must specify: the learning/user benefit; the event or data that proves it; its visual priority; privacy and anti-abuse boundaries; and how it can be disabled or made less distracting where appropriate. A mechanic being independently toggleable does not approve its reward values, eligibility rules, ranking model, or default enabled state. Preserve the existing owner-approved boundaries in the [Modern Gamified UX/UI Decision Plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md); board-readiness claims and the deferred exam-specific features remain unapproved.
+
+### Anti-AI-slop review checklist (required before significant UI approval)
+
+Reviewers and coding agents must answer all items before a significant new page, component family, or redesign is considered ready:
+
+- [ ] Does the design communicate its purpose and target users clearly?
+- [ ] Is the layout appropriate for the actual task, rather than copied from a generic template?
+- [ ] Are nested cards and containers limited to cases with a clear purpose?
+- [ ] Can any decorative component be removed without reducing usability, comprehension, identity, or meaningful feedback?
+- [ ] Is hierarchy clear without excessive colors, borders, shadows, badges, icons, or type styles?
+- [ ] Does the page feel like CEStudy's Blueprint Academy direction rather than a generic AI-generated template or clone?
+- [ ] Is all educational content accurate, useful, and appropriately verified, with units, assumptions, notation, and worked steps where needed?
+- [ ] Are primary actions discoverable and do all visible interactions have defined, truthful behavior?
+- [ ] Have responsive behavior, keyboard access, focus visibility, contrast, zoom/reflow, reduced motion, and relevant loading/empty/success/error/disabled states been considered?
+- [ ] Has the actual rendered implementation or prototype been inspected and tested, rather than accepted from its initial generated appearance?
+- [ ] Has the page been compared with existing CEStudy pages and the relevant student task? Does each shared component improve clarity, behavior, or consistency?
+- [ ] For substantial redesigns, has the reviewer explicitly examined visual hierarchy, content density, redundant containers, and unnecessary decoration?
+
+**Required review note:** Record the target task, primary layout rationale, any intentionally nested containers or decorative effects and their purpose, states tested, viewport/theme coverage, content verification status, and known gaps. If a checklist item is not met, record it as a blocker or an explicitly accepted limitation rather than silently skipping it.
+
+### Decisions and ownership
+
+- **Binding:** The principles and checklist in this section; approved brand assets/tokens, website-first direction, Light/Dark toggle with Light default and no System option; truthful content/status, accessibility, and existing security/publication boundaries.
+- **Context-dependent:** Card use, visual effects, layout density, sidebars, tabs, accordions, dialogs/drawers, and motion. Choose based on the task and document the reason for non-obvious choices.
+- **Owner approval required:** Changes to brand/logo geometry or palette, website information architecture, theme choices, proposed gamification defaults/rewards/eligibility/leaderboard policy, exam-readiness metrics, or other currently unapproved product scope.
+- **Not evidence of a defect by itself:** A card, gradient, animation, hero, or dense layout. It becomes an issue when it lacks a task-based purpose, harms comprehension/accessibility/performance, or creates unjustified visual emphasis.
+
+### Research basis
+
+These rules are project-specific applications of established guidance, not universal prohibitions against particular visual patterns:
+
+- [Material Design 3: Cards](https://m3.material.io/components/cards/guidelines) advises against forcing content into cards when spacing, headings, or dividers create a simpler hierarchy.
+- [Material Design 3: Lists](https://m3.material.io/components/lists/guidelines) describes lists as optimized for reading comprehension and compact scanning.
+- [Nielsen Norman Group: Card View vs. List View](https://www.nngroup.com/videos/card-view-vs-list-view/) summarizes the trade-off: lists favor efficient scanning/sorting, while cards can group mixed content.
+- [W3C WCAG 2.2](https://www.w3.org/TR/WCAG22/) provides the accessibility baseline for contrast, reflow, keyboard operation, focus, and target size. Apply the success criteria appropriate to the project's declared conformance target and test actual pages.
+- [MDN: Using media queries for accessibility](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Media_queries/Using_for_accessibility) documents `prefers-reduced-motion` support.
 
 ## Design tokens
 
@@ -107,7 +220,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - Offline Access only indicates an item is downloaded when its complete package is stored; download, failure, update, stale, remove, and unavailable states are explicit.
 - Content licensing and publication approval are required before protected materials are made downloadable.
 - Logo blue is used sparingly in both themes. Light-theme white surfaces remain part of the supported design and remain the initial default baseline; Dark Mode is available through the approved Light/Dark toggle.
-- All current routes use the same token, type, spacing, button, card, and focus patterns.
+- All current routes share the established tokens, typography, spacing, button behavior, and focus patterns. Reuse card patterns only when their semantic purpose matches the page task; do not require every route to use cards.
 - Year levels links to an overview that lists all four years.
 - No filler marketing statements or non-actionable metrics appear on the homepage.
 - Hover/focus states work, and reduced-motion is respected.
@@ -117,6 +230,8 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 
 ## Revision record
+
+- **2026-10-29:** Added the binding anti-AI-slop standard, task-based layout selection guidance, nested-container acceptance criteria, interaction/prototype truth requirements, and a required design review checklist. Documentation only; approved product decisions and application code are unchanged.
 
 - **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
 - **2026-10-21:** Linked the modern gamified UX/UI decision plan and documented planning gates for quests, rewards, healthy engagement, exam evidence, and responsive navigation. Documentation-only change.
