@@ -210,7 +210,7 @@ describe("LaTeX math rendering",()=>{
   });
 
   it("auto-renders plain-text subtraction while leaving hyphenated prose alone", async () => {
-    const lesson = "The difference is 7 - 3. The Unicode form is 8 − 5. This is a well-known example.";
+    const lesson = "The difference is 7 - 3. The Unicode form is 8 − 5. This is a well-known example. Version v2-3 remains text.";
     render(<MarkdownContent markdown={lesson} />);
 
     await waitFor(() => expect(document.querySelectorAll(".katex")).toHaveLength(2));
