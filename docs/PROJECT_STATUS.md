@@ -9,7 +9,7 @@
 
 ## Canonical roadmap and integration sequence
 
-- **2026-10-29 UX/UI planning update:** A documentation-only branch adds a binding anti-AI-slop standard to `docs/specs/UX_UI_DESIGN_SYSTEM.md`, including task-based layout rules, nested-container acceptance criteria, interaction/prototype truth, and a required design-review checklist. The master roadmap and related IA/gamification plans link to that authority. No application files, feature behavior, auth, database, production settings, merge, or deployment are changed by this work. The branch remains subject to owner review and repository validation.
+- **2026-10-29 UX/UI planning update:** A documentation-only branch adds a binding anti-AI-slop standard to `docs/specs/UX_UI_DESIGN_SYSTEM.md`, including task-based layout rules, nested-container acceptance criteria, interaction/prototype truth, and a required design-review checklist. The master roadmap and related IA/gamification plans link to that authority. No application files, feature behavior, auth, database, production settings, merge, or production deployment are changed by this work. GitHub's automatic branch checks may build a preview. The branch remains subject to owner review and repository validation.
 
 - **Source of truth:** [MASTER_ROADMAP_FOR_CESTUDY.md](MASTER_ROADMAP_FOR_CESTUDY.md) is already present on `main`. Its approved Blueprint Academy direction, implementation sequence, acceptance criteria, and release safeguards take priority over conflicting PR layouts or styling.
 - **Supporting design decisions:** PR #51 is merged. Its IA, gamified UX, and design-system documents are reconciled with the canonical roadmap and approved device-local theme decision.
