@@ -2,9 +2,9 @@
 
 **Status:** Owner-reviewed planning record. Selected design directions are approved; feature implementation remains separately gated.  
 **Prepared:** 2026-10-21 (Asia/Manila)  
-**Decision update:** 2026-10-23 (Asia/Manila)  
+**Decision update:** 2026-10-29 (Asia/Manila), anti-AI-slop standard linked; owner-approved gamification boundaries unchanged  
 **Related plan:** [Website-First Information Architecture and Structure Plan](./2026-10-21-website-first-information-architecture-plan.md)  
-**Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md)
+**Related specification:** [UX/UI Design System](../specs/UX_UI_DESIGN_SYSTEM.md) (authoritative anti-AI-slop rules and required review checklist)
 
 ## Purpose and scope
 
@@ -202,6 +202,10 @@ Before implementing a feature, write a separate implementation plan with accepta
 - Verify device-local theme persistence through an actual refresh and test both themes, optional audio feedback, reduced-motion behavior, and keyboard/accessibility states.
 - Test the approved navigation model at 1440px, 1024px, 768px, 390px, and 320px, preserving access to the question, timer, answer state, and controls.
 - Apply existing content review and publication requirements to all study materials without treating this plan as approval to publish content.
+
+## Visual hierarchy and anti-slop guardrail
+
+Follow the binding [Anti-AI-slop design standard](../specs/UX_UI_DESIGN_SYSTEM.md#anti-ai-slop-design-standard-binding) for any future screen or interaction design. In particular, do not let XP, quests, streaks, badges, leaderboards, or celebration effects dominate the learning task. Each mechanic must explain what it measures and why it helps the learner; use verified activity, modest visual priority, and accessible opt-out/reduced-distraction controls. This link does not approve unresolved reward values, eligibility, leaderboard rules, or exam-readiness measures.
 
 ## Explicit non-goals
 
