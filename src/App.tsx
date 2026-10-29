@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
+import { AuthProvider } from "./contexts/AuthContext";
 import { HomePage } from "./pages/HomePage";
 import { AboutPage } from "./pages/AboutPage";
 import { PrivacyPage } from "./pages/PrivacyPage";
@@ -20,15 +21,24 @@ import { ContentReviewPage } from "./pages/ContentReviewPage";
 import { ReviewMaterialsPage } from "./pages/ReviewMaterialsPage";
 import { MockExamPortalPage } from "./pages/MockExamPortalPage";
 import { CommunityPage } from "./pages/CommunityPage";
+import { LoginPage } from "./pages/LoginPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { HistoryPage } from "./pages/HistoryPage";
+import { StreakPage } from "./pages/StreakPage";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <AuthProvider>
       <Layout>
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/streak" element={<StreakPage />} />
             <Route path="/review-materials" element={<ReviewMaterialsPage />} />
             <Route path="/mock-exam-portal" element={<MockExamPortalPage />} />
             <Route path="/community" element={<CommunityPage />} />
@@ -50,6 +60,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Layout>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

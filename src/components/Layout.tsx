@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { LearningStreakBadge } from "./LearningStreakBadge";
+import { useAuth } from "../contexts/AuthContext";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { ReviewMaterialsMegaMenu } from "./ReviewMaterialsMegaMenu";
 import { YearLevelDropdown } from "./YearLevelDropdown";
@@ -32,6 +34,7 @@ type DesktopPanel = "years" | "materials" | null;
 
 export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const { user, loading: authLoading } = useAuth();
   const headerRef = useRef<HTMLElement>(null);
   const mainContentRef = useRef<HTMLElement>(null);
   const previousPathRef = useRef(location.pathname);
@@ -181,6 +184,12 @@ export function Layout({ children }: { children: ReactNode }) {
               >
                 Community Forum
               </NavLink>
+              <NavLink
+                to={user ? "/profile" : "/login"}
+                className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+              >
+                {authLoading ? "Account" : user ? "Profile" : "Sign in"}
+              </NavLink>
               {feedbackInboxUnlocked && (
                 <NavLink to="/feedbacks" className={({ isActive }) => isActive ? "nav-link active feedbacks-nav-link" : "nav-link feedbacks-nav-link"}>
                   <span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>
@@ -189,6 +198,7 @@ export function Layout({ children }: { children: ReactNode }) {
               )}
             </nav>
 
+            <LearningStreakBadge />
             <ThemeToggle />
             <button
               ref={mobileToggleRef}
@@ -221,6 +231,9 @@ export function Layout({ children }: { children: ReactNode }) {
             </section>
             <section className="mobile-menu-group" aria-labelledby="mobile-menu-support-title">
               <h2 id="mobile-menu-support-title">Support</h2>
+              <Link to={user ? "/profile" : "/login"} onClick={closeNavigation}>
+                <NavigationGlyph name="help" />{authLoading ? "Account" : user ? "Your profile" : "Sign in"}
+              </Link>
               <Link to="/about" onClick={closeNavigation}><NavigationGlyph name="help" />About us</Link>
               <Link to="/contact" onClick={closeNavigation}><NavigationGlyph name="help" />Contact CEStudy</Link>
               <Link to="/support" onClick={closeNavigation}><NavigationGlyph name="help" />Support us</Link>

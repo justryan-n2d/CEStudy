@@ -3,6 +3,8 @@ import { cleanup,render,screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter,Route,Routes } from "react-router-dom";
 import type { SubjectLesson } from "../types/lesson-content";
+import { readLessonHistory } from "../data/learning-history";
+import { learningProgressStorageKey } from "../data/learning-progress";
 
 const { fetchPublishedLessonsMock } = vi.hoisted(() => ({ fetchPublishedLessonsMock: vi.fn() }));
 vi.mock("../data/lesson-api", () => ({ fetchPublishedLessons: fetchPublishedLessonsMock }));
@@ -50,6 +52,13 @@ describe("student lesson reader",()=>{
     expect(await screen.findByRole("heading",{name:"Published Test Lesson"})).toBeInTheDocument();
     expect(screen.queryByText("Identify a test objective")).not.toBeInTheDocument();
     expect(screen.getByRole("article")).toHaveTextContent("This lesson is published.");
+    expect(readLessonHistory()).toEqual([expect.objectContaining({
+      lessonId: "public-test-lesson",
+      subjectSlug: "basic-algebra",
+      unitNumber: 1,
+      path: "/study/basic-algebra/1",
+      title: "Published Test Lesson",
+    })]);
   });
 
   it("finds a topic inside the reviewer and opens its matching lesson",async()=>{
@@ -75,11 +84,11 @@ describe("student lesson reader",()=>{
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Mark as complete" }));
     expect(screen.getByRole("button", { name: "Mark as incomplete" })).toHaveAttribute("aria-pressed", "true");
-    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toContain("public-test-lesson");
+    expect(localStorage.getItem(learningProgressStorageKey())).toContain("public-test-lesson");
 
     await user.click(screen.getByRole("button", { name: "Mark as incomplete" }));
     expect(screen.getByRole("button", { name: "Mark as complete" })).toHaveAttribute("aria-pressed", "false");
-    expect(JSON.parse(localStorage.getItem("cestudy:completed-lessons:v1") ?? "[]")).toEqual([]);
+    expect(JSON.parse(localStorage.getItem(learningProgressStorageKey()) ?? "[]")).toEqual([]);
   });
 
 });
