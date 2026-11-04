@@ -2514,3 +2514,13 @@ body {
 :root[data-theme="dark"] .site-sidebar .site-sidebar-navigation .site-sidebar-group button.site-sidebar-link {
   color: var(--ui-text);
 }
+
+
+/* Sidebar link text has a fixed, tested foreground in each theme. */
+:root[data-theme="light"] .site-sidebar .site-sidebar-navigation .site-sidebar-group .site-sidebar-link {
+  color: #0b263d !important;
+}
+
+:root[data-theme="dark"] .site-sidebar .site-sidebar-navigation .site-sidebar-group .site-sidebar-link {
+  color: #f3f7fb !important;
+}
