@@ -4,8 +4,6 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { ConnectionStatusNotice } from "./ConnectionStatusNotice";
 import { ThemeProvider } from "../contexts/ThemeContext";
-import { ReviewMaterialsMegaMenu } from "./ReviewMaterialsMegaMenu";
-import { YearLevelDropdown } from "./YearLevelDropdown";
 import {
   FEEDBACK_INBOX_SESSION_EVENT,
   FEEDBACK_INBOX_UNREAD_EVENT,
@@ -13,7 +11,9 @@ import {
   getUnreadFeedbackCount,
 } from "../data/feedback-inbox";
 
-type GlyphName = "home" | "book" | "layers" | "math" | "menu" | "close" | "help" | "messages";
+type GlyphName =
+  | "home" | "book" | "layers" | "math" | "menu" | "close"
+  | "help" | "messages" | "progress" | "bug" | "privacy" | "contact";
 
 function NavigationGlyph({ name }: { name: GlyphName }) {
   const paths: Record<GlyphName, ReactNode> = {
@@ -25,38 +25,64 @@ function NavigationGlyph({ name }: { name: GlyphName }) {
     close: <><path d="m6 6 12 12"/><path d="M18 6 6 18"/></>,
     help: <><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.4 1.3-2 1.7-2 3.4"/><path d="M12 17.5h.01"/></>,
     messages: <><path d="M21 11.5a7.5 7.5 0 0 1-7.5 7.5H8l-5 2v-5.5A7.5 7.5 0 1 1 21 11.5Z"/><path d="M7 10h7M7 13h5"/></>,
+    progress: <><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 6-7"/></>,
+    bug: <><path d="m8 9-2-2M16 9l2-2M8 14H4M20 14h-4M8 19l-2 2M16 19l2 2"/><path d="M9 6.5a3 3 0 0 1 6 0"/><rect x="7" y="7" width="10" height="14" rx="5"/><path d="M12 7v14"/></>,
+    privacy: <><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></>,
+    contact: <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></>,
   };
-  return <svg className="navigation-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
+
+  return (
+    <svg className="navigation-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
+      fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      {paths[name]}
+    </svg>
+  );
 }
 
-type DesktopPanel = "years" | "materials" | null;
+function SidebarLink({
+  to,
+  label,
+  icon,
+  active = false,
+  onNavigate,
+}: {
+  to: string;
+  label: string;
+  icon: GlyphName;
+  active?: boolean;
+  onNavigate: () => void;
+}) {
+  return (
+    <NavLink
+      to={to}
+      onClick={onNavigate}
+      className={({ isActive }) => isActive || active ? "site-sidebar-link active" : "site-sidebar-link"}
+    >
+      <NavigationGlyph name={icon} />
+      <span>{label}</span>
+    </NavLink>
+  );
+}
 
 export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const headerRef = useRef<HTMLElement>(null);
   const mainContentRef = useRef<HTMLElement>(null);
   const previousPathRef = useRef(location.pathname);
-  const yearTriggerRef = useRef<HTMLButtonElement>(null);
-  const materialsTriggerRef = useRef<HTMLButtonElement>(null);
-  const mobileToggleRef = useRef<HTMLButtonElement>(null);
-  const [desktopPanel, setDesktopPanel] = useState<DesktopPanel>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const sidebarTriggerRef = useRef<HTMLButtonElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
   const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
 
-  const closeNavigation = () => {
-    setDesktopPanel(null);
-    setMobileMenuOpen(false);
+  const closeSidebarAndRestoreFocus = () => {
+    setSidebarOpen(false);
+    sidebarTriggerRef.current?.focus();
   };
 
-  const toggleDesktopPanel = (panel: Exclude<DesktopPanel, null>) => {
-    setMobileMenuOpen(false);
-    setDesktopPanel((current) => current === panel ? null : panel);
-  };
+  const closeSidebar = () => setSidebarOpen(false);
 
   useEffect(() => {
-    setDesktopPanel(null);
-    setMobileMenuOpen(false);
+    setSidebarOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -103,135 +129,157 @@ export function Layout({ children }: { children: ReactNode }) {
   }, [feedbackInboxUnlocked]);
 
   useEffect(() => {
-    if (!desktopPanel && !mobileMenuOpen) return;
+    if (!sidebarOpen) return;
 
-    const handlePointerDown = (event: PointerEvent) => {
-      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) {
-        setDesktopPanel(null);
-        setMobileMenuOpen(false);
-      }
-    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const firstFocusable = sidebarRef.current?.querySelector<HTMLElement>(
+      'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+    );
+    firstFocusable?.focus();
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeSidebarAndRestoreFocus();
+        return;
+      }
+      if (event.key !== "Tab") return;
 
-      if (desktopPanel) {
-        setDesktopPanel(null);
-        (desktopPanel === "years" ? yearTriggerRef : materialsTriggerRef).current?.focus();
-      } else if (mobileMenuOpen) {
-        setMobileMenuOpen(false);
-        mobileToggleRef.current?.focus();
+      const focusable = Array.from(
+        sidebarRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !sidebarRef.current?.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !sidebarRef.current?.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
       }
     };
 
-    document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
+      document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [desktopPanel, mobileMenuOpen]);
+  }, [sidebarOpen]);
 
-  const mobileLinks = [
-    { to: "/", label: "Home", name: "home" as const, active: location.pathname === "/" },
-    { to: "/catalog", label: "Subjects", name: "book" as const, active: location.pathname === "/catalog" || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/practice/") || location.pathname.startsWith("/study/") },
-    { to: "/years", label: "Years", name: "layers" as const, active: location.pathname === "/years" || location.pathname.startsWith("/year/") },
-    { to: "/math-foundations", label: "Math", name: "math" as const, active: location.pathname === "/math-foundations" },
-  ];
+  const isCatalogContext =
+    location.pathname === "/catalog" ||
+    location.pathname.startsWith("/subjects/") ||
+    location.pathname.startsWith("/study/") ||
+    location.pathname.startsWith("/practice/");
+  const isYearContext = location.pathname === "/years" || location.pathname.startsWith("/year/");
 
   return (
     <ThemeProvider>
       <div className="app-shell">
         <a className="skip-link" href="#main-content">Skip to main content</a>
-        <header ref={headerRef} className="site-header">
+
+        <header className="site-header">
           <div className="header-inner">
+            <button
+              ref={sidebarTriggerRef}
+              className="sidebar-menu-toggle"
+              type="button"
+              aria-expanded={sidebarOpen}
+              aria-controls="site-sidebar"
+              aria-haspopup="dialog"
+              aria-label={sidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+              onClick={() => setSidebarOpen((open) => !open)}
+            >
+              <NavigationGlyph name={sidebarOpen ? "close" : "menu"} />
+            </button>
             <Link className="brand" to="/" aria-label="CEStudy home">
               <img className="brand-logo" src="/branding/cestudy-master-logo.svg" alt="" aria-hidden="true" width={52} height={52} />
               <span className="brand-copy"><strong>CEStudy</strong><small>Civil Engineering Reviewer</small></span>
             </Link>
-
-            <nav className="main-nav" aria-label="Main navigation">
-              <NavLink
-                to="/catalog"
-                className={({ isActive }) => isActive || location.pathname.startsWith("/subjects/") || location.pathname.startsWith("/study/") || location.pathname.startsWith("/practice/") ? "nav-link active" : "nav-link"}
-              >
-                Subject Catalog
-              </NavLink>
-              <YearLevelDropdown
-                isOpen={desktopPanel === "years"}
-                isActive={location.pathname === "/years" || location.pathname.startsWith("/year/")}
-                triggerRef={yearTriggerRef}
-                onToggle={() => toggleDesktopPanel("years")}
-                onClose={closeNavigation}
-              />
-              <ReviewMaterialsMegaMenu
-                isOpen={desktopPanel === "materials"}
-                isActive={location.pathname.startsWith("/review-materials")}
-                triggerRef={materialsTriggerRef}
-                onToggle={() => toggleDesktopPanel("materials")}
-                onClose={closeNavigation}
-              />
-              <NavLink
-                to="/mock-exam-portal"
-                className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              >
-                Mock Exam Portal
-              </NavLink>
-              <NavLink
-                to="/community"
-                className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-              >
-                Community Forum
-              </NavLink>
-              {feedbackInboxUnlocked && (
-                <NavLink to="/feedbacks" className={({ isActive }) => isActive ? "nav-link active feedbacks-nav-link" : "nav-link feedbacks-nav-link"}>
-                  <span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>
-                  <span>Feedbacks</span>
-                </NavLink>
-              )}
-            </nav>
-
-            <ThemeToggle />
-            <button
-              ref={mobileToggleRef}
-              className="mobile-menu-toggle"
-              type="button"
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-help-menu"
-              aria-label={`${mobileMenuOpen ? "Close" : "Open"} more pages menu${unreadFeedbackCount > 0 ? ", unread feedback" : ""}`}
-              onClick={() => {
-                setDesktopPanel(null);
-                setMobileMenuOpen((open) => !open);
-              }}
-            >
-              <span className="menu-toggle-icon"><NavigationGlyph name={mobileMenuOpen ? "close" : "menu"} />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot menu-unread-dot" aria-hidden="true" />}</span><span>More</span>
-            </button>
           </div>
-
-          <nav id="mobile-help-menu" className={`mobile-help-menu${mobileMenuOpen ? " is-open" : ""}`} aria-label="More CEStudy pages" aria-hidden={!mobileMenuOpen}>
-            <section className="mobile-menu-group" aria-labelledby="mobile-menu-learning-title">
-              <h2 id="mobile-menu-learning-title">Study</h2>
-              <Link to="/catalog" onClick={closeNavigation}><NavigationGlyph name="book" />Subject Catalog</Link>
-              <Link to="/years" onClick={closeNavigation}><NavigationGlyph name="layers" />Year Levels</Link>
-              <Link to="/math-foundations" onClick={closeNavigation}><NavigationGlyph name="math" />Math Foundations</Link>
-            </section>
-            <section className="mobile-menu-group" aria-labelledby="mobile-menu-resources-title">
-              <h2 id="mobile-menu-resources-title">Resources</h2>
-              <Link to="/review-materials" onClick={closeNavigation}><NavigationGlyph name="book" />Review Materials Hub</Link>
-              <Link to="/mock-exam-portal" onClick={closeNavigation}><NavigationGlyph name="layers" />Mock Exam Portal</Link>
-              <Link to="/community" onClick={closeNavigation}><NavigationGlyph name="messages" />Community Forum</Link>
-            </section>
-            <section className="mobile-menu-group" aria-labelledby="mobile-menu-support-title">
-              <h2 id="mobile-menu-support-title">Support</h2>
-              <Link to="/about" onClick={closeNavigation}><NavigationGlyph name="help" />About us</Link>
-              <Link to="/contact" onClick={closeNavigation}><NavigationGlyph name="help" />Contact CEStudy</Link>
-              <Link to="/support" onClick={closeNavigation}><NavigationGlyph name="help" />Support us</Link>
-              <Link to="/bug-reports" onClick={closeNavigation}><NavigationGlyph name="help" />Report a bug</Link>
-              <Link to="/feedback" onClick={closeNavigation}><NavigationGlyph name="help" />Send feedback</Link>
-              <Link to="/privacy" onClick={closeNavigation}><NavigationGlyph name="help" />Privacy notice</Link>
-              {feedbackInboxUnlocked && <Link to="/feedbacks" onClick={closeNavigation} className="mobile-feedbacks-link"><span className="feedbacks-nav-icon"><NavigationGlyph name="messages" />{unreadFeedbackCount > 0 && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}</span>Feedbacks</Link>}
-            </section>
-          </nav>
         </header>
+
+        {sidebarOpen && (
+          <div className="site-sidebar-layer">
+            <button
+              className="site-sidebar-backdrop"
+              type="button"
+              aria-label="Close navigation menu"
+              onClick={closeSidebarAndRestoreFocus}
+            />
+            <aside
+              ref={sidebarRef}
+              id="site-sidebar"
+              className="site-sidebar"
+              role="dialog"
+              aria-modal="true"
+              aria-label="CEStudy navigation"
+            >
+              <div className="site-sidebar-heading">
+                <div>
+                  <span className="site-sidebar-eyebrow">CEStudy</span>
+                  <h2>Navigation</h2>
+                </div>
+                <button
+                  className="site-sidebar-close"
+                  type="button"
+                  aria-label="Close navigation menu"
+                  onClick={closeSidebarAndRestoreFocus}
+                >
+                  <NavigationGlyph name="close" />
+                </button>
+              </div>
+
+              <nav className="site-sidebar-navigation" aria-label="CEStudy pages">
+                <section className="site-sidebar-group" aria-labelledby="sidebar-learning-title">
+                  <h3 id="sidebar-learning-title">Learning</h3>
+                  <SidebarLink to="/" label="Home" icon="home" onNavigate={closeSidebar} />
+                  <SidebarLink to="/catalog" label="Subject Catalog" icon="book" active={isCatalogContext} onNavigate={closeSidebar} />
+                  <SidebarLink to="/years" label="Year Levels" icon="layers" active={isYearContext} onNavigate={closeSidebar} />
+                  <SidebarLink to="/math-foundations" label="Math Foundations" icon="math" onNavigate={closeSidebar} />
+                </section>
+
+                <section className="site-sidebar-group" aria-labelledby="sidebar-progress-title">
+                  <h3 id="sidebar-progress-title">My learning</h3>
+                  <SidebarLink to="/progress" label="Progress" icon="progress" onNavigate={closeSidebar} />
+                </section>
+
+                <section className="site-sidebar-group" aria-labelledby="sidebar-support-title">
+                  <h3 id="sidebar-support-title">Help and support</h3>
+                  <SidebarLink to="/about" label="About us" icon="help" onNavigate={closeSidebar} />
+                  <SidebarLink to="/contact" label="Contact CEStudy" icon="contact" onNavigate={closeSidebar} />
+                  <SidebarLink to="/support" label="Support us" icon="help" onNavigate={closeSidebar} />
+                  <SidebarLink to="/bug-reports" label="Report a bug" icon="bug" onNavigate={closeSidebar} />
+                  <SidebarLink to="/feedback" label="Send feedback" icon="messages" onNavigate={closeSidebar} />
+                  <SidebarLink to="/privacy" label="Privacy notice" icon="privacy" onNavigate={closeSidebar} />
+                </section>
+
+                {feedbackInboxUnlocked && (
+                  <section className="site-sidebar-group" aria-labelledby="sidebar-owner-title">
+                    <h3 id="sidebar-owner-title">Owner tools</h3>
+                    <SidebarLink to="/feedbacks" label="Feedback inbox" icon="messages" onNavigate={closeSidebar} />
+                    {unreadFeedbackCount > 0 && <p className="site-sidebar-unread" role="status">{unreadFeedbackCount} unread feedback {unreadFeedbackCount === 1 ? "item" : "items"}</p>}
+                  </section>
+                )}
+              </nav>
+
+              <section className="site-sidebar-preferences" aria-labelledby="sidebar-preferences-title">
+                <h3 id="sidebar-preferences-title">Preferences</h3>
+                <ThemeToggle />
+              </section>
+
+              <p className="site-sidebar-footer">Independent learning for civil engineering students.</p>
+            </aside>
+          </div>
+        )}
 
         <ConnectionStatusNotice />
 
@@ -249,9 +297,6 @@ export function Layout({ children }: { children: ReactNode }) {
               <Link to="/about">About us</Link>
               <Link to="/catalog">Subject catalog</Link>
               <Link to="/years">Year levels</Link>
-              <Link to="/review-materials">Review Materials Hub</Link>
-              <Link to="/mock-exam-portal">Mock Exam Portal</Link>
-              <Link to="/community">Community Forum</Link>
               <Link to="/math-foundations">Math foundations</Link>
             </nav>
             <nav className="footer-links" aria-label="Contact and help">
@@ -264,14 +309,6 @@ export function Layout({ children }: { children: ReactNode }) {
             </nav>
           </div>
         </footer>
-
-        <nav className="mobile-bottom-nav" aria-label="Quick navigation">
-          {mobileLinks.map((item) => (
-            <Link key={item.to} to={item.to} className={`mobile-tab${item.active ? " active" : ""}`} aria-current={item.active ? "page" : undefined}>
-              <NavigationGlyph name={item.name} /><span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
       </div>
     </ThemeProvider>
   );
