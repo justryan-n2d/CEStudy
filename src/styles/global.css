@@ -2427,3 +2427,34 @@ body {
 .site-sidebar .year-level-menu-semester li small {
   font-size: .64rem;
 }
+
+ 
+/* Preserve owner unread-feedback cues in the new navigation */
+.sidebar-menu-icon,
+.site-sidebar-icon {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-sidebar-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.site-sidebar-icon .navigation-glyph {
+  width: 19px;
+  height: 19px;
+}
+
+.site-sidebar-icon .feedback-unread-dot {
+  top: 0;
+  right: -1px;
+}
+
+.sidebar-menu-icon .menu-unread-dot {
+  top: -2px;
+  right: -3px;
+}
