@@ -1,7 +1,7 @@
 # CEStudy Decision-Light Design: site-wide UX audit
 
 **Audit date:** 2026-11-04  
-**Repository baseline:** \`main\` after PR #77, merge commit \`b8e0a2843325f4b940e30e4b29b3890282ca0dac\`  
+**Repository baseline:** `main` after PR #77, merge commit `b8e0a2843325f4b940e30e4b29b3890282ca0dac`  
 **Standard:** [Decision-Light Design standard](../specs/UX_UI_DESIGN_SYSTEM.md#decision-light-design-standard-binding), approved and merged through [PR #77](https://github.com/justryan-n2d/CEStudy/pull/77)  
 **Audit status:** Source-level review completed across all 21 registered route patterns. Live visual, keyboard, touch and student usability validation remains outstanding.  
 **Scope:** Audit only. No application files, UI behavior, tests, database state, access policies, authentication, content publication or production configuration were changed.
