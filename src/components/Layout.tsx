@@ -150,7 +150,7 @@ export function Layout({ children }: { children: ReactNode }) {
     const getFocusableElements = () => Array.from(
       sidebarRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
     ).filter((element) => {
-      if (element.closest('[hidden], [aria-hidden="true]')) return false;
+      if (element.closest('[hidden], [aria-hidden="true"]')) return false;
       const collapsedDetails = element.closest("details:not([open])");
       return !collapsedDetails || (element.tagName === "SUMMARY" && element.parentElement === collapsedDetails);
     });
