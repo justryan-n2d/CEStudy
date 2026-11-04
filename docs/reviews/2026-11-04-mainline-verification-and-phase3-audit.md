@@ -143,11 +143,11 @@ It separates the work into three reviewable test-first tasks:
 
 No application code was changed during this audit.
 
-### Owner decision required before implementation
+### Owner decision recorded on 2026-11-04
 
-The current Study Page uses `learningObjectives` for topic search but does not render them. Its current test explicitly asserts objectives are not shown. The roadmap calls for a coherent hierarchy for objectives, lesson sections, formulas, solutions and next steps.
+The owner decided that `learningObjectives` remains searchable metadata only. The student-facing lesson reader must not display a separate, clearly labelled **Learning Objectives** section above the lesson body.
 
-Decide whether the student-facing lesson reader should display a concise, labelled **Learning Objectives** section above the lesson body, or keep objectives search-only. The implementation plan intentionally blocks this behavior change until the owner decides.
+The intended lesson structure is practical review material organized around topical outlines, conceptual explanations, formulas and step-by-step worked solutions. The existing test that confirms objectives are not rendered remains part of the regression contract. No Learning Objectives display change is authorized in Phase 3.
 
 ## 8. Work explicitly not performed
 
