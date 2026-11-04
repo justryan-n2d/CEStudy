@@ -2,13 +2,13 @@
 
 **Document status:** Owner-approved direction; canonical planning document for CEStudy UX/UI redesign and roadmap tracking.
 **Owner approval:** Blueprint Academy selected on 2026-10-22 (Asia/Manila).
-**Baseline snapshot:** `main` at `ffbabc6072d46bcd12af1358d17b169a0f8abbc9`, inspected 2026-10-22.
+**Baseline snapshot:** `main` at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`, verified 2026-11-04.
 **Scope of this record:** Product direction, UX/UI decisions, verified baseline, implementation sequence, acceptance criteria, and release safeguards.
 **Application implementation status:** No application code changes are authorized by this document.
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
-> **Repository note (verified 2026-10-23):** This canonical roadmap is present on `main`. Its approved decisions control product direction, UX/UI scope, and implementation order. Supporting plans and feature PRs must be reconciled to this document before merge. Actual source code, data contracts, security controls, and CI/release gates still determine what is implemented and safe to ship.
+> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 is merged on `main`; its binding design-quality and anti-template standard is now part of the repository guidance. This roadmap and the live source, database policies, security controls, and current CI/release evidence remain the authorities for intended scope and actual implementation. PR #67 is the consolidated account/learning-activity candidate, but is still draft and diverged from current `main`.
 
 ## 1. Purpose and product outcome
 
@@ -56,31 +56,36 @@ This roadmap controls the intended product design, scope, decision register, and
 
 ### 3.1 Main branch snapshot
 
-| Item | Verified state on 2026-10-22 |
+| Item | Verified state on 2026-11-04 |
 |---|---|
 | Repository | [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy), public repository |
 | Default branch | `main` |
-| Inspected `main` SHA | `ffbabc6072d46bcd12af1358d17b169a0f8abbc9` |
-| Latest commit message | `docs: add UI UX Pro Max integration guidance` |
+| Inspected `main` SHA | `ad96cc6148b95b563f247d9254bea5a6858b3cd0` |
+| Latest commit | PR #69 merge: `docs: establish design quality and anti-template UX/UI standard` |
 | Stack declared by `package.json` | React 19, TypeScript 5.9, Vite 7, Tailwind CSS 4, React Router 7, Supabase JS, KaTeX 0.19, Vitest and Testing Library |
-| Main CI run | [39758495387, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495387) |
-| Main full-history secret scan | [39758495402, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495402) |
-| Main live website Chromium smoke | [39758768389, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758768389) |
+| Main CI | [run 41775563340, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340): 151 tests across 26 files, lint, dependency audit, build, backup crypto/retention tests, and isolated Supabase migration/RLS tests |
+| Theme/responsive browser checks | 1,682/1,682 assertions passed across 13 routes, both themes, and 320/390/768/1024/1440 px in the same CI run |
+| Main full-history secret scan | Latest scheduled full-history run [41433925558, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41433925558): 1,191 commits / about 4.53 MB scanned, no leaks. The merge push scan also passed, but its merge-only range reported zero commits scanned and is not represented as a full-history scan. |
+| Live website Chromium smoke | [run 41775770082, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41775770082): 135/135 checks, zero failures, and zero runtime errors |
 
-The main workflows above passed on the exact inspected main commit. This is fresh GitHub Actions evidence, not a claim that this assistant ran the tests locally.
+The checks above are GitHub Actions evidence on the named commits/runs. They are not a claim that a local clone or physical Android device was tested in this session. The 2026-11-04 live smoke run confirms routes, headers, Supabase host/key exposure, published-only practice requests, and the tested 320/1440 px production layout. The CI theme suite separately covers both themes and five viewport widths on a built production preview.
 
 ### 3.2 Relevant open pull requests
 
-The PR state below was rechecked on 2026-10-23. Historical CI evidence is not treated as current evidence after branch changes.
+Current PR metadata was checked against `main` at `ad96cc6148b95b563f247d9254bea5a6858b3cd0` on 2026-11-04.
 
 | PR | Current role and state | Roadmap-aligned handling |
 |---|---|---|
-| [#44 Google sign-in and local learning activity](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, and contains overlapping theme/navigation/layout changes. | Preserve only the confirmed scope: Google OAuth, profile, streak, learning history, and required session, privacy, and sign-out behavior. Refactor to this roadmap's structure. Keep draft until OAuth and security gates pass. |
-| [#32 Production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open proposal for a production Chromium visual-test harness. | Evaluate independently; it is not part of the current theme/navigation merge sequence until reviewed. |
+| [#67 Google auth, profile, local history and streak](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; recorded base/merge-base `887b3f5a0b826ac0019f266de5e53fd6278958d3`. Compared with current `main`, the branch is diverged: 99 commits ahead and 19 behind; GitHub reports mergeable false. | This is the single consolidated account/learning-activity candidate. Do not merge in its current state. After Phases 3 and 4, reconcile the branch against current `main`, review its full diff, and complete all OAuth, privacy, data-isolation and recovery gates. |
+| [#44 earlier Google sign-in and local learning activity candidate](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, older branch; not the consolidated candidate. | Historical source only. Do not merge separately or use it as the current implementation target. |
+| [#64, #65 and #66](https://github.com/justryan-n2d/CEStudy/pull/64) | Open, draft, stacked or earlier source slices that feed the PR #67 consolidation. | Do not merge these independently. Reconcile only through the consolidated PR #67 after its base is refreshed and the combined change is reviewed. |
+| [#32 production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open technical proposal. | Evaluate independently if a production-content visual regression test is still required; it is not part of Phase 3 scope. |
 
-**Completed security/documentation/UI gates:** PR #58 merged the roadmap/status reconciliation. PR #59 merged the narrow Gitleaks allowlist and pull-request full-history scan after CI and secret scanning passed; the full-history scan covered 1,014 commits with no leaks. PR #47 is closed as superseded. PR #51 merged the supporting IA, gamified UX, and design-system documents. PR #56 merged the shared theme foundation at `6aef33f`; final CI, secret scan, Supabase migration/RLS checks, and 853/853 Chromium assertions passed after the owner content-review dark-theme fix. PR #57 merged the hybrid navigation at `b4b18b2`; CI, full-history secret scan, Supabase migration/RLS, backup checks, and 1,682/1,682 Chromium assertions passed. PR #54 is closed as superseded by #57.
+**Merged since the prior roadmap snapshot:** PR #69 merged on 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. It adds the binding design-quality and anti-template standard and tool-neutral repository wording. It does not change application code, database state, authentication settings, or production configuration.
 
-**Merge order:** security, supporting documentation, Phase 1 theme implementation, and Phase 2 navigation implementation have merged. Phase 1 and Phase 2 remain **current**, not complete, pending independent review and manual external preview inspection; this environment could not access external previews due DNS/network limits. Next proceed to focused PR #44 feature slices while preserving its OAuth/session release gates. Verify current base/head SHAs, required CI, full-history secret scan, relevant security tests, and review status immediately before each merge. A stale green run, a mergeable flag, or a draft's existence is not release approval.
+**Theme/navigation implementation:** PR #56 (theme foundation) and PR #57 (hybrid navigation) are merged. The current `main` source includes the theme provider, early theme initialization, explicit Light/Dark control, hybrid desktop navigation, mobile quick navigation and More menu. Current CI and live smoke evidence is recorded above. Independent owner visual sign-off and physical-device accessibility checks are still outstanding; automated success does not replace those checks.
+
+**Merge rule for PR #67:** Before any future merge, refresh its branch against current `main`, review the complete diff and all changed files, run current required CI and full-history secret scanning, verify OAuth/provider behavior, and check privacy and account data boundaries. A green run from the old base, a mergeable flag, or a draft's existence is not release approval.
 
 ### 3.3 Existing route inventory on `main`
 
@@ -99,7 +104,7 @@ Verified route registration is in `src/App.tsx` at the inspected main commit.
 | `/about`, `/privacy` | Existing | Informational and privacy pages |
 | `/contact`, `/support`, `/bug-reports`, `/feedback`, `/feedbacks` | Existing | Support and feedback surfaces, with inbox access tied to its actual gate |
 | `/owner/content-review` | Existing | Privileged content-review surface; preserve its access boundary |
-| `/login`, `/profile`, `/history`, `/streak`, `/menu`, `/community` | PR #44 draft-only | Present in PR #44 branch, not in the inspected main route table |
+| `/login`, `/profile`, `/history`, `/streak` | PR #67 draft-only | Not registered in current `main`; PR #67 remains a draft and must be reconciled before these features are treated as implemented. `/community` is already an existing main route. |
 | Review Materials Hub, Mock Exam Portal, Student Dashboard as a broader learning hub, full Community Forum, unit converter | Proposed | Do not represent these as full working features until separately implemented and verified |
 
 ### 3.4 Existing reusable foundations
