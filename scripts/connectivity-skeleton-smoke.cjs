@@ -74,6 +74,16 @@ async function main() {
     const gateForRequest = requestGate;
     if (gateForRequest) await gateForRequest.promise;
 
+    if (responseMode === "service-error" &&
+      ["catalog_subjects", "subject_lessons", "practice_questions"].includes(resource)) {
+      await route.fulfill({
+        status: 500,
+        headers: { ...corsHeaders(origin), "content-type": "application/json" },
+        body: JSON.stringify({ code: "SYNTHETIC_FAILURE", message: "Synthetic browser smoke failure." }),
+      });
+      return;
+    }
+
     if (responseMode === "catalog-error" && resource === "catalog_subjects") {
       await route.fulfill({
         status: 500,
@@ -249,6 +259,82 @@ async function main() {
             await page.getByRole("heading", { name: route.empty }).isVisible().catch(() => false), route.empty);
         }
         check("No skeleton remains after resolution: " + activeRoute,
+          await page.locator("[data-skeleton]").count() === 0);
+      }
+    }
+
+    for (const route of routes) {
+      for (const width of [390, 1440]) {
+        activeRoute = route.path + " unavailable state at " + width + "px";
+        await page.setViewportSize({ width, height: 900 });
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+        responseMode = "service-error";
+        requestGate = null;
+        await page.goto(baseUrl + route.path, { waitUntil: "domcontentloaded", timeout: 30000 });
+
+        const alert = page.getByRole("alert");
+        await alert.waitFor({ state: "visible", timeout: 10000 });
+        const ui = await alert.evaluate((element) => {
+          const illustration = element.querySelector("[data-testid='unavailable-state-illustration']");
+          const message = element.querySelector("p");
+          const retry = element.querySelector("button");
+          const artBox = illustration ? illustration.getBoundingClientRect() : null;
+          const messageBox = message ? message.getBoundingClientRect() : null;
+          const retryBox = retry ? retry.getBoundingClientRect() : null;
+          const artStyle = illustration ? getComputedStyle(illustration) : null;
+          return {
+            title: element.querySelector("h1,h2,h3")?.textContent?.trim() || "",
+            illustrationVisible: Boolean(artBox && artBox.width > 0 && artBox.height > 0),
+            illustrationMask: artStyle?.maskImage || artStyle?.webkitMaskImage || "",
+            illustrationColor: artStyle?.backgroundColor || "",
+            retryText: retry?.textContent?.trim() || "",
+            retryBelowMessage: Boolean(messageBox && retryBox && retryBox.top >= messageBox.bottom - 1),
+            retryWidth: retryBox?.width || 0,
+            alertWidth: element.getBoundingClientRect().width,
+            documentWidth: document.documentElement.scrollWidth,
+            viewportWidth: window.innerWidth,
+          };
+        });
+        check("Shared unavailable illustration and Retry render on " + activeRoute,
+          ui.illustrationVisible && ui.illustrationMask !== "none" && Boolean(ui.illustrationColor) &&
+            ui.retryText === "Retry" && ui.retryBelowMessage && ui.retryWidth >= 128,
+          JSON.stringify(ui));
+        check("Unavailable layout has no horizontal overflow: " + activeRoute,
+          ui.documentWidth <= ui.viewportWidth + 1, JSON.stringify(ui));
+
+        const themeGroup = page.getByRole("group", { name: "Color theme" });
+        for (const themeName of ["Light", "Dark"]) {
+          await themeGroup.getByRole("button", { name: themeName }).click();
+          await page.waitForFunction(
+            (expected) => document.documentElement.dataset.theme === expected,
+            themeName.toLowerCase(),
+            { timeout: 5000 },
+          );
+          const themedColor = await alert.locator("[data-testid='unavailable-state-illustration']")
+            .evaluate((element) => getComputedStyle(element).backgroundColor);
+          check(themeName + " theme styles the shared unavailable illustration: " + activeRoute,
+            Boolean(themedColor) && themedColor !== "rgba(0, 0, 0, 0)",
+            "illustration color=" + themedColor);
+          await page.screenshot({
+            path: path.join("artifacts", "unavailable-" + route.id + "-" + themeName.toLowerCase() + "-" + width + "px.png"),
+            fullPage: true,
+          });
+        }
+
+        responseMode = "empty";
+        requestGate = createGate();
+        await alert.getByRole("button", { name: "Retry" }).click();
+        const region = page.locator('[data-skeleton="' + route.skeleton + '"]').first();
+        await region.waitFor({ state: "visible", timeout: 10000 });
+        check("Retry returns to the matching skeleton while the new request is pending: " + activeRoute,
+          await region.isVisible());
+        requestGate.release();
+        requestGate = null;
+        await region.waitFor({ state: "detached", timeout: 10000 });
+        await alert.waitFor({ state: "detached", timeout: 10000 });
+        check("Retry clears the unavailable state after the request succeeds: " + activeRoute,
+          await page.getByRole("alert").count() === 0);
+        check("Retry leaves no loading skeleton behind: " + activeRoute,
           await page.locator("[data-skeleton]").count() === 0);
       }
     }
