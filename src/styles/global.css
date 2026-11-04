@@ -1948,8 +1948,8 @@ body {
   box-shadow: none;
 }
 
-.practice-skeleton-region .skeleton-answer-option {
-  background: var(--ui-surface-muted);
+.practice-skeleton-region .answer-options .skeleton-answer-option {
+  background-color: var(--ui-surface-muted);
   border-color: var(--ui-border);
 }
 
