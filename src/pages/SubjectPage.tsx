@@ -23,6 +23,11 @@ export function SubjectPage() {
 
   useEffect(() => {
     let active = true;
+    setLoading(true);
+    setError(null);
+    setSubject(null);
+    setRelated([]);
+
     fetchCatalogSubjects()
       .then((items) => {
         if (!active) return;
