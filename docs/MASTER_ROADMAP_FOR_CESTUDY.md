@@ -60,23 +60,24 @@ This roadmap controls the intended product design, scope, decision register, and
 |---|---|
 | Repository | [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy), public repository |
 | Default branch | `main` |
-| Inspected `main` SHA | `ad96cc6148b95b563f247d9254bea5a6858b3cd0` |
-| Latest commit | PR #69 merge: `docs: establish design quality and anti-template UX/UI standard` |
+| Verified `main` SHA after Phase 3 integration | `849c9d707b0cafd8c39ab63d9bf57260c54dd186` |
+| Latest commit | PR #73 merge: `test: verify populated lesson math in both themes` |
 | Stack declared by `package.json` | React 19, TypeScript 5.9, Vite 7, Tailwind CSS 4, React Router 7, Supabase JS, KaTeX 0.19, Vitest and Testing Library |
-| Main CI | [run 41775563340, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340): 151 tests across 26 files, lint, dependency audit, build, backup crypto/retention tests, and isolated Supabase migration/RLS tests |
-| Theme/responsive browser checks | 1,682/1,682 assertions passed across 13 routes, both themes, and 320/390/768/1024/1440 px in the same CI run |
+| Post-Phase 3 main CI | [run 41797726093, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093): 177 tests across 29 files, lint, dependency audit, production build, backup crypto/retention/verification tests, and isolated Supabase migration/RLS tests |
+| Theme/responsive browser checks | 1,757/1,757 assertions passed in the post-Phase 3 main CI, including synthetic populated-lesson rendering in both themes at 320/390/768/1024/1440 px |
 | Main full-history secret scan | Latest scheduled full-history run [41433925558, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41433925558): 1,191 commits / about 4.53 MB scanned, no leaks. The merge push scan also passed, but its merge-only range reported zero commits scanned and is not represented as a full-history scan. |
-| Live website Chromium smoke | [run 41775770082, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41775770082): 135/135 checks, zero failures, and zero runtime errors |
+| Live website Chromium smoke | [run 41798110114, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114): live smoke completed successfully after the Phase 3 merge |
 
-The checks above are GitHub Actions evidence on the named commits/runs. They are not a claim that a local clone or physical Android device was tested in this session. The 2026-11-04 live smoke run confirms routes, headers, Supabase host/key exposure, published-only practice requests, and the tested 320/1440 px production layout. The CI theme suite separately covers both themes and five viewport widths on a built production preview.
+These checks are GitHub Actions evidence on the named commits/runs. They are not a claim that a local clone or physical Android device was tested in this session. Automated CI and live smoke do not replace physical Android/TalkBack, keyboard-only or 200% text-zoom checks.
 
 ### 3.2 Relevant open pull requests
 
-Current PR metadata was checked against `main` at `ad96cc6148b95b563f247d9254bea5a6858b3cd0` on 2026-11-04.
+Current PR metadata was checked against `main` at `849c9d707b0cafd8c39ab63d9bf57260c54dd186` on 2026-11-04.
 
 | PR | Current role and state | Roadmap-aligned handling |
 |---|---|---|
-| [#67 Google auth, profile, local history and streak](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; recorded base/merge-base `887b3f5a0b826ac0019f266de5e53fd6278958d3`. Compared with current `main`, the branch is diverged: 99 commits ahead and 19 behind; GitHub reports mergeable false. | This is the single consolidated account/learning-activity candidate. Do not merge in its current state. After Phases 3 and 4, reconcile the branch against current `main`, review its full diff, and complete all OAuth, privacy, data-isolation and recovery gates. |
+| [#67 Google auth, profile, local history and streak](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; recorded base/merge-base `887b3f5a0b826ac0019f266de5e53fd6278958d3`. Compared with current `main`, the branch is diverged: 99 commits ahead and 23 behind; GitHub reports mergeable false. | This is the single consolidated account/learning-activity candidate. Do not merge in its current state. After Phases 3 and 4, reconcile the branch against current `main`, review its full diff, and complete all OAuth, privacy, data-isolation and recovery gates. |
+| [#74 connectivity and loading skeletons](https://github.com/justryan-n2d/CEStudy/pull/74) | Open, draft; 19 commits ahead and 4 behind current `main`, diverged from the pre-Phase-3 base. | Do not merge yet. Reconcile with the merged SubjectPage fix, correct the Practice answer-row skeleton theme mismatch, and add rejected-request lifecycle checks for the relevant page API families before re-running required CI and visual review. |
 | [#44 earlier Google sign-in and local learning activity candidate](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, older branch; not the consolidated candidate. | Historical source only. Do not merge separately or use it as the current implementation target. |
 | [#64, #65 and #66](https://github.com/justryan-n2d/CEStudy/pull/64) | Open, draft, stacked or earlier source slices that feed the PR #67 consolidation. | Do not merge these independently. Reconcile only through the consolidated PR #67 after its base is refreshed and the combined change is reviewed. |
 | [#32 production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open technical proposal. | Evaluate independently if a production-content visual regression test is still required; it is not part of Phase 3 scope. |
