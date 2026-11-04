@@ -275,6 +275,10 @@ async function main() {
 
         const alert = page.getByRole("alert");
         await alert.waitFor({ state: "visible", timeout: 10000 });
+        await page.waitForFunction(() => {
+          const reveal = document.querySelector('[role="alert"]')?.closest(".scroll-reveal");
+          return !reveal || (reveal.dataset.revealState === "visible" && Number(getComputedStyle(reveal).opacity) >= 0.99);
+        }, null, { timeout: 5000 });
         const ui = await alert.evaluate((element) => {
           const illustration = element.querySelector("[data-testid='unavailable-state-illustration']");
           const message = element.querySelector("p");
@@ -289,6 +293,8 @@ async function main() {
             illustrationMask: artStyle?.maskImage || artStyle?.webkitMaskImage || "",
             illustrationColor: artStyle?.backgroundColor || "",
             retryText: retry?.textContent?.trim() || "",
+            retryDisabled: retry?.disabled ?? true,
+            retryOpacity: retry ? Number(getComputedStyle(retry).opacity) : 0,
             retryBelowMessage: Boolean(messageBox && retryBox && retryBox.top >= messageBox.bottom - 1),
             retryWidth: retryBox?.width || 0,
             alertWidth: element.getBoundingClientRect().width,
@@ -298,7 +304,8 @@ async function main() {
         });
         check("Shared unavailable illustration and Retry render on " + activeRoute,
           ui.illustrationVisible && ui.illustrationMask !== "none" && Boolean(ui.illustrationColor) &&
-            ui.retryText === "Retry" && ui.retryBelowMessage && ui.retryWidth >= 128,
+            ui.retryText === "Retry" && !ui.retryDisabled && ui.retryOpacity >= 0.99 &&
+            ui.retryBelowMessage && ui.retryWidth >= 128,
           JSON.stringify(ui));
         check("Unavailable layout has no horizontal overflow: " + activeRoute,
           ui.documentWidth <= ui.viewportWidth + 1, JSON.stringify(ui));
