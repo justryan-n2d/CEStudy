@@ -227,6 +227,16 @@ async function main() {
               check(themeName + " theme applies its muted surface to Practice answer placeholder rows: " + activeRoute,
                 metrics.answerRowBackground === metrics.expectedAnswerSurface,
                 JSON.stringify({ answerRowBackground: metrics.answerRowBackground, expected: metrics.expectedAnswerSurface }));
+              if (themeName === "Dark") {
+                const progressSkeleton = page.locator(".practice-skeleton-region .practice-progress .skeleton-shape").first();
+                const shimmer = await progressSkeleton.evaluate((shape) => {
+                  const style = getComputedStyle(shape);
+                  return { backgroundImage: style.backgroundImage, animationName: style.animationName };
+                });
+                check("Dark Practice skeleton retains its shimmer gradient: " + activeRoute,
+                  shimmer.backgroundImage.includes("linear-gradient") && shimmer.animationName === "ce-study-skeleton-shimmer",
+                  JSON.stringify(shimmer));
+              }
             }
             if (themeName === "Light") lightBase = metrics.base;
             if (themeName === "Dark") darkBase = metrics.base;
