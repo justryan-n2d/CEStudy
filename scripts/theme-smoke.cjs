@@ -197,6 +197,11 @@ The solutions are \(x=-2\) and \(x=-3\).`,
 
           const darkButton = themeGroup.getByRole("button", { name: "Dark" });
           await darkButton.click();
+          await page.waitForFunction(
+            () => getComputedStyle(document.querySelector(".site-sidebar-link")).color === "rgb(243, 247, 251)",
+            null,
+            { timeout: 5000 },
+          );
           const dark = await page.evaluate(() => {
             const selected = document.querySelector(".theme-toggle-option.is-selected");
             const selectedStyle = selected ? getComputedStyle(selected) : null;
@@ -300,6 +305,11 @@ The solutions are \(x=-2\) and \(x=-3\).`,
 
           const lightButton = themeGroup.getByRole("button", { name: "Light" });
           await lightButton.click();
+          await page.waitForFunction(
+            () => getComputedStyle(document.querySelector(".site-sidebar-link")).color === "rgb(11, 38, 61)",
+            null,
+            { timeout: 5000 },
+          );
           const light = await page.evaluate(() => {
             const selected = document.querySelector(".theme-toggle-option.is-selected");
             const selectedStyle = selected ? getComputedStyle(selected) : null;
