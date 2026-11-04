@@ -6,13 +6,19 @@ export function PrivacyPage() {
       <section className="page-intro">
         <span className="kicker">Privacy</span>
         <h1>Privacy notice</h1>
-        <p>Last updated October 18, 2026. This notice describes the current CEStudy website.</p>
+        <p>Last updated October 23, 2026. This notice describes the current CEStudy website.</p>
       </section>
 
       <div className="privacy-content">
         <section aria-labelledby="privacy-browse-title">
           <h2 id="privacy-browse-title">Browsing and study progress</h2>
           <p>You can browse the public engineering catalog without creating an account. In the current website, completed-lesson progress and study-day history stay in your browser on this device. They are not synced to CEStudy's servers or across devices. Clearing this site's browser storage can remove that local data.</p>
+        </section>
+
+        <section aria-labelledby="privacy-google-title">
+          <h2 id="privacy-google-title">Optional Google sign-in and account sessions</h2>
+          <p>Google sign-in is optional. If you choose to sign in, Google provides basic account information, such as your email address, through Supabase Auth so CEStudy can identify the signed-in account and show your profile. CEStudy does not require an account to browse the public study library.</p>
+          <p>CEStudy keeps an authentication session in this browser so you can stay signed in between page visits. You can end that session using the Sign out control on your profile. Sign-out does not delete the Google account itself.</p>
         </section>
 
         <section aria-labelledby="privacy-feedback-title">
