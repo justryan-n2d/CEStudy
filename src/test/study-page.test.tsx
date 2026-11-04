@@ -118,9 +118,10 @@ describe("student lesson reader", () => {
     fetchPublishedLessonsMock.mockResolvedValue([publishedLesson]);
     renderStudy("/study/basic-algebra/1");
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
-    expect(screen.getByText("Identify a test objective").closest("small")).toBeInTheDocument();
+    expect(screen.queryByText("Identify a test objective")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: /Learning Objectives/i })).not.toBeInTheDocument();
     expect(screen.getByRole("article")).toHaveTextContent("This lesson is published.");
+    expect(screen.getByRole("article")).not.toHaveTextContent("Identify a test objective");
   });
 
   it("uses objectives as searchable metadata without rendering a separate objectives section", async () => {
@@ -132,7 +133,7 @@ describe("student lesson reader", () => {
     await user.type(search, "test objective");
 
     expect(screen.getByRole("link", { name: /Published Test Lesson/ })).toBeInTheDocument();
-    expect(screen.queryByText("Identify a test objective")).not.toBeInTheDocument();
+    expect(screen.getByText("Identify a test objective").closest("small")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: /Learning Objectives/i })).not.toBeInTheDocument();
   });
 
