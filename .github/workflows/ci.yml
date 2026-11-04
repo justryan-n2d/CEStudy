@@ -82,7 +82,7 @@ jobs:
           fi
       - name: Upload populated lesson visual review screenshots
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cestudy-populated-lesson-visual-review
           path: |
@@ -92,7 +92,7 @@ jobs:
           retention-days: 7
       - name: Upload theme check screenshots and summary on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cestudy-theme-smoke-failure
           path: artifacts/
