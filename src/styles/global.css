@@ -2613,3 +2613,68 @@ body {
     justify-content: flex-start;
   }
 }
+
+
+/* Dark-mode contrast for legacy content and shared learning surfaces. */
+:root[data-theme="dark"] .about-principle,
+:root[data-theme="dark"] .about-next,
+:root[data-theme="dark"] .practice-question-card,
+:root[data-theme="dark"] .contact-primary-card,
+:root[data-theme="dark"] .contact-option-card,
+:root[data-theme="dark"] .support-method-card,
+:root[data-theme="dark"] .study-entry-panel,
+:root[data-theme="dark"] .feedback-action-menu {
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  border-color: var(--ui-border);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .about-principle-number {
+  color: var(--ui-link);
+  background: var(--ui-surface-raised);
+}
+
+:root[data-theme="dark"] .privacy-content p,
+:root[data-theme="dark"] .answer-options legend,
+:root[data-theme="dark"] .answer-feedback p,
+:root[data-theme="dark"] .answer-feedback ol,
+:root[data-theme="dark"] .practice-source {
+  color: var(--ui-text-muted);
+}
+
+:root[data-theme="dark"] .practice-progress span:first-child {
+  color: var(--ui-text);
+  background: var(--ui-surface-raised);
+}
+
+:root[data-theme="dark"] .feedback-action-menu button {
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .feedback-action-menu button:hover,
+:root[data-theme="dark"] .feedback-action-menu button:focus-visible {
+  background: var(--ui-hover);
+}
+
+:root[data-theme="dark"] .feedback-action-menu button.feedback-delete-action {
+  color: var(--ui-error-text);
+}
+
+/* Dark owner tools retain a selected state without a bright light-theme tab. */
+:root[data-theme="dark"] .content-review-tabs {
+  background: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+}
+
+:root[data-theme="dark"] .content-review-tabs button {
+  color: var(--ui-text-muted);
+}
+
+:root[data-theme="dark"] .content-review-tabs button.active,
+:root[data-theme="dark"] .content-review-list-item.active {
+  color: var(--ui-heading);
+  background: var(--ui-hover);
+  border-color: var(--ui-focus);
+  box-shadow: none;
+}
