@@ -60,6 +60,13 @@ function renderPage(path: string) {
   );
 }
 
+function expectSkeletonStatus(testId: string, label: string) {
+  const status = document.querySelector(`[data-skeleton="${testId}"] > [role="status"]`);
+  expect(status).toBeInTheDocument();
+  expect(status).toHaveTextContent(label);
+  expect(status).toHaveAttribute("aria-live", "polite");
+}
+
 const catalogRoutes = [
   {
     name: "Subject Catalog",
@@ -107,7 +114,7 @@ describe("learning page loading skeletons", () => {
   it.each(catalogRoutes)("$name shows its matching skeleton while the catalog request is pending", async (route) => {
     renderPage(route.path);
 
-    expect(await screen.findByRole("status", { name: route.label })).toBeInTheDocument();
+    expectSkeletonStatus(route.testId, route.label);
     expect(document.querySelector(`[data-skeleton="${route.testId}"]`)).toBeInTheDocument();
     await waitFor(() => expect(mocks.fetchCatalogSubjects).toHaveBeenCalledTimes(1));
   });
@@ -115,7 +122,7 @@ describe("learning page loading skeletons", () => {
   it("Study Reader shows the two-column reader skeleton while published lessons are pending", async () => {
     renderPage("/study/basic-algebra");
 
-    expect(await screen.findByRole("status", { name: "Loading reviewer…" })).toBeInTheDocument();
+    expectSkeletonStatus("study-reader", "Loading reviewer…");
     expect(document.querySelector('[data-skeleton="study-reader"]')).toBeInTheDocument();
     await waitFor(() => expect(mocks.fetchPublishedLessons).toHaveBeenCalledWith("basic-algebra"));
   });
@@ -123,7 +130,7 @@ describe("learning page loading skeletons", () => {
   it("Practice shows the question workspace skeleton while published questions are pending", async () => {
     renderPage("/practice/basic-algebra");
 
-    expect(await screen.findByRole("status", { name: "Loading practice…" })).toBeInTheDocument();
+    expectSkeletonStatus("practice-question", "Loading practice…");
     expect(document.querySelector('[data-skeleton="practice-question"]')).toBeInTheDocument();
     await waitFor(() => expect(mocks.fetchPublishedPracticeQuestions).toHaveBeenCalledWith("basic-algebra"));
   });
@@ -133,7 +140,7 @@ describe("learning page loading skeletons", () => {
     mocks.fetchCatalogSubjects.mockReturnValue(request.promise);
     renderPage(route.path);
 
-    expect(await screen.findByRole("status", { name: route.label })).toBeInTheDocument();
+    expectSkeletonStatus(route.testId, route.label);
     await act(async () => request.resolve([]));
 
     expect(document.querySelector(`[data-skeleton="${route.testId}"]`)).not.toBeInTheDocument();
@@ -147,7 +154,7 @@ describe("learning page loading skeletons", () => {
     mocks.fetchPublishedLessons.mockReturnValue(request.promise);
     renderPage("/study/basic-algebra");
 
-    expect(await screen.findByRole("status", { name: "Loading reviewer…" })).toBeInTheDocument();
+    expectSkeletonStatus("study-reader", "Loading reviewer…");
     await act(async () => request.resolve([]));
 
     expect(document.querySelector('[data-skeleton="study-reader"]')).not.toBeInTheDocument();
@@ -159,7 +166,7 @@ describe("learning page loading skeletons", () => {
     mocks.fetchPublishedPracticeQuestions.mockReturnValue(request.promise);
     renderPage("/practice/basic-algebra");
 
-    expect(await screen.findByRole("status", { name: "Loading practice…" })).toBeInTheDocument();
+    expectSkeletonStatus("practice-question", "Loading practice…");
     await act(async () => request.resolve([]));
 
     expect(document.querySelector('[data-skeleton="practice-question"]')).not.toBeInTheDocument();
@@ -170,7 +177,7 @@ describe("learning page loading skeletons", () => {
     mocks.fetchCatalogSubjects.mockRejectedValue(new Error("Catalog request failed."));
     renderPage("/catalog");
 
-    expect(await screen.findByRole("status", { name: "Loading the subject catalog…" })).toBeInTheDocument();
+    expectSkeletonStatus("subject-grid", "Loading the subject catalog…");
     expect(await screen.findByRole("alert")).toHaveTextContent("Catalog unavailable");
     expect(document.querySelector("[data-skeleton]")).not.toBeInTheDocument();
   });

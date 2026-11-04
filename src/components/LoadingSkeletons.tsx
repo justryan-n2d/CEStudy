@@ -9,13 +9,11 @@ type SkeletonRegionProps = {
 
 function SkeletonRegion({ label, testId, className = "", children }: SkeletonRegionProps) {
   return (
-    <div
-      className={className}
-      data-skeleton={testId}
-      aria-busy="true"
-    >
+    <div className={className} data-skeleton={testId}>
       <span className="visually-hidden" role="status" aria-live="polite">{label}</span>
-      {children}
+      <div className="skeleton-visual" aria-busy="true" aria-hidden="true">
+        {children}
+      </div>
     </div>
   );
 }

@@ -18,8 +18,10 @@ function expectSingleLoadingStatus(label: string) {
   expect(screen.getAllByRole("status")).toHaveLength(1);
 
   const region = status.parentElement;
-  expect(region).toHaveAttribute("aria-busy", "true");
-  expect(region?.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
+  expect(region).toHaveAttribute("data-skeleton");
+  const busyVisual = region?.querySelector('[aria-busy="true"]');
+  expect(busyVisual).toBeInTheDocument();
+  expect(busyVisual).toHaveAttribute("aria-hidden", "true");
 }
 
 describe("content-shaped loading skeletons", () => {
