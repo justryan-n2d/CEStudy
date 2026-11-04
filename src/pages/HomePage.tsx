@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { YearLevelGrid } from "../components/YearLevelGrid";
@@ -5,8 +6,35 @@ import { HERO_IMAGE } from "../config/hero-image";
 import { readLearningActivityDays } from "../data/learning-progress";
 import { LearningStreakBadge } from "../components/LearningStreakBadge";
 
+const MARQUEE_SUBJECTS = [
+  "Statics of Rigid Bodies",
+  "Fundamentals of Surveying",
+  "Mechanics of Deformable Bodies",
+  "Construction Materials and Testing",
+  "Structural Theory",
+  "Highway and Railroad Engineering",
+  "Principles of Steel Design",
+  "Principles of Reinforced/Prestressed Concrete",
+  "Hydrology",
+  "Hydraulics",
+  "Geotechnical Engineering 1 (Soil Mechanics)",
+  "Principles of Transportation Engineering",
+  "Quantity Surveying",
+  "Construction Methods and Project Management",
+] as const;
+
+function shuffleSubjects(subjects: readonly string[]): string[] {
+  const shuffled = [...subjects];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
 export function HomePage() {
   const activityDays = readLearningActivityDays();
+  const marqueeSubjects = useMemo(() => shuffleSubjects(MARQUEE_SUBJECTS), []);
   return (
     <>
       <section className="hero hero-home">
@@ -55,18 +83,18 @@ export function HomePage() {
           <YearLevelGrid />
           <div className="home-marquee" aria-hidden="true">
             <div className="home-marquee-track">
-              <div className="home-marquee-group">
-                <span>Learn by year</span><span className="home-marquee-separator">✦</span>
-                <span>Strengthen math foundations</span><span className="home-marquee-separator">✦</span>
-                <span>Practice step by step</span><span className="home-marquee-separator">✦</span>
-                <span>Build your CE foundation</span><span className="home-marquee-separator">✦</span>
-              </div>
-              <div className="home-marquee-group">
-                <span>Learn by year</span><span className="home-marquee-separator">✦</span>
-                <span>Strengthen math foundations</span><span className="home-marquee-separator">✦</span>
-                <span>Practice step by step</span><span className="home-marquee-separator">✦</span>
-                <span>Build your CE foundation</span><span className="home-marquee-separator">✦</span>
-              </div>
+              {[0, 1].map((copy) => (
+                <div className="home-marquee-group" key={copy}>
+                  {marqueeSubjects.map((subject, index) => (
+                    <span className="home-marquee-item" key={subject}>
+                      {subject}
+                      {index < marqueeSubjects.length - 1 && (
+                        <span className="home-marquee-separator" aria-hidden="true">✦</span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </section>
