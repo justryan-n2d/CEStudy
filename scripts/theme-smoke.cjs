@@ -411,9 +411,21 @@ The solutions are \(x=-2\) and \(x=-3\).`,
         JSON.stringify(themeTargets));
       const sidebarNavigation = drawer.getByRole("navigation", { name: "CEStudy pages" });
       const expectedLinks = [
-        "Home", "Subject Catalog", "Year Levels", "Math Foundations", "Progress",
+        "Home", "Subject Catalog", "Math Foundations", "Progress",
         "About us", "Contact CEStudy", "Support us", "Report a bug", "Send feedback", "Privacy notice",
       ];
+      const yearLevelsButton = sidebarNavigation.getByRole("button", { name: "Year Levels" });
+      const yearButtonHeight = await yearLevelsButton.evaluate((node) => Math.round(node.getBoundingClientRect().height));
+      check("Year Levels disclosure has a 44px target: " + activeRoute, yearButtonHeight >= 44, String(yearButtonHeight));
+      await yearLevelsButton.click();
+      const yearLevelsPanel = drawer.getByRole("region", { name: "Year-level navigation" });
+      await yearLevelsPanel.waitFor({ state: "visible", timeout: 5000 });
+      check("Year Levels retains its browse-all route: " + activeRoute,
+        await yearLevelsPanel.getByRole("link", { name: "Browse all year levels" }).getAttribute("href") === "/years");
+      check("Year Levels does not duplicate Subject Catalog or Math Foundations: " + activeRoute,
+        await yearLevelsPanel.getByRole("link", { name: "Subject Catalog" }).count() === 0 &&
+        await yearLevelsPanel.getByRole("link", { name: "Math Foundations" }).count() === 0 &&
+        await sidebarNavigation.getByRole("link", { name: "Subject Catalog" }).count() === 1);
       const availableLinks = await Promise.all(expectedLinks.map((name) =>
         sidebarNavigation.getByRole("link", { name }).isVisible().catch(() => false),
       ));
