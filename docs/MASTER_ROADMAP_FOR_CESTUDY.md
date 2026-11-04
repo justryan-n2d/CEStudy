@@ -131,7 +131,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 1: Shared foundation and theme tokens | **incomplete** | PR #56 is merged. Current main CI verifies Light/Dark behavior and the 13-route/five-width browser matrix. Owner visual sign-off and physical Android/TalkBack review remain open; do not restart the theme implementation. |
 | Phase 2: Navigation and route focus | **incomplete** | PR #57 is merged. Current main CI verifies route focus, keyboard/Escape behavior, 44px targets, desktop panels and mobile More menu. Owner visual sign-off and physical-device navigation review remain open; do not rebuild the navigation. |
 | Phase 3: Catalog, subject and lesson consistency | **complete** | PRs #70-#73 are merged into `main`. Catalog/Subject API and page contracts, the SubjectPage stale-route correction, published lesson/Study reader contracts, and synthetic populated-lesson math verification are integrated. Post-merge main CI passed 177 tests across 29 files and 1,757/1,757 theme/browser assertions; Supabase migration/RLS and backup checks passed. Live production smoke run 41798110114 also passed. |
-| Phase 4: Practice workspace | **not started** | Phase 3 foundations and tests are now integrated and verified on `main`; Phase 4 is the next product-roadmap workstream. Preserve current question/answer/feedback/results behavior and the honest unpublished-content gate. |
+| Phase 4: Practice workspace | **not started** | Phase 3 foundations and tests are integrated and verified on `main`; Phase 4 implementation remains gated on completion of the site-wide Decision-Light audit (C). Preserve current question/answer/feedback/results behavior and the honest unpublished-content gate. |
 | Phase 5: Progress and account integration | **paused** | Browser-local progress/streak already exists on `main`. Return to the consolidated PR #67 only after Phase 3 and Phase 4; refresh its branch, review the full diff, and close OAuth/privacy/security gates before merge. |
 | Phase 6: Review Materials Hub | **not started** | Build only after resource metadata, review status, provenance and rights rules are confirmed. |
 | Phase 7: Community | **not started** | Remains blocked on data contracts, publication rules, identity and moderation/access controls. |
@@ -141,7 +141,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 **Current verified `main`:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186` (2026-11-04).
 **Product-roadmap Phase 3:** Complete. PRs #70-#73 are merged; post-merge CI run [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed, and live Chromium smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed.
-**Next product-roadmap workstream:** Phase 4, Practice Workspace. Phase 4 implementation has not started.
+**Next product-roadmap workstream:** Phase 4, Practice Workspace, after the required site-wide Decision-Light audit (C). Phase 4 implementation has not started.
 **Separate loading-skeleton candidate:** PR #74 remains draft and unmerged. Reconcile its branch with current `main`, correct the Practice skeleton answer-row Light-theme appearance, and complete the missing rejection-lifecycle coverage before merge.
 **Current documentation branch:** `docs/mark-product-phase3-complete-2026-11-04`.
 **Application scope of this documentation update:** No application source, database schema/data, production settings, OAuth settings, or deployment configuration is changed.
