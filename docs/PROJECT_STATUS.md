@@ -1,9 +1,11 @@
 # CEStudy project status
 
-**Last updated:** 2026-10-29  
-**Current workstream:** Canonical roadmap-led UX integration, staged by independently reviewable pull requests.  
+**Last updated:** 2026-11-04  
+**Current workstream:** Product roadmap Phase 3, Catalog/Subject/Study consistency, after documentation reconciliation and evidence-based release verification.  
 **Operational release phase:** **Phase 7, pre-launch hardening and release gates.**  
-**Release status:** CEStudy is **not approved for a broad student launch**. The latest recorded live content audit has 72 catalog subjects, 52 practice questions and 13 lessons; all questions and lessons remain `needs-review`, with zero published rows. The integration work below does not approve content publication, a broad launch, or production deployment.
+**Release status:** CEStudy is **not approved for a broad student launch**. A read-only live Supabase query on 2026-11-04 reconfirmed 72 catalog subjects, 52 practice questions and 13 lessons; all 52 questions and all 13 lessons remain `needs-review`, with zero published rows. Documentation and planning work does not approve content publication, a broad launch, or production deployment.
+
+**Verified main:** `ad96cc6148b95b563f247d9254bea5a6858b3cd0` (2026-11-04). PR #69 is merged. Current main CI passed 151 tests across 26 files and 1,682/1,682 theme/navigation assertions; the live Chromium smoke run passed 135/135 checks. See the evidence section below.
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
@@ -29,21 +31,28 @@
 - PR #56 merged the shared theme foundation after the dark-mode regression fix and fresh CI/secret-scan verification. The Phase 1 tracker remains current pending independent review/manual external preview inspection.
 - PR #57 merged the hybrid public navigation after fresh CI, full-history secret scan, Supabase migration/RLS checks, backup checks, and 1,682/1,682 Chromium assertions. PR #54 is closed as superseded.
 
-## Current pull-request state (verified 2026-10-23)
+## Current pull-request state (verified 2026-11-04)
 
 | PR | Current role | State and next gate |
 |---|---|---|
-| [#44](https://github.com/justryan-n2d/CEStudy/pull/44) | Approved account and learning-activity features only | Open, draft. Preserve the confirmed scope; reconcile structure and pass OAuth/security release gates before merge. |
+| [#67](https://github.com/justryan-n2d/CEStudy/pull/67) | Consolidated Google auth, profile, local history and user-keyed streak candidate | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; current `main` comparison: 99 commits ahead, 19 behind, diverged, GitHub mergeable=false. Reconcile after product roadmap Phases 3 and 4. |
+| [#44](https://github.com/justryan-n2d/CEStudy/pull/44) | Earlier parallel account/streak candidate | Open, draft and not the integration target. Do not merge separately. |
+| [#64-#66](https://github.com/justryan-n2d/CEStudy/pull/64) | Earlier/stacked source slices | Open, draft. Treat as source history for PR #67 only; do not merge independently. |
 
-**Merge rule:** Verify the latest base SHA, head SHA, branch relationship, required CI, full-history secret scan, relevant security tests, and review status immediately before each merge. If a check is missing, stale, or failing, stop and fix the gate instead of bypassing it.
+**PR #69:** merged 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. It adds the binding design-quality and anti-template standard and tool-neutral repository guidance. It does not change application code, production configuration, authentication, or database state.
 
-## Latest production verification (2026-10-18)
+**Merge rule:** Before any feature merge, verify current base/head SHAs and branch relationship, review the complete diff, and rerun required CI, secret scanning and relevant security tests. PR #67 is not ready for merge in its current diverged state.
 
-- **Main CI:** current main commit `4fb5159c86574355300f1c1f1661d0f4cac6ee46` passed [CEStudy CI run 39143132029](https://github.com/justryan-n2d/CEStudy/actions/runs/39143132029) and [full-history secret scan 39143131985](https://github.com/justryan-n2d/CEStudy/actions/runs/39143131985).
-- **Live Chromium:** [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed 135 checks with zero failures on the latest main commit. It includes the direct `/privacy` route, footer link, security response headers, published-only practice API, and responsive checks at 320 px and 1440 px.
-- **Privacy notice:** [https://cestudy.pages.dev/privacy](https://cestudy.pages.dev/privacy) is live after PR #42. The latest browser run confirms the page route and footer link.
-- **Still open:** a clean fresh backup run using the corrected three-table validator, managed-Supabase restore, B2 lifecycle and GitHub failure-email confirmation, protected key recovery copies, physical-device/accessibility and search/filter QA, human approval of lessons/questions, and the student pilot. Google OAuth configuration and end-to-end tests are required before the separate draft account feature PR #44 can be merged, but they are not blockers for the no-account MVP.
+## Latest production and mainline verification (2026-11-04)
 
+- **Main CI:** [run 41775563340](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340) on `ad96cc6` passed lint, dependency audit, production build, backup encryption/retention checks, isolated Supabase migration/RLS tests, and **151 tests across 26 files**.
+- **Theme/navigation browser checks:** the same CI run passed **1,682/1,682 assertions** across 13 routes, both themes and viewports 320, 390, 768, 1024 and 1440 px.
+- **Live Chromium:** [run 41775770082](https://github.com/justryan-n2d/CEStudy/actions/runs/41775770082) passed **135/135 checks**, with zero failures and zero browser/runtime errors. It checked direct routes, response headers, Supabase requests using the publishable key, the published-only practice endpoint, and 320/1440 px production overflow.
+- **Full-history secret scan:** scheduled run [41433925558](https://github.com/justryan-n2d/CEStudy/actions/runs/41433925558) on 2026-11-02 scanned 1,191 commits / about 4.53 MB and reported no leaks. The PR #69 merge push scan also passed; its merge-only range reported zero commits scanned, so it is not described as a fresh full-history scan.
+- **Backup:** [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) on 2026-11-01 explicitly verified `catalog_subjects`, `practice_questions` and `subject_lessons`, uploaded the encrypted archive/checksum, read both back, verified the remote marker, and retained four verified sets while hiding three stale/incomplete artifacts.
+- **Current live data:** read-only Supabase query on 2026-11-04 returned 72 catalog subjects, 52 practice questions (all `needs-review`) and 13 lessons (all `needs-review`). No content was published or changed.
+
+**Still open:** separate managed-Supabase restore, Backblaze B2 hidden-version lifecycle check, protected recovery-key copies, GitHub failed-workflow notification confirmation, physical Android/TalkBack/200% text zoom/keyboard checks, complete manual search/filter matrix, independent human academic review, and student pilot. These remain release gates; automated success does not replace them.
 
 ## Stage 1 release audit (2026-10-18)
 
@@ -53,7 +62,7 @@
 - **Publication correction:** two lesson rows whose source notes identified them as drafts were returned to `needs-review`. Review timestamps were cleared, an audit note was recorded in the private database, and Algebra Foundations was changed to `in-preparation`.
 - **Live access check:** all six public/private data tables inspected have RLS enabled. The anonymous database role returned zero rows from `subject_lessons` and `practice_questions`; published-only read policies remain in place. The security advisor returned three informational no-policy findings for private tables that have no client grants, not actionable public-table policy gaps.
 - **Question pre-review:** all 52 questions passed basic database integrity checks for nonempty required fields, unique options, and exactly one matching stored correct answer. A first-pass AI-assisted math/solution consistency check found no definite answer mismatch. This is not independent academic review. Do not publish any question or lesson until a qualified human records approval.
-- **Current limitations:** a clean backup run using the corrected three-table verifier, a managed-Supabase recovery rehearsal, Backblaze lifecycle and GitHub failure-email settings, real-device accessibility, human content review, Google OAuth configuration and end-to-end verification for draft PR #44, and a 5–8 student pilot remain open. See the [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md).
+- **Current limitations:** the corrected three-table backup has now passed live; a managed-Supabase recovery rehearsal, Backblaze lifecycle and GitHub failure-email settings, protected key recovery copies, real-device accessibility, manual search/filter QA, human content review, OAuth end-to-end verification for the consolidated PR #67 if retained, and the 5–8 student pilot remain open. The October 18 [Stage 1 audit record](reviews/2026-10-18-stage1-content-and-publication-audit.md) remains historical evidence, not a current live query.
 
 
 ## Product direction locked (2026-10-18)
@@ -225,18 +234,13 @@ See [Cloudflare Pages setup](deployment/cloudflare-pages.md).
 
 ## Next actions, in order
 
-The current operational priority is Phase 7. In parallel, complete the missing discovery and UX documentation from Phases 1–2 before expanding scope.
+The ordered product sequence below follows the canonical UX/UI roadmap. The overall release lifecycle in `PHASE_PLAN.md` remains at Phase 7 until its operational and manual gates are cleared.
 
-1. Run a fresh encrypted backup from current `main` and confirm that logs name `catalog_subjects`, `practice_questions`, and `subject_lessons` as verified, archive/checksum/marker read-back passes, retention is correct, and the summary is clean. Then test restore into a separate managed Supabase project after cost approval. Confirm B2 lifecycle cleanup, protected recovery-key copies and GitHub failure-email preferences.
-2. Complete physical-device/accessibility QA and the remaining catalog search/filter, direct-route, no-results, loading and error-state checks. Record the final security review.
-3. Complete Phase 1 discovery and Phase 2 user-journey/pilot-measure documentation; retain the shipped UI as the design baseline instead of rebuilding it.
-4. Use the implemented owner review tools to get independent approval for a small initial lesson/question set. Keep all unapproved content unpublished.
-5. Run the 5–8-student pilot after Phase 7 gates pass; use approved/published questions for any practice task. Record results and a go/no-go recommendation.
-6. Complete Phase 10 polish and public-launch sign-off after critical pilot issues are resolved.
-
-Keep optional Google sign-in PR #44 in draft unless account features are separately approved. Its OAuth setup and end-to-end login tests are not a blocker for the present no-account release; they are required before that feature can be merged or launched.
-
-Do not create Supabase Storage buckets for the current MVP unless an approved feature needs file uploads or private objects.
+1. **Synchronize and preserve evidence:** this documentation branch updates the roadmap, project status, phase tracker, backup guide, launch checklist and README with PR #69, current main CI, current PR #67 metadata, the 2026-11-01 backup, and the 2026-11-04 live database counts.
+2. **Close remaining verification gaps:** keep the successful automated theme/navigation and backup checks recorded. Complete the remaining managed Supabase restore only after separate-project cost review, B2 lifecycle inspection, recovery-key protection, failure notification settings, and owner physical-device/accessibility review. Do not claim those manual items complete based on CI.
+3. **Product roadmap Phase 3:** review the dedicated [Catalog, Subject and Lesson implementation plan](plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md). Implement one test-first slice at a time; preserve the current Blueprint Academy shell and avoid a multi-page redesign.
+4. **Product roadmap Phase 4:** proceed only after Phase 3 foundations and tests are merged and verified. Improve the Practice Workspace without changing question correctness, publication rules, or answer/result behavior.
+5. **Product roadmap Phase 5:** reconcile the consolidated [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67) branch against current main only after Phases 3 and 4. Complete the Google/Supabase OAuth, callback recovery, privacy, sign-out and per-user isolation gates before any merge or release.
 
 ## Documentation practice
 
