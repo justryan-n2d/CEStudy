@@ -73,7 +73,7 @@ Task 1 fixed a demonstrated SubjectPage route-transition bug. Task 2 added contr
 
 **Safeguards preserved:** no live lesson/question was published; no live database row, schema, RLS policy, production Supabase/OAuth setting or production deployment configuration was changed by these PRs. The operational release phase remains Phase 7; Phase 3 completion is not broad-launch approval.
 
-**Next product-design workstream:** Source-level Decision-Light audit C is recorded in [the audit report](reviews/2026-11-04-decision-light-site-wide-audit.md), covering all 21 registered route patterns. Owner triage and live visual/interaction validation remain outstanding. **Next product implementation workstream:** Phase 4, Practice Workspace, remains not started and gated on C sign-off. PR #76 connectivity/loading recovery is already merged; original PR #74 is closed and superseded.
+**Next product-design workstream:** Source-level Decision-Light audit C and owner triage are recorded in [the audit report](reviews/2026-11-04-decision-light-site-wide-audit.md), covering all 21 registered route patterns. Approved application corrections are in [draft PR #79](https://github.com/justryan-n2d/CEStudy/pull/79); automated verification and live visual/interaction validation remain outstanding. **Next product implementation workstream:** Phase 4, Practice Workspace, remains not started and gated on C verification. PR #76 connectivity/loading recovery is already merged; original PR #74 is closed and superseded.
 
 ## Latest production and mainline verification (2026-11-04)
 
@@ -270,10 +270,10 @@ See [Cloudflare Pages setup](deployment/cloudflare-pages.md).
 
 The ordered product sequence below follows the canonical UX/UI roadmap. The overall release lifecycle in `PHASE_PLAN.md` remains at Phase 7 until its operational and manual gates are cleared.
 
-1. **Decision-Light source audit (C):** the [site-wide audit report](reviews/2026-11-04-decision-light-site-wide-audit.md) now covers all 21 registered route patterns and records P1/P2/P3 findings. Review and triage the findings; explicitly decide whether unavailable Review Materials, Mock Exam and Community entries should leave active global navigation.
-2. **Complete live visual and interaction validation:** inspect the current main/preview UI in both themes at 320, 390, 768, 1024 and 1440 CSS-pixel widths. Verify affected Study completion, Practice empty, Mock Exam placeholder, Review Materials, header/theme-toggle and mobile More-menu states. Include keyboard/touch checks and physical Android review where available. The source-level audit is not a substitute for this.
-3. **Apply only owner-approved P1 corrections:** use a focused branch, preserve all genuine peer choices and study tools, and rerun relevant tests plus theme/live browser smoke checks. Do not change navigation IA or shared behavior without recording the owner decision.
-4. **Product roadmap Phase 4:** proceed only after the P1 findings are triaged, required visual/interaction validation is complete, and any approved corrections are integrated and verified. Improve the Practice Workspace without changing question correctness, publication rules, or answer/result behavior.
+1. **Verify the owner-approved Decision-Light corrections (C):** [draft PR #79](https://github.com/justryan-n2d/CEStudy/pull/79) implements the recorded triage for the 10 findings. Complete current-head CI, secret scan and Chromium responsive/theme checks; report pass, fail and not-run states separately.
+2. **Complete live visual and interaction validation:** inspect the PR preview in Light and Dark at 320, 390, 768, 1024 and 1440 CSS-pixel widths. Verify the left sidebar, nested Year Levels hierarchy, theme controls, Study completion, empty Practice state, homepage marquee and bug-report disclosure. Include keyboard/focus, touch, physical Android and TalkBack checks where available. The connected browser context was unavailable during this implementation session.
+3. **Integrate only after owner review:** inspect the full diff and required evidence. Leave the PR unmerged until the owner separately authorizes merge. Do not start Phase 4 until approved corrections are integrated and the live validation gate is cleared.
+4. **Product roadmap Phase 4:** remains not started. After C verification, improve the Practice Workspace without changing question correctness, publication rules, or answer/result behavior.
 5. **Product roadmap Phase 5:** reconcile the consolidated [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67) branch against current main only after Phases 3 and 4. Complete the Google/Supabase OAuth, callback recovery, privacy, sign-out and per-user isolation gates before any merge or release.
 
 ## Documentation practice
