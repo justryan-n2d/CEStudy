@@ -17,8 +17,6 @@ import { FeedbacksPage } from "./pages/FeedbacksPage";
 import { StudyPage } from "./pages/StudyPage";
 import { ProgressPage } from "./pages/ProgressPage";
 import { ContentReviewPage } from "./pages/ContentReviewPage";
-import { ReviewMaterialsPage } from "./pages/ReviewMaterialsPage";
-import { MockExamPortalPage } from "./pages/MockExamPortalPage";
 import { CommunityPage } from "./pages/CommunityPage";
 
 export default function App() {
@@ -29,8 +27,8 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/review-materials" element={<ReviewMaterialsPage />} />
-            <Route path="/mock-exam-portal" element={<MockExamPortalPage />} />
+            <Route path="/review-materials" element={<Navigate to="/catalog" replace />} />
+            <Route path="/mock-exam-portal" element={<Navigate to="/catalog" replace />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/years" element={<YearLevelsPage />} />

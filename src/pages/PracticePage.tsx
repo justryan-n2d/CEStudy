@@ -65,7 +65,7 @@ export function PracticePage() {
               onRetry={retry}
             />
           : questions.length === 0
-            ? <div className="state-panel review-gate"><h2>Questions coming soon</h2><p>We're reviewing these questions.</p><Link className="button button-secondary" to="/catalog">Browse subjects</Link></div>
+            ? <div className="state-panel review-gate"><h2>Questions coming soon</h2><p>We're reviewing these questions.</p><Link className="button button-primary" to="/catalog">Browse subjects</Link></div>
             : complete
               ? <div className="state-panel review-gate" role="status">
                   <span className="review-gate-icon" aria-hidden="true">✓</span>

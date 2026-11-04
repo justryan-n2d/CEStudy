@@ -71,24 +71,36 @@ export function BugReportsPage() {
         </label>
 
         <label className="form-field">
-          <span>Page or feature</span>
-          <input value={page} onChange={(event) => setPage(event.target.value)} maxLength={250} placeholder="For example, Subject catalog" />
-        </label>
-
-        <label className="form-field">
           <span>What happened? <span className="required-mark" aria-hidden="true">*</span></span>
-          <textarea value={observed} onChange={(event) => setObserved(event.target.value)} required rows={3} maxLength={2000} placeholder="Describe the problem you saw." />
+          <textarea
+            value={observed}
+            onChange={(event) => setObserved(event.target.value)}
+            rows={4}
+            maxLength={2000}
+            required
+            placeholder="Describe what happened when you used the page or feature."
+          />
         </label>
 
-        <label className="form-field">
-          <span>What did you expect?</span>
-          <textarea value={expected} onChange={(event) => setExpected(event.target.value)} rows={3} maxLength={2000} placeholder="Describe what should have happened." />
-        </label>
+        <details className="bug-report-optional-details">
+          <summary>Add details (optional)</summary>
+          <div className="bug-report-optional-fields">
+            <label className="form-field">
+              <span>Page or feature</span>
+              <input value={page} onChange={(event) => setPage(event.target.value)} maxLength={250} placeholder="For example, Subject catalog" />
+            </label>
 
-        <label className="form-field">
-          <span>Steps to reproduce</span>
-          <textarea value={steps} onChange={(event) => setSteps(event.target.value)} rows={3} maxLength={2000} placeholder="1. Open a page... 2. Select..." />
-        </label>
+            <label className="form-field">
+              <span>What did you expect?</span>
+              <textarea value={expected} onChange={(event) => setExpected(event.target.value)} rows={3} maxLength={2000} placeholder="Describe what should have happened." />
+            </label>
+
+            <label className="form-field">
+              <span>Steps to reproduce</span>
+              <textarea value={steps} onChange={(event) => setSteps(event.target.value)} rows={3} maxLength={2000} placeholder="1. Open a page... 2. Select..." />
+            </label>
+          </div>
+        </details>
 
         {!isValidEmail && (
           <p className="inline-status inline-status-warning" role="status">

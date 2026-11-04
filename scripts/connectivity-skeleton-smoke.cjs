@@ -187,7 +187,9 @@ async function main() {
 
           let lightBase = "";
           let darkBase = "";
-          const themeGroup = page.getByRole("group", { name: "Color theme" });
+          await page.getByRole("button", { name: "Open navigation menu" }).click();
+          const themeDrawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+          const themeGroup = themeDrawer.getByRole("group", { name: "Color theme" });
           for (const themeName of ["Light", "Dark"]) {
             await themeGroup.getByRole("button", { name: themeName }).click();
             await page.waitForFunction(
@@ -225,6 +227,16 @@ async function main() {
               check(themeName + " theme applies its muted surface to Practice answer placeholder rows: " + activeRoute,
                 metrics.answerRowBackground === metrics.expectedAnswerSurface,
                 JSON.stringify({ answerRowBackground: metrics.answerRowBackground, expected: metrics.expectedAnswerSurface }));
+              if (themeName === "Dark") {
+                const progressSkeleton = page.locator(".practice-skeleton-region .practice-progress .skeleton-shape").first();
+                const shimmer = await progressSkeleton.evaluate((shape) => {
+                  const style = getComputedStyle(shape);
+                  return { backgroundImage: style.backgroundImage, animationName: style.animationName };
+                });
+                check("Dark Practice skeleton retains its shimmer gradient: " + activeRoute,
+                  shimmer.backgroundImage.includes("linear-gradient") && shimmer.animationName === "ce-study-skeleton-shimmer",
+                  JSON.stringify(shimmer));
+              }
             }
             if (themeName === "Light") lightBase = metrics.base;
             if (themeName === "Dark") darkBase = metrics.base;
@@ -276,6 +288,48 @@ async function main() {
           await page.locator("[data-skeleton]").count() === 0);
       }
     }
+
+    activeRoute = "sidebar closing motion and primary button treatment";
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
+    const primaryButton = page.locator(".button-primary").first();
+    await primaryButton.waitFor({ state: "visible", timeout: 10000 });
+    const primaryStyle = await primaryButton.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { boxShadow: style.boxShadow, transitionProperty: style.transitionProperty };
+    });
+    check("Primary buttons use inset highlights, contact shade, and a blue glow",
+      (primaryStyle.boxShadow.match(/inset/g) || []).length >= 2 &&
+        primaryStyle.boxShadow.includes("rgba") &&
+        primaryStyle.transitionProperty.includes("box-shadow"),
+      JSON.stringify(primaryStyle));
+
+    const menuToggle = page.getByRole("button", { name: "Open navigation menu" });
+    await menuToggle.click();
+    const animatedDrawer = page.locator(".site-sidebar");
+    await animatedDrawer.waitFor({ state: "visible", timeout: 5000 });
+    await page.waitForTimeout(280);
+    const drawerStartLeft = await animatedDrawer.evaluate((element) => element.getBoundingClientRect().left);
+    await animatedDrawer.locator(".site-sidebar-close").click();
+    const sidebarLayer = page.locator(".site-sidebar-layer");
+    const closingState = await sidebarLayer.evaluate((element) => ({
+      closing: element.classList.contains("is-closing"),
+      hiddenFromAssistiveTechnology: element.getAttribute("aria-hidden") === "true",
+    }));
+    await page.waitForTimeout(90);
+    const drawerClosingLeft = await animatedDrawer.evaluate((element) => element.getBoundingClientRect().left);
+    check("Sidebar enters an accessible closing state before visual exit",
+      closingState.closing && closingState.hiddenFromAssistiveTechnology,
+      JSON.stringify(closingState));
+    check("Sidebar visibly slides to the left while closing",
+      drawerClosingLeft < drawerStartLeft - 20,
+      JSON.stringify({ drawerStartLeft, drawerClosingLeft }));
+    await page.waitForFunction(() => {
+      const layer = document.querySelector(".site-sidebar-layer");
+      return layer && getComputedStyle(layer).visibility === "hidden";
+    }, null, { timeout: 5000 });
+    check("Sidebar finishes its exit before becoming visually hidden", true);
 
     for (const route of routes) {
       for (const width of [390, 1440]) {
@@ -334,7 +388,9 @@ async function main() {
         check("Unavailable layout has no horizontal overflow: " + activeRoute,
           ui.documentWidth <= ui.viewportWidth + 1, JSON.stringify(ui));
 
-        const themeGroup = page.getByRole("group", { name: "Color theme" });
+        await page.getByRole("button", { name: "Open navigation menu" }).click();
+        const unavailableThemeDrawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+        const themeGroup = unavailableThemeDrawer.getByRole("group", { name: "Color theme" });
         for (const themeName of ["Light", "Dark"]) {
           await themeGroup.getByRole("button", { name: themeName }).click();
           await page.waitForFunction(
@@ -357,6 +413,11 @@ async function main() {
           });
         }
 
+        await page.keyboard.press("Escape");
+        await page.waitForFunction(() => {
+          const layer = document.querySelector(".site-sidebar-layer");
+          return layer && getComputedStyle(layer).visibility === "hidden";
+        }, null, { timeout: 5000 });
         responseMode = "empty";
         requestGate = createGate();
         await alert.getByRole("button", { name: "Retry" }).click();

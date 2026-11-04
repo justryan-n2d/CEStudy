@@ -142,10 +142,13 @@ export function StudyPage() {
                     <MarkdownContent markdown={activeLesson.lessonMarkdown} />
                     <LearningStreakBadge activityDays={activityDays} />
                     <div className="study-lesson-completion">
-                      <button type="button" className={activeLessonCompleted ? "button button-primary" : "button button-secondary"}
-                        aria-pressed={activeLessonCompleted} onClick={toggleLessonCompletion}>
-                        {activeLessonCompleted ? "Mark as incomplete" : "Mark as complete"}
-                      </button>
+                      {activeLessonCompleted ? (
+                        <span className="status status-ready" role="status">Completed</span>
+                      ) : (
+                        <button type="button" className="button button-secondary" onClick={toggleLessonCompletion}>
+                          Mark as complete
+                        </button>
+                      )}
                       <p>{activeLessonCompleted ? "Completed and saved on this device." : "Progress is saved on this device only."} <Link to="/progress">View my progress</Link></p>
                     </div>
                     <div className="study-lesson-navigation">

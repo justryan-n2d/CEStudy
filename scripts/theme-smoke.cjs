@@ -6,6 +6,9 @@ const baseUrl = (process.env.CESTUDY_BASE_URL || "http://127.0.0.1:4173").replac
 const viewports = [320, 390, 768, 1024, 1440];
 const routes = [
   "/",
+  "/about",
+  "/contact",
+  "/support",
   "/catalog",
   "/years",
   "/year/2",
@@ -15,8 +18,6 @@ const routes = [
   "/practice/basic-algebra",
   "/progress",
   "/privacy",
-  "/review-materials",
-  "/mock-exam-portal",
   "/community",
 ];
 const checks = [];
@@ -188,12 +189,22 @@ The solutions are \(x=-2\) and \(x=-3\).`,
 
           await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
 
-          const themeGroup = page.getByRole("group", { name: "Color theme" });
-          check("Theme selector is visible: " + activeRoute, await themeGroup.isVisible().catch(() => false));
+          const navigationToggle = page.getByRole("button", { name: "Open navigation menu" });
+          check("Sidebar menu control is visible: " + activeRoute, await navigationToggle.isVisible().catch(() => false));
+          await navigationToggle.click();
+          const navigationDrawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+          await navigationDrawer.waitFor({ state: "visible", timeout: 5000 });
+          const themeGroup = navigationDrawer.getByRole("group", { name: "Color theme" });
+          check("Theme selector is available inside the sidebar: " + activeRoute, await themeGroup.isVisible().catch(() => false));
           if (!(await themeGroup.isVisible().catch(() => false))) continue;
 
           const darkButton = themeGroup.getByRole("button", { name: "Dark" });
           await darkButton.click();
+          await page.waitForFunction(
+            () => getComputedStyle(document.querySelector(".site-sidebar-link")).color === "rgb(243, 247, 251)",
+            null,
+            { timeout: 5000 },
+          );
           const dark = await page.evaluate(() => {
             const selected = document.querySelector(".theme-toggle-option.is-selected");
             const selectedStyle = selected ? getComputedStyle(selected) : null;
@@ -211,14 +222,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               headingText: getComputedStyle(document.querySelector("h1")).color,
               bodyText: getComputedStyle(document.querySelector(".page-intro > p") || document.querySelector(".hero-copy > p") || document.querySelector("main p")).color,
               bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
-              navText: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu a") : document.querySelector(".main-nav .nav-link")).color,
-              navBackground: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu") : document.querySelector(".site-header")).backgroundColor,
-              yearMenuLinkText: getComputedStyle(document.querySelector("#year-level-navigation .navigation-panel-heading > a")).color,
-              yearMenuBackground: getComputedStyle(document.querySelector("#year-level-navigation")).backgroundColor,
-              reviewMenuLinkText: getComputedStyle(document.querySelector("#review-materials-navigation .navigation-panel-heading > a")).color,
-              reviewMenuBackground: getComputedStyle(document.querySelector("#review-materials-navigation")).backgroundColor,
-              reviewCardText: getComputedStyle(document.querySelector(".review-materials-menu-card p")).color,
-              reviewCardBackground: getComputedStyle(document.querySelector(".review-materials-menu-card")).backgroundColor,
+              navText: getComputedStyle(document.querySelector(".site-sidebar-link")).color,
+              navBackground: getComputedStyle(document.querySelector(".site-sidebar")).backgroundColor,
             };
           });
 
@@ -232,8 +237,9 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               ".subject-card", ".year-card", ".filters-panel", ".detail-hero",
               ".detail-panel", ".study-lesson", ".review-gate", ".state-panel",
               ".privacy-content > section", ".surface-form", ".answer-option",
-              ".answer-feedback", ".year-level-menu-year", ".review-materials-menu-card",
-              ".review-materials-page-card",
+              ".answer-feedback", ".about-principle", ".about-next",
+              ".practice-question-card", ".contact-primary-card", ".contact-option-card",
+              ".support-method-card", ".study-entry-panel", ".feedback-action-menu",
             ];
             return selectors.flatMap((selector) =>
               [...document.querySelectorAll(selector)].slice(0, 3).map((node) => ({
@@ -247,6 +253,20 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           check("Detected content surfaces avoid white-on-dark mismatches: " + activeRoute,
             whiteSurfaces.length === 0,
             JSON.stringify({ surfaces: darkSurfaces, whiteSurfaces }));
+          const darkContentReadability = await page.evaluate(() =>
+            [...document.querySelectorAll(".about-principle p, .about-next p, .privacy-content > section p, .contact-primary-card p, .contact-option-card p, .support-method-card p, .practice-source, .answer-options legend, .answer-feedback p, .answer-feedback ol")]
+              .map((node) => {
+                const surface = node.closest(".about-principle, .about-next, .privacy-content > section, .contact-primary-card, .contact-option-card, .support-method-card, .practice-question-card, .answer-feedback");
+                return {
+                  text: node.textContent?.trim().slice(0, 80) ?? "",
+                  foreground: getComputedStyle(node).color,
+                  background: surface ? getComputedStyle(surface).backgroundColor : "",
+                };
+              }),
+          );
+          check("Dark About and Privacy body copy meets WCAG AA: " + activeRoute,
+            darkContentReadability.every((item) => contrastRatio(item.foreground, item.background) >= 4.5),
+            JSON.stringify(darkContentReadability));
           check("Dark toggle state is explicit: " + activeRoute,
             dark.selectedLabel === "Dark" && dark.selectedPressed === "true",
             JSON.stringify({ label: dark.selectedLabel, pressed: dark.selectedPressed }));
@@ -266,18 +286,6 @@ The solutions are \(x=-2\) and \(x=-3\).`,
             contrastRatio(dark.navText, dark.navBackground) >= 4.5,
             JSON.stringify({ foreground: dark.navText, background: dark.navBackground,
               ratio: contrastRatio(dark.navText, dark.navBackground) }));
-          check("Dark Year Levels menu link contrast meets WCAG AA: " + activeRoute,
-            contrastRatio(dark.yearMenuLinkText, dark.yearMenuBackground) >= 4.5,
-            JSON.stringify({ foreground: dark.yearMenuLinkText, background: dark.yearMenuBackground,
-              ratio: contrastRatio(dark.yearMenuLinkText, dark.yearMenuBackground) }));
-          check("Dark Review Materials link contrast meets WCAG AA: " + activeRoute,
-            contrastRatio(dark.reviewMenuLinkText, dark.reviewMenuBackground) >= 4.5,
-            JSON.stringify({ foreground: dark.reviewMenuLinkText, background: dark.reviewMenuBackground,
-              ratio: contrastRatio(dark.reviewMenuLinkText, dark.reviewMenuBackground) }));
-          check("Dark Review Materials card text contrast meets WCAG AA: " + activeRoute,
-            contrastRatio(dark.reviewCardText, dark.reviewCardBackground) >= 4.5,
-            JSON.stringify({ foreground: dark.reviewCardText, background: dark.reviewCardBackground,
-              ratio: contrastRatio(dark.reviewCardText, dark.reviewCardBackground) }));
           check("No page-wide horizontal overflow in Dark: " + activeRoute,
             Math.max(dark.documentWidth, dark.bodyWidth) <= dark.viewportWidth + 1,
             "viewport=" + dark.viewportWidth + ", document=" + dark.documentWidth + ", body=" + dark.bodyWidth);
@@ -294,6 +302,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
 
             await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
             await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
+            await page.getByRole("button", { name: "Open navigation menu" }).click();
+            await page.getByRole("dialog", { name: "CEStudy navigation" }).waitFor({ state: "visible", timeout: 5000 });
             const restoredTheme = await page.evaluate(() => ({
               theme: document.documentElement.dataset.theme || "",
               colorScheme: getComputedStyle(document.documentElement).colorScheme,
@@ -314,6 +324,11 @@ The solutions are \(x=-2\) and \(x=-3\).`,
 
           const lightButton = themeGroup.getByRole("button", { name: "Light" });
           await lightButton.click();
+          await page.waitForFunction(
+            () => getComputedStyle(document.querySelector(".site-sidebar-link")).color === "rgb(11, 38, 61)",
+            null,
+            { timeout: 5000 },
+          );
           const light = await page.evaluate(() => {
             const selected = document.querySelector(".theme-toggle-option.is-selected");
             const selectedStyle = selected ? getComputedStyle(selected) : null;
@@ -331,14 +346,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               headingText: getComputedStyle(document.querySelector("h1")).color,
               bodyText: getComputedStyle(document.querySelector(".page-intro > p") || document.querySelector(".hero-copy > p") || document.querySelector("main p")).color,
               bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
-              navText: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu a") : document.querySelector(".main-nav .nav-link")).color,
-              navBackground: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu") : document.querySelector(".site-header")).backgroundColor,
-              yearMenuLinkText: getComputedStyle(document.querySelector("#year-level-navigation .navigation-panel-heading > a")).color,
-              yearMenuBackground: getComputedStyle(document.querySelector("#year-level-navigation")).backgroundColor,
-              reviewMenuLinkText: getComputedStyle(document.querySelector("#review-materials-navigation .navigation-panel-heading > a")).color,
-              reviewMenuBackground: getComputedStyle(document.querySelector("#review-materials-navigation")).backgroundColor,
-              reviewCardText: getComputedStyle(document.querySelector(".review-materials-menu-card p")).color,
-              reviewCardBackground: getComputedStyle(document.querySelector(".review-materials-menu-card")).backgroundColor,
+              navText: getComputedStyle(document.querySelector(".site-sidebar-link")).color,
+              navBackground: getComputedStyle(document.querySelector(".site-sidebar")).backgroundColor,
             };
           });
 
@@ -366,18 +375,6 @@ The solutions are \(x=-2\) and \(x=-3\).`,
             contrastRatio(light.navText, light.navBackground) >= 4.5,
             JSON.stringify({ foreground: light.navText, background: light.navBackground,
               ratio: contrastRatio(light.navText, light.navBackground) }));
-          check("Light Year Levels menu link contrast meets WCAG AA: " + activeRoute,
-            contrastRatio(light.yearMenuLinkText, light.yearMenuBackground) >= 4.5,
-            JSON.stringify({ foreground: light.yearMenuLinkText, background: light.yearMenuBackground,
-              ratio: contrastRatio(light.yearMenuLinkText, light.yearMenuBackground) }));
-          check("Light Review Materials link contrast meets WCAG AA: " + activeRoute,
-            contrastRatio(light.reviewMenuLinkText, light.reviewMenuBackground) >= 4.5,
-            JSON.stringify({ foreground: light.reviewMenuLinkText, background: light.reviewMenuBackground,
-              ratio: contrastRatio(light.reviewMenuLinkText, light.reviewMenuBackground) }));
-          check("Light Review Materials card text contrast meets WCAG AA: " + activeRoute,
-            contrastRatio(light.reviewCardText, light.reviewCardBackground) >= 4.5,
-            JSON.stringify({ foreground: light.reviewCardText, background: light.reviewCardBackground,
-              ratio: contrastRatio(light.reviewCardText, light.reviewCardBackground) }));
           check("No page-wide horizontal overflow in Light: " + activeRoute,
             Math.max(light.documentWidth, light.bodyWidth) <= light.viewportWidth + 1,
             "viewport=" + light.viewportWidth + ", document=" + light.documentWidth + ", body=" + light.bodyWidth);
@@ -389,6 +386,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
             );
             await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
             await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
+            await page.getByRole("button", { name: "Open navigation menu" }).click();
+            await page.getByRole("dialog", { name: "CEStudy navigation" }).waitFor({ state: "visible", timeout: 5000 });
             const restoredLight = await page.evaluate(() => ({
               theme: document.documentElement.dataset.theme || "",
               colorScheme: getComputedStyle(document.documentElement).colorScheme,
@@ -421,173 +420,158 @@ The solutions are \(x=-2\) and \(x=-3\).`,
       }
     }
 
+    const marqueeSubjects = [
+      "Statics of Rigid Bodies",
+      "Fundamentals of Surveying",
+      "Mechanics of Deformable Bodies",
+      "Construction Materials and Testing",
+      "Structural Theory",
+      "Highway and Railroad Engineering",
+      "Principles of Steel Design",
+      "Principles of Reinforced/Prestressed Concrete",
+      "Hydrology",
+      "Hydraulics",
+      "Geotechnical Engineering 1 (Soil Mechanics)",
+      "Principles of Transportation Engineering",
+      "Quantity Surveying",
+      "Construction Methods and Project Management",
+    ];
+
+    for (const width of viewports) {
+      activeRoute = "homepage marquee at " + width + "px";
+      await page.setViewportSize({ width, height: 900 });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
+      const marquee = page.locator(".home-marquee");
+      const track = page.locator(".home-marquee-track");
+      const groups = marquee.locator(".home-marquee-group");
+      const groupTexts = await groups.allTextContents();
+      check("Marquee has two identical loop groups: " + activeRoute,
+        groupTexts.length === 2 && groupTexts[0].replace(/\s+/g, " ").trim() === groupTexts[1].replace(/\s+/g, " ").trim(),
+        JSON.stringify(groupTexts));
+      check("Marquee contains only real CEStudy curriculum subjects: " + activeRoute,
+        marqueeSubjects.every((subject) => groupTexts[0]?.includes(subject)) &&
+          !/learn by year|strengthen math foundations|practice step by step|build your ce foundation/i.test(groupTexts[0] ?? ""),
+        groupTexts[0] ?? "");
+      check("Marquee remains decorative and non-interactive: " + activeRoute,
+        await marquee.getAttribute("aria-hidden") === "true" &&
+          await marquee.locator("a, button, input").count() === 0);
+      const edgeFades = await page.evaluate(() => {
+        const node = document.querySelector(".home-marquee");
+        if (!node) return null;
+        const before = getComputedStyle(node, "::before");
+        const after = getComputedStyle(node, "::after");
+        return {
+          before: before.backgroundImage,
+          after: after.backgroundImage,
+          beforePointerEvents: before.pointerEvents,
+          afterPointerEvents: after.pointerEvents,
+        };
+      });
+      check("Marquee has non-interactive left and right edge fades: " + activeRoute,
+        Boolean(edgeFades?.before.includes("gradient") && edgeFades?.after.includes("gradient") &&
+          edgeFades.beforePointerEvents === "none" && edgeFades.afterPointerEvents === "none"),
+        JSON.stringify(edgeFades));
+      const box = await marquee.boundingBox();
+      if (box) {
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+        const beforeTime = await track.evaluate((node) => {
+          const animation = node.getAnimations()[0];
+          return {
+            playState: animation?.playState ?? "missing",
+            currentTime: Number(animation?.currentTime ?? 0),
+          };
+        });
+        await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+        await page.waitForTimeout(300);
+        const afterTime = await track.evaluate((node) => {
+          const animation = node.getAnimations()[0];
+          return {
+            playState: animation?.playState ?? "missing",
+            currentTime: Number(animation?.currentTime ?? 0),
+            computedPlayState: getComputedStyle(node).animationPlayState,
+          };
+        });
+        check("Marquee keeps moving after pointer hover and click: " + activeRoute,
+          beforeTime.playState === "running" && afterTime.playState === "running" &&
+            afterTime.computedPlayState === "running" && afterTime.currentTime > beforeTime.currentTime,
+          JSON.stringify({ beforeTime, afterTime }));
+      } else {
+        check("Marquee remains visible for interaction check: " + activeRoute, false, "No marquee bounding box");
+      }
+    }
+
     for (const width of viewports) {
       activeRoute = "hybrid navigation at " + width + "px";
       await page.setViewportSize({ width, height: 900 });
       await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
       await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
 
-      const themeTargets = await page.locator(".theme-toggle-option").evaluateAll((nodes) =>
+      const navigationToggle = page.getByRole("button", { name: "Open navigation menu" });
+      const toggleHeight = await navigationToggle.evaluate((node) => Math.round(node.getBoundingClientRect().height));
+      check("Sidebar menu control has a 44px target: " + activeRoute, toggleHeight >= 44, String(toggleHeight));
+      await navigationToggle.click();
+      const drawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+      await drawer.waitFor({ state: "visible", timeout: 5000 });
+      const themeTargets = await drawer.locator(".theme-toggle-option").evaluateAll((nodes) =>
         nodes.map((node) => Math.round(node.getBoundingClientRect().height)),
       );
-      check("Theme controls have 44px targets: " + activeRoute,
+      check("Theme controls have 44px targets inside the sidebar: " + activeRoute,
         themeTargets.length === 2 && themeTargets.every((height) => height >= 44),
         JSON.stringify(themeTargets));
+      const sidebarNavigation = drawer.getByRole("navigation", { name: "CEStudy pages" });
+      const expectedLinks = [
+        "Home", "Subject Catalog", "Math Foundations", "Progress",
+        "About us", "Contact CEStudy", "Support us", "Report a bug", "Send feedback", "Privacy notice",
+      ];
+      const yearLevelsButton = sidebarNavigation.getByRole("button", { name: "Year Levels" });
+      const yearButtonHeight = await yearLevelsButton.evaluate((node) => Math.round(node.getBoundingClientRect().height));
+      check("Year Levels disclosure has a 44px target: " + activeRoute, yearButtonHeight >= 44, String(yearButtonHeight));
+      await yearLevelsButton.click();
+      const yearLevelsPanel = drawer.getByRole("region", { name: "Year-level navigation" });
+      await yearLevelsPanel.waitFor({ state: "visible", timeout: 5000 });
+      check("Year Levels retains its browse-all route: " + activeRoute,
+        await yearLevelsPanel.getByRole("link", { name: "Browse all year levels" }).getAttribute("href") === "/years");
+      check("Year Levels does not duplicate Subject Catalog or Math Foundations: " + activeRoute,
+        await yearLevelsPanel.getByRole("link", { name: "Subject Catalog" }).count() === 0 &&
+        await yearLevelsPanel.getByRole("link", { name: "Math Foundations" }).count() === 0 &&
+        await sidebarNavigation.getByRole("link", { name: "Subject Catalog" }).count() === 1);
+      const availableLinks = await Promise.all(expectedLinks.map((name) =>
+        sidebarNavigation.getByRole("link", { name }).isVisible().catch(() => false),
+      ));
+      check("Sidebar exposes the approved available destinations: " + activeRoute,
+        availableLinks.every(Boolean), JSON.stringify({ expectedLinks, availableLinks }));
+      const removedDestinations = ["Review Materials Hub", "Mock Exam Portal", "Community Forum"];
+      const removedLinksVisible = await Promise.all(removedDestinations.map((name) =>
+        sidebarNavigation.getByRole("link", { name }).count().then((count) => count > 0),
+      ));
+      check("Unavailable destinations are absent from global navigation: " + activeRoute,
+        removedLinksVisible.every((visible) => !visible), JSON.stringify({ removedDestinations, removedLinksVisible }));
+      check("Subject Catalog appears once in the sidebar: " + activeRoute,
+        await sidebarNavigation.getByRole("link", { name: "Subject Catalog" }).count() === 1);
+      const sidebarTargets = await sidebarNavigation.locator("a").evaluateAll((nodes) =>
+        nodes.filter((node) => node.getClientRects().length > 0)
+          .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
+      );
+      check("Sidebar navigation links have 44px targets: " + activeRoute,
+        sidebarTargets.length >= expectedLinks.length && sidebarTargets.every((target) => target.height >= 44),
+        JSON.stringify(sidebarTargets));
+      const drawerWidth = await drawer.evaluate((node) => Math.round(node.getBoundingClientRect().width));
+      check("Sidebar drawer fits the viewport without page overflow: " + activeRoute,
+        drawerWidth <= width && await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+        "drawerWidth=" + drawerWidth + ", viewport=" + width);
+      await page.keyboard.press("Escape");
+      check("Escape closes the sidebar and restores focus: " + activeRoute,
+        await page.getByRole("dialog", { name: "CEStudy navigation" }).count() === 0 &&
+          await navigationToggle.evaluate((node) => node === document.activeElement));
+      await navigationToggle.click();
+      const reopenedDrawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+      await reopenedDrawer.getByRole("link", { name: "Subject Catalog" }).click();
+      await page.waitForFunction(() => window.location.pathname === "/catalog" && document.activeElement?.id === "main-content");
+      check("Sidebar route navigation closes the drawer and focuses main content: " + activeRoute,
+        await page.locator("#main-content").evaluate((node) => node === document.activeElement));
 
-      if (width > 680) {
-        const mainNav = page.getByRole("navigation", { name: "Main navigation" });
-        const navTargets = await mainNav.locator("a.nav-link, button.nav-dropdown-trigger").evaluateAll((nodes) =>
-          nodes.filter((node) => node.getClientRects().length > 0)
-            .map((node) => ({ label: node.textContent.trim(), height: Math.round(node.getBoundingClientRect().height) })),
-        );
-        check("Desktop/tablet navigation controls have 44px targets: " + activeRoute,
-          navTargets.length >= 5 && navTargets.every((target) => target.height >= 44),
-          JSON.stringify(navTargets));
-        if (width > 680 && width <= 850) {
-          const tabletGap = await mainNav.evaluate((node) => Number.parseFloat(getComputedStyle(node).columnGap));
-          check("Tablet navigation keeps 8px target separation: " + activeRoute, tabletGap >= 8, String(tabletGap));
-        }
-        if (width > 1100) {
-          check("Wide-desktop navigation labels stay on one line: " + activeRoute,
-            navTargets.every((target) => target.height <= 48),
-            JSON.stringify(navTargets));
-        }
-
-        const yearTrigger = mainNav.getByRole("button", { name: "Year Levels" });
-        await yearTrigger.click();
-        const yearPanel = page.getByRole("region", { name: "Year-level navigation" });
-        await yearPanel.waitFor({ state: "visible", timeout: 5000 });
-        check("Year Levels menu exposes overview destination: " + activeRoute,
-          await yearPanel.getByRole("link", { name: "Browse all year levels" }).isVisible().catch(() => false));
-        const yearMenuStateReady = await page.waitForFunction(() => {
-          const panel = document.querySelector("#year-level-navigation");
-          return Boolean(panel?.querySelector(".year-level-menu-year") || panel?.querySelector(".navigation-panel-error"));
-        }, { timeout: 8000 }).then(() => true).catch(() => false);
-        check("Year Levels menu reaches a content or recoverable error state: " + activeRoute,
-          yearMenuStateReady, yearMenuStateReady ? "" : "Neither catalog entries nor a recovery panel appeared within 8 seconds.");
-        if (!yearMenuStateReady) {
-          const name = "year-menu-loading-" + width + "px.png";
-          await page.screenshot({ path: path.join("artifacts", name), fullPage: true }).catch(() => {});
-        }
-        const loadedYearSections = await yearPanel.locator(".year-level-menu-year > summary").count();
-        if (loadedYearSections > 0) {
-          const summaryDiagnostics = await yearPanel.locator(".year-level-menu-year > summary").evaluateAll((nodes) =>
-            nodes.map((node) => {
-              const rect = node.getBoundingClientRect();
-              const parent = node.parentElement;
-              const parentRect = parent?.getBoundingClientRect();
-              const style = getComputedStyle(node);
-              const parentStyle = parent ? getComputedStyle(parent) : null;
-              return {
-                label: node.textContent.trim().replace(/\s+/g, " "),
-                rectCount: node.getClientRects().length,
-                height: rect.height,
-                width: rect.width,
-                display: style.display,
-                visibility: style.visibility,
-                parentDisplay: parentStyle?.display ?? "",
-                parentVisibility: parentStyle?.visibility ?? "",
-                parentHeight: parentRect?.height ?? 0,
-                detailsOpen: parent instanceof HTMLDetailsElement ? parent.open : null,
-              };
-            }),
-          );
-          const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
-            nodes.filter((node) => node.getClientRects().length > 0)
-              .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
-          );
-          check("Loaded Year Levels menu targets are at least 44px: " + activeRoute,
-            yearTargets.length >= 7 && yearTargets.every((target) => target.height >= 44),
-            JSON.stringify({ yearTargets, summaryDiagnostics }));
-          if (summaryDiagnostics.some((item) => item.height < 44 || item.rectCount === 0 || item.width === 0)) {
-            await page.screenshot({
-              path: path.join("artifacts", "year-level-menu-targets-" + width + "px.png"),
-              fullPage: true,
-            }).catch(() => {});
-          }
-        } else if (yearMenuStateReady) {
-          const errorAlert = yearPanel.getByRole("alert");
-          check("Year Levels menu provides recovery when catalog data is unavailable: " + activeRoute,
-            await errorAlert.isVisible().catch(() => false) &&
-              await yearPanel.getByRole("link", { name: "Open Subject Catalog" }).isVisible().catch(() => false));
-          const recoveryTargets = await yearPanel.locator("a").evaluateAll((nodes) =>
-            nodes.filter((node) => node.getClientRects().length > 0)
-              .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
-          );
-          check("Visible Year Levels recovery links have 44px targets: " + activeRoute,
-            recoveryTargets.length >= 3 && recoveryTargets.every((target) => target.height >= 44),
-            JSON.stringify(recoveryTargets));
-        }
-        const yearOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
-        check("Year Levels menu does not cause horizontal overflow: " + activeRoute, yearOverflow);
-        await page.keyboard.press("Escape");
-        check("Escape closes Year Levels and restores focus: " + activeRoute,
-          await yearTrigger.getAttribute("aria-expanded") === "false" &&
-            await yearTrigger.evaluate((node) => node === document.activeElement));
-
-        const materialsTrigger = mainNav.getByRole("button", { name: "Review Materials Hub" });
-        await materialsTrigger.click();
-        const materialsPanel = page.getByRole("region", { name: "Review Materials Hub navigation" });
-        await materialsPanel.waitFor({ state: "visible", timeout: 5000 });
-        const requiredGroups = ["Formula Sheets", "Problem Sets with Solutions", "Video Tutorials"];
-        const visibleGroups = await Promise.all(requiredGroups.map((name) =>
-          materialsPanel.getByRole("heading", { name }).isVisible().catch(() => false),
-        ));
-        check("Review Materials menu exposes the three approved categories: " + activeRoute,
-          visibleGroups.every(Boolean), JSON.stringify({ requiredGroups, visibleGroups }));
-        const materialsTargets = await materialsPanel.locator("a").evaluateAll((nodes) =>
-          nodes.filter((node) => node.getClientRects().length > 0)
-            .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
-        );
-        check("Visible Review Materials links have 44px targets: " + activeRoute,
-          materialsTargets.length >= 4 && materialsTargets.every((target) => target.height >= 44),
-          JSON.stringify(materialsTargets));
-        const materialsOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
-        check("Review Materials menu does not cause horizontal overflow: " + activeRoute, materialsOverflow);
-        await page.keyboard.press("Escape");
-        check("Escape closes Review Materials and restores focus: " + activeRoute,
-          await materialsTrigger.getAttribute("aria-expanded") === "false" &&
-            await materialsTrigger.evaluate((node) => node === document.activeElement));
-
-        await mainNav.getByRole("link", { name: "Subject Catalog" }).click();
-        await page.waitForFunction(() => window.location.pathname === "/catalog" && document.activeElement?.id === "main-content");
-        check("Route change hands focus to main content: " + activeRoute,
-          await page.locator("#main-content").evaluate((node) => node === document.activeElement));
-      } else {
-        const moreToggle = page.locator(".mobile-menu-toggle");
-        const initialToggleLabel = await moreToggle.getAttribute("aria-label");
-        check("Mobile More control has its open-state accessible name: " + activeRoute,
-          /^Open more pages menu/.test(initialToggleLabel || ""), initialToggleLabel || "missing aria-label");
-        const toggleHeight = await moreToggle.evaluate((node) => Math.round(node.getBoundingClientRect().height));
-        check("Mobile More control has a 44px target: " + activeRoute, toggleHeight >= 44, String(toggleHeight));
-        await moreToggle.click();
-        const moreMenu = page.getByRole("navigation", { name: "More CEStudy pages" });
-        await moreMenu.waitFor({ state: "visible", timeout: 5000 });
-        const requiredLinks = ["Review Materials Hub", "Mock Exam Portal", "Community Forum"];
-        const visibleLinks = await Promise.all(requiredLinks.map((name) =>
-          moreMenu.getByRole("link", { name }).isVisible().catch(() => false),
-        ));
-        check("Mobile More menu exposes all approved destinations: " + activeRoute,
-          visibleLinks.every(Boolean), JSON.stringify({ requiredLinks, visibleLinks }));
-        const moreTargets = await moreMenu.locator("a").evaluateAll((nodes) =>
-          nodes.filter((node) => node.getClientRects().length > 0)
-            .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
-        );
-        check("Mobile More links have 44px targets: " + activeRoute,
-          moreTargets.length >= 10 && moreTargets.every((target) => target.height >= 44),
-          JSON.stringify(moreTargets));
-        check("Mobile More menu does not cause horizontal overflow: " + activeRoute,
-          await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
-        await page.keyboard.press("Escape");
-        check("Escape closes More and restores focus: " + activeRoute,
-          await moreToggle.getAttribute("aria-expanded") === "false" &&
-            await moreToggle.evaluate((node) => node === document.activeElement));
-        await moreToggle.click();
-        await moreMenu.getByRole("link", { name: "Review Materials Hub" }).click();
-        await page.waitForFunction(() => window.location.pathname === "/review-materials" && document.activeElement?.id === "main-content");
-        check("Mobile destination navigation hands focus to main content: " + activeRoute,
-          await page.locator("#main-content").evaluate((node) => node === document.activeElement));
-      }
     }
 
     for (const width of viewports) {
@@ -606,7 +590,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
         .waitFor({ state: "visible", timeout: 12000 });
       check("Empty reviewer baseline clearly reports no published topics: " + activeRoute,
         await page.locator(".study-empty").isVisible().catch(() => false));
-      const baselineThemeGroup = page.getByRole("group", { name: "Color theme" });
+      await page.getByRole("button", { name: "Open navigation menu" }).click();
+      const baselineThemeGroup = page.getByRole("dialog", { name: "CEStudy navigation" }).getByRole("group", { name: "Color theme" });
       for (const themeName of ["Dark", "Light"]) {
         await baselineThemeGroup.getByRole("button", { name: themeName }).click();
         await page.waitForFunction(
@@ -698,7 +683,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           mathBoundsFit: lessonContent.mathBoundsFit,
         }));
 
-      const themeGroup = page.getByRole("group", { name: "Color theme" });
+      await page.getByRole("button", { name: "Open navigation menu" }).click();
+      const themeGroup = page.getByRole("dialog", { name: "CEStudy navigation" }).getByRole("group", { name: "Color theme" });
       for (const themeName of ["Dark", "Light"]) {
         await themeGroup.getByRole("button", { name: themeName }).click();
         await page.waitForFunction(

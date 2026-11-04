@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { Layout } from "../components/Layout";
@@ -41,40 +40,54 @@ describe("homepage and year-level navigation", () => {
     expect(screen.getByRole("link", { name: "Browse First year subjects" })).toHaveAttribute("href", "/year/1");
     expect(screen.getByRole("link", { name: "Browse Fourth year subjects" })).toHaveAttribute("href", "/year/4");
   });
-  it("keeps the four main destinations in mobile quick navigation", () => {
-    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
-    const quickNav = document.querySelector('nav[aria-label="Quick navigation"]');
-    expect(quickNav?.querySelector('a[href="/"]')).toHaveTextContent("Home");
-    expect(quickNav?.querySelector('a[href="/catalog"]')).toHaveTextContent("Subjects");
-    expect(quickNav?.querySelector('a[href="/years"]')).toHaveTextContent("Years");
-    expect(quickNav?.querySelector('a[href="/math-foundations"]')).toHaveTextContent("Math");
-  });
+  it("replaces the duplicate all-years link with a continuous decorative marquee", () => {
+    render(<MemoryRouter initialEntries={["/"]}><HomePage /></MemoryRouter>);
 
-  it("provides a direct year-level overview link inside the Year Levels dropdown", async () => {
-    const user = userEvent.setup();
-    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
-    const trigger = screen.getByRole("button", { name: "Year Levels" });
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-    await user.click(trigger);
-    expect(await screen.findByRole("link", { name: "Browse all year levels" })).toHaveAttribute("href", "/years");
-  });
-  it("opens the More menu with an animated dropdown and reduced-motion fallback", async () => {
-    const user = userEvent.setup();
-    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
-    const button = screen.getByRole("button", { name: "Open more pages menu" });
-    await user.click(button);
-    expect(button).toHaveAttribute("aria-expanded", "true");
-    const menu = screen.getByRole("navigation", { name: "More CEStudy pages" });
-    expect(menu).toHaveClass("is-open");
-    expect(menu).toBeVisible();
-    expect(stylesheet).toContain("@keyframes ce-menu-drop-in");
-    expect(stylesheet).toContain('.mobile-menu-toggle[aria-expanded="true"] .navigation-glyph');
-    expect(stylesheet).toContain("@media(prefers-reduced-motion:reduce)");
+    expect(screen.queryByRole("link", { name: /view all years/i })).not.toBeInTheDocument();
+    const marquee = document.querySelector(".home-marquee");
+    expect(marquee).toHaveAttribute("aria-hidden", "true");
+    const groups = [...(marquee?.querySelectorAll(".home-marquee-group") ?? [])];
+    expect(groups).toHaveLength(2);
+    expect(groups[0]?.textContent).toBe(groups[1]?.textContent);
+    expect(groups[0]?.querySelectorAll(".home-marquee-item")).toHaveLength(14);
+    for (const subject of [
+      "Statics of Rigid Bodies",
+      "Fundamentals of Surveying",
+      "Mechanics of Deformable Bodies",
+      "Construction Materials and Testing",
+      "Structural Theory",
+      "Highway and Railroad Engineering",
+      "Principles of Steel Design",
+      "Principles of Reinforced/Prestressed Concrete",
+      "Hydrology",
+      "Hydraulics",
+      "Geotechnical Engineering 1 (Soil Mechanics)",
+      "Principles of Transportation Engineering",
+      "Quantity Surveying",
+      "Construction Methods and Project Management",
+    ]) {
+      expect(groups[0]?.textContent).toContain(subject);
+    }
+    expect(groups[0]?.textContent).not.toMatch(/learn by year|strengthen math foundations|practice step by step|build your ce foundation/i);
+    expect(stylesheet).toContain("@keyframes cestudy-home-marquee");
+    expect(stylesheet).toContain(".home-marquee::before");
+    expect(stylesheet).toContain(".home-marquee::after");
+    expect(stylesheet).toContain("pointer-events: none;");
+    expect(stylesheet).not.toContain(".home-marquee:hover .home-marquee-track");
+    expect(stylesheet).not.toContain("animation-play-state: paused");
+    expect(stylesheet).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.home-marquee-track\s*\{/);
+    for (const year of ["First year", "Second year", "Third year", "Fourth year"]) {
+      expect(screen.getByRole("link", { name: `Browse ${year} subjects` })).toBeInTheDocument();
+    }
   });
 
   it("uses white by default and the actual master-logo blue as an accent", () => {
     expect(stylesheet).toContain("background:#fff;");
     expect(stylesheet).toContain("--brand-blue:#0754B5");
+    expect(stylesheet).toContain(':root[data-theme="light"] .site-sidebar .site-sidebar-link');
+    expect(stylesheet).toContain(':root[data-theme="dark"] .site-sidebar .site-sidebar-link');
+    expect(stylesheet).toContain("color: #0b263d !important");
+    expect(stylesheet).toContain("color: #f3f7fb !important");
     expect(stylesheet).toContain(".button-primary{background:var(--brand-blue)");
     expect(stylesheet).toContain("background:var(--blue-soft)");
     expect(stylesheet).not.toContain("backdrop-filter:blur");

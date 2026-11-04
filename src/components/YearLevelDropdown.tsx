@@ -38,6 +38,7 @@ export function YearLevelDropdown({
 }: YearLevelDropdownProps) {
   const [subjects, setSubjects] = useState<CatalogSubject[]>([]);
   const [loading, setLoading] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const hasLoadedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,7 +53,7 @@ export function YearLevelDropdown({
     const timeoutId = window.setTimeout(() => {
       if (!active || settled) return;
       settled = true;
-      setError("The catalog request timed out. Please open Subject Catalog and try again.");
+      setError("The catalog request timed out. Please retry.");
       setLoading(false);
     }, 5000);
 
@@ -66,12 +67,10 @@ export function YearLevelDropdown({
           .sort((left, right) => left.displayOrder - right.displayOrder));
         hasLoadedRef.current = true;
       })
-      .catch((reason: unknown) => {
+      .catch(() => {
         if (!active || settled) return;
         settled = true;
-        setError(reason instanceof Error
-          ? reason.message
-          : "The year-level subjects could not be loaded.");
+        setError("Year-level subjects could not be loaded. Please retry.");
       })
       .finally(() => {
         window.clearTimeout(timeoutId);
@@ -82,18 +81,29 @@ export function YearLevelDropdown({
       active = false;
       window.clearTimeout(timeoutId);
     };
-  }, [isOpen]);
+  }, [isOpen, retryCount]);
+
+  const retry = () => {
+    hasLoadedRef.current = false;
+    setRetryCount((current) => current + 1);
+  };
 
   return (
     <div className="nav-dropdown year-level-nav">
       <button
         ref={triggerRef}
-        className={`nav-link nav-dropdown-trigger${isActive ? " active" : ""}`}
+        className={`nav-link nav-dropdown-trigger site-sidebar-link${isActive ? " active" : ""}`}
         type="button"
         aria-expanded={isOpen}
         aria-controls="year-level-navigation"
         onClick={onToggle}
       >
+        <svg className="navigation-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
+          fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+          <path d="m3 12 9 5 9-5" />
+          <path d="m3 16 9 5 9-5" />
+        </svg>
         <span>Year Levels</span>
         <svg className="nav-dropdown-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <path d="m4 6 4 4 4-4" />
@@ -121,7 +131,7 @@ export function YearLevelDropdown({
           <div className="navigation-panel-error" role="alert">
             <p>We could not load year-level subjects.</p>
             <p>{error}</p>
-            <Link to="/catalog" onClick={onClose}>Open Subject Catalog</Link>
+            <button className="button button-secondary" type="button" onClick={retry}>Retry</button>
           </div>
         ) : (
           <div className="year-level-menu-years">
@@ -163,11 +173,6 @@ export function YearLevelDropdown({
             })}
           </div>
         )}
-
-        <div className="navigation-panel-footer">
-          <Link to="/catalog" onClick={onClose}>Subject Catalog</Link>
-          <Link to="/math-foundations" onClick={onClose}>Math Foundations</Link>
-        </div>
       </div>
     </div>
   );

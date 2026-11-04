@@ -154,13 +154,38 @@ async function main() {
       await page.screenshot({ path: path.join("artifacts", "catalog-" + width + "px.png"), fullPage: true });
       if (width === 320) {
         await page.goto(baseUrl + "/", { waitUntil: "networkidle", timeout: 45000 });
-        const bottomTabs = page.getByRole("navigation", { name: "Quick navigation" });
-        check("Mobile quick navigation is visible at 320px", await bottomTabs.isVisible().catch(() => false), "viewport=320");
-        check("Mobile navigation has four destinations", await bottomTabs.locator("a").count() === 4, "expected=4 tabs");
-        await page.getByRole("button", { name: "Open more pages menu" }).click();
-        const helpMenu = page.getByRole("navigation", { name: "More CEStudy pages" });
-        check("More menu opens by tap", await helpMenu.isVisible().catch(() => false), "menu opened");
-        check("More menu includes support and feedback", await helpMenu.getByRole("link", { name: "Support us" }).count() === 1 && await helpMenu.getByRole("link", { name: "Send feedback" }).count() === 1, "routes present");
+        const menuToggle = page.getByRole("button", { name: "Open navigation menu" });
+        const menuTargetHeight = await menuToggle.evaluate((node) => Math.round(node.getBoundingClientRect().height));
+        check("Mobile sidebar control has a 44px touch target", menuTargetHeight >= 44, "height=" + menuTargetHeight);
+        check("Mobile sidebar control sits immediately before the master logo",
+          await menuToggle.evaluate((node) => node.nextElementSibling?.classList.contains("brand") === true));
+        await menuToggle.click();
+        const sidebar = page.getByRole("dialog", { name: "CEStudy navigation" });
+        check("Left sidebar opens by tap", await sidebar.isVisible().catch(() => false), "drawer opened");
+        const pages = sidebar.getByRole("navigation", { name: "CEStudy pages" });
+        const yearLevelsButton = pages.getByRole("button", { name: "Year Levels" });
+        check("Mobile sidebar keeps the Year Levels disclosure",
+          await yearLevelsButton.isVisible().catch(() => false));
+        await yearLevelsButton.click();
+        const yearLevelsPanel = sidebar.getByRole("region", { name: "Year-level navigation" });
+        check("Mobile Year Levels menu opens inside the sidebar",
+          await yearLevelsPanel.isVisible().catch(() => false));
+        check("Mobile Year Levels menu does not duplicate Subject Catalog",
+          await pages.getByRole("link", { name: "Subject Catalog" }).count() === 1 &&
+          await yearLevelsPanel.getByRole("link", { name: "Subject Catalog" }).count() === 0);
+        check("Sidebar includes support and feedback",
+          await pages.getByRole("link", { name: "Support us" }).count() === 1 &&
+          await pages.getByRole("link", { name: "Send feedback" }).count() === 1,
+          "routes present");
+        check("Sidebar excludes unavailable destinations",
+          await pages.getByRole("link", { name: "Review Materials Hub" }).count() === 0 &&
+          await pages.getByRole("link", { name: "Mock Exam Portal" }).count() === 0 &&
+          await pages.getByRole("link", { name: "Community Forum" }).count() === 0,
+          "unavailable links absent");
+        await page.keyboard.press("Escape");
+        check("Mobile Escape closes the sidebar and restores trigger focus",
+          await page.getByRole("dialog", { name: "CEStudy navigation" }).count() === 0 &&
+          await menuToggle.evaluate((node) => node === document.activeElement));
       }
     } catch (error) {
       check("Responsive check at " + width + "px", false, error.message);

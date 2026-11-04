@@ -107,10 +107,16 @@ describe("owner-only feedback inbox", () => {
     expect(screen.queryByRole("link", { name: /Feedbacks/ })).not.toBeInTheDocument();
   });
 
-  it("shows the Feedbacks link and red unread dot only after owner unlock", async () => {
+  it("shows the Feedback inbox link and unread indicator only after owner unlock", async () => {
+    const user = userEvent.setup();
     render(<MemoryRouter><Layout><HomePage /></Layout></MemoryRouter>);
+    expect(screen.queryByRole("button", { name: /unread feedback/i })).not.toBeInTheDocument();
+
     await unlockFeedbackInbox("test-owner-access-key-at-least-32-characters");
-    expect(await screen.findByRole("link", { name: /Feedbacks/ })).toBeInTheDocument();
+    const menuButton = await screen.findByRole("button", { name: /Open navigation menu, unread feedback/ });
+    expect(menuButton.querySelector(".feedback-unread-dot")).toBeInTheDocument();
+    await user.click(menuButton);
+    expect(await screen.findByRole("link", { name: /Feedback inbox/ })).toBeInTheDocument();
     expect(await screen.findByRole("status", { name: "Unread feedback" })).toBeInTheDocument();
     expect(invokeMock).toHaveBeenCalledWith("feedback-inbox-admin", expect.objectContaining({
       body: { action: "unread-count" },
@@ -129,23 +135,30 @@ describe("owner-only feedback inbox", () => {
     expect(document.querySelector("time")).toHaveAttribute("dateTime", sampleFeedback[0].created_at);
   });
 
-  it("marks a message as read only through the owner-authenticated function and clears the red dot immediately", async () => {
+  it("marks a message as read only through the owner-authenticated function and clears the sidebar indicator", async () => {
     const user = userEvent.setup();
     await unlockFeedbackInbox("test-owner-access-key-at-least-32-characters");
     render(<MemoryRouter><Layout><FeedbacksPage /></Layout></MemoryRouter>);
-    await screen.findByRole("link", { name: /Feedbacks/ });
+    const menuButton = await screen.findByRole("button", { name: /Open navigation menu, unread feedback/ });
+    await user.click(menuButton);
+    expect(await screen.findByRole("link", { name: /Feedback inbox/ })).toBeInTheDocument();
     expect(await screen.findByRole("status", { name: "Unread feedback" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+
     await user.click(await screen.findByRole("button", { name: /Please add worked examples for the trigonometry section/ }));
     await waitFor(() => expect(invokeMock).toHaveBeenCalledWith("feedback-inbox-admin", expect.objectContaining({
       body: { action: "mark-read", id: sampleFeedback[0].id },
       headers: { "x-feedback-inbox-token": "signed-owner-token" },
     })));
-    await waitFor(() => expect(screen.queryByRole("status", { name: "Unread feedback" })).not.toBeInTheDocument());
+    await waitFor(() => expect(menuButton).toHaveAccessibleName("Open navigation menu"));
+    expect(menuButton.querySelector(".feedback-unread-dot")).not.toBeInTheDocument();
+    await user.click(menuButton);
+    expect(screen.queryByRole("status", { name: "Unread feedback" })).not.toBeInTheDocument();
   });
-  it("shows an unread dot on the More menu button while new feedback is unread", async () => {
+  it("shows an unread dot on the sidebar menu button while feedback is unread", async () => {
     render(<MemoryRouter><Layout><HomePage /></Layout></MemoryRouter>);
     await unlockFeedbackInbox("test-owner-access-key-at-least-32-characters");
-    const menuButton = await screen.findByRole("button", { name: /Open more pages menu/ });
+    const menuButton = await screen.findByRole("button", { name: /Open navigation menu, unread feedback/ });
     await waitFor(() => expect(menuButton.querySelector(".feedback-unread-dot")).toBeInTheDocument());
   });
 
@@ -213,6 +226,9 @@ describe("owner-only feedback inbox", () => {
     await user.type(screen.getByRole("textbox", { name: /Message/ }), "Please add another worked example.");
     await user.click(screen.getByRole("button", { name: "Send message" }));
     expect(await screen.findByRole("heading", { name: "message sent!" })).toBeInTheDocument();
+    const menuButton = await screen.findByRole("button", { name: /Open navigation menu, unread feedback/ });
+    expect(menuButton.querySelector(".feedback-unread-dot")).toBeInTheDocument();
+    await user.click(menuButton);
     expect(await screen.findByRole("status", { name: "Unread feedback" })).toBeInTheDocument();
   });
 
