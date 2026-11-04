@@ -53,8 +53,9 @@ async function main() {
   page.on("pageerror", (error) => runtimeErrors.push(activeRoute + ": " + error.message));
   page.on("console", (message) => {
     if (message.type() !== "error") return;
-    const expectedSyntheticServiceError = activeRoute === "online browser with a failing service request" &&
-      responseMode === "catalog-error" &&
+    const expectedSyntheticServiceError =
+      ((activeRoute === "online browser with a failing service request" && responseMode === "catalog-error") ||
+        (activeRoute.includes(" unavailable state at ") && responseMode === "service-error")) &&
       message.text().includes("500 (Internal Server Error)");
     if (!expectedSyntheticServiceError) {
       runtimeErrors.push(activeRoute + ": console " + message.text());
