@@ -260,18 +260,19 @@ describe("student lesson reader", () => {
     expect(screen.queryByRole("heading", { name: "Published Test Lesson" })).not.toBeInTheDocument();
   });
 
-  it("lets students mark a published lesson complete and undo completion using device-local storage", async () => {
+  it("keeps completion visible without an incomplete action and preserves the next-topic action", async () => {
     const user = userEvent.setup();
-    fetchPublishedLessonsMock.mockResolvedValue([publishedLesson]);
+    fetchPublishedLessonsMock.mockResolvedValue([publishedLesson, factoringLesson]);
     renderStudy("/study/basic-algebra/1");
 
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Mark as complete" }));
-    expect(screen.getByRole("button", { name: "Mark as incomplete" })).toHaveAttribute("aria-pressed", "true");
-    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toContain("public-test-lesson");
 
-    await user.click(screen.getByRole("button", { name: "Mark as incomplete" }));
-    expect(screen.getByRole("button", { name: "Mark as complete" })).toHaveAttribute("aria-pressed", "false");
-    expect(JSON.parse(localStorage.getItem("cestudy:completed-lessons:v1") ?? "[]")).toEqual([]);
+    expect(screen.getByText("Completed")).toBeInTheDocument();
+    expect(screen.getByText(/Completed and saved on this device\./)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Mark as incomplete" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Mark as complete" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Next topic →" })).toHaveAttribute("href", "/study/basic-algebra/4");
+    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toContain("public-test-lesson");
   });
 });
