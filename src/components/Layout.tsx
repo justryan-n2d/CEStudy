@@ -46,12 +46,14 @@ function SidebarLink({
   icon,
   active = false,
   onNavigate,
+  unread = false,
 }: {
   to: string;
   label: string;
   icon: GlyphName;
   active?: boolean;
   onNavigate: () => void;
+  unread?: boolean;
 }) {
   return (
     <NavLink
@@ -60,7 +62,10 @@ function SidebarLink({
       end={to === "/"}
       className={({ isActive }) => isActive || active ? "site-sidebar-link active" : "site-sidebar-link"}
     >
-      <NavigationGlyph name={icon} />
+      <span className="site-sidebar-icon">
+        <NavigationGlyph name={icon} />
+        {unread && <span className="feedback-unread-dot" role="status" aria-label="Unread feedback" />}
+      </span>
       <span>{label}</span>
     </NavLink>
   );
@@ -211,10 +216,13 @@ export function Layout({ children }: { children: ReactNode }) {
               aria-expanded={sidebarOpen}
               aria-controls="site-sidebar"
               aria-haspopup="dialog"
-              aria-label={sidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-label={`${sidebarOpen ? "Close" : "Open"} navigation menu${feedbackInboxUnlocked && unreadFeedbackCount > 0 ? ", unread feedback" : ""}`}
               onClick={() => setSidebarOpen((open) => !open)}
             >
-              <NavigationGlyph name={sidebarOpen ? "close" : "menu"} />
+              <span className="sidebar-menu-icon">
+                <NavigationGlyph name={sidebarOpen ? "close" : "menu"} />
+                {feedbackInboxUnlocked && unreadFeedbackCount > 0 && <span className="feedback-unread-dot menu-unread-dot" aria-hidden="true" />}
+              </span>
             </button>
             <Link className="brand" to="/" aria-label="CEStudy home">
               <img className="brand-logo" src="/branding/cestudy-master-logo.svg" alt="" aria-hidden="true" width={52} height={52} />
@@ -287,7 +295,7 @@ export function Layout({ children }: { children: ReactNode }) {
                 {feedbackInboxUnlocked && (
                   <section className="site-sidebar-group" aria-labelledby="sidebar-owner-title">
                     <h3 id="sidebar-owner-title">Owner tools</h3>
-                    <SidebarLink to="/feedbacks" label="Feedback inbox" icon="messages" onNavigate={closeSidebar} />
+                    <SidebarLink to="/feedbacks" label="Feedback inbox" icon="messages" unread={unreadFeedbackCount > 0} onNavigate={closeSidebar} />
                     {unreadFeedbackCount > 0 && <p className="site-sidebar-unread" role="status">{unreadFeedbackCount} unread feedback {unreadFeedbackCount === 1 ? "item" : "items"}</p>}
                   </section>
                 )}
