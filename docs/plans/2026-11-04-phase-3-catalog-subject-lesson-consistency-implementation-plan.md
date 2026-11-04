@@ -16,6 +16,7 @@
 - Preserve the current logo geometry, CEStudy brand blue `#0754B5`, global navigation, mobile quick navigation and More menu. Do not replace the Blueprint Academy shell.
 - Do not invent year-level or semester assignments, curriculum claims, subject availability, related-subject relationships, lesson objectives, source attribution or published content. Use existing metadata and verified source notes only.
 - The public catalog remains browsable. Student lesson and practice APIs must continue to expose only records whose status is `published`. Never weaken RLS, add privileged browser keys, or include `review_notes` / `reviewed_at` in student-facing queries.
+- Learning objectives remain non-displayed metadata used for topic search. Do not render a separate Learning Objectives section. Organize lesson bodies around topical outlines, conceptual explanations, formulas and step-by-step worked solutions.
 - Lesson completion and activity remain browser-local. Do not add sign-in, account synchronization, server-side progress, analytics or cross-device sync in Phase 3.
 - Do not edit live Supabase rows, migrations, publication statuses, production configuration or OAuth settings in this phase. Use synthetic test fixtures for browser-level lesson rendering.
 - Use test-driven development for every behavior change: add a focused failing test, verify the failure, implement the minimum fix, verify the pass, then run affected integration checks.
@@ -184,7 +185,7 @@ Expected: all focused tests pass, draft lesson content remains hidden, and compl
 
 Extend the existing renderer tests only for uncovered edge cases. Reuse representative formulas already in the test suite: inline and display fractions, nested fractions, matrices, quadratic/trigonometric expressions and explanatory prose. Add assertions that malformed formulas remain readable source text and that the original Markdown fixture is not mutated.
 
-Add a synthetic `subject_lessons` REST response fixture in the local Playwright smoke script. Intercept only the local preview request for the test subject, return one synthetic row with `status: published`, and include a realistic lesson body containing headings, objectives, inline math, a display equation and a worked solution. Do not call the live database for this fixture.
+Add a synthetic `subject_lessons` REST response fixture in the local Playwright smoke script. Intercept only the local preview request for the test subject, return one synthetic row with `status: published`, and include a realistic lesson body containing a topical outline, conceptual explanation, inline math, a display equation and a step-by-step worked solution. Keep the objectives array as searchable metadata only; do not render it as a separate section. Do not call the live database for this fixture.
 
 - [ ] **Step 2: Run the renderer characterization tests**
 
@@ -224,9 +225,9 @@ Expected: lint is clean, the full Vitest suite passes, and Vite builds productio
 - Phase 5 owns the account integration. Do not modify PR #67, `AuthContext`, OAuth callbacks, profile/history/streak routes or user-scoped local storage in Phase 3.
 - No new subject content, lesson content, practice questions, diagrams or curriculum placements are authored in this plan.
 
-## Unresolved product decision
+## Owner decision: learning objectives in the lesson reader
 
-**Learning objectives in the lesson reader:** `SubjectLesson.learningObjectives` is currently used for topic search, but the student-facing `StudyPage` does not display the objectives. The existing `study-page.test.tsx` explicitly asserts that the objectives are not rendered. The roadmap calls for a consistent hierarchy for objectives, lesson sections, formulas, solutions and next steps. Decide whether a concise, clearly labelled Learning Objectives section should appear above the lesson body, or whether objectives should remain search-only. No change to this behavior should be made until the owner decides.
+**Decision recorded on 2026-11-04:** `SubjectLesson.learningObjectives` remains searchable metadata only. CEStudy will not display a separate, clearly labelled Learning Objectives section above lesson content. The lesson reader should focus on topical outlines, conceptual explanations, formulas and step-by-step worked solutions. Preserve the existing behavior in which objectives can support topic search without being rendered as a separate section. Do not change this decision during Phase 3.
 
 ## Phase 3 completion criteria
 
