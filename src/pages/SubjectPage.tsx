@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SubjectDetailSkeleton } from "../components/LoadingSkeletons";
+import { UnavailableState } from "../components/UnavailableState";
 import { CurriculumNotice } from "../components/CurriculumNotice";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { SubjectCard } from "../components/SubjectCard";
@@ -20,9 +21,17 @@ export function SubjectPage() {
   const [related, setRelated] = useState<CatalogSubject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+
+  const retry = () => setRetryCount((current) => current + 1);
 
   useEffect(() => {
     let active = true;
+    setLoading(true);
+    setError(null);
+    setSubject(null);
+    setRelated([]);
+
     fetchCatalogSubjects()
       .then((items) => {
         if (!active) return;
@@ -35,21 +44,28 @@ export function SubjectPage() {
           : []);
       })
       .catch((reason: unknown) => {
-        if (active) setError(reason instanceof Error ? reason.message : "The subject could not be loaded.");
+        if (active) setError(reason instanceof Error ? reason.message : "The subject could not be loaded. Check your connection and try again.");
       })
       .finally(() => {
         if (active) setLoading(false);
       });
 
     return () => { active = false; };
-  }, [slug]);
+  }, [slug, retryCount]);
 
   if (loading) return <SubjectDetailSkeleton label="Loading subject details…" />;
-  if (error) return (
-    <div className="page-wrap state-panel state-error" role="alert">
-      <h1>Subject unavailable</h1><p>{error}</p><Link to="/catalog">Return to subjects</Link>
-    </div>
-  );
+  if (error) {
+    return (
+      <div className="page-wrap detail-wrap">
+        <UnavailableState
+          title="Subject unavailable"
+          message="The subject details could not be loaded. Check your connection and try again."
+          onRetry={retry}
+          headingLevel="h1"
+        />
+      </div>
+    );
+  }
   if (!subject) return (
     <div className="page-wrap state-panel">
       <h1>Subject not found</h1><p>This subject may have moved or the address may be incorrect.</p><Link to="/catalog">Return to subjects</Link>
@@ -99,7 +115,7 @@ export function SubjectPage() {
             <ScrollReveal className="reveal-section" delayMs={60}>
               <section className="section-block">
                 <div className="section-heading"><div><span className="kicker">Keep learning</span><h2>Related subjects and topics</h2></div></div>
-                <div className="subject-grid">{related.map(item => <SubjectCard subject={item} key={item.slug} />)}</div>
+                <div className="subject-grid">{related.map((item) => <SubjectCard subject={item} key={item.slug} />)}</div>
               </section>
             </ScrollReveal>
           )}
