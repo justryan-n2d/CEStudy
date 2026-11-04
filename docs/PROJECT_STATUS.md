@@ -1,11 +1,11 @@
 # CEStudy project status
 
-**Last updated:** 2026-11-04  
-**Current workstream:** Decision-Light Design documentation (A), followed by the deferred site-wide UX audit (C). Blueprint Academy Phase 3, Catalog/Subject/Study consistency, is complete and integrated into `main` through PRs #70-#73. Phase 4, Practice Workspace, remains not started and must not begin until audit C is completed.  
+**Last updated:** 2026-11-05  
+**Current workstream:** Blueprint Academy Phase 4, Practice Workspace. The owner accepted the Decision-Light prerequisite closeout after PR #79 merged. The Phase 4 scope and implementation plan are documented at [the Phase 4 plan](plans/2026-11-05-phase-4-practice-workspace-implementation-plan.md); the next implementation slice is Task 1, session-state and retry coverage.  
 **Operational release phase:** **Phase 7, pre-launch hardening and release gates.**  
-**Release status:** CEStudy is **not approved for a broad student launch**. A read-only live Supabase query on 2026-11-04 reconfirmed 72 catalog subjects, 52 practice questions and 13 lessons; all 52 questions and all 13 lessons remain `needs-review`, with zero published rows. Phase 3 completion does not approve content publication, a broad launch, or production deployment.
+**Release status:** CEStudy is **not approved for a broad student launch**. The latest read-only live Supabase count remains the 2026-11-04 evidence: 72 catalog subjects, 52 practice questions and 13 lessons; all 52 questions and all 13 lessons were `needs-review`, with zero published rows. Phase 4 uses synthetic fixtures for populated-state testing and does not authorize content publication, a broad launch, or production deployment.
 
-**Verified main:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186` (2026-11-04). Post-merge CI [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed 177 tests across 29 files, lint, dependency audit, production build, 1,757/1,757 theme/browser assertions, backup checks and Supabase migration/RLS tests. Live Chromium smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed. See the evidence section below.
+**Verified main:** `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e` (2026-11-05). PR #79 head CI [41874696888](https://github.com/justryan-n2d/CEStudy/actions/runs/41874696888), browser suite [41874696788](https://github.com/justryan-n2d/CEStudy/actions/runs/41874696788) (613/613 including leftward sidebar exit), and secret scan [41874696639](https://github.com/justryan-n2d/CEStudy/actions/runs/41874696639) passed. Post-merge main CI [41935701479](https://github.com/justryan-n2d/CEStudy/actions/runs/41935701479), browser checks [41935701554](https://github.com/justryan-n2d/CEStudy/actions/runs/41935701554), and secret scan [41935701700](https://github.com/justryan-n2d/CEStudy/actions/runs/41935701700) also passed.
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
@@ -32,7 +32,7 @@
 - PR #56 merged the shared theme foundation after the dark-mode regression fix and fresh CI/secret-scan verification. The Phase 1 tracker remains current pending independent review/manual external preview inspection.
 - PR #57 merged the hybrid public navigation after fresh CI, full-history secret scan, Supabase migration/RLS checks, backup checks, and 1,682/1,682 Chromium assertions. PR #54 is closed as superseded.
 
-## Current pull-request state (verified 2026-11-04)
+## Current pull-request state (verified 2026-11-05)
 
 | PR | Current role | State and next gate |
 |---|---|---|
@@ -40,10 +40,11 @@
 | [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Phase 3 Task 1: Catalog API, SubjectPage and `useCatalog` contracts | Closed, merged 2026-11-04 at `d8c3e2bf62b4bf1e0f106d923d76981125ff996b`; includes the reproduced/fixed stale-subject route state. |
 | [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Phase 3 Task 2: published lesson API and Study reader contracts | Closed, merged 2026-11-04 at `c24736168c1e49a6f39c89a7eabb7abb69480932`. |
 | [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Phase 3 Task 3: synthetic populated lesson math/browser verification | Closed, merged 2026-11-04 at `849c9d707b0cafd8c39ab63d9bf57260c54dd186`. |
-| [#74](https://github.com/justryan-n2d/CEStudy/pull/74) | Separate connectivity and loading-skeleton feature | Open, draft, unmerged; 19 commits ahead and 4 behind current `main`, diverged from the pre-Phase-3 base. Standalone CI passed, but visual review identified a Practice answer-row theme mismatch and missing page-level rejected-request lifecycle coverage. Reconcile and fix before merge. |
-| [#67](https://github.com/justryan-n2d/CEStudy/pull/67) | Consolidated Google auth, profile, local history and user-keyed streak candidate | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; current `main` comparison: 99 commits ahead, 23 behind, diverged, GitHub mergeable=false. Reconcile after product roadmap Phases 3 and 4. |
+| [#74](https://github.com/justryan-n2d/CEStudy/pull/74) | Separate connectivity and loading-skeleton feature | Closed without merge. Do not treat its changes as integrated. Reconsider remaining work only in a new focused branch from current `main`, after re-verifying the need and covering the identified Practice answer-row theme/rejected-request states. |
+| [#67](https://github.com/justryan-n2d/CEStudy/pull/67) | Consolidated Google auth, profile, local history and user-keyed streak candidate | Open, draft and non-mergeable against current `main`. Head `43aa6de27c30cca098f542597497b74102cf8442`; reconcile only after Phase 4, then review the complete diff and all OAuth/privacy/data-isolation gates. |
 | [#44](https://github.com/justryan-n2d/CEStudy/pull/44) | Earlier parallel account/streak candidate | Open, draft and not the integration target. Do not merge separately. |
 | [#64-#66](https://github.com/justryan-n2d/CEStudy/pull/64) | Earlier/stacked source slices | Open, draft. Treat as source history for PR #67 only; do not merge independently. |
+| [#79](https://github.com/justryan-n2d/CEStudy/pull/79) | Decision-Light navigation and interaction corrections | Closed, merged 2026-11-05 at `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e`. PR-head CI, 613/613 browser assertions including leftward sidebar close, and secret scan passed; all three post-merge main workflows passed. |
 
 **PR #69:** merged 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. It adds the binding design-quality and anti-template standard and tool-neutral repository guidance. It does not change application code, production configuration, authentication, or database state.
 
@@ -70,9 +71,9 @@ Task 1 fixed a demonstrated SubjectPage route-transition bug. Task 2 added contr
 
 **Safeguards preserved:** no live lesson/question was published; no live database row, schema, RLS policy, production Supabase/OAuth setting or production deployment configuration was changed by these PRs. The operational release phase remains Phase 7; Phase 3 completion is not broad-launch approval.
 
-**Next product-design workstream:** Complete documentation task A, then run the deferred site-wide Decision-Light audit C across existing routes and significant task states. **Next product implementation workstream:** Phase 4, Practice Workspace, remains not started and is gated on audit C. Keep the connectivity/loading-skeleton PR #74 separate until it is reconciled with current main and the identified Practice skeleton visual issue and rejection-lifecycle coverage are addressed.
+**Decision-Light prerequisite:** The owner accepted its closeout on 2026-11-05 after PR #79 merged and its automated checks passed. Physical Android/TalkBack, keyboard-only, and 200% text-zoom checks remain release QA and are not claimed complete here. **Current product implementation workstream:** Blueprint Academy Phase 4, Practice Workspace, is now current. Its exact scope and TDD sequence are in [the Phase 4 implementation plan](plans/2026-11-05-phase-4-practice-workspace-implementation-plan.md). PR #74 is closed without merge; PR #67 remains deferred until Phase 4 is complete.
 
-## Latest production and mainline verification (2026-11-04)
+## Latest production and mainline verification (2026-11-05)
 
 - **Final Phase 3 main:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186`.
 - **Post-merge CI:** [run 41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed 177 tests across 29 files, ESLint, dependency audit, production build, backup crypto/retention/verification tests and isolated Supabase migration/RLS tests.
@@ -267,11 +268,11 @@ See [Cloudflare Pages setup](deployment/cloudflare-pages.md).
 
 The ordered product sequence below follows the canonical UX/UI roadmap. The overall release lifecycle in `PHASE_PLAN.md` remains at Phase 7 until its operational and manual gates are cleared.
 
-1. **Decision-Light documentation (A):** review this documentation-only branch, including the UX/UI Design System, master roadmap, and project status updates. No application source or behavior is changed.
-2. **Close remaining operational verification gaps:** keep successful automated theme/navigation and backup checks recorded. Complete the remaining managed Supabase restore only after separate-project cost review, B2 lifecycle inspection, recovery-key protection, failure notification settings, and owner physical-device/accessibility review. Do not claim those manual items complete based on CI.
-3. **Decision-Light site-wide audit (C):** after A is integrated into `main`, inspect every current route and significant task state against the binding standard. Record evidence, common and advanced task paths, accessibility and responsive findings, and prioritize proposed corrections for owner review. Do not start Phase 4 implementation during this audit.
-4. **Product roadmap Phase 4:** proceed only after Phase 3 foundations and tests are integrated and verified and audit C is complete. Agree any Phase 4-relevant corrections before implementation. Improve the Practice Workspace without changing question correctness, publication rules, or answer/result behavior.
-5. **Product roadmap Phase 5:** reconcile the consolidated [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67) branch against current main only after Phases 3 and 4. Complete the Google/Supabase OAuth, callback recovery, privacy, sign-out and per-user isolation gates before any merge or release.
+1. **Blueprint Academy Phase 4, Task 1:** add focused failing tests for the existing practice session's load/retry/empty/answer/feedback/result/restart states, observe the expected failure, and implement only demonstrated behavior gaps.
+2. **Phase 4, Task 2:** build the responsive question-first workspace frame. Only render a tools region when a specific approved tool is functional; do not add a decorative calculator/formula panel.
+3. **Phase 4, Task 3:** verify KaTeX/engineering text, session flow, Light/Dark behavior, browser viewports 320/390/768/1024/1440, keyboard/focus, status announcements, and retry/empty states. Keep application work in focused reviewable slices and do not merge a feature PR without separate owner authorization.
+4. **Close operational release gaps in parallel as owner capacity permits:** managed Supabase restore after cost review, B2 lifecycle inspection, protected recovery-key copies, failed-workflow notification confirmation, and physical-device/accessibility review remain Phase 7 release work. Do not claim those checks complete from CI or block Phase 4 implementation on them unless a concrete dependency is found.
+5. **Product roadmap Phase 5:** reconcile consolidated [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67) against current `main` only after Phase 4. Complete OAuth cancellation/callback recovery, privacy, sign-out, and per-user isolation gates before any merge or release.
 
 ## Documentation practice
 
