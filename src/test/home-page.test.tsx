@@ -75,7 +75,7 @@ describe("homepage and year-level navigation", () => {
     expect(stylesheet).toContain("pointer-events: none;");
     expect(stylesheet).not.toContain(".home-marquee:hover .home-marquee-track");
     expect(stylesheet).not.toContain("animation-play-state: paused");
-    expect(stylesheet).toMatch(/@media\\s*\\(prefers-reduced-motion:\\s*reduce\\)[\\s\\S]*?\\.home-marquee-track\\s*\\{/);
+    expect(stylesheet).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.home-marquee-track\s*\{/);
     for (const year of ["First year", "Second year", "Third year", "Fourth year"]) {
       expect(screen.getByRole("link", { name: `Browse ${year} subjects` })).toBeInTheDocument();
     }
