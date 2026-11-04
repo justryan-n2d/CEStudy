@@ -316,8 +316,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               headingText: getComputedStyle(document.querySelector("h1")).color,
               bodyText: getComputedStyle(document.querySelector(".page-intro > p") || document.querySelector(".hero-copy > p") || document.querySelector("main p")).color,
               bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
-              navText: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu a") : document.querySelector(".main-nav .nav-link")).color,
-              navBackground: getComputedStyle(window.innerWidth <= 680 ? document.querySelector(".mobile-help-menu") : document.querySelector(".site-header")).backgroundColor,
+              navText: getComputedStyle(document.querySelector(".site-sidebar-link")).color,
+              navBackground: getComputedStyle(document.querySelector(".site-sidebar")).backgroundColor,
             };
           });
 
