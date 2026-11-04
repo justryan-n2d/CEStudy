@@ -249,7 +249,7 @@ Do not apply Hick-Hyman Law as a raw button-count rule. The following existing p
 
 **Owner triage:** Complete on 2026-11-04. The owner approved the decisions recorded in Section 8. Application changes are isolated in [draft PR #79](https://github.com/justryan-n2d/CEStudy/pull/79); the PR is unmerged and not production-deployed.
 
-**Phase 4:** Remains not started. Do not begin Practice Workspace implementation until the P1 findings have been triaged, the required visual/browser verification is completed, and the owner approves the resulting Phase 4 entry baseline.
+**Phase 4:** Remains not started. Owner triage is complete. Do not begin Practice Workspace implementation until current-head CI/security checks pass, the PR preview is visually and interactively reviewed in both themes and target widths, required accessibility/device checks are recorded, and the owner separately approves integration of the corrections.
 
 A reduction in choices is a design hypothesis, not proof of improved retention. After corrections, test representative student tasks and measure completion, time on task, errors/recovery and secondary-tool discoverability. Do not claim a retention lift without longitudinal student evidence.
 
