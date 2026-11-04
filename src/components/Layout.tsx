@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
@@ -56,6 +56,7 @@ function SidebarLink({
     <NavLink
       to={to}
       onClick={onNavigate}
+      end={to === "/"}
       className={({ isActive }) => isActive || active ? "site-sidebar-link active" : "site-sidebar-link"}
     >
       <NavigationGlyph name={icon} />
@@ -74,12 +75,12 @@ export function Layout({ children }: { children: ReactNode }) {
   const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
   const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
 
-  const closeSidebarAndRestoreFocus = () => {
+  const closeSidebarAndRestoreFocus = useCallback(() => {
     setSidebarOpen(false);
     sidebarTriggerRef.current?.focus();
-  };
+  }, []);
 
-  const closeSidebar = () => setSidebarOpen(false);
+  const closeSidebar = useCallback(() => setSidebarOpen(false), []);
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -172,7 +173,7 @@ export function Layout({ children }: { children: ReactNode }) {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [sidebarOpen]);
+  }, [sidebarOpen, closeSidebarAndRestoreFocus]);
 
   const isCatalogContext =
     location.pathname === "/catalog" ||
@@ -212,7 +213,7 @@ export function Layout({ children }: { children: ReactNode }) {
             <button
               className="site-sidebar-backdrop"
               type="button"
-              aria-label="Close navigation menu"
+              aria-label="Dismiss navigation backdrop"
               onClick={closeSidebarAndRestoreFocus}
             />
             <aside
