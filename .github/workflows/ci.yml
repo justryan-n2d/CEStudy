@@ -80,6 +80,16 @@ jobs:
           if [ -f /tmp/cestudy-theme-preview.pid ]; then
             kill "$(cat /tmp/cestudy-theme-preview.pid)" 2>/dev/null || true
           fi
+      - name: Upload populated lesson visual review screenshots
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cestudy-populated-lesson-visual-review
+          path: |
+            artifacts/empty-reviewer-*.png
+            artifacts/populated-lesson-*.png
+          if-no-files-found: error
+          retention-days: 7
       - name: Upload theme check screenshots and summary on failure
         if: failure()
         uses: actions/upload-artifact@v4

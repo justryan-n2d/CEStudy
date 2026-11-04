@@ -150,10 +150,11 @@ The solutions are \(x=-2\) and \(x=-3\).`,
     };
 
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    let includeSyntheticPublishedLesson = true;
     await page.route("https://cestudy-math-smoke.invalid/rest/v1/**", async (route) => {
       const resource = new URL(route.request().url()).pathname.split("/").filter(Boolean).pop();
       const payload = resource === "subject_lessons"
-        ? [syntheticPublishedLesson]
+        ? (includeSyntheticPublishedLesson ? [syntheticPublishedLesson] : [])
         : resource === "catalog_subjects"
           ? syntheticCatalogRows
           : [];
@@ -565,6 +566,36 @@ The solutions are \(x=-2\) and \(x=-3\).`,
     for (const width of viewports) {
       activeRoute = "synthetic populated engineering-math lesson at " + width + "px";
       await page.setViewportSize({ width, height: 900 });
+
+      includeSyntheticPublishedLesson = false;
+      const baselineResponse = await page.goto(baseUrl + "/study/basic-algebra", {
+        waitUntil: "domcontentloaded",
+        timeout: 30000,
+      });
+      check("Empty reviewer baseline returns HTTP 200: " + activeRoute,
+        Boolean(baselineResponse && baselineResponse.status() === 200),
+        "status=" + (baselineResponse?.status() ?? "no response"));
+      await page.getByRole("heading", { name: "Reviewer content is being prepared" })
+        .waitFor({ state: "visible", timeout: 12000 });
+      check("Empty reviewer baseline clearly reports no published topics: " + activeRoute,
+        await page.locator(".study-empty").isVisible().catch(() => false));
+      const baselineThemeGroup = page.getByRole("group", { name: "Color theme" });
+      for (const themeName of ["Dark", "Light"]) {
+        await baselineThemeGroup.getByRole("button", { name: themeName }).click();
+        await page.waitForFunction(
+          (expectedTheme) => document.documentElement.dataset.theme === expectedTheme,
+          themeName.toLowerCase(),
+          { timeout: 5000 },
+        );
+        if (width === 390 || width === 1440) {
+          await page.screenshot({
+            path: path.join("artifacts", "empty-reviewer-" + themeName.toLowerCase() + "-" + width + "px.png"),
+            fullPage: true,
+          });
+        }
+      }
+
+      includeSyntheticPublishedLesson = true;
       const response = await page.goto(baseUrl + "/study/basic-algebra/1", {
         waitUntil: "domcontentloaded",
         timeout: 30000,
@@ -673,6 +704,12 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           themeMetrics.documentWidth <= themeMetrics.viewportWidth + 1 &&
             themeMetrics.mathErrorCount === 0,
           JSON.stringify(themeMetrics));
+        if (width === 390 || width === 1440) {
+          await page.screenshot({
+            path: path.join("artifacts", "populated-lesson-" + themeName.toLowerCase() + "-" + width + "px.png"),
+            fullPage: true,
+          });
+        }
       }
     }
 
