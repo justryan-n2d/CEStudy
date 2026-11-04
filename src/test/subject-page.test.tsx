@@ -122,7 +122,7 @@ describe("subject page route lifecycle", () => {
     expect(await screen.findByRole("heading", { name: "First Subject" })).toBeInTheDocument();
     expect(screen.getByText(/Typical placement:/)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "CHED sample curriculum: common course" })).toBeInTheDocument();
-    expect(screen.getByText("Coming soon")).toBeInTheDocument();
+    expect(screen.getByText("Coming soon", { selector: ".detail-hero .status" })).toBeInTheDocument();
     expect(screen.getByText("Synthetic source note for tests.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Open curriculum source ↗" })).toHaveAttribute(
       "href",
