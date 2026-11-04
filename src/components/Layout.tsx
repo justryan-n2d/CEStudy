@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { YearLevelDropdown } from "./YearLevelDropdown";
 import { ConnectionStatusNotice } from "./ConnectionStatusNotice";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import {
@@ -71,19 +72,30 @@ export function Layout({ children }: { children: ReactNode }) {
   const previousPathRef = useRef(location.pathname);
   const sidebarTriggerRef = useRef<HTMLButtonElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
+  const yearLevelTriggerRef = useRef<HTMLButtonElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [yearLevelsOpen, setYearLevelsOpen] = useState(false);
   const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
   const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
 
   const closeSidebarAndRestoreFocus = useCallback(() => {
     setSidebarOpen(false);
+    setYearLevelsOpen(false);
     sidebarTriggerRef.current?.focus();
   }, []);
 
-  const closeSidebar = useCallback(() => setSidebarOpen(false), []);
+  const closeSidebar = useCallback(() => {
+    setSidebarOpen(false);
+    setYearLevelsOpen(false);
+  }, []);
+
+  const toggleYearLevels = useCallback(() => {
+    setYearLevelsOpen((open) => !open);
+  }, []);
 
   useEffect(() => {
     setSidebarOpen(false);
+    setYearLevelsOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -244,7 +256,13 @@ export function Layout({ children }: { children: ReactNode }) {
                   <h3 id="sidebar-learning-title">Learning</h3>
                   <SidebarLink to="/" label="Home" icon="home" onNavigate={closeSidebar} />
                   <SidebarLink to="/catalog" label="Subject Catalog" icon="book" active={isCatalogContext} onNavigate={closeSidebar} />
-                  <SidebarLink to="/years" label="Year Levels" icon="layers" active={isYearContext} onNavigate={closeSidebar} />
+                  <YearLevelDropdown
+                    isOpen={yearLevelsOpen}
+                    isActive={isYearContext}
+                    triggerRef={yearLevelTriggerRef}
+                    onToggle={toggleYearLevels}
+                    onClose={closeSidebar}
+                  />
                   <SidebarLink to="/math-foundations" label="Math Foundations" icon="math" onNavigate={closeSidebar} />
                 </section>
 
