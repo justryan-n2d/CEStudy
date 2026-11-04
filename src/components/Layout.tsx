@@ -146,10 +146,11 @@ export function Layout({ children }: { children: ReactNode }) {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const firstFocusable = sidebarRef.current?.querySelector<HTMLElement>(
-      'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-    );
-    firstFocusable?.focus();
+    const focusableSelector = 'button:not([disabled]), a[href], summary, [tabindex]:not([tabindex="-1"])';
+    const getFocusableElements = () => Array.from(
+      sidebarRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
+    ).filter((element) => !element.closest('[hidden], [aria-hidden="true"], details:not([open])'));
+    getFocusableElements()[0]?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -159,11 +160,7 @@ export function Layout({ children }: { children: ReactNode }) {
       }
       if (event.key !== "Tab") return;
 
-      const focusable = Array.from(
-        sidebarRef.current?.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
-        ) ?? [],
-      );
+      const focusable = getFocusableElements();
       if (focusable.length === 0) {
         event.preventDefault();
         return;
