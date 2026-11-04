@@ -92,6 +92,7 @@ describe("skeleton styling contract", () => {
     expect(stylesheet).toMatch(/animation:\s*ce-study-skeleton-shimmer\s+1\.2s\s+linear\s+infinite/);
     expect(stylesheet).toMatch(/background-size:\s*200%\s+100%/);
     expect(stylesheet).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.skeleton-shape[^}]*animation:\s*none/s);
+    expect(stylesheet).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.practice-skeleton-region\s+\.practice-progress\s+\.skeleton-shape\s*\{[^}]*background-image:\s*none/s);
   });
 
   it("gives Study outline and worked-step text rows flexible width", () => {
