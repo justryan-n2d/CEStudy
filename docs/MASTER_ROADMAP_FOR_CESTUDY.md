@@ -209,7 +209,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 **Historical PR #44 behavior:** its branch added a fifth Menu tab, a desktop account/login entry and a streak control; its mobile quick navigation differed from main. These are not the approved current web navigation. The future native mobile app's five-tab design must not be copied automatically into phone web navigation.
 
-**PR #54 candidate changes:** add main-content focus after route changes and 44px tablet navigation link targets with spacing at 681px to 850px. It is a draft explicitly deferred pending alignment with the larger navigation plan. Route-focus handoff is likely reusable; old `.main-nav` spacing should be evaluated against the new hybrid header before adoption.
+**PR #54 candidate changes:** add main-content focus after route changes and 44px tablet navigation link targets with spacing at 681px to 850px. It is a draft explicitly deferred pending alignment with the larger navigation plan. Route-focus handoff is likely reusable; any future focus or spacing changes must be evaluated against the current compact menu/logo header and left off-canvas drawer.
 
 **Responsive verification:** current main CI now covers 320px, 390px, 768px, 1024px and 1440px across 13 routes and both themes. Physical-device review remains separate.
 
