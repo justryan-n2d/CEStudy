@@ -67,12 +67,10 @@ export function YearLevelDropdown({
           .sort((left, right) => left.displayOrder - right.displayOrder));
         hasLoadedRef.current = true;
       })
-      .catch((reason: unknown) => {
+      .catch(() => {
         if (!active || settled) return;
         settled = true;
-        setError(reason instanceof Error
-          ? "Year-level subjects could not be loaded. Please retry."
-          : "Year-level subjects could not be loaded. Please retry.");
+        setError("Year-level subjects could not be loaded. Please retry.");
       })
       .finally(() => {
         window.clearTimeout(timeoutId);
