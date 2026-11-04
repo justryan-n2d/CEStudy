@@ -39,6 +39,7 @@ Use Duolingo, Discord, GitHub, and Autodesk AutoCAD only as references for selec
 6. **Security at the actual boundary.** Hiding a control in the UI does not authorize access to protected data.
 7. **Small reviewable releases.** Prefer focused vertical slices over a high-risk full-site rewrite.
 8. **Intentional, task-based UI.** Follow the binding [design quality and anti-template standard](specs/UX_UI_DESIGN_SYSTEM.md#design-quality-and-anti-template-standard-binding): no default nested-card layouts, generic decorative templates, unsupported metrics, or visually implied functionality. The UX/UI design system is authoritative for layout selection, exceptions, and the review checklist.
+9. **Decision-light interaction.** Follow the binding [Decision-Light Design standard](specs/UX_UI_DESIGN_SYSTEM.md#decision-light-design-standard-binding): one clearly prioritized action per focused task state, visible hierarchy between primary and secondary actions, progressive disclosure for genuinely advanced options, and no irrelevant controls. Preserve genuine peer choices, essential tools, and frequent workflows.
 
 ## 2. Source-of-truth and change-control policy
 
@@ -225,6 +226,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Theme persistence | Approved | Device-local preference under `cestudy:theme:v1`; no account synchronization or cross-device sync. |
 | Public navigation | Hybrid header with Year Levels dropdown, Review Materials Hub mega-menu, direct Mock Exam Portal and Community Forum entries, and signed-in Student Dashboard/account control. |
 | Sidebar | Collapsible sidebar only for dense signed-in workspaces, not for every public page. |
+| Decision-Light Design | **Approved: 2026-11-04.** Apply the five binding rules and their documented exceptions across significant UI work. Documentation A establishes the standard; the site-wide audit C is deferred and required before Phase 4. |
 | Duplicate destinations | Avoid competing Dashboard and Profile roles. Separate learning overview from account/settings only when the use case is clear. |
 | Practice workspace | Desktop split approximately 70/30 as a starting point. Supporting tools collapsible or dockable. Phone web uses one-column question view and a drawer/tab/sheet for tools. |
 | Gamification | XP/rewards, quests, streak freezes, badges, leaderboards, and retry reward behavior are independently configurable. Exact values, eligibility, retry policy, defaults, privacy, and abuse rules remain unresolved. |
@@ -546,12 +548,15 @@ Acceptance criteria:
 
 ### Phase 4: Practice workspace
 
+**Entry gate:** Complete the deferred site-wide Decision-Light audit (C) described in Section 15 before Phase 4 implementation begins. Documentation task A establishes the binding standard only; it does not certify existing routes or authorize a site-wide redesign. The audit must inspect the current routes and significant task states, record evidence-based findings, and prioritize any corrections for owner review. This is prerequisite design work, not a new numbered product phase.
+
 **Relative effort:** Large. **Risk:** High for long engineering problems and answer correctness.
 
 Primary paths: `src/pages/PracticePage.tsx`, `src/components/PracticeQuestion.tsx`, practice APIs/types, shared math renderer, relevant styles and tests.
 
 Acceptance criteria:
 - Preserve answer selection/submission, feedback, explanations, next question and result flow.
+- Apply Decision-Light Design to each focused practice task state: clearly prioritize the current next action without demoting genuine answer choices or required study tools.
 - Apply the flexible desktop question/tools split and collapsible/dockable panel only where its functionality exists.
 - Phone view prioritizes the full question and moves tools into an accessible sheet/drawer/tab.
 - Timer states correspond only to actual timed behavior.
@@ -654,6 +659,7 @@ For each implementation PR:
 | Gamification rules | Open | Define eligibility, uniqueness, timezone, retries, opt-in, privacy and abuse controls |
 | Community publishing/moderation | Open | Agree read/post/report/edit rules and server-side access controls |
 | Offline access | Future proposal | Specify storage, licensing, versioning, stale state and sync behavior first |
+| Decision-Light site-wide audit (C) | **Deferred by owner, 2026-11-04.** Run after documentation A is integrated and before Phase 4 implementation. Inspect every current route and significant task state against the binding standard, record evidence and prioritize proposed corrections. No existing screen has been audited or redesigned by documentation A. |
 
 ## 16. External technical references
 
@@ -693,6 +699,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Update |
 |---|---|
+| 2026-11-04 | Recorded the owner-approved Decision-Light Design standard in the UX/UI Design System and the roadmap decision register. Set the full-site audit (C) as a deferred pre-Phase-4 entry gate after documentation A. No application UI, behavior, data, or production configuration changed. |
 | 2026-11-04 | Reconciled this roadmap with current `main` after PR #69 merged at `ad96cc6`. Updated the repository snapshot, current CI/theme/navigation evidence, consolidated PR #67 status, and phase tracker. Linked the dedicated Phase 3 implementation plan. Recorded that the 2026-11-01 live backup verified all three required tables and remote read-back. Product roadmap Phase 3 is distinct from the lifecycle Phase 3 in `PHASE_PLAN.md`. |
 
 | Date | Change |
