@@ -2528,7 +2528,7 @@ body {
   color: var(--ui-text-muted);
 }
 
-:root[data-theme="dark"] .practice-progress span:first-child {
+:root[data-theme="dark"] .practice-wrap .practice-progress span:first-child:not(.skeleton-shape) {
   color: var(--ui-text);
   background: var(--ui-surface-raised);
 }
