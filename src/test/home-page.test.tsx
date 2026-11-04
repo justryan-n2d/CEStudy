@@ -48,7 +48,7 @@ describe("homepage and year-level navigation", () => {
     expect(marquee).toHaveAttribute("aria-hidden", "true");
     expect(marquee?.querySelectorAll(".home-marquee-group")).toHaveLength(2);
     expect(stylesheet).toContain("@keyframes cestudy-home-marquee");
-    expect(stylesheet).toMatch(/@media\\s*\\(prefers-reduced-motion:\\s*reduce\\)[\\s\\S]*?\\.home-marquee-track\\s*\\{/);
+    expect(stylesheet).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.home-marquee-track\s*\{/);
     for (const year of ["First year", "Second year", "Third year", "Fourth year"]) {
       expect(screen.getByRole("link", { name: `Browse ${year} subjects` })).toBeInTheDocument();
     }
