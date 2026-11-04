@@ -199,12 +199,20 @@ async function main() {
               const root = document.documentElement;
               const shape = document.querySelector("[data-skeleton] .skeleton-shape");
               const style = shape ? getComputedStyle(shape) : null;
+              const answerRow = document.querySelector(".practice-skeleton-region .skeleton-answer-option");
+              const surfaceProbe = document.createElement("span");
+              surfaceProbe.style.backgroundColor = "var(--ui-surface-muted)";
+              document.body.append(surfaceProbe);
+              const expectedAnswerSurface = getComputedStyle(surfaceProbe).backgroundColor;
+              surfaceProbe.remove();
               return {
                 theme: root.dataset.theme || "",
                 base: getComputedStyle(root).getPropertyValue("--ui-skeleton-base").trim(),
                 highlight: getComputedStyle(root).getPropertyValue("--ui-skeleton-highlight").trim(),
                 shapeColor: style ? style.backgroundColor : "",
                 shapeImage: style ? style.backgroundImage : "",
+                answerRowBackground: answerRow ? getComputedStyle(answerRow).backgroundColor : "",
+                expectedAnswerSurface,
                 overflow: root.scrollWidth > window.innerWidth + 1,
               };
             });
@@ -213,6 +221,11 @@ async function main() {
                 metrics.shapeColor !== "" && metrics.shapeImage !== "none",
               JSON.stringify(metrics));
             check(themeName + " theme has no page overflow: " + activeRoute, !metrics.overflow, JSON.stringify(metrics));
+            if (route.id === "practice-question") {
+              check(themeName + " theme applies its muted surface to Practice answer placeholder rows: " + activeRoute,
+                metrics.answerRowBackground === metrics.expectedAnswerSurface,
+                JSON.stringify({ answerRowBackground: metrics.answerRowBackground, expected: metrics.expectedAnswerSurface }));
+            }
             if (themeName === "Light") lightBase = metrics.base;
             if (themeName === "Dark") darkBase = metrics.base;
 
