@@ -8,7 +8,7 @@
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
-> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 and Phase 3 PRs #70-#73 are merged. PR #76 adds connectivity awareness and recoverable loading/skeleton states on the Phase 3 code baseline; PR #74 is closed, unmerged and superseded by #76. PR #77 adds the binding Decision-Light standard. Current `main` is `b8e0a2843325f4b940e30e4b29b3890282ca0dac`; latest application-code baseline is `f5d608e2f271489419d6727679b72ec0ffea3a52`. The Decision-Light source audit is documented in [the audit report](reviews/2026-11-04-decision-light-site-wide-audit.md); live visual/interaction validation and owner triage remain open. PR #67 remains a draft, diverged from current `main`.
+> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 and Phase 3 PRs #70-#73 are merged. PR #76 adds connectivity awareness and recoverable loading/skeleton states on the Phase 3 code baseline; PR #74 is closed, unmerged and superseded by #76. PR #77 adds the binding Decision-Light standard. Current `main` is `b8e0a2843325f4b940e30e4b29b3890282ca0dac`; latest application-code baseline is `f5d608e2f271489419d6727679b72ec0ffea3a52`. The Decision-Light source audit and owner triage are documented in [the audit report](reviews/2026-11-04-decision-light-site-wide-audit.md); approved application corrections are in draft PR #79, while live visual/interaction validation remains open. PR #67 remains a draft, diverged from current `main`.
 
 ## 1. Purpose and product outcome
 
@@ -664,7 +664,7 @@ For each implementation PR:
 | Gamification rules | Open | Define eligibility, uniqueness, timezone, retries, opt-in, privacy and abuse controls |
 | Community publishing/moderation | Open | Agree read/post/report/edit rules and server-side access controls |
 | Offline access | Future proposal | Specify storage, licensing, versioning, stale state and sync behavior first |
-| Decision-Light site-wide audit (C) | **Source-level review complete; visual/interaction validation and owner triage pending.** The 2026-11-04 report covers all 21 registered route patterns and identifies P1/P2/P3 findings. Live browser capture was unavailable; no physical-device or student usability claims are made. Owner must triage P1 findings and complete affected-state visual/interaction checks before Phase 4. |
+| Decision-Light site-wide audit (C) | **Source-level review and owner triage complete; live visual/interaction validation pending.** The report covers all 21 registered route patterns and records owner decisions. Approved UI corrections are in draft PR #79, unmerged and not production-deployed. Complete current-head CI, preview inspection and manual accessibility/device checks before Phase 4. |
 
 ## 16. External technical references
 
@@ -704,7 +704,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Update |
 |---|---|
-| 2026-11-04 | Completed the source-level Decision-Light audit across all 21 registered route patterns. Added the audit report with prioritized findings, preserved peer-choice exceptions, and recorded live visual/interaction validation plus owner triage as outstanding pre-Phase-4 gates. No application UI, behavior, data, or production configuration changed. |
+| 2026-11-04 | Completed the source-level Decision-Light audit across all 21 route patterns, recorded owner triage, and opened draft PR #79 for approved UI corrections. Live visual/interaction validation remains a pre-Phase-4 gate. No merge or production deployment is authorized by the documentation update. |
 | 2026-11-04 | Recorded the owner-approved Decision-Light Design standard in the UX/UI Design System and the roadmap decision register. Set the full-site audit (C) as a pre-Phase-4 gate after documentation A. No application UI, behavior, data, or production configuration changed. |
 | 2026-11-04 | Reconciled this roadmap with current `main` after PR #69 merged at `ad96cc6`. Updated the repository snapshot, current CI/theme/navigation evidence, consolidated PR #67 status, and phase tracker. Linked the dedicated Phase 3 implementation plan. Recorded that the 2026-11-01 live backup verified all three required tables and remote read-back. Product roadmap Phase 3 is distinct from the lifecycle Phase 3 in `PHASE_PLAN.md`. |
 
