@@ -1,6 +1,6 @@
 # CEStudy: Organized Project Phases and Release Plan
 
-**Last reviewed:** 2026-10-20  
+**Last reviewed:** 2026-11-04  
 **Live website:** https://cestudy.pages.dev  
 **Current phase:** **Phase 7, Pre-launch hardening and release gates**  
 **Launch status:** The web MVP is deployed, but the broad student launch is not approved.
@@ -9,23 +9,26 @@ This is the canonical phase plan for CEStudy. Use this file for the overall orde
 
 ## Where we are now
 
-CEStudy is deployed and the project is in **Phase 7: pre-launch hardening**. The live Supabase database contains 72 catalog subjects, 52 practice questions and 13 lessons; all question and lesson records are `needs-review`, with zero published. PR #44 has current-head CI and rendered-browser evidence, but remains draft pending real OAuth testing. PR #48 has been merged into `main` at `6135f4faf6ca1c01c2abc49ca372e40ddfe1bc2b`, adding test-first archive validation for `catalog_subjects`, `practice_questions`, and `subject_lessons` plus explicit per-table success logs. A fresh live backup with the corrected validator remains to be run. See the [current backup verification report](reviews/2026-10-20-current-backup-verification.md).
+CEStudy is deployed. The overall lifecycle plan remains in **Phase 7: pre-launch hardening and release gates**; the broad student launch is not approved.
 
-### Current pull-request and release-gate evidence (2026-10-20)
+- **Current main:** `ad96cc6148b95b563f247d9254bea5a6858b3cd0` (2026-11-04). PR #69 merged and its documentation standard is on main.
+- **Main CI:** [41775563340](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340) passed lint, audit, build, database migration/RLS tests, backup crypto/retention tests, 151 tests across 26 files, and 1,682/1,682 theme/navigation assertions across 13 routes, both themes and five viewport widths.
+- **Live smoke:** [41775770082](https://github.com/justryan-n2d/CEStudy/actions/runs/41775770082) passed 135/135 checks with zero browser/runtime errors.
+- **Full-history secret scan:** scheduled [41433925558](https://github.com/justryan-n2d/CEStudy/actions/runs/41433925558) on 2026-11-02 scanned 1,191 commits / about 4.53 MB with no leaks.
+- **Current live Supabase data:** a read-only query on 2026-11-04 returned 72 catalog subjects, 52 practice questions and 13 lessons. All 52 questions and all 13 lessons remain `needs-review`; zero are published.
+- **Backup:** live run [41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) on 2026-11-01 verified all three required tables, encrypted and uploaded the archive, read back the archive/checksum/marker, and retained four verified sets. This closes the fresh three-table backup-run check; it does not prove a managed-Supabase restore or B2 lifecycle/notification settings.
+- **Theme/navigation:** the merged implementation is verified by current CI across five widths and both themes. Owner visual sign-off, physical Android/TalkBack, 200% text zoom and manual keyboard checks remain open.
+- **Consolidated account candidate:** PR #67 is open and draft. Its head is `43aa6de27c30cca098f542597497b74102cf8442`; compared with current main it is 99 commits ahead and 19 behind, diverged, and not mergeable. PR #44 is an older candidate; PR #64-#66 are earlier/stacked source slices. None should be merged independently.
 
-- [PR #47](https://github.com/justryan-n2d/CEStudy/pull/47): required CI and full-history secret scan passed on the narrow historical test-fixture allowlist; the PR remains open and unmerged.
-- [PR #44](https://github.com/justryan-n2d/CEStudy/pull/44): head `88f13391b505a830de21fd00a019799e9470ce9c` passed [CI 39411257568](https://github.com/justryan-n2d/CEStudy/actions/runs/39411257568), including **146/146** rendered Chromium checks, Supabase migration/RLS tests, and the production build. Secret scan and Cloudflare preview deployment also passed. Real OAuth configuration and end-to-end sign-in/cancel/safe-return/sign-out remain outstanding.
-- [PR #48](https://github.com/justryan-n2d/CEStudy/pull/48), merged as `6135f4faf6ca1c01c2abc49ca372e40ddfe1bc2b`: the test-first fix requires `catalog_subjects`, `practice_questions`, and `subject_lessons`, guards summary interpolation, and logs a success line per verified table. On the final PR head `ccab201fd9bb854e13df9fda660c6bfe74ebf267`, [CI run 39435660395](https://github.com/justryan-n2d/CEStudy/actions/runs/39435660395) and [secret scan 39435660738](https://github.com/justryan-n2d/CEStudy/actions/runs/39435660738) passed. The latest live run used pre-fix main source; run backup again from corrected `main` before closing the validation gate.
-- On 2026-10-20, the latest live backup workflow [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded on old main commit `44ceab69364ba0b094399fbd878ccd38d942356c`. It uploaded and read back a fresh encrypted archive and checksum, verified the marker, and completed retention with four verified sets kept and three stale/incomplete artifacts hidden. Its logs were clean, but the old validator did not assert `subject_lessons`. PR #48 has since merged that correction; repeat from current `main`.
-- A managed-Supabase-target restore, B2 hidden-version lifecycle rule, notification preferences, protected recovery-key copies, physical Android/accessibility QA, qualified content review and the student pilot are still open.
+### Current product-roadmap workstream
 
-The roadmap records actual completion rather than pretending every phase happened sequentially. **Phases 1 and 2 still have discovery and UX-documentation gaps**, even though later implementation work exists. Do not roll back completed code or restart the project; complete those missing validation tasks alongside Phase 7 hardening before expanding scope. The site is not approved for a broad student launch.
+The UX/UI product roadmap's Phase 3 means **Catalog, Subject and Lesson consistency**; that numbering is separate from this lifecycle plan's database/security Phase 3. The dedicated implementation plan is [here](plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md). Phase 4 Practice Workspace follows only after Phase 3 foundations/tests; Phase 5 returns to PR #67 only after the Practice Workspace sequence. These product workstreams do not bypass lifecycle Phase 7 release gates.
 
 ### What “storage” means for CEStudy
 
 - **Supabase database:** In use. The 72 catalog subjects, 52 practice questions, and 13 lesson records are stored in PostgreSQL. All 52 questions and all 13 lessons are currently `needs-review`; no questions or lessons are published. Student-facing RLS checks returned zero published lessons and zero published questions to the anonymous role.
 - **Supabase Storage buckets:** **Not configured, and not needed for the current MVP.** The app currently has no user-uploaded files or private media. Do not add a bucket unless an approved feature requires file/object storage.
-- **Database backup storage:** The latest [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) successfully delivered/read back a fresh encrypted snapshot and retained four verified sets. That run predates the corrected validator, which is now on `main` after PR #48's merge. A live run of the updated validator, managed-Supabase-target restore, B2 lifecycle cleanup and GitHub failure-notification verification remain open.
+- **Database backup storage:** The latest live [41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) run on 2026-11-01 verified all three current required tables, remote archive/checksum/marker read-back and retention. Managed-Supabase-target restore, B2 lifecycle cleanup, protected recovery-key copies and GitHub failure-notification verification remain open.
 
 ## Status meanings
 
@@ -199,8 +202,8 @@ Work through these in order. Do not move to the student pilot until the blocking
 
 ### 7.1 Complete the real-backup recovery drill
 - [x] Backup script on `main` targets the established singular bucket `cestudy-db-backup` and now requires all three tables `catalog_subjects`, `practice_questions`, and `subject_lessons`, logging each table after validation.
-- [x] Fresh current-state archive delivery on 2026-10-20: [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded. The encrypted archive was uploaded and read back for SHA-256 verification, the marker check completed, and retention kept four verified sets while hiding three stale/incomplete artifacts. This attempt predates the corrected validator; see the following open check.
-- [ ] Run a new backup from current `main`. The latest run had clean logs but its source predated PR #48; verify the per-table success lines for all three required tables.
+- [x] Historical archive delivery on 2026-10-20: [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded, but it predated the corrected validator. Current three-table live-backup verification is recorded in run [41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) on 2026-11-01.
+- [x] Run a fresh backup from the corrected main validator: [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) explicitly logged all three required tables as verified, read back the encrypted archive/checksum/marker, and completed retention.
 - [x] CI tests exercise encryption, decryption, corrupted-tag rejection, backup syntax, and retention behavior. This uses a temporary test key and test data, not the actual production backup.
 - [ ] Confirm the Backblaze lifecycle rule deletes hidden old versions without hiding current backups.
 - [ ] Confirm GitHub Actions failure email notifications are enabled in account settings.
@@ -235,7 +238,7 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 - [x] Provide clear Contact, Feedback, and Report a bug routes.
 - [x] Document how users report a wrong question, broken CHED link, or copyright concern, and how the maintainer reviews/corrects/removes content in the [content authoring and publication policy](content-authoring-and-publication.md) and [public Privacy notice](https://cestudy.pages.dev/privacy).
 - [x] Add the public [Privacy notice](https://cestudy.pages.dev/privacy) describing browser-local study data, feedback/support messages, bug-report email drafts, and service providers without claiming analytics or account features that are not currently in production.
-- [x] The current MVP remains no-account/no-upload by decision. Optional Google sign-in is still isolated in draft PR #44 and is not in production.
+- [x] The current MVP remains no-account/no-upload by decision. Optional Google sign-in/history/streak is not in production; PR #67 remains a separate draft candidate.
 
 ### 7.5 Final production QA
 - [x] Run the production Chromium checklist after the publication-status correction and Privacy notice release: [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), 135/135 checks passed. Physical-device accessibility QA remains open.
@@ -249,7 +252,7 @@ Follow [weekly backup setup](deployment/weekly-backups.md) and [backup/recovery 
 
 Phase 7 is complete only when the following technical and operational evidence is current and recorded:
 
-- [ ] A fresh backup on `main` uses the corrected three-table validator and captures the current live database; archive, checksum and verification marker are read back and checked with clean summary logs.
+- [x] A fresh backup on `main` used the corrected three-table validator and verified archive, checksum and marker read-back with successful retention: [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868).
 - [ ] The refreshed backup is restored to a separate managed Supabase test project, after cost approval, and table counts, RLS, client grants and published-only access are validated. Production must never be the test restore target.
 - [ ] Backblaze B2 hidden-version lifecycle behavior is checked without hiding current verified backups; GitHub Actions failure-email settings and protected recovery-key copies are confirmed.
 - [ ] Physical Android-device, keyboard/screen-reader, touch-target and text-zoom checks are recorded; the remaining search/filter/no-results and loading/error-state matrix is tested.
@@ -362,7 +365,7 @@ This phase is not wholly untouched. The repository already has CI and required b
 
 ### Future features, only after evidence supports them
 - Optional bookmarks and review queues after the current workflow is evaluated with students.
-- Accounts and cross-device study progress only after student research and a separate privacy/security review. Optional Google sign-in remains in draft [PR #44](https://github.com/justryan-n2d/CEStudy/pull/44), not in production.
+- Accounts and cross-device study progress only after student research and a separate privacy/security review. Optional Google sign-in/history/streak remains in the consolidated draft [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67), not in production.
 - Trusted content-management expansions or moderated public submissions.
 - Offline-friendly reviewer sets.
 - Broader verified practice content across all BSCE subjects.
@@ -373,13 +376,13 @@ The local progress/streak feature is already implemented, but actual lesson comp
 
 ## Immediate next actions
 
-1. **Finish Phase 7 technical blockers:** rerun the backup on current `main` and confirm all three required tables are logged as verified, archive/checksum/marker read-back succeeds, retention is correct, and the summary is clean. Then rehearse restore into a separate managed Supabase test project after cost approval. Confirm B2 lifecycle behavior, protected recovery-key copies and GitHub failure-email settings.
+1. **Finish remaining Phase 7 technical blockers:** the corrected three-table live backup has passed in run 41290656868. Rehearse restore into a separate managed Supabase test project only after cost approval. Confirm B2 lifecycle behavior, protected recovery-key copies and GitHub failure-email settings.
 2. **Finish Phase 6/7 manual QA:** complete the actual Android-device, keyboard/TalkBack, text-zoom/touch-target, direct-route and search/filter/no-results matrix; record the final security review. Re-run production checks after relevant changes.
 3. **Complete Phase 1/2 catch-up work in parallel:** document student discovery, the primary user journey and validated pilot measures. Keep the existing deployed UI as the design baseline; do not rebuild completed screens just to create retrospective wireframes.
 4. **Complete Phase 8 content review:** identify a qualified reviewer, review the intended initial lesson/question set, record rights and decisions, and publish only explicitly approved items.
 5. **Run Phase 9 pilot:** invite the planned 5–8 students only after Phase 7 blockers pass; use published questions only if Phase 8 has approved them. Record anonymous results and a go/no-go recommendation.
 6. **Complete Phase 10 polish and launch approval:** resolve critical pilot issues, confirm production, finish metadata/accessibility review and record the owner's launch decision.
-7. Keep optional Google sign-in PR #44 in draft unless account features are separately approved. OAuth setup and E2E login are not blockers for the current no-account MVP, but become mandatory before any account feature is merged or released.
+7. Keep consolidated account candidate PR #67 in draft until product-roadmap Phases 3 and 4 are complete, its branch is reconciled against current `main`, and OAuth setup plus end-to-end callback, sign-out, privacy and account-isolation gates pass. PR #44 and PR #64-#66 are not independent merge targets.
 
 ## Detailed supporting documents
 

@@ -2,13 +2,13 @@
 
 **Document status:** Owner-approved direction; canonical planning document for CEStudy UX/UI redesign and roadmap tracking.
 **Owner approval:** Blueprint Academy selected on 2026-10-22 (Asia/Manila).
-**Baseline snapshot:** `main` at `ffbabc6072d46bcd12af1358d17b169a0f8abbc9`, inspected 2026-10-22.
+**Baseline snapshot:** `main` at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`, verified 2026-11-04.
 **Scope of this record:** Product direction, UX/UI decisions, verified baseline, implementation sequence, acceptance criteria, and release safeguards.
 **Application implementation status:** No application code changes are authorized by this document.
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
-> **Repository note (verified 2026-10-23):** This canonical roadmap is present on `main`. Its approved decisions control product direction, UX/UI scope, and implementation order. Supporting plans and feature PRs must be reconciled to this document before merge. Actual source code, data contracts, security controls, and CI/release gates still determine what is implemented and safe to ship.
+> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 is merged on `main`; its binding design-quality and anti-template standard is now part of the repository guidance. This roadmap and the live source, database policies, security controls, and current CI/release evidence remain the authorities for intended scope and actual implementation. PR #67 is the consolidated account/learning-activity candidate, but is still draft and diverged from current `main`.
 
 ## 1. Purpose and product outcome
 
@@ -56,31 +56,36 @@ This roadmap controls the intended product design, scope, decision register, and
 
 ### 3.1 Main branch snapshot
 
-| Item | Verified state on 2026-10-22 |
+| Item | Verified state on 2026-11-04 |
 |---|---|
 | Repository | [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy), public repository |
 | Default branch | `main` |
-| Inspected `main` SHA | `ffbabc6072d46bcd12af1358d17b169a0f8abbc9` |
-| Latest commit message | `docs: add UI UX Pro Max integration guidance` |
+| Inspected `main` SHA | `ad96cc6148b95b563f247d9254bea5a6858b3cd0` |
+| Latest commit | PR #69 merge: `docs: establish design quality and anti-template UX/UI standard` |
 | Stack declared by `package.json` | React 19, TypeScript 5.9, Vite 7, Tailwind CSS 4, React Router 7, Supabase JS, KaTeX 0.19, Vitest and Testing Library |
-| Main CI run | [39758495387, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495387) |
-| Main full-history secret scan | [39758495402, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495402) |
-| Main live website Chromium smoke | [39758768389, success](https://github.com/justryan-n2d/CEStudy/actions/runs/39758768389) |
+| Main CI | [run 41775563340, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340): 151 tests across 26 files, lint, dependency audit, build, backup crypto/retention tests, and isolated Supabase migration/RLS tests |
+| Theme/responsive browser checks | 1,682/1,682 assertions passed across 13 routes, both themes, and 320/390/768/1024/1440 px in the same CI run |
+| Main full-history secret scan | Latest scheduled full-history run [41433925558, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41433925558): 1,191 commits / about 4.53 MB scanned, no leaks. The merge push scan also passed, but its merge-only range reported zero commits scanned and is not represented as a full-history scan. |
+| Live website Chromium smoke | [run 41775770082, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41775770082): 135/135 checks, zero failures, and zero runtime errors |
 
-The main workflows above passed on the exact inspected main commit. This is fresh GitHub Actions evidence, not a claim that this assistant ran the tests locally.
+The checks above are GitHub Actions evidence on the named commits/runs. They are not a claim that a local clone or physical Android device was tested in this session. The 2026-11-04 live smoke run confirms routes, headers, Supabase host/key exposure, published-only practice requests, and the tested 320/1440 px production layout. The CI theme suite separately covers both themes and five viewport widths on a built production preview.
 
 ### 3.2 Relevant open pull requests
 
-The PR state below was rechecked on 2026-10-23. Historical CI evidence is not treated as current evidence after branch changes.
+Current PR metadata was checked against `main` at `ad96cc6148b95b563f247d9254bea5a6858b3cd0` on 2026-11-04.
 
 | PR | Current role and state | Roadmap-aligned handling |
 |---|---|---|
-| [#44 Google sign-in and local learning activity](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, and contains overlapping theme/navigation/layout changes. | Preserve only the confirmed scope: Google OAuth, profile, streak, learning history, and required session, privacy, and sign-out behavior. Refactor to this roadmap's structure. Keep draft until OAuth and security gates pass. |
-| [#32 Production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open proposal for a production Chromium visual-test harness. | Evaluate independently; it is not part of the current theme/navigation merge sequence until reviewed. |
+| [#67 Google auth, profile, local history and streak](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; recorded base/merge-base `887b3f5a0b826ac0019f266de5e53fd6278958d3`. Compared with current `main`, the branch is diverged: 99 commits ahead and 19 behind; GitHub reports mergeable false. | This is the single consolidated account/learning-activity candidate. Do not merge in its current state. After Phases 3 and 4, reconcile the branch against current `main`, review its full diff, and complete all OAuth, privacy, data-isolation and recovery gates. |
+| [#44 earlier Google sign-in and local learning activity candidate](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, older branch; not the consolidated candidate. | Historical source only. Do not merge separately or use it as the current implementation target. |
+| [#64, #65 and #66](https://github.com/justryan-n2d/CEStudy/pull/64) | Open, draft, stacked or earlier source slices that feed the PR #67 consolidation. | Do not merge these independently. Reconcile only through the consolidated PR #67 after its base is refreshed and the combined change is reviewed. |
+| [#32 production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open technical proposal. | Evaluate independently if a production-content visual regression test is still required; it is not part of Phase 3 scope. |
 
-**Completed security/documentation/UI gates:** PR #58 merged the roadmap/status reconciliation. PR #59 merged the narrow Gitleaks allowlist and pull-request full-history scan after CI and secret scanning passed; the full-history scan covered 1,014 commits with no leaks. PR #47 is closed as superseded. PR #51 merged the supporting IA, gamified UX, and design-system documents. PR #56 merged the shared theme foundation at `6aef33f`; final CI, secret scan, Supabase migration/RLS checks, and 853/853 Chromium assertions passed after the owner content-review dark-theme fix. PR #57 merged the hybrid navigation at `b4b18b2`; CI, full-history secret scan, Supabase migration/RLS, backup checks, and 1,682/1,682 Chromium assertions passed. PR #54 is closed as superseded by #57.
+**Merged since the prior roadmap snapshot:** PR #69 merged on 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. It adds the binding design-quality and anti-template standard and tool-neutral repository wording. It does not change application code, database state, authentication settings, or production configuration.
 
-**Merge order:** security, supporting documentation, Phase 1 theme implementation, and Phase 2 navigation implementation have merged. Phase 1 and Phase 2 remain **current**, not complete, pending independent review and manual external preview inspection; this environment could not access external previews due DNS/network limits. Next proceed to focused PR #44 feature slices while preserving its OAuth/session release gates. Verify current base/head SHAs, required CI, full-history secret scan, relevant security tests, and review status immediately before each merge. A stale green run, a mergeable flag, or a draft's existence is not release approval.
+**Theme/navigation implementation:** PR #56 (theme foundation) and PR #57 (hybrid navigation) are merged. The current `main` source includes the theme provider, early theme initialization, explicit Light/Dark control, hybrid desktop navigation, mobile quick navigation and More menu. Current CI and live smoke evidence is recorded above. Independent owner visual sign-off and physical-device accessibility checks are still outstanding; automated success does not replace those checks.
+
+**Merge rule for PR #67:** Before any future merge, refresh its branch against current `main`, review the complete diff and all changed files, run current required CI and full-history secret scanning, verify OAuth/provider behavior, and check privacy and account data boundaries. A green run from the old base, a mergeable flag, or a draft's existence is not release approval.
 
 ### 3.3 Existing route inventory on `main`
 
@@ -99,7 +104,7 @@ Verified route registration is in `src/App.tsx` at the inspected main commit.
 | `/about`, `/privacy` | Existing | Informational and privacy pages |
 | `/contact`, `/support`, `/bug-reports`, `/feedback`, `/feedbacks` | Existing | Support and feedback surfaces, with inbox access tied to its actual gate |
 | `/owner/content-review` | Existing | Privileged content-review surface; preserve its access boundary |
-| `/login`, `/profile`, `/history`, `/streak`, `/menu`, `/community` | PR #44 draft-only | Present in PR #44 branch, not in the inspected main route table |
+| `/login`, `/profile`, `/history`, `/streak` | PR #67 draft-only | Not registered in current `main`; PR #67 remains a draft and must be reconciled before these features are treated as implemented. `/community` is already an existing main route. |
 | Review Materials Hub, Mock Exam Portal, Student Dashboard as a broader learning hub, full Community Forum, unit converter | Proposed | Do not represent these as full working features until separately implemented and verified |
 
 ### 3.4 Existing reusable foundations
@@ -120,21 +125,22 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 | Slice | Status | Scope / exit condition |
 |---|---|---|
-| Phase 0: Canonical plan and baseline | **incomplete** | Main/PR metadata, source paths, and existing GitHub CI evidence are recorded. Direct visual preview capture and a fresh local test run remain blocked and must be resolved or explicitly accepted before declaring the baseline fully complete. |
-| Phase 1: Shared foundation and theme tokens | **current** | Implementation merged at main commit `6aef33f37ea69c9b53acdbd975edf9b8feb2d0a5`; final code head `8208d8dbd2012a474a20bca5aa5cc0ad4b975146` passed [CI run 39880944679](https://github.com/justryan-n2d/CEStudy/actions/runs/39880944679) and [secret scan 39880944768](https://github.com/justryan-n2d/CEStudy/actions/runs/39880944768). Supabase migration/RLS and backup checks passed; Chromium smoke passed **853/853 assertions** across 10 routes and five viewport widths, including Light/Dark refresh persistence. The owner content-review dark-theme regression test failed on the test-first commit and passed after semantic-token overrides. Cloudflare Pages preview deployment succeeded, but direct external preview inspection was blocked by environment DNS/network. No independent review is recorded, so the phase remains **current**, not complete. |
-| Phase 2: Navigation and route focus | **current** | Implementation merged in PR #57 at main commit `b4b18b2b1a2255d88dacdff546a90de2de18238b`; final code head `ae45bc7623d7443bc49554c4fcc007c48f604b0b` passed [CI run 39882597663](https://github.com/justryan-n2d/CEStudy/actions/runs/39882597663), [full-history secret scan 39882597625](https://github.com/justryan-n2d/CEStudy/actions/runs/39882597625), Supabase migration/RLS, backup checks, and **1,682/1,682 Chromium assertions** across 13 routes, both themes, and all five required widths. Full-history Gitleaks scanned 1,035 commits with no leaks. Cloudflare Pages preview deployment succeeded; direct external preview inspection was blocked by environment DNS/network. PR #54 is closed as superseded. No independent review is recorded, so Phase 2 remains **current**, not complete. The signed-in Dashboard/account sub-slice remains **paused** pending the reviewed auth/session contract from PR #44. |
-| Phase 3: Catalog, subject and lesson consistency | **not started** | Unify browse/read experiences and verify shared math rendering in both themes. |
-| Phase 4: Practice workspace | **not started** | Implement and verify the responsive question/tools workspace while preserving current question/answer behavior. |
-| Phase 5: Progress and account integration | **not started** | Reconcile PR #44 only after review; preserve device-local disclosures, OAuth safeguards and data boundaries. |
+| Phase 0: Canonical plan and baseline | **incomplete** | Current `main`, PR metadata, source paths, test commands and current CI/live evidence are recorded. A complete independent visual sign-off and physical-device review are not recorded. |
+| Phase 1: Shared foundation and theme tokens | **incomplete** | PR #56 is merged. Current main CI verifies Light/Dark behavior and the 13-route/five-width browser matrix. Owner visual sign-off and physical Android/TalkBack review remain open; do not restart the theme implementation. |
+| Phase 2: Navigation and route focus | **incomplete** | PR #57 is merged. Current main CI verifies route focus, keyboard/Escape behavior, 44px targets, desktop panels and mobile More menu. Owner visual sign-off and physical-device navigation review remain open; do not rebuild the navigation. |
+| Phase 3: Catalog, subject and lesson consistency | **current** | The three controlled implementation slices are CI-verified in draft PRs #71-#73. Task 1 fixes the SubjectPage stale-route state and adds Catalog/Subject contracts; Task 2 adds Study/API contracts with no reader source change needed; Task 3 verifies a synthetic populated lesson in both themes at five widths. Owner screenshot review and authorized integration into main remain pending. |
+| Phase 4: Practice workspace | **not started** | Start only after Phase 3 foundations and tests are established. Preserve the current question/answer/feedback/results behavior and honest unpublished-content gate. |
+| Phase 5: Progress and account integration | **paused** | Browser-local progress/streak already exists on `main`. Return to the consolidated PR #67 only after Phase 3 and Phase 4; refresh its branch, review the full diff, and close OAuth/privacy/security gates before merge. |
 | Phase 6: Review Materials Hub | **not started** | Build only after resource metadata, review status, provenance and rights rules are confirmed. |
 | Phase 7: Community | **not started** | Remains blocked on data contracts, publication rules, identity and moderation/access controls. |
 | Phase 8: Tools | **not started** | Start with a validated unit converter and tested unit definitions. |
 | Phase 9: Gamification | **not started** | Blocked until the affected reward, eligibility, privacy, retry and anti-abuse rules are approved. |
 | Phase 10: Offline access and native app | **not started** | Separate future architecture and design work; excluded from the current website theme foundation. |
 
-**Active implementation branch:** `feat/blueprint-academy-theme-foundation`.
-**Verified main at implementation start:** `0862b5f243ca0e39f8bb82131c31fef28fbbab98`.
-**Current implementation authorization:** The owner explicitly authorized application code changes in the conversation dated 2026-10-22. This authorizes work within the master roadmap, but does not authorize automatic merge, deployment, production data/configuration changes, or bypassing existing safeguards.
+**Current verified `main`:** `ad96cc6148b95b563f247d9254bea5a6858b3cd0` (2026-11-04).
+**Phase 3 draft implementation:** PRs #71-#73 are CI-green and unmerged. Main remains unchanged until the owner authorizes integration.
+**Current documentation branch:** `docs/2026-11-04-roadmap-sync-phase3-plan`.
+**Application scope of this documentation update:** No application source, database schema/data, production settings, OAuth settings, or deployment configuration is changed.
 
 ## 4. Focused baseline verification
 
@@ -142,28 +148,25 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 | Area | Result | Evidence | Remaining gap |
 |---|---|---|---|
-| Main theme | Verified: main has a light-theme CSS baseline and no ThemeProvider or theme-init script in its inspected route bootstrap. | `src/App.tsx`, `src/styles/global.css`, main tree. | The explicit Light/Dark control is not on main. PR #44 implementation must be reviewed before integration. |
+| Main theme | Verified: current main includes `ThemeProvider`, `ThemeToggle`, and the pre-React `public/theme-init.js` bootstrap. | `src/components/Layout.tsx`, `src/contexts/ThemeContext.tsx`, `src/components/ThemeToggle.tsx`, `index.html`, `public/theme-init.js`, `scripts/theme-smoke.cjs`. | Owner visual sign-off and physical Android/TalkBack testing remain; automated CI covers both themes across 13 routes and five widths. |
 | Equation rendering | Verified: shared KaTeX renderer, lazy wrapper, inline/plain-text math detection, limited Markdown parser, representative tests, and horizontal overflow CSS exist. | `src/components/LatexMath.tsx`; `LazyLatexMath.tsx`; `InlineMathText.tsx`; `MarkdownContent.tsx`; `src/test/latex-rendering.test.tsx`; `src/styles/global.css`. | No fresh local run was possible. Keyboard access to overflowed display equations, accessible fallback announcements, and dark-theme equation coverage are not proven by the inspected test names. |
-| PR #44 integration points | Verified on the recorded draft branch: Google-only auth context, local theme preference, profile/history/streak/menu/community routes, and browser tests exist on that branch. | Recorded head and prior CI/secret-scan evidence are historical; the branch currently diverges from main and overlaps theme/navigation files. | Preserve only the confirmed account/learning-activity scope, reconcile against the canonical theme/navigation implementation, rerun required checks, and complete OAuth cancellation/error/unsafe-return gates before merge. |
-| Responsive navigation | Verified: main uses a desktop header, a More menu, a four-item mobile quick-navigation bar, and CSS breakpoints around 850px, 680px, and 560px. | `src/components/Layout.tsx`, `src/styles/global.css`, `scripts/live-smoke.cjs`. | Main live smoke tests layout overflow at 320px and 1440px only. 390px, 768px, 1024px, full keyboard flow, and redesigned menu behavior remain to be checked. |
+| Historical PR #44 source | Its old draft branch contained Google-only auth context, local theme preference, profile/history/streak/menu/community routes and browser tests. | Those checks and branch state are historical; PR #44 is not the current integration candidate. | Use PR #67 as the single consolidated account/learning-activity candidate, reconcile it after product-roadmap Phases 3 and 4, and rerun OAuth, privacy and security gates. |
+| Responsive navigation | Verified: current main has a hybrid desktop header, four-item mobile quick navigation and grouped More menu. The theme/navigation CI suite passed 1,682/1,682 assertions across 13 routes, both themes and five widths; production smoke passed 135/135 checks. | `src/components/Layout.tsx`, `src/components/YearLevelDropdown.tsx`, `src/components/ReviewMaterialsMegaMenu.tsx`, `scripts/theme-smoke.cjs`, `scripts/live-smoke.cjs`. | Physical Android layout, TalkBack, 200% text zoom and real keyboard-only manual checks remain. |
 | Main CI / live smoke | Pass on inspected main SHA. | [CI](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495387), [secret scan](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495402), [live smoke](https://github.com/justryan-n2d/CEStudy/actions/runs/39758768389). | These checks do not constitute a WCAG certification or all-target-width redesign test. |
 
-### 4.2 Theme baseline: main and PR #44
+### 4.2 Theme baseline on current main
 
-**Main branch:** `src/App.tsx` directly composes `BrowserRouter`, `Layout`, and `Routes`; it does not wrap the app with a `ThemeProvider`. The inspected main CSS begins with light values such as white page backgrounds, `#24384b` body text, `#0754B5` brand blue, and related light-mode variables. The main tree does not contain PR #44's `src/contexts/ThemeContext.tsx` or `public/theme-init.js`. A working explicit dark-mode switch therefore must not be assumed to exist on main.
+**Verified implementation on main at `ad96cc6`:**
 
-**PR #44 branch:**
+- `src/contexts/ThemeContext.tsx` defines explicit `light` and `dark` modes, reads and writes `cestudy:theme:v1` in localStorage, applies `document.documentElement.dataset.theme` and `colorScheme`, and updates the browser `theme-color` meta tag. Storage failures fall back to Light for the current session.
+- `src/components/ThemeToggle.tsx` exposes explicit Light and Dark controls with `aria-pressed` state. There is no System option.
+- `src/components/Layout.tsx` mounts the ThemeProvider around the current site shell.
+- `public/theme-init.js` is loaded from `index.html` before the app module and applies the saved choice early to reduce a theme flash.
+- The owner-approved brand blue remains `#0754B5`; the semantic theme tokens are in `src/styles/global.css`.
 
-- `src/contexts/ThemeContext.tsx` defines `light` and `dark`, reads and writes `cestudy:theme:v1` in localStorage, applies `document.documentElement.dataset.theme` and `colorScheme`, and updates the `theme-color` meta tag. Storage failures fall back to light for the current session.
-- `public/theme-init.js` reads the same key before the Vite module starts, then sets the initial theme and browser theme color to reduce a theme flash.
-- PR #44's `src/App.tsx` wraps `ThemeProvider` and `AuthProvider` around the app.
-- PR #44 expands `src/styles/global.css` with many dark-theme overrides and shared `--ui-*` semantic values. Its stylesheet is much larger than main's and should be audited for token coverage and duplicate/page-specific overrides before extending it. Do not simply append more dark-mode overrides for every new page.
-- `scripts/ui-theme-smoke.cjs` tests theme persistence, selected surfaces, several accessible states, contrast on chosen controls, reduced motion, and overflow at 320px and 1440px across a defined route list.
-- The route list in that browser script does not include the lesson route or practice route. It also does not check all five roadmap viewports. The redesigned theme gate must add lesson and practice coverage, formula rendering, and 390px/768px/1024px verification.
+**Fresh automated evidence:** current main CI run [41775563340](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340) passed 1,682/1,682 theme/navigation assertions across 13 routes, Light and Dark modes, and 320, 390, 768, 1024 and 1440 px. The suite checks surface colors, selected-state contrast, route loading, horizontal overflow, theme preference persistence, the year-level dropdown, Review Materials navigation, Escape handling, focus restoration and touch-target sizing. PR #69 changes documentation only, so it does not alter the tested theme/navigation implementation.
 
-**Recorded checks for PR #44:** current PR-head [CI run 39578952302](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952302), [secret scan 39578952309](https://github.com/justryan-n2d/CEStudy/actions/runs/39578952309), and [Cloudflare deployment check 119151620066](https://github.com/justryan-n2d/CEStudy/runs/119151620066) are reported as successful in the PR description. The description also records successful browser smoke assertions at 320px and 1440px on the tested feature branch. These are evidence from the branch's automated checks, not a manual visual approval or a merge/release approval.
-
-**Persistence decision: approved device-local.** Store the explicit Light/Dark selection in this browser using `cestudy:theme:v1` and restore it before React starts. Light remains the fallback when no valid saved choice exists or storage is blocked. Account synchronization and cross-device persistence are not approved.
+**Remaining human checks:** no independent owner visual sign-off is recorded for the merged theme/navigation changes. Physical Android portrait/landscape, TalkBack traversal, Android text scaling and manual keyboard-only review remain release checks. Do not mark these complete based on CI alone.
 
 ### 4.3 Equation rendering baseline
 
@@ -182,7 +185,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 - The inline/plain-text detector is heuristic. Do not broadly change parsing regexes without adding the failing example to regression tests.
 - An error fallback is present, but a browser and assistive-technology check is still needed to ensure an invalid formula is understandable and not announced as rendered math.
 - Horizontal overflow CSS exists for display math, but keyboard access to a long equation's scroll container and a useful accessible label/instruction are not established by source inspection alone.
-- Verify dark-theme text, equation backgrounds, error text, matrices, and diagrams together. The current PR #44 theme smoke route list omits `/study/...` and `/practice/...`.
+- Verify dark-theme text, equation backgrounds, error text, matrices, and diagrams together. Current main CI covers the `/study` and `/practice` routes in the general theme suite; the populated lesson renderer still needs a synthetic API fixture for browser verification.
 - Verify equations on actual rendered student routes, not only a unit test DOM or a successful production build.
 - Avoid changing the source of approved lesson/question math during a visual refactor. Source authority and mathematical correctness are separate from typography.
 
@@ -197,17 +200,16 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 - The shared stylesheet has multiple existing responsive rules around 850px, 680px, and 560px, with further page-specific media rules. Preserve current working behavior while consolidating rules where needed. Avoid adding new overrides without understanding existing cascade interactions.
 - Main `scripts/live-smoke.cjs` visits home, catalog, years, year detail, math foundations, subject, practice, contact, support, bug reports, feedback, and privacy. It checks direct routes, headers, relevant public API behavior, browser errors, and horizontal overflow at 320px and 1440px. The current workflow is configured to expect zero published practice questions and a review-gate screen.
 
-**PR #44 behavior:** adds a fifth Menu tab, an account/login entry on desktop, and a streak control; its mobile quick nav differs from main. This is draft behavior, not the required end state. The future native mobile app's five-tab design must not be copied automatically into phone web navigation.
+**Historical PR #44 behavior:** its branch added a fifth Menu tab, a desktop account/login entry and a streak control; its mobile quick navigation differed from main. These are not the approved current web navigation. The future native mobile app's five-tab design must not be copied automatically into phone web navigation.
 
 **PR #54 candidate changes:** add main-content focus after route changes and 44px tablet navigation link targets with spacing at 681px to 850px. It is a draft explicitly deferred pending alignment with the larger navigation plan. Route-focus handoff is likely reusable; old `.main-nav` spacing should be evaluated against the new hybrid header before adoption.
 
-**Responsive verification gap:** neither main smoke test nor PR #44's theme test covers all of 320px, 390px, 768px, 1024px, and 1440px. The implementation plan must add those widths for the redesigned global navigation and practice workspace.
+**Responsive verification:** current main CI now covers 320px, 390px, 768px, 1024px and 1440px across 13 routes and both themes. Physical-device review remains separate.
 
 ### 4.5 Verification limitations
 
 - Current main CI, secret scan, and live browser smoke returned success for main SHA `ffbabc6072d46bcd12af1358d17b169a0f8abbc9`.
-- Current PR #44 CI and secret scan returned success for its current PR head, as shown in the PR description. PR #44 remains draft.
-- The available web/browser fetch returned a cache-miss response for the PR #44 preview URL. The container could not clone GitHub because DNS resolution for `github.com` failed. Therefore no new local test run or direct screenshot inspection was completed by this audit.
+- PR #44's prior CI/secret-scan results and its October preview checks are historical only. PR #67 is the current consolidated candidate and is not mergeable against current `main` (99 commits ahead, 19 behind). No provider-console or end-to-end OAuth verification has been newly recorded in this reconciliation.
 - Treat the PR's recorded Chromium assertions as CI evidence, not as independent manual visual QA. The direct preview capture and physical Android/TalkBack checks remain outstanding.
 
 ## 5. Approved owner decisions
@@ -242,7 +244,7 @@ Home
 │   ├── Problem Sets with Solutions
 │   └── Video Tutorials
 ├── Mock Exam Portal (high-level destination, not authorization for expanded exam features)
-├── Community Forum (planned; current PR #44 page is only a launch placeholder)
+├── Community Forum (existing route on main; full forum functionality remains planned)
 ├── Student Dashboard (private learning overview, planned)
 │   ├── Progress and History
 │   ├── Saved Questions and Formulas
@@ -268,7 +270,7 @@ Home
 
 ### Phone-web navigation
 
-The current four-item bottom quick navigation is existing behavior, not a binding requirement for the final redesign. Retain, adapt, or remove it only after checking task discoverability and duplication in the hybrid model. Do not expand it to five tabs just because PR #44 or the future native app uses five destinations. A full-width sheet or grouped accordion must expose the remaining target destinations.
+The current four-item bottom quick navigation is existing behavior and is retained in the merged hybrid navigation. Do not expand it to five tabs just because an older feature branch or future native app uses five destinations. A grouped More menu exposes the remaining web destinations.
 
 Nested menus must support keyboard, touch, visible state, Escape, focus restoration, and useful empty states. Direct routes and refresh behavior must continue to work.
 
@@ -377,7 +379,7 @@ This is a layout convention, not authorization to rewrite mathematical source co
 | Results / Progress | Existing progress and per-session results | Separate current-session score from stored history; show device-local scope and only real values. |
 | Student Dashboard | Proposed | Private hub for progress, recent activity, bookmarks, saved formulas, history and settings. No fake insights or cross-device claims. |
 | Account / Settings | Privacy exists; extra account pages draft-only | Clearly disclose device-local theme preference, sound, motion, authentication, and storage behavior. Do not imply account-synced theme settings. |
-| Community | Draft route in PR #44 is a placeholder, not a working forum | Future searchable discussions, problem threads, math comments, reporting and moderation only after backend and permission decisions. Public identity must not expose email. |
+| Community | Existing route on main, still a high-level destination rather than a complete forum | Future searchable discussions, problem threads, math comments, reporting and moderation only after backend and permission decisions. Public identity must not expose email. |
 | Calculator / Tools | Proposed | Unit converter first. Validate units, inputs, conversion factors and outputs. More engineering tools need sources and technical validation. |
 | Offline manager | Cross-cutting proposal | Do not display as implemented until local storage, resource versions, download rights and sync rules are designed and verified. |
 
@@ -458,7 +460,7 @@ Example reward values in PR #51 are draft planning examples, not approved consta
 - Public library access remains usable while signed out unless a verified current access rule says otherwise.
 - The inspected main progress page is device-local. Do not claim account synchronization or server-backed learning insights unless a verified contract supplies them.
 - Dashboard data must be private to the correct user at the API/database boundary, not just conditionally rendered in React.
-- Authentication stays optional unless separately approved; preserve safe return-path handling and OAuth safeguards from PR #44.
+- Authentication stays optional unless separately approved; preserve safe return-path handling and OAuth safeguards when the consolidated PR #67 is reconciled.
 - Keep email addresses private. Apply the approved CEStudy public identity on community content when relevant.
 - Do not weaken the content review/publication workflow or expose private review notes, unpublished questions, service-role credentials, or sensitive user data.
 - Never put actual question content into a public seed or publish unpublished learning content solely to make a UI look populated.
@@ -470,12 +472,12 @@ Each slice must be separately scoped, reviewed, and tested. The owner explicitly
 
 ### Phase 0: Canonical plan and baseline (incomplete)
 
-**Status:** Source inspection and existing CI evidence recorded. Direct preview capture and a fresh local run are blocked by the available environment. Do not describe the baseline as a complete live visual audit.
+**Status:** Current source, route inventory, repository checks and production smoke evidence are recorded. Automated browser coverage is current; owner visual sign-off and physical-device review remain open. Do not describe automated checks as a complete physical-device or accessibility audit.
 
 Work:
 - Keep this roadmap as the canonical record. PR #55 was merged to `main` at commit `0862b5f243ca0e39f8bb82131c31fef28fbbab98`.
 - Confirm current main SHA, PR states, routes, existing components, test setup and CI.
-- Record theme, equation, PR #44, and responsive-navigation baselines.
+- Record the theme, equation, PR #67 integration and responsive-navigation baselines against current main.
 - Preserve the current passing main CI/live-smoke/secret-scan gate.
 
 Exit criteria:
@@ -485,11 +487,11 @@ Exit criteria:
 
 ### Phase 1: Shared foundation and theme tokens
 
-**Status: implementation merged; phase remains current pending independent review.** The refresh defect was reproduced by a regression test and fixed by reading/writing `cestudy:theme:v1`, using a Light fallback for invalid or inaccessible storage, synchronizing `color-scheme` and browser theme color, and loading `public/theme-init.js` before the app module to prevent a Light flash. The owner content-review workspace also received dark semantic-token overrides after a test-first regression exposed hard-coded light surfaces. Final code head [8208d8d](https://github.com/justryan-n2d/CEStudy/commit/8208d8dbd2012a474a20bca5aa5cc0ad4b975146) passed [CI run 39880944679](https://github.com/justryan-n2d/CEStudy/actions/runs/39880944679), including lint, dependency audit, unit tests, production build, Pages/security-header packaging, backup checks, Supabase migration/RLS tests, and **853/853 Chromium assertions** across 10 routes and five viewport widths. [Secret scan 39880944768](https://github.com/justryan-n2d/CEStudy/actions/runs/39880944768) passed. Cloudflare Pages preview deployment succeeded; direct external preview inspection was blocked by environment DNS/network. PR #56 merged at `6aef33f`; no independent review is recorded, so Phase 1 remains **current**, not complete.
+**Status: implementation merged; automated verification current; owner visual sign-off remains outstanding.** PR #56 merged at `6aef33f37ea69c9b53acdbd975edf9b8feb2d0a5`. The current main CI run [41775563340](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340) passed the theme suite across 13 routes, both themes and all five required widths. Refresh behavior, semantic-token application and the Light fallback remain in the current implementation. Do not restart this work. Phase 1 remains incomplete only for owner visual sign-off and physical-device/accessibility checks.
 
-**Priority:** first implementation candidate. **Relative effort:** Medium. **Risk:** Medium due theme-wide regression potential.
+**Priority:** merged foundation; remaining visual/manual checks only. **Relative effort:** Medium. **Risk:** Medium due theme-wide regression potential.
 
-Primary paths to inspect: `src/styles/global.css`, `src/components/Layout.tsx`, `src/App.tsx`, PR #44's `src/contexts/ThemeContext.tsx`, `public/theme-init.js`, relevant tests, and `scripts/ui-theme-smoke.cjs`.
+Primary paths to inspect: `src/styles/global.css`, `src/components/Layout.tsx`, `src/App.tsx`, `src/contexts/ThemeContext.tsx`, `src/components/ThemeToggle.tsx`, `public/theme-init.js`, `scripts/theme-smoke.cjs`, and relevant tests.
 
 User outcome: a stable visual base where common surfaces, text, borders, focus and controls behave consistently in Light and Dark.
 
@@ -498,20 +500,19 @@ Acceptance criteria:
 - Keep Light as default; support explicit Light/Dark only, with no System option.
 - Use the approved device-local `cestudy:theme:v1` preference and early bootstrap; do not add account synchronization.
 - Use shared semantic tokens and remove avoidable page-specific token contradictions.
-- Do not regress current main pages or PR #44's auth/streak design where it is later integrated.
+- Do not regress current main pages or the separately reviewed account/learning-activity candidate when PR #67 is eventually integrated.
 - Add theme contrast/component tests and browser checks for home, catalog, study, practice, forms, dialog, tables and equation error/overflow states.
 - Test at 320px, 390px, 768px, 1024px and 1440px.
 
 Dependencies and blockers:
-- Agree whether PR #44's existing localStorage approach is accepted for the first release.
-- Inspect full dark token coverage and verify theme initialization before React paints.
-- Do not integrate draft authentication simply to obtain ThemeProvider; isolate or deliberately port theme work only after branch integration review.
+- Preserve device-local theme preference; account synchronization is not approved.
+- Keep account/authentication changes out of the theme foundation. PR #67 remains a separate, later Phase 5 integration.
 
 ### Phase 2: Navigation and route focus
 
 **Relative effort:** Large. **Risk:** High because this touches the global shell and every route.
 
-**Status: implementation merged; phase remains current pending independent review.** PR #57 merged at `b4b18b2b1a2255d88dacdff546a90de2de18238b`. Final head `ae45bc7623d7443bc49554c4fcc007c48f604b0b` passed CI, full-history secret scan, Supabase migration/RLS and backup checks, and 1,682/1,682 Chromium assertions across 13 routes, both themes, and all five required widths. Gitleaks scanned 1,035 commits with no leaks. Cloudflare Pages preview deployment succeeded; manual external preview inspection remains unavailable in this environment. PR #54 is closed as superseded. Phase 2 remains **current**, not complete, until independent review and manual external preview inspection are available.
+**Status: implementation merged; automated verification current; owner visual sign-off remains outstanding.** PR #57 merged at `b4b18b2b1a2255d88dacdff546a90de2de18238b`. Current main CI [41775563340](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340) passed 1,682/1,682 assertions across 13 routes, both themes and all five widths, including route focus, Escape/focus restoration, destination visibility and touch targets. PR #54 is closed as superseded. Do not rebuild this navigation. Physical-device and owner visual checks remain.
 
 Primary paths: `src/components/Layout.tsx`, `src/App.tsx`, `src/styles/global.css`, navigation tests, and PR #54 candidate changes.
 
@@ -527,13 +528,15 @@ Acceptance criteria:
 
 ### Phase 3: Catalog, subject and lesson consistency
 
+**Status: CURRENT - implementation slices CI-verified in draft PRs; integration pending.** The dedicated plan is recorded at [`docs/plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md`](plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md). Task 1 is in [PR #71](https://github.com/justryan-n2d/CEStudy/pull/71), Task 2 in [PR #72](https://github.com/justryan-n2d/CEStudy/pull/72), and Task 3 in [PR #73](https://github.com/justryan-n2d/CEStudy/pull/73). All remain draft and unmerged. The populated-lesson screenshot artifact is available in [CI run 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166) through 2026-11-11. Keep Phase 3 current until owner visual sign-off, explicit merge authorization and post-integration CI.
+
 **Relative effort:** Medium. **Risk:** Medium.
 
-Primary paths: `src/pages/CatalogPage.tsx`, `src/pages/SubjectPage.tsx`, `src/pages/StudyPage.tsx`, `src/components/MarkdownContent.tsx`, catalog/lesson data APIs and their tests.
+Primary paths: `src/pages/CatalogPage.tsx`, `src/components/CatalogFilters.tsx`, `src/components/SubjectCard.tsx`, `src/pages/SubjectPage.tsx`, `src/pages/StudyPage.tsx`, `src/components/MarkdownContent.tsx`, `src/data/catalog-api.ts`, `src/data/lesson-api.ts`, `src/types/catalog.ts`, `src/types/lesson-content.ts`, and focused tests.
 
 Acceptance criteria:
 - Preserve search/filter behavior, availability messaging, source/provenance and useful empty/error recovery.
-- Use one visual hierarchy for objectives, sections, formulas, solutions and next steps.
+- Structure lesson content around topical outlines, conceptual explanations, formulas and step-by-step worked solutions. Learning objectives remain searchable metadata only; do not show a separate Learning Objectives section in the student-facing lesson reader.
 - Do not invent year/semester assignments.
 - Equation formatting changes preserve canonical text and mathematical meaning.
 - Verify all representative formula fixtures in both themes and narrow layouts.
@@ -556,7 +559,9 @@ Acceptance criteria:
 
 **Relative effort:** Medium to Large. **Risk:** High if data scope is misrepresented.
 
-Primary paths: `src/pages/ProgressPage.tsx`, `src/data/learning-progress.ts`, PR #44 auth/profile/history/streak modules if and when integrated, relevant Supabase policies and CI security tests.
+**Status: PAUSED until product-roadmap Phases 3 and 4 foundations are established.** PR #67 is the consolidated candidate; its current branch is 99 commits ahead and 19 behind current `main`, diverged, and reported non-mergeable. Do not merge it without reconciling the complete diff.
+
+Primary paths: `src/pages/ProgressPage.tsx`, `src/data/learning-progress.ts`, PR #67 auth/profile/history/streak modules if and when integrated, relevant Supabase policies and CI security tests.
 
 Acceptance criteria:
 - Device-local activity remains labelled as local until synchronization is separately built and approved.
@@ -637,7 +642,7 @@ For each implementation PR:
 | Theme persistence | Decided | Owner approved device-local persistence under `cestudy:theme:v1`; account/cross-device synchronization remains out of scope. |
 | Final token values | Proposed | Validate contrast and real component rendering in both themes |
 | Phone-web navigation presentation | Partially specified | Compare current four-item quick nav plus menu sheet against a grouped sheet/accordion without copying native tabs |
-| PR #44 integration | Draft-only | Review branch status, OAuth/recovery safeguards, local data behavior and theme tokens before deciding how to port/merge |
+| PR #67 integration | Draft-only, diverged from current main | Reconcile the consolidated account candidate after product-roadmap Phases 3 and 4; review OAuth/recovery safeguards, local data behavior and per-user isolation before merge |
 | PR #54 route focus and tablet targets | Closed as superseded | Its focus handoff and 44px targets were incorporated into merged PR #57 |
 | Equation scrolling accessibility | Unverified | Keyboard/screen-reader review of wide display equations and error fallback |
 | Direct preview inspection | Blocked in this audit | Browser fetch returned cache miss; container clone attempt failed because DNS could not resolve GitHub |
@@ -682,6 +687,10 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 ```
 
 ## 18. Revision history
+
+| Date | Update |
+|---|---|
+| 2026-11-04 | Reconciled this roadmap with current `main` after PR #69 merged at `ad96cc6`. Updated the repository snapshot, current CI/theme/navigation evidence, consolidated PR #67 status, and phase tracker. Linked the dedicated Phase 3 implementation plan. Recorded that the 2026-11-01 live backup verified all three required tables and remote read-back. Product roadmap Phase 3 is distinct from the lifecycle Phase 3 in `PHASE_PLAN.md`. |
 
 | Date | Change |
 |---|---|
