@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "../components/Layout";
@@ -171,7 +171,11 @@ describe("CEStudy sidebar navigation", () => {
     expect(layer).toHaveAttribute("aria-hidden", "true");
     expect(drawer).not.toHaveAttribute("role", "dialog");
 
-    fireEvent.transitionEnd(drawer, { propertyName: "transform" });
+    const transitionEnd = new Event("transitionend", { bubbles: true });
+    Object.defineProperty(transitionEnd, "propertyName", { value: "transform" });
+    await act(async () => {
+      drawer.dispatchEvent(transitionEnd);
+    });
     await waitFor(() => expect(layer).not.toHaveClass("is-closing"));
   });
 
