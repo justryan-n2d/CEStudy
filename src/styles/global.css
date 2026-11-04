@@ -2458,3 +2458,12 @@ body {
   top: -2px;
   right: -3px;
 }
+
+.sidebar-menu-icon {
+  min-width: 21px;
+  min-height: 21px;
+}
+
+.site-sidebar-link .site-sidebar-icon {
+  position: relative;
+}
