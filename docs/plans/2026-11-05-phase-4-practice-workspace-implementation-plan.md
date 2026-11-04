@@ -108,6 +108,7 @@ Add or extend tests proving:
 - Submitted options cannot be changed and the answer cannot be submitted twice.
 - The final next action opens the result state with the exact score and question count.
 - Restart returns to question one with no selected option and a zero score.
+- The content parser rejects a correct answer that is not exactly one of the displayed choices, and rejects blank or duplicate choices rather than rendering an impossible or ambiguous question.
 - An empty published response keeps the Questions coming soon review gate and does not render a question or invented progress.
 
 Run: `npm test -- --run src/test/practice-flow.test.tsx src/test/practice-content.test.ts`
