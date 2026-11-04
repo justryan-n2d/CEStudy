@@ -6,6 +6,7 @@ const baseUrl = (process.env.CESTUDY_BASE_URL || "http://127.0.0.1:4173").replac
 const viewports = [320, 390, 768, 1024, 1440];
 const routes = [
   "/",
+  "/about",
   "/catalog",
   "/years",
   "/year/2",
@@ -234,7 +235,7 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               ".subject-card", ".year-card", ".filters-panel", ".detail-hero",
               ".detail-panel", ".study-lesson", ".review-gate", ".state-panel",
               ".privacy-content > section", ".surface-form", ".answer-option",
-              ".answer-feedback",
+              ".answer-feedback", ".about-principle", ".about-next",
             ];
             return selectors.flatMap((selector) =>
               [...document.querySelectorAll(selector)].slice(0, 3).map((node) => ({
@@ -248,6 +249,20 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           check("Detected content surfaces avoid white-on-dark mismatches: " + activeRoute,
             whiteSurfaces.length === 0,
             JSON.stringify({ surfaces: darkSurfaces, whiteSurfaces }));
+          const darkContentReadability = await page.evaluate(() =>
+            [...document.querySelectorAll(".about-principle p, .about-next p, .privacy-content > section p")]
+              .map((node) => {
+                const surface = node.closest(".about-principle, .about-next, .privacy-content > section");
+                return {
+                  text: node.textContent?.trim().slice(0, 80) ?? "",
+                  foreground: getComputedStyle(node).color,
+                  background: surface ? getComputedStyle(surface).backgroundColor : "",
+                };
+              }),
+          );
+          check("Dark About and Privacy body copy meets WCAG AA: " + activeRoute,
+            darkContentReadability.every((item) => contrastRatio(item.foreground, item.background) >= 4.5),
+            JSON.stringify(darkContentReadability));
           check("Dark toggle state is explicit: " + activeRoute,
             dark.selectedLabel === "Dark" && dark.selectedPressed === "true",
             JSON.stringify({ label: dark.selectedLabel, pressed: dark.selectedPressed }));
@@ -398,6 +413,88 @@ The solutions are \(x=-2\) and \(x=-3\).`,
             });
           } catch {}
         }
+      }
+    }
+
+    const marqueeSubjects = [
+      "Statics of Rigid Bodies",
+      "Fundamentals of Surveying",
+      "Mechanics of Deformable Bodies",
+      "Construction Materials and Testing",
+      "Structural Theory",
+      "Highway and Railroad Engineering",
+      "Principles of Steel Design",
+      "Principles of Reinforced/Prestressed Concrete",
+      "Hydrology",
+      "Hydraulics",
+      "Geotechnical Engineering 1 (Soil Mechanics)",
+      "Principles of Transportation Engineering",
+      "Quantity Surveying",
+      "Construction Methods and Project Management",
+    ];
+
+    for (const width of viewports) {
+      activeRoute = "homepage marquee at " + width + "px";
+      await page.setViewportSize({ width, height: 900 });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
+      const marquee = page.locator(".home-marquee");
+      const track = page.locator(".home-marquee-track");
+      const groups = marquee.locator(".home-marquee-group");
+      const groupTexts = await groups.allTextContents();
+      check("Marquee has two identical loop groups: " + activeRoute,
+        groupTexts.length === 2 && groupTexts[0].replace(/\s+/g, " ").trim() === groupTexts[1].replace(/\s+/g, " ").trim(),
+        JSON.stringify(groupTexts));
+      check("Marquee contains only real CEStudy curriculum subjects: " + activeRoute,
+        marqueeSubjects.every((subject) => groupTexts[0]?.includes(subject)) &&
+          !/learn by year|strengthen math foundations|practice step by step|build your ce foundation/i.test(groupTexts[0] ?? ""),
+        groupTexts[0] ?? "");
+      check("Marquee remains decorative and non-interactive: " + activeRoute,
+        await marquee.getAttribute("aria-hidden") === "true" &&
+          await marquee.locator("a, button, input").count() === 0);
+      const edgeFades = await page.evaluate(() => {
+        const node = document.querySelector(".home-marquee");
+        if (!node) return null;
+        const before = getComputedStyle(node, "::before");
+        const after = getComputedStyle(node, "::after");
+        return {
+          before: before.backgroundImage,
+          after: after.backgroundImage,
+          beforePointerEvents: before.pointerEvents,
+          afterPointerEvents: after.pointerEvents,
+        };
+      });
+      check("Marquee has non-interactive left and right edge fades: " + activeRoute,
+        Boolean(edgeFades?.before.includes("gradient") && edgeFades?.after.includes("gradient") &&
+          edgeFades.beforePointerEvents === "none" && edgeFades.afterPointerEvents === "none"),
+        JSON.stringify(edgeFades));
+      const box = await marquee.boundingBox();
+      if (box) {
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+        const beforeTime = await track.evaluate((node) => {
+          const animation = node.getAnimations()[0];
+          return {
+            playState: animation?.playState ?? "missing",
+            currentTime: Number(animation?.currentTime ?? 0),
+          };
+        });
+        await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+        await page.waitForTimeout(300);
+        const afterTime = await track.evaluate((node) => {
+          const animation = node.getAnimations()[0];
+          return {
+            playState: animation?.playState ?? "missing",
+            currentTime: Number(animation?.currentTime ?? 0),
+            computedPlayState: getComputedStyle(node).animationPlayState,
+          };
+        });
+        check("Marquee keeps moving after pointer hover and click: " + activeRoute,
+          beforeTime.playState === "running" && afterTime.playState === "running" &&
+            afterTime.computedPlayState === "running" && afterTime.currentTime > beforeTime.currentTime,
+          JSON.stringify({ beforeTime, afterTime }));
+      } else {
+        check("Marquee remains visible for interaction check: " + activeRoute, false, "No marquee bounding box");
       }
     }
 
