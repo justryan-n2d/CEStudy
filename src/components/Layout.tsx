@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, TransitionEvent } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { YearLevelDropdown } from "./YearLevelDropdown";
@@ -79,19 +79,31 @@ export function Layout({ children }: { children: ReactNode }) {
   const sidebarRef = useRef<HTMLElement>(null);
   const yearLevelTriggerRef = useRef<HTMLButtonElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarClosing, setSidebarClosing] = useState(false);
   const [yearLevelsOpen, setYearLevelsOpen] = useState(false);
   const [feedbackInboxUnlocked, setFeedbackInboxUnlocked] = useState(() => Boolean(getFeedbackInboxSessionToken()));
   const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
 
-  const closeSidebarAndRestoreFocus = useCallback(() => {
-    setSidebarOpen(false);
-    setYearLevelsOpen(false);
-    sidebarTriggerRef.current?.focus();
+  const openSidebar = useCallback(() => {
+    setSidebarClosing(false);
+    setSidebarOpen(true);
   }, []);
 
   const closeSidebar = useCallback(() => {
+    const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    setSidebarClosing(sidebarOpen && !prefersReducedMotion);
     setSidebarOpen(false);
     setYearLevelsOpen(false);
+  }, [sidebarOpen]);
+
+  const closeSidebarAndRestoreFocus = useCallback(() => {
+    closeSidebar();
+    sidebarTriggerRef.current?.focus();
+  }, [closeSidebar]);
+
+  const handleSidebarTransitionEnd = useCallback((event: TransitionEvent<HTMLElement>) => {
+    if (event.target !== event.currentTarget || event.propertyName !== "transform") return;
+    setSidebarClosing(false);
   }, []);
 
   const toggleYearLevels = useCallback(() => {
@@ -99,9 +111,10 @@ export function Layout({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    setSidebarOpen(false);
-    setYearLevelsOpen(false);
-  }, [location.pathname]);
+    if (previousPathRef.current === location.pathname) return;
+    if (sidebarOpen) closeSidebar();
+    else setYearLevelsOpen(false);
+  }, [location.pathname, sidebarOpen, closeSidebar]);
 
   useEffect(() => {
     if (previousPathRef.current === location.pathname) return;
@@ -217,7 +230,7 @@ export function Layout({ children }: { children: ReactNode }) {
               aria-controls="site-sidebar"
               aria-haspopup="dialog"
               aria-label={`${sidebarOpen ? "Close" : "Open"} navigation menu${feedbackInboxUnlocked && unreadFeedbackCount > 0 ? ", unread feedback" : ""}`}
-              onClick={() => setSidebarOpen((open) => !open)}
+              onClick={sidebarOpen ? closeSidebarAndRestoreFocus : openSidebar}
             >
               <span className="sidebar-menu-icon">
                 <NavigationGlyph name={sidebarOpen ? "close" : "menu"} />
@@ -231,8 +244,11 @@ export function Layout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        {sidebarOpen && (
-          <div className="site-sidebar-layer">
+        <div
+          className={`site-sidebar-layer${sidebarOpen ? " is-open" : sidebarClosing ? " is-closing" : ""}`}
+          aria-hidden={!sidebarOpen}
+          inert={!sidebarOpen}
+        >
             <button
               className="site-sidebar-backdrop"
               type="button"
@@ -243,9 +259,10 @@ export function Layout({ children }: { children: ReactNode }) {
               ref={sidebarRef}
               id="site-sidebar"
               className="site-sidebar"
-              role="dialog"
-              aria-modal="true"
-              aria-label="CEStudy navigation"
+              role={sidebarOpen ? "dialog" : undefined}
+              aria-modal={sidebarOpen ? "true" : undefined}
+              aria-label={sidebarOpen ? "CEStudy navigation" : undefined}
+              onTransitionEnd={handleSidebarTransitionEnd}
             >
               <div className="site-sidebar-heading">
                 <div>
@@ -308,8 +325,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
               <p className="site-sidebar-footer">Independent learning for civil engineering students.</p>
             </aside>
-          </div>
-        )}
+        </div>
 
         <ConnectionStatusNotice />
 
