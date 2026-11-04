@@ -2,13 +2,13 @@
 
 **Document status:** Owner-approved direction; canonical planning document for CEStudy UX/UI redesign and roadmap tracking.
 **Owner approval:** Blueprint Academy selected on 2026-10-22 (Asia/Manila).
-**Baseline snapshot:** `main` at `849c9d707b0cafd8c39ab63d9bf57260c54dd186`, verified 2026-11-04 after Blueprint Academy Phase 3 integration.
+**Baseline snapshot:** `main` at `b8e0a2843325f4b940e30e4b29b3890282ca0dac` after documentation PR #77; latest application-code baseline is `f5d608e2f271489419d6727679b72ec0ffea3a52` after PR #76. Verified 2026-11-04.
 **Scope of this record:** Product direction, UX/UI decisions, verified baseline, implementation sequence, acceptance criteria, and release safeguards.
 **Application implementation status:** No application code changes are authorized by this document.
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
-> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 and Blueprint Academy Phase 3 PRs #70-#73 are merged on `main`. Phase 3 is complete; current `main` is `849c9d707b0cafd8c39ab63d9bf57260c54dd186`. The separate connectivity/loading-skeleton candidate PR #74 remains draft and must be reconciled with the Phase 3 SubjectPage fix before merge. PR #67 remains the consolidated account/learning-activity candidate and is still draft and diverged from current `main`.
+> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 and Phase 3 PRs #70-#73 are merged. PR #76 adds connectivity awareness and recoverable loading/skeleton states on the Phase 3 code baseline; PR #74 is closed, unmerged and superseded by #76. PR #77 adds the binding Decision-Light standard. Current `main` is `b8e0a2843325f4b940e30e4b29b3890282ca0dac`; latest application-code baseline is `f5d608e2f271489419d6727679b72ec0ffea3a52`. The Decision-Light source audit is documented in [the audit report](reviews/2026-11-04-decision-light-site-wide-audit.md); live visual/interaction validation and owner triage remain open. PR #67 remains a draft, diverged from current `main`.
 
 ## 1. Purpose and product outcome
 
@@ -61,29 +61,33 @@ This roadmap controls the intended product design, scope, decision register, and
 |---|---|
 | Repository | [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy), public repository |
 | Default branch | `main` |
-| Verified `main` SHA after Phase 3 integration | `849c9d707b0cafd8c39ab63d9bf57260c54dd186` |
-| Latest commit | PR #73 merge: `test: verify populated lesson math in both themes` |
+| Verified `main` SHA after Phase 3 integration | `849c9d707b0cafd8c39ab63d9bf57260c54dd186` (historical Phase 3 integration point) |
+| Latest application-code baseline | PR #76 merge: `f5d608e2f271489419d6727679b72ec0ffea3a52` |
+| Latest `main` SHA | PR #77 documentation merge: `b8e0a2843325f4b940e30e4b29b3890282ca0dac` |
+| Latest commit | PR #77 merge: `docs: add binding Decision-Light Design standard` |
 | Stack declared by `package.json` | React 19, TypeScript 5.9, Vite 7, Tailwind CSS 4, React Router 7, Supabase JS, KaTeX 0.19, Vitest and Testing Library |
 | Post-Phase 3 main CI | [run 41797726093, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093): 177 tests across 29 files, lint, dependency audit, production build, backup crypto/retention/verification tests, and isolated Supabase migration/RLS tests |
 | Theme/responsive browser checks | 1,757/1,757 assertions passed in the post-Phase 3 main CI, including synthetic populated-lesson rendering in both themes at 320/390/768/1024/1440 px |
 | Main full-history secret scan | Latest scheduled full-history run [41433925558, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41433925558): 1,191 commits / about 4.53 MB scanned, no leaks. The merge push scan also passed, but its merge-only range reported zero commits scanned and is not represented as a full-history scan. |
 | Live website Chromium smoke | [run 41798110114, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114): live smoke completed successfully after the Phase 3 merge |
+| Connectivity/skeleton verification | PR #76 full CI [run 41814628057](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628057), dedicated browser workflow [run 41814628121](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628121) with 604/604 assertions, and full-history secret scan [run 41814628030](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628030) all passed |
+| Decision-Light documentation checks | PR #77 branch CI [run 41821097351](https://github.com/justryan-n2d/CEStudy/actions/runs/41821097351) and secret scan [run 41821097200](https://github.com/justryan-n2d/CEStudy/actions/runs/41821097200) both passed |
 
 These checks are GitHub Actions evidence on the named commits/runs. They are not a claim that a local clone or physical Android device was tested in this session. Automated CI and live smoke do not replace physical Android/TalkBack, keyboard-only or 200% text-zoom checks.
 
 ### 3.2 Relevant open pull requests
 
-Current PR metadata was checked against `main` at `849c9d707b0cafd8c39ab63d9bf57260c54dd186` on 2026-11-04.
+Current PR metadata was checked against `main` at `b8e0a2843325f4b940e30e4b29b3890282ca0dac` on 2026-11-04.
 
 | PR | Current role and state | Roadmap-aligned handling |
 |---|---|---|
-| [#67 Google auth, profile, local history and streak](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; recorded base/merge-base `887b3f5a0b826ac0019f266de5e53fd6278958d3`. Compared with current `main`, the branch is diverged: 99 commits ahead and 23 behind; GitHub reports mergeable false. | This is the single consolidated account/learning-activity candidate. Do not merge in its current state. After Phases 3 and 4, reconcile the branch against current `main`, review its full diff, and complete all OAuth, privacy, data-isolation and recovery gates. |
-| [#74 connectivity and loading skeletons](https://github.com/justryan-n2d/CEStudy/pull/74) | Open, draft; 19 commits ahead and 4 behind current `main`, diverged from the pre-Phase-3 base. | Do not merge yet. Reconcile with the merged SubjectPage fix, correct the Practice answer-row skeleton theme mismatch, and add rejected-request lifecycle checks for the relevant page API families before re-running required CI and visual review. |
+| [#67 Google auth, profile, local history and streak](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; against current `main`, the branch is diverged: 99 commits ahead and 31 behind; GitHub reports mergeable false. | This is the single consolidated account/learning-activity candidate. Do not merge in its current state. After Phases 3 and 4, reconcile the branch against current `main`, review its full diff, and complete all OAuth, privacy, data-isolation and recovery gates. |
+| [#74 connectivity and loading skeletons](https://github.com/justryan-n2d/CEStudy/pull/74) | Closed, unmerged and superseded by merged PR #76. | Do not reopen or merge this original pre-Phase-3 branch. The feature was reconciled and integrated through PR #76. |
 | [#44 earlier Google sign-in and local learning activity candidate](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, older branch; not the consolidated candidate. | Historical source only. Do not merge separately or use it as the current implementation target. |
 | [#64, #65 and #66](https://github.com/justryan-n2d/CEStudy/pull/64) | Open, draft, stacked or earlier source slices that feed the PR #67 consolidation. | Do not merge these independently. Reconcile only through the consolidated PR #67 after its base is refreshed and the combined change is reviewed. |
 | [#32 production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open technical proposal. | Evaluate independently if a production-content visual regression test is still required; it is not part of Phase 3 scope. |
 
-**Merged since the prior roadmap snapshot:** PR #69 merged on 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. It adds the binding design-quality and anti-template standard and tool-neutral repository wording. It does not change application code, database state, authentication settings, or production configuration.
+**Merged since the prior roadmap snapshot:** PR #76 merged 2026-11-04 at `f5d608e2f271489419d6727679b72ec0ffea3a52`, adding the offline notice, content-shaped loading skeletons and accessible Retry state; PR #77 merged at `b8e0a2843325f4b940e30e4b29b3890282ca0dac`, adding the binding Decision-Light standard. PR #74 is closed as superseded. PR #69 remains merged at `ad96cc6148b95b563f247d9254bea5a6858b3cd0` and adds the design-quality/anti-template standard and tool-neutral repository wording.
 
 **Theme/navigation implementation:** PR #56 (theme foundation) and PR #57 (hybrid navigation) are merged. The current `main` source includes the theme provider, early theme initialization, explicit Light/Dark control, hybrid desktop navigation, mobile quick navigation and More menu. Current CI and live smoke evidence is recorded above. Independent owner visual sign-off and physical-device accessibility checks are still outstanding; automated success does not replace those checks.
 
@@ -139,11 +143,12 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 9: Gamification | **not started** | Blocked until the affected reward, eligibility, privacy, retry and anti-abuse rules are approved. |
 | Phase 10: Offline access and native app | **not started** | Separate future architecture and design work; excluded from the current website theme foundation. |
 
-**Current verified `main`:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186` (2026-11-04).
-**Product-roadmap Phase 3:** Complete. PRs #70-#73 are merged; post-merge CI run [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed, and live Chromium smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed.
-**Next product-roadmap workstream:** Phase 4, Practice Workspace, after the required site-wide Decision-Light audit (C). Phase 4 implementation has not started.
-**Separate loading-skeleton candidate:** PR #74 remains draft and unmerged. Reconcile its branch with current `main`, correct the Practice skeleton answer-row Light-theme appearance, and complete the missing rejection-lifecycle coverage before merge.
-**Current documentation branch:** `docs/mark-product-phase3-complete-2026-11-04`.
+**Current verified `main`:** `b8e0a2843325f4b940e30e4b29b3890282ca0dac` (2026-11-04), following documentation PR #77. Latest application-code baseline: `f5d608e2f271489419d6727679b72ec0ffea3a52` after PR #76.
+**Product-roadmap Phase 3:** Complete. PRs #70-#73 are merged; Phase 3 CI [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed, and live Chromium smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed.
+**Connectivity and loading recovery:** PR #76 is merged; CI [41814628057](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628057), dedicated browser workflow [41814628121](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628121) with 604/604 assertions, and secret scan [41814628030](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628030) passed. PR #74 is closed, unmerged and superseded.
+**Decision-Light:** Documentation PR #77 is merged. The source-level audit covers all 21 registered route patterns; owner triage and live visual/interaction validation remain open. See the [audit report](reviews/2026-11-04-decision-light-site-wide-audit.md).
+**Next product roadmap workstream:** Phase 4, Practice Workspace, remains not started and gated on audit sign-off, owner triage, and visual/interaction validation.
+**Current documentation branch:** `docs/decision-light-site-audit-2026-11-04`.
 **Application scope of this documentation update:** No application source, database schema/data, production settings, OAuth settings, or deployment configuration is changed.
 
 ## 4. Focused baseline verification
