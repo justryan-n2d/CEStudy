@@ -98,6 +98,12 @@ export function YearLevelDropdown({
         aria-controls="year-level-navigation"
         onClick={onToggle}
       >
+        <svg className="navigation-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"
+          fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+          <path d="m3 12 9 5 9-5" />
+          <path d="m3 16 9 5 9-5" />
+        </svg>
         <span>Year Levels</span>
         <svg className="nav-dropdown-chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <path d="m4 6 4 4 4-4" />
