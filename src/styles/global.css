@@ -1928,3 +1928,37 @@ body {
   }
 }
 
+
+/* Keep Study outline and worked-solution text rows expanded inside their flex rows. */
+.skeleton-outline-item .skeleton-line-stack,
+.skeleton-worked-step .skeleton-line-stack {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Match the real Practice workspace surfaces in both CEStudy themes. */
+.practice-skeleton-region .practice-question-card {
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  border-color: var(--ui-border);
+  box-shadow: none;
+}
+
+.practice-skeleton-region .skeleton-answer-option {
+  background: var(--ui-surface-muted);
+  border-color: var(--ui-border);
+}
+
+/* Existing progress-chip rules use a background shorthand. Reassert the shimmer
+   with enough specificity so the skeleton palette remains theme-aware. */
+.practice-skeleton-region .practice-progress .skeleton-shape {
+  background-color: var(--ui-skeleton-base);
+  background-image: linear-gradient(
+    90deg,
+    var(--ui-skeleton-base) 0%,
+    var(--ui-skeleton-base) 38%,
+    var(--ui-skeleton-highlight) 50%,
+    var(--ui-skeleton-base) 62%,
+    var(--ui-skeleton-base) 100%
+  );
+}

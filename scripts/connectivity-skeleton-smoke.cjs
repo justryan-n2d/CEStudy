@@ -52,7 +52,13 @@ async function main() {
 
   page.on("pageerror", (error) => runtimeErrors.push(activeRoute + ": " + error.message));
   page.on("console", (message) => {
-    if (message.type() === "error") runtimeErrors.push(activeRoute + ": console " + message.text());
+    if (message.type() !== "error") return;
+    const expectedSyntheticServiceError = activeRoute === "online browser with a failing service request" &&
+      responseMode === "catalog-error" &&
+      /500 \\(Internal Server Error\\)/.test(message.text());
+    if (!expectedSyntheticServiceError) {
+      runtimeErrors.push(activeRoute + ": console " + message.text());
+    }
   });
 
   await page.route("https://" + syntheticHost + "/rest/v1/**", async (route) => {
