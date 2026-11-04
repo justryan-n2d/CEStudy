@@ -44,3 +44,7 @@
     width: 5.25rem;
   }
 }
+
+.unavailable-state__secondary-action {
+  margin-top: 0.15rem;
+}
