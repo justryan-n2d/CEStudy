@@ -70,6 +70,18 @@ export function BugReportsPage() {
           <small className="field-hint">This becomes the email subject: <strong>CEStudy bug report: {summary.trim() || "Bug report"}</strong></small>
         </label>
 
+        <label className="form-field">
+          <span>What happened? <span className="required-mark" aria-hidden="true">*</span></span>
+          <textarea
+            value={observed}
+            onChange={(event) => setObserved(event.target.value)}
+            rows={4}
+            maxLength={2000}
+            required
+            placeholder="Describe what happened when you used the page or feature."
+          />
+        </label>
+
         <details className="bug-report-optional-details">
           <summary>Add details (optional)</summary>
           <div className="bug-report-optional-fields">
