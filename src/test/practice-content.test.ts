@@ -34,9 +34,12 @@ describe("practice content validation", () => {
     expect(parsePracticeQuestion({ ...valid, correct_answer: "NOT A DISPLAYED OPTION" })).toBeNull();
   });
 
-  it("rejects blank and duplicate answer choices", () => {
+  it("rejects blank answer choices", () => {
     expect(parsePracticeQuestion({ ...valid, choices: ["", "TEST OPTION B"] })).toBeNull();
-    expect(parsePracticeQuestion({ ...valid, choices: ["TEST OPTION A", "TEST OPTION A"] })).toBeNull();
     expect(parsePracticeQuestion({ ...valid, choices: ["   ", "TEST OPTION B"] })).toBeNull();
+  });
+
+  it("rejects duplicate answer choices", () => {
+    expect(parsePracticeQuestion({ ...valid, choices: ["TEST OPTION A", "TEST OPTION A"] })).toBeNull();
   });
 });
