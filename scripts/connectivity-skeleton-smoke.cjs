@@ -289,6 +289,48 @@ async function main() {
       }
     }
 
+    activeRoute = "sidebar closing motion and primary button treatment";
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
+    const primaryButton = page.locator(".button-primary").first();
+    await primaryButton.waitFor({ state: "visible", timeout: 10000 });
+    const primaryStyle = await primaryButton.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { boxShadow: style.boxShadow, transitionProperty: style.transitionProperty };
+    });
+    check("Primary buttons use inset highlights, contact shade, and a blue glow",
+      (primaryStyle.boxShadow.match(/inset/g) || []).length >= 2 &&
+        primaryStyle.boxShadow.includes("rgba") &&
+        primaryStyle.transitionProperty.includes("box-shadow"),
+      JSON.stringify(primaryStyle));
+
+    const menuToggle = page.getByRole("button", { name: "Open navigation menu" });
+    await menuToggle.click();
+    const animatedDrawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+    await animatedDrawer.waitFor({ state: "visible", timeout: 5000 });
+    await page.waitForTimeout(280);
+    const drawerStartLeft = await animatedDrawer.evaluate((element) => element.getBoundingClientRect().left);
+    await animatedDrawer.locator(".site-sidebar-close").click();
+    const sidebarLayer = page.locator(".site-sidebar-layer");
+    const closingState = await sidebarLayer.evaluate((element) => ({
+      closing: element.classList.contains("is-closing"),
+      hiddenFromAssistiveTechnology: element.getAttribute("aria-hidden") === "true",
+    }));
+    await page.waitForTimeout(90);
+    const drawerClosingLeft = await animatedDrawer.evaluate((element) => element.getBoundingClientRect().left);
+    check("Sidebar enters an accessible closing state before visual exit",
+      closingState.closing && closingState.hiddenFromAssistiveTechnology,
+      JSON.stringify(closingState));
+    check("Sidebar visibly slides to the right while closing",
+      drawerClosingLeft > drawerStartLeft + 20,
+      JSON.stringify({ drawerStartLeft, drawerClosingLeft }));
+    await page.waitForFunction(() => {
+      const layer = document.querySelector(".site-sidebar-layer");
+      return layer && getComputedStyle(layer).visibility === "hidden";
+    }, null, { timeout: 5000 });
+    check("Sidebar finishes its exit before becoming visually hidden", true);
+
     for (const route of routes) {
       for (const width of [390, 1440]) {
         activeRoute = route.path + " unavailable state at " + width + "px";
@@ -372,7 +414,10 @@ async function main() {
         }
 
         await page.keyboard.press("Escape");
-        await page.getByRole("dialog", { name: "CEStudy navigation" }).waitFor({ state: "detached", timeout: 5000 });
+        await page.waitForFunction(() => {
+          const layer = document.querySelector(".site-sidebar-layer");
+          return layer && getComputedStyle(layer).visibility === "hidden";
+        }, null, { timeout: 5000 });
         responseMode = "empty";
         requestGate = createGate();
         await alert.getByRole("button", { name: "Retry" }).click();
