@@ -41,6 +41,16 @@ function RouteControls() {
   );
 }
 
+function renderSubjectPage(slug: string) {
+  return render(
+    <MemoryRouter initialEntries={["/subjects/" + slug]}>
+      <Routes>
+        <Route path="/subjects/:slug" element={<SubjectPage />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+}
+
 beforeEach(() => {
   mocks.fetchCatalogSubjects.mockReset();
 });
@@ -94,5 +104,46 @@ describe("subject page route lifecycle", () => {
       resolveSecond([firstSubject, secondSubject]);
     });
     expect(await screen.findByRole("heading", { name: "Second Subject" })).toBeInTheDocument();
+    expect(screen.queryByText(/Typical placement:/)).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Open curriculum source/ })).not.toBeInTheDocument();
+  });
+
+  it("renders source provenance, available placement metadata, and at most three related subjects", async () => {
+    const subject = makeSubject();
+    const relatedSubjects = Array.from({ length: 5 }, (_, index) => makeSubject({
+      slug: "related-subject-" + (index + 1),
+      title: "Related Subject " + (index + 1),
+      displayOrder: index + 2,
+    }));
+    mocks.fetchCatalogSubjects.mockResolvedValue([subject, ...relatedSubjects]);
+
+    renderSubjectPage("first-subject");
+
+    expect(await screen.findByRole("heading", { name: "First Subject" })).toBeInTheDocument();
+    expect(screen.getByText(/Typical placement:/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Open curriculum source ↗" })).toHaveAttribute(
+      "href",
+      "https://example.edu/first-subject",
+    );
+    expect(screen.getAllByRole("link", { name: /Related Subject/ })).toHaveLength(3);
+  });
+
+  it("shows a not-found state when the requested slug is absent", async () => {
+    mocks.fetchCatalogSubjects.mockResolvedValue([makeSubject()]);
+
+    renderSubjectPage("missing-subject");
+
+    expect(await screen.findByRole("heading", { name: "Subject not found" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Return to subjects" })).toHaveAttribute("href", "/catalog");
+  });
+
+  it("shows a recoverable error state when the catalog request fails", async () => {
+    mocks.fetchCatalogSubjects.mockRejectedValue(new Error("Catalog request failed."));
+
+    renderSubjectPage("first-subject");
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Subject unavailable");
+    expect(screen.getByRole("alert")).toHaveTextContent("Catalog request failed.");
+    expect(screen.getByRole("link", { name: "Return to subjects" })).toHaveAttribute("href", "/catalog");
   });
 });
