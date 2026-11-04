@@ -231,7 +231,7 @@ Expected: lint is clean, the full Vitest suite passes, and Vite builds productio
 
 ## Phase 3 completion criteria
 
-<badge>COMPLETE</badge> **Integrated into `main` on 2026-11-04.** The owner authorized integration after reviewing the implementation and populated-lesson visual artifact. The four focused PRs were merged in sequence:
+**Status: COMPLETE. Integrated into `main` on 2026-11-04.** The owner authorized integration after reviewing the implementation and populated-lesson visual artifact. The four focused PRs were merged in sequence:
 
 | PR | Result | Merge commit |
 |---|---|---|
