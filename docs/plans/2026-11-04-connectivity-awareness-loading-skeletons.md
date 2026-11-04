@@ -260,11 +260,11 @@ The shared unavailable state is implemented on all six approved content-loading 
 
 The first browser smoke pass on the earlier implementation head passed 594/594 checks with zero runtime errors, including six route error states and retry recovery. Its full-repository CI run found five stale assertions in older tests (technical error copy, old SubjectPage loading text, and the Subject Details navigation link). Those expectations were updated on the current branch, and the missing navigation link was restored. The Practice answer-row Light-theme mismatch was also fixed by increasing selector specificity, and an explicit Light/Dark browser assertion was added. **A new component regression test requires an actual three-path inline SVG. The browser smoke now checks tag type, all three path geometries, and matching SVG fill/color on all six routes in both themes. These latest corrections still require a fresh full CI and browser run.**
 
-The latest feature branch is still based on pre-Phase-3 main and is diverged from current main by five commits. It is not merge-ready. Do not force-push, bypass branch protection, or merge until the branch is safely reconciled and current full CI, browser checks, and secret scan pass.
+The original PR #74 branch was created before Phase 3 and had diverged from current main. To avoid overwriting Phase 3 work, this candidate has been reconstructed on a fresh branch from current main (`feat/connectivity-skeletons-mainline-2026-11-04`). The Phase 3 SubjectPage route lifecycle and its existing tests are retained. Fresh full CI, browser checks, and secret scanning on this integration branch are still required before merge.
 
 ## Completion and integration gate
 
-PR #74 remains a separate open feature candidate. It must be reconciled with current main, reviewed as a complete diff, and pass the latest full repository CI, its browser verification, and secret scanning before merge consideration. The Phase 3 PRs #70-#73 are already merged and must not be replayed or reconciled as open PRs.
+The original PR #74 branch is superseded by the mainline-based integration branch because its old base conflicted with Phase 3. Use the replacement PR created from `feat/connectivity-skeletons-mainline-2026-11-04` for review and merge. The Phase 3 PRs #70-#73 are already merged and must not be replayed or reconciled as open PRs.
 
 Phase 4 is explicitly paused by the owner. This plan does not authorize Phase 4 planning or implementation. Do not start a Phase 4 branch, write Phase 4 code, or open a Phase 4 PR until the owner gives a new instruction.
 
