@@ -3,7 +3,7 @@
 **Audit date:** 2026-11-04  
 **Repository baseline:** `main` after PR #77, merge commit `b8e0a2843325f4b940e30e4b29b3890282ca0dac`  
 **Standard:** [Decision-Light Design standard](../specs/UX_UI_DESIGN_SYSTEM.md#decision-light-design-standard-binding), approved and merged through [PR #77](https://github.com/justryan-n2d/CEStudy/pull/77)  
-**Audit status:** Source-level review completed across all 21 registered route patterns. Live visual, keyboard, touch and student usability validation remains outstanding.  
+**Audit status:** Source-level review completed across all 21 registered route patterns. Owner triage is recorded below. Approved application corrections are implemented in draft PR #79; automated verification and live visual, keyboard, touch and student usability validation remain outstanding.  
 **Scope:** Audit only. No application files, UI behavior, tests, database state, access policies, authentication, content publication or production configuration were changed.
 
 ## 1. Executive assessment
@@ -247,8 +247,29 @@ Do not apply Hick-Hyman Law as a raw button-count rule. The following existing p
 
 **Visual and live interaction audit:** Not complete. The current environment did not provide an attached browser context or a usable live-site page. No claim is made about the appearance of every route at runtime, physical phone behavior, screen-reader interaction or student retention.
 
-**Owner triage:** Pending. DL-01 changes previously approved global navigation and requires an explicit decision. The remaining findings should be accepted, rejected or prioritized before implementation.
+**Owner triage:** Complete on 2026-11-04. The owner approved the decisions recorded in Section 8. Application changes are isolated in [draft PR #79](https://github.com/justryan-n2d/CEStudy/pull/79); the PR is unmerged and not production-deployed.
 
 **Phase 4:** Remains not started. Do not begin Practice Workspace implementation until the P1 findings have been triaged, the required visual/browser verification is completed, and the owner approves the resulting Phase 4 entry baseline.
 
 A reduction in choices is a design hypothesis, not proof of improved retention. After corrections, test representative student tasks and measure completion, time on task, errors/recovery and secondary-tool discoverability. Do not claim a retention lift without longitudinal student evidence.
+
+## 8. Owner triage and implementation decisions (2026-11-04)
+
+The following decisions supersede recommendations that were intentionally left open in the source audit. They are owner decisions, not assumptions inferred by the implementation team.
+
+| Finding | Owner decision | Implementation recorded in draft PR #79 |
+|---|---|---|
+| DL-01 | Remove Review Materials Hub, Mock Exam Portal and Community Forum from global navigation. | The destinations are absent from the desktop/mobile sidebar and global footer. The Community route remains reachable only by direct URL until the forum is implemented. |
+| DL-02 | Remove the post-completion Mark as incomplete action. Keep Next topic / Practice problems. | A completed lesson displays a non-interactive Completed status. The forward action remains primary; Mark as complete is secondary before completion. |
+| DL-03 | Make Browse subjects the primary action in the empty Practice state. | The empty-state link now uses the primary button style. |
+| DL-04 | Remove Mock Exam Portal navigation completely. | The global link is removed. The legacy `/mock-exam-portal` URL redirects to Subject Catalog rather than showing a dead-end placeholder. |
+| DL-05 | Use a professional left-side sidebar on desktop and mobile. Put the menu icon immediately before the master logo; move the theme control into the menu. | A 44px off-canvas drawer opens from the left. It groups learning, progress, help and preferences, supports Escape/backdrop/navigation close, focus restoration and focus containment, and contains the existing Light/Dark controls. Light remains default; no System option is added. |
+| DL-06 | Delete the unavailable Review Materials destination. | The placeholder page and mega-menu are removed. The legacy `/review-materials` URL redirects to Subject Catalog. |
+| DL-07 | Remove the homepage View all years destination and replace it with a smooth scrolling marquee. | The four year-level choices remain visible; a decorative continuous marquee replaces the duplicate link and respects reduced-motion preferences. |
+| DL-08 | Use progressive disclosure for optional bug-report context. | Summary and What happened? remain visible and required. Page or feature, What did you expect?, and Steps to reproduce are inside Add details (optional). |
+| DL-09 | Leave PayPal as it is while the owner waits for the PayPal account. | No PayPal behavior or configuration is changed in this PR. |
+| DL-10 | Remove duplicate navigation choices from the Year Levels menu. | Preserve the year → semester → subject hierarchy inside the sidebar. Remove duplicate Subject Catalog and Math Foundations links from the nested panel; keep one top-level Subject Catalog destination. |
+
+**Current verification boundary:** PR #79 is a draft. Secret scanning has passed for an intermediate commit; the latest main CI and Chromium browser checks must complete successfully before the implementation can be considered verified. A Cloudflare Pages branch preview deployed, but the connected browser context was unavailable for direct visual inspection. Physical Android, TalkBack, keyboard-only manual review and student task validation remain outstanding.
+
+**Phase 4:** Still not started. Owner triage is complete, but Phase 4 remains gated on current-head CI/security checks, rendered preview inspection in both themes and target widths, and any required manual accessibility validation.
