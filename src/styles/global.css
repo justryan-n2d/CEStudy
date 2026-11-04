@@ -2469,20 +2469,18 @@ body {
 }
 
 
-/* Sidebar navigation labels must remain readable in both color themes.
-   Keep brand blue on the indicator/icon, not on small active link text. */
-:root[data-theme="light"] .site-sidebar-link,
-:root[data-theme="light"] .site-sidebar .year-level-nav .nav-dropdown-trigger,
+/* Sidebar navigation labels use high-contrast theme colors. The active state
+   uses its indicator and icon for emphasis, not low-contrast colored text. */
+:root[data-theme="light"] .site-sidebar .site-sidebar-link,
 :root[data-theme="light"] .site-sidebar .year-level-menu-semester > summary,
 :root[data-theme="light"] .site-sidebar .year-level-menu-semester li a {
-  color: #0b263d;
+  color: #0b263d !important;
 }
 
-:root[data-theme="dark"] .site-sidebar-link,
-:root[data-theme="dark"] .site-sidebar .year-level-nav .nav-dropdown-trigger,
+:root[data-theme="dark"] .site-sidebar .site-sidebar-link,
 :root[data-theme="dark"] .site-sidebar .year-level-menu-semester > summary,
 :root[data-theme="dark"] .site-sidebar .year-level-menu-semester li a {
-  color: #f3f7fb;
+  color: #f3f7fb !important;
 }
 
 :root[data-theme="light"] .site-sidebar-link .site-sidebar-icon .navigation-glyph {
@@ -2493,34 +2491,10 @@ body {
   color: #b6c4d4;
 }
 
-:root[data-theme="light"] .site-sidebar-link.active .navigation-glyph,
-:root[data-theme="light"] .site-sidebar .year-level-nav .nav-dropdown-trigger.active .navigation-glyph {
+:root[data-theme="light"] .site-sidebar-link.active .navigation-glyph {
   color: #0754b5;
 }
 
-:root[data-theme="dark"] .site-sidebar-link.active .navigation-glyph,
-:root[data-theme="dark"] .site-sidebar .year-level-nav .nav-dropdown-trigger.active .navigation-glyph {
+:root[data-theme="dark"] .site-sidebar-link.active .navigation-glyph {
   color: #90c4ff;
-}
-
-
-/* Keep selected sidebar labels readable; use blue for the active indicator/icon. */
-:root[data-theme="light"] .site-sidebar .site-sidebar-navigation .site-sidebar-group a.site-sidebar-link,
-:root[data-theme="light"] .site-sidebar .site-sidebar-navigation .site-sidebar-group button.site-sidebar-link {
-  color: var(--ui-text);
-}
-
-:root[data-theme="dark"] .site-sidebar .site-sidebar-navigation .site-sidebar-group a.site-sidebar-link,
-:root[data-theme="dark"] .site-sidebar .site-sidebar-navigation .site-sidebar-group button.site-sidebar-link {
-  color: var(--ui-text);
-}
-
-
-/* Sidebar link text has a fixed, tested foreground in each theme. */
-:root[data-theme="light"] .site-sidebar .site-sidebar-navigation .site-sidebar-group .site-sidebar-link {
-  color: #0b263d !important;
-}
-
-:root[data-theme="dark"] .site-sidebar .site-sidebar-navigation .site-sidebar-group .site-sidebar-link {
-  color: #f3f7fb !important;
 }
