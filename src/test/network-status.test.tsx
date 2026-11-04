@@ -3,11 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
 import { ConnectionStatusNotice } from "../components/ConnectionStatusNotice";
 
-function NetworkStatusProbe() {
-  const isOnline = useNetworkStatus();
-  return <output data-testid="network-status">{isOnline ? "online" : "offline"}</output>;
-}
-
 function setBrowserOnline(value: boolean) {
   Object.defineProperty(window.navigator, "onLine", {
     configurable: true,
