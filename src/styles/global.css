@@ -1690,3 +1690,47 @@ body {
   border-color: var(--ui-border);
   color: var(--ui-text);
 }
+
+
+/* Browser-reported offline notice */
+.connection-status-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  width: min(1120px, calc(100% - 40px));
+  margin: .75rem auto 0;
+  padding: .7rem .9rem;
+  border: 1px solid var(--ui-warning-text);
+  border-radius: 12px;
+  color: var(--ui-warning-text);
+  background: var(--ui-warning-bg);
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+.connection-status-notice p {
+  min-width: 0;
+  margin: 0;
+}
+
+.connection-status-notice strong {
+  font-weight: 800;
+}
+
+.connection-status-indicator {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  margin-top: .42rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+@media(max-width:560px) {
+  .connection-status-notice {
+    width: min(100% - 28px, 1120px);
+    margin-top: .55rem;
+    padding: .65rem .75rem;
+    font-size: .8rem;
+  }
+}

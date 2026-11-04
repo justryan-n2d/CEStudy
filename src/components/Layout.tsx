@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { ConnectionStatusNotice } from "./ConnectionStatusNotice";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { ReviewMaterialsMegaMenu } from "./ReviewMaterialsMegaMenu";
 import { YearLevelDropdown } from "./YearLevelDropdown";
@@ -231,6 +232,8 @@ export function Layout({ children }: { children: ReactNode }) {
             </section>
           </nav>
         </header>
+
+        <ConnectionStatusNotice />
 
         <main ref={mainContentRef} id="main-content" className="main-content" tabIndex={-1}>{children}</main>
 
