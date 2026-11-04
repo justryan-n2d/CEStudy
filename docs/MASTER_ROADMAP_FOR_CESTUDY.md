@@ -2,13 +2,13 @@
 
 **Document status:** Owner-approved direction; canonical planning document for CEStudy UX/UI redesign and roadmap tracking.
 **Owner approval:** Blueprint Academy selected on 2026-10-22 (Asia/Manila).
-**Baseline snapshot:** `main` at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`, verified 2026-11-04.
+**Baseline snapshot:** `main` at `849c9d707b0cafd8c39ab63d9bf57260c54dd186`, verified 2026-11-04 after Blueprint Academy Phase 3 integration.
 **Scope of this record:** Product direction, UX/UI decisions, verified baseline, implementation sequence, acceptance criteria, and release safeguards.
 **Application implementation status:** No application code changes are authorized by this document.
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
-> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 is merged on `main`; its binding design-quality and anti-template standard is now part of the repository guidance. This roadmap and the live source, database policies, security controls, and current CI/release evidence remain the authorities for intended scope and actual implementation. PR #67 is the consolidated account/learning-activity candidate, but is still draft and diverged from current `main`.
+> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 and Blueprint Academy Phase 3 PRs #70-#73 are merged on `main`. Phase 3 is complete; current `main` is `849c9d707b0cafd8c39ab63d9bf57260c54dd186`. The separate connectivity/loading-skeleton candidate PR #74 remains draft and must be reconciled with the Phase 3 SubjectPage fix before merge. PR #67 remains the consolidated account/learning-activity candidate and is still draft and diverged from current `main`.
 
 ## 1. Purpose and product outcome
 
@@ -128,8 +128,8 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 0: Canonical plan and baseline | **incomplete** | Current `main`, PR metadata, source paths, test commands and current CI/live evidence are recorded. A complete independent visual sign-off and physical-device review are not recorded. |
 | Phase 1: Shared foundation and theme tokens | **incomplete** | PR #56 is merged. Current main CI verifies Light/Dark behavior and the 13-route/five-width browser matrix. Owner visual sign-off and physical Android/TalkBack review remain open; do not restart the theme implementation. |
 | Phase 2: Navigation and route focus | **incomplete** | PR #57 is merged. Current main CI verifies route focus, keyboard/Escape behavior, 44px targets, desktop panels and mobile More menu. Owner visual sign-off and physical-device navigation review remain open; do not rebuild the navigation. |
-| Phase 3: Catalog, subject and lesson consistency | **current** | The three controlled implementation slices are CI-verified in draft PRs #71-#73. Task 1 fixes the SubjectPage stale-route state and adds Catalog/Subject contracts; Task 2 adds Study/API contracts with no reader source change needed; Task 3 verifies a synthetic populated lesson in both themes at five widths. Owner screenshot review and authorized integration into main remain pending. |
-| Phase 4: Practice workspace | **not started** | Start only after Phase 3 foundations and tests are established. Preserve the current question/answer/feedback/results behavior and honest unpublished-content gate. |
+| Phase 3: Catalog, subject and lesson consistency | **complete** | PRs #70-#73 are merged into `main`. Catalog/Subject API and page contracts, the SubjectPage stale-route correction, published lesson/Study reader contracts, and synthetic populated-lesson math verification are integrated. Post-merge main CI passed 177 tests across 29 files and 1,757/1,757 theme/browser assertions; Supabase migration/RLS and backup checks passed. Live production smoke run 41798110114 also passed. |
+| Phase 4: Practice workspace | **not started** | Phase 3 foundations and tests are now integrated and verified on `main`; Phase 4 is the next product-roadmap workstream. Preserve current question/answer/feedback/results behavior and the honest unpublished-content gate. |
 | Phase 5: Progress and account integration | **paused** | Browser-local progress/streak already exists on `main`. Return to the consolidated PR #67 only after Phase 3 and Phase 4; refresh its branch, review the full diff, and close OAuth/privacy/security gates before merge. |
 | Phase 6: Review Materials Hub | **not started** | Build only after resource metadata, review status, provenance and rights rules are confirmed. |
 | Phase 7: Community | **not started** | Remains blocked on data contracts, publication rules, identity and moderation/access controls. |
@@ -137,9 +137,11 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 9: Gamification | **not started** | Blocked until the affected reward, eligibility, privacy, retry and anti-abuse rules are approved. |
 | Phase 10: Offline access and native app | **not started** | Separate future architecture and design work; excluded from the current website theme foundation. |
 
-**Current verified `main`:** `ad96cc6148b95b563f247d9254bea5a6858b3cd0` (2026-11-04).
-**Phase 3 draft implementation:** PRs #71-#73 are CI-green and unmerged. Main remains unchanged until the owner authorizes integration.
-**Current documentation branch:** `docs/2026-11-04-roadmap-sync-phase3-plan`.
+**Current verified `main`:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186` (2026-11-04).
+**Product-roadmap Phase 3:** Complete. PRs #70-#73 are merged; post-merge CI run [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed, and live Chromium smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed.
+**Next product-roadmap workstream:** Phase 4, Practice Workspace. Phase 4 implementation has not started.
+**Separate loading-skeleton candidate:** PR #74 remains draft and unmerged. Reconcile its branch with current `main`, correct the Practice skeleton answer-row Light-theme appearance, and complete the missing rejection-lifecycle coverage before merge.
+**Current documentation branch:** `docs/mark-product-phase3-complete-2026-11-04`.
 **Application scope of this documentation update:** No application source, database schema/data, production settings, OAuth settings, or deployment configuration is changed.
 
 ## 4. Focused baseline verification
