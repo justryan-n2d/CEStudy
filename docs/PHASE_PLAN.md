@@ -202,7 +202,7 @@ Work through these in order. Do not move to the student pilot until the blocking
 
 ### 7.1 Complete the real-backup recovery drill
 - [x] Backup script on `main` targets the established singular bucket `cestudy-db-backup` and now requires all three tables `catalog_subjects`, `practice_questions`, and `subject_lessons`, logging each table after validation.
-- [x] Fresh current-state archive delivery on 2026-10-20: [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded. The encrypted archive was uploaded and read back for SHA-256 verification, the marker check completed, and retention kept four verified sets while hiding three stale/incomplete artifacts. This attempt predates the corrected validator; see the following open check.
+- [x] Historical archive delivery on 2026-10-20: [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded, but it predated the corrected validator. Current three-table live-backup verification is recorded in run [41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) on 2026-11-01.
 - [x] Run a fresh backup from the corrected main validator: [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) explicitly logged all three required tables as verified, read back the encrypted archive/checksum/marker, and completed retention.
 - [x] CI tests exercise encryption, decryption, corrupted-tag rejection, backup syntax, and retention behavior. This uses a temporary test key and test data, not the actual production backup.
 - [ ] Confirm the Backblaze lifecycle rule deletes hidden old versions without hiding current backups.
