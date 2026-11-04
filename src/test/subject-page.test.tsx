@@ -121,11 +121,38 @@ describe("subject page route lifecycle", () => {
 
     expect(await screen.findByRole("heading", { name: "First Subject" })).toBeInTheDocument();
     expect(screen.getByText(/Typical placement:/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "CHED sample curriculum: common course" })).toBeInTheDocument();
+    expect(screen.getByText("Coming soon")).toBeInTheDocument();
+    expect(screen.getByText("Synthetic source note for tests.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Open curriculum source ↗" })).toHaveAttribute(
       "href",
       "https://example.edu/first-subject",
     );
     expect(screen.getAllByRole("link", { name: /Related Subject/ })).toHaveLength(3);
+  });
+
+  it("keeps Basic Algebra linked directly to its reviewer", async () => {
+    const algebra = makeSubject({
+      slug: "basic-algebra",
+      title: "Basic and Advanced Algebra",
+      summary: "Algebra foundations.",
+      yearLevel: null,
+      semester: null,
+      category: "math-foundation",
+      classification: "supplementary-math-foundation",
+      sourceReference: "CEStudy supplementary review catalog",
+      availability: "in-preparation",
+    });
+    mocks.fetchCatalogSubjects.mockResolvedValue([algebra]);
+
+    renderSubjectPage("basic-algebra");
+
+    expect(await screen.findByRole("heading", { name: "Basic and Advanced Algebra" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Open reviewer →" })).toHaveAttribute(
+      "href",
+      "/study/basic-algebra",
+    );
+    expect(screen.queryByRole("heading", { name: "Course classification" })).not.toBeInTheDocument();
   });
 
   it("shows a not-found state when the requested slug is absent", async () => {
