@@ -152,7 +152,9 @@ export function Layout({ children }: { children: ReactNode }) {
     ).filter((element) => {
       if (element.closest('[hidden], [aria-hidden="true"]')) return false;
       const collapsedDetails = element.closest("details:not([open])");
-      return !collapsedDetails || (element.tagName === "SUMMARY" && element.parentElement === collapsedDetails);
+      if (!collapsedDetails) return true;
+      if (element.tagName !== "SUMMARY" || element.parentElement !== collapsedDetails) return false;
+      return !collapsedDetails.parentElement?.closest("details:not([open])");
     });
     getFocusableElements()[0]?.focus();
 
