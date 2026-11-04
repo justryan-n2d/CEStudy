@@ -37,4 +37,18 @@ describe("UnavailableState", () => {
 
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
+
+  it("keeps an optional secondary navigation action below Retry", () => {
+    render(
+      <UnavailableState
+        title="Subject unavailable"
+        message="The subject details could not be loaded."
+        onRetry={vi.fn()}
+        secondaryAction={<a href="/catalog">Return to subjects</a>}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Return to subjects" })).toHaveAttribute("href", "/catalog");
+  });
 });
