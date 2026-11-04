@@ -62,6 +62,7 @@ export function SubjectPage() {
           message="The subject details could not be loaded. Check your connection and try again."
           onRetry={retry}
           headingLevel="h1"
+          secondaryAction={<Link className="text-link" to="/catalog">Return to subjects</Link>}
         />
       </div>
     );
