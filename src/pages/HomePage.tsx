@@ -50,7 +50,7 @@ export function HomePage() {
         <section id="year-levels" className="section-block home-years">
           <div className="section-heading">
             <div><h2>Explore by year</h2></div>
-            <Link className="text-link" to="/years">View all years <span aria-hidden="true">→</span></Link>
+
           </div>
           <YearLevelGrid />
           <div className="home-marquee" aria-hidden="true">
