@@ -2502,3 +2502,15 @@ body {
 :root[data-theme="dark"] .site-sidebar .year-level-nav .nav-dropdown-trigger.active .navigation-glyph {
   color: #90c4ff;
 }
+
+
+/* Keep selected sidebar labels readable; use blue for the active indicator/icon. */
+:root[data-theme="light"] .site-sidebar .site-sidebar-navigation .site-sidebar-group a.site-sidebar-link,
+:root[data-theme="light"] .site-sidebar .site-sidebar-navigation .site-sidebar-group button.site-sidebar-link {
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .site-sidebar .site-sidebar-navigation .site-sidebar-group a.site-sidebar-link,
+:root[data-theme="dark"] .site-sidebar .site-sidebar-navigation .site-sidebar-group button.site-sidebar-link {
+  color: var(--ui-text);
+}
