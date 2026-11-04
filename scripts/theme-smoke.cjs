@@ -471,13 +471,40 @@ The solutions are \(x=-2\) and \(x=-3\).`,
         }
         const loadedYearSections = await yearPanel.locator(".year-level-menu-year > summary").count();
         if (loadedYearSections > 0) {
+          const summaryDiagnostics = await yearPanel.locator(".year-level-menu-year > summary").evaluateAll((nodes) =>
+            nodes.map((node) => {
+              const rect = node.getBoundingClientRect();
+              const parent = node.parentElement;
+              const parentRect = parent?.getBoundingClientRect();
+              const style = getComputedStyle(node);
+              const parentStyle = parent ? getComputedStyle(parent) : null;
+              return {
+                label: node.textContent.trim().replace(/\s+/g, " "),
+                rectCount: node.getClientRects().length,
+                height: rect.height,
+                width: rect.width,
+                display: style.display,
+                visibility: style.visibility,
+                parentDisplay: parentStyle?.display ?? "",
+                parentVisibility: parentStyle?.visibility ?? "",
+                parentHeight: parentRect?.height ?? 0,
+                detailsOpen: parent instanceof HTMLDetailsElement ? parent.open : null,
+              };
+            }),
+          );
           const yearTargets = await yearPanel.locator("a, summary").evaluateAll((nodes) =>
             nodes.filter((node) => node.getClientRects().length > 0)
               .map((node) => ({ label: node.textContent.trim().replace(/\s+/g, " "), height: Math.round(node.getBoundingClientRect().height) })),
           );
           check("Loaded Year Levels menu targets are at least 44px: " + activeRoute,
             yearTargets.length >= 7 && yearTargets.every((target) => target.height >= 44),
-            JSON.stringify(yearTargets));
+            JSON.stringify({ yearTargets, summaryDiagnostics }));
+          if (summaryDiagnostics.some((item) => item.height < 44 || item.rectCount === 0 || item.width === 0)) {
+            await page.screenshot({
+              path: path.join("artifacts", "year-level-menu-targets-" + width + "px.png"),
+              fullPage: true,
+            }).catch(() => {});
+          }
         } else if (yearMenuStateReady) {
           const errorAlert = yearPanel.getByRole("alert");
           check("Year Levels menu provides recovery when catalog data is unavailable: " + activeRoute,

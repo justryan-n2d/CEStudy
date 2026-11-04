@@ -88,7 +88,8 @@ describe("student lesson reader", () => {
     renderStudy("/study/basic-algebra/1");
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Reviewer unavailable");
-    expect(screen.getByRole("alert")).toHaveTextContent("Published lesson service unavailable.");
+    expect(screen.getByRole("alert")).toHaveTextContent("Reviewer content could not be loaded. Check your connection and try again.");
+    expect(screen.getByRole("alert")).not.toHaveTextContent("Published lesson service unavailable.");
     expect(screen.queryByRole("button", { name: /Mark as complete/i })).not.toBeInTheDocument();
   });
 

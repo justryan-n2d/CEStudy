@@ -8,7 +8,8 @@ export async function fetchPublishedPracticeQuestions(subjectSlug = "basic-algeb
   const { data, error } = await supabase.from("practice_questions")
     .select("id,subject_slug,topic,prompt,choices,correct_answer,solution_steps,explanation,source_note,display_order")
     .eq("subject_slug", subjectSlug).eq("status", "published").order("display_order", { ascending: true });
-  if (error) throw new Error("Published practice questions could not be loaded. Check Supabase configuration and read policies.");
-  return (data ?? []).map(row => parsePracticeQuestion(row as Record<string, unknown>))
+
+  if (error) throw new Error("Published practice questions could not be loaded.");
+  return (data ?? []).map((row) => parsePracticeQuestion(row as Record<string, unknown>))
     .filter((question): question is PracticeQuestion => question !== null);
 }

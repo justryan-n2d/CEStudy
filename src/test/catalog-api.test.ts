@@ -101,7 +101,7 @@ describe("catalog API", () => {
     });
 
     await expect(fetchCatalogSubjects()).rejects.toThrow(
-      "The subject catalog could not be loaded. Check Supabase configuration and public read policies.",
+      "The subject catalog could not be loaded.",
     );
   });
 });
