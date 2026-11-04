@@ -53,6 +53,22 @@ export function HomePage() {
             <Link className="text-link" to="/years">View all years <span aria-hidden="true">→</span></Link>
           </div>
           <YearLevelGrid />
+          <div className="home-marquee" aria-hidden="true">
+            <div className="home-marquee-track">
+              <div className="home-marquee-group">
+                <span>Learn by year</span><span className="home-marquee-separator">✦</span>
+                <span>Strengthen math foundations</span><span className="home-marquee-separator">✦</span>
+                <span>Practice step by step</span><span className="home-marquee-separator">✦</span>
+                <span>Build your CE foundation</span><span className="home-marquee-separator">✦</span>
+              </div>
+              <div className="home-marquee-group">
+                <span>Learn by year</span><span className="home-marquee-separator">✦</span>
+                <span>Strengthen math foundations</span><span className="home-marquee-separator">✦</span>
+                <span>Practice step by step</span><span className="home-marquee-separator">✦</span>
+                <span>Build your CE foundation</span><span className="home-marquee-separator">✦</span>
+              </div>
+            </div>
+          </div>
         </section>
       </ScrollReveal>
       <ScrollReveal className="reveal-section" delayMs={45}>
