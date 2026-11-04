@@ -9,7 +9,8 @@ export async function fetchPublishedLessons(subjectSlug: string): Promise<Subjec
     .eq("subject_slug", subjectSlug)
     .eq("status", "published")
     .order("unit_number", { ascending: true });
-  if (error) throw new Error("Published lessons could not be loaded. Check Supabase configuration and read policies.");
+
+  if (error) throw new Error("Published lessons could not be loaded.");
   return (data ?? [])
     .map((row) => parseSubjectLesson(row as Record<string, unknown>))
     .filter((lesson): lesson is SubjectLesson => lesson !== null && lesson.status === "published");
