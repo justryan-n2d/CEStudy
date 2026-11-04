@@ -102,7 +102,7 @@ describe("skeleton styling contract", () => {
 
   it("uses Light/Dark semantic surfaces for the Practice skeleton workspace and answer rows", () => {
     expect(stylesheet).toMatch(/\.practice-skeleton-region\s+\.practice-question-card\s*\{[^}]*background:\s*var\(--ui-surface\)/s);
-    expect(stylesheet).toMatch(/\.practice-skeleton-region\s+\.skeleton-answer-option\s*\{[^}]*background:\s*var\(--ui-surface-muted\)/s);
+    expect(stylesheet).toMatch(/\.practice-skeleton-region\s+\.answer-options\s+\.skeleton-answer-option\s*\{[^}]*background-color:\s*var\(--ui-surface-muted\)[^}]*transition:\s*none/s);
     expect(stylesheet).toMatch(/\.practice-skeleton-region\s+\.practice-progress\s+\.skeleton-shape\s*\{[^}]*background-image:\s*linear-gradient/s);
   });
 });
