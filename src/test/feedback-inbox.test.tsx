@@ -139,7 +139,7 @@ describe("owner-only feedback inbox", () => {
     const user = userEvent.setup();
     await unlockFeedbackInbox("test-owner-access-key-at-least-32-characters");
     render(<MemoryRouter><Layout><FeedbacksPage /></Layout></MemoryRouter>);
-    const menuButton = screen.getByRole("button", { name: /Open navigation menu, unread feedback/ });
+    const menuButton = await screen.findByRole("button", { name: /Open navigation menu, unread feedback/ });
     await user.click(menuButton);
     expect(await screen.findByRole("link", { name: /Feedback inbox/ })).toBeInTheDocument();
     expect(await screen.findByRole("status", { name: "Unread feedback" })).toBeInTheDocument();
