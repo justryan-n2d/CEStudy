@@ -1,0 +1,46 @@
+.unavailable-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  text-align: center;
+}
+
+.unavailable-state__illustration {
+  display: block;
+  width: clamp(5.5rem, 18vw, 7.25rem);
+  aspect-ratio: 1;
+  margin: 0 auto 0.25rem;
+  background-color: var(--ui-text-muted, #627487);
+  -webkit-mask: url("/illustrations/cloud-disconnect.svg") center / contain no-repeat;
+  mask: url("/illustrations/cloud-disconnect.svg") center / contain no-repeat;
+}
+
+.unavailable-state h1,
+.unavailable-state h2,
+.unavailable-state h3 {
+  margin: 0;
+  color: var(--ui-text, var(--navy-strong));
+}
+
+.unavailable-state p {
+  max-width: 42rem;
+  margin: 0;
+  color: var(--ui-text-muted, var(--muted));
+}
+
+.unavailable-state .button {
+  min-width: 8rem;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 560px) {
+  .unavailable-state {
+    padding: 1.35rem 1rem;
+  }
+
+  .unavailable-state__illustration {
+    width: 5.25rem;
+  }
+}
