@@ -77,7 +77,7 @@ The review question is not whether one of these techniques appears once. Ask whe
 | Card / contained surface | A self-contained destination, mixed-content item, independent summary, or workspace whose boundary helps the task. | Items are homogeneous and mainly need scanning, sorting, or comparison; a card is being used just to fill space. |
 | List | Students scan, filter, sort, or move through similar subjects, lessons, questions, or discussions. | Each item has materially different content that benefits from a flexible preview. |
 | Table | Values need side-by-side comparison, engineering reference lookup, or precise row/column relationships. | On narrow screens it becomes unreadable; provide a deliberate responsive alternative or labelled horizontal scrolling where appropriate. |
-| Sidebar | A dense signed-in workspace has several persistent destinations or tools and users benefit from context switching. | Public reading pages or simple flows would gain little from persistent secondary navigation. Public pages retain the approved hybrid header direction. |
+| Global navigation drawer | The current approved shell uses one left off-canvas drawer opened by the 44px menu control beside the canonical logo, on desktop and mobile. Keep its destination groups concise and task-relevant; do not add a parallel persistent sidebar. A dense workspace may have its own separate tools panel only when it supports real functionality. |
 | Tabs | A small set of peer views within the same task/context, with easy switching and no need to compare all panels at once. | The content represents distinct destinations that need direct links, browser history, or independent sharing. |
 | Accordion | Secondary detail is optional, long, or repeatedly hides content users do not always need. | Core instructions, critical assumptions, or step-by-step solutions should be visible to understand the task. |
 | Modal/dialog | A focused, short decision or interruption requires attention and the underlying task should remain contextually present. | The task is lengthy, navigational, or requires comparing background content. Prefer a route, inline form, or suitable drawer. |
@@ -233,14 +233,14 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Shared components
 
-- **Header:** canonical logo, wordmark, concise global navigation, white/light default surface, thin border. The approved public-page navigation uses the hybrid header; a collapsible sidebar is reserved for dense signed-in workspaces.
+- **Header and global navigation:** compact light-default header with the 44px menu control immediately before the canonical master logo. The control opens one left off-canvas navigation drawer on desktop and mobile. The drawer groups Learning, My learning, and Help and support; Year Levels stays nested under Learning; Subject Catalog appears once; Theme is under Preferences; owner tools are shown only after their real access gate is unlocked.
 - **Year-Level navigation (planned):** hierarchy from 1st to 4th year, then semester and subject, based on verified curriculum/content metadata.
-- **Review Materials mega-menu (planned):** Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Show only available, appropriately reviewed resources.
+- **Future resource destinations (not current global navigation):** Review Materials Hub is a later product phase for Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Show only real, published, reviewed resources when implemented; do not restore a global mega-menu or imply availability before then.
 - **Equation renderer:** shared rendering path for inline/display math in lessons, formula sheets, problem sets/solutions, quizzes, results, forum discussions, and approved offline material.
 - **Offline/download state:** consistent labels for available to download, downloading, downloaded, update available, failed, unavailable offline, stale, and removed, only where each state is applicable.
 - **Theme toggle:** explicit Light/Dark preference; no System option is approved. Keep light as the initial default baseline and use approved device-local `cestudy:theme:v1` persistence with pre-React initialization; account synchronization is out of scope for the first release. Year levels opens the overview page, not Year 1.
 - **Gamification controls:** XP/rewards, quests, streak freezes, badges, leaderboards, and retry-related reward behavior should be independently toggleable. Privacy and opt-in controls are user-respecting; anti-abuse/integrity safeguards remain mandatory while a reward feature is active.
-- **Practice workspace:** target a flexible approximate 70/30 question/tools layout on desktop, with a collapsible/dockable tools panel. At narrow widths, use a single-column question view and move tools into a drawer, tab, or opened sheet.
+- **Practice workspace:** target a flexible approximate 70/30 question/tools layout on desktop only when a real functional tool exists. At narrow widths, use a single-column question view and move actual supporting tools into an accessible drawer, tab, or sheet. Do not render an empty or inert tools panel.
 - **Primary button:** logo blue with white text; one main action per region.
 - **Secondary button:** white with a neutral border and navy text.
 - **Subject card:** title, relevant year/category metadata, accurate content availability, and one clear destination.
@@ -253,8 +253,8 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 ## Responsive website behavior
 
 - Website-first: establish the desktop information architecture, page hierarchy, and wide-screen workflows first, then design responsive adaptations. Existing 560px and 850px breakpoints are initial references, not mandatory boundaries.
-- Target desktop navigation: Year-Level dropdown (year → semester → subject), Review Materials Hub mega-menu (Formula Sheets, Problem Sets with Solutions, Video Tutorials), direct Mock Exam Portal and Community Forum links, and a private signed-in Student Dashboard control.
-- On tablet/phone browsers, make the year hierarchy and material groups work as panels or accordions. Do not shrink desktop menus or assume the future native-app tab bar is the correct mobile-web navigation.
+- Current desktop navigation: compact header with a 44px menu control immediately before the canonical logo; one left off-canvas drawer contains Learning, My learning, and Help and support groups. Year Levels preserves the verified year → semester → subject hierarchy.
+- The same drawer is used on tablet/phone browsers. Do not describe the older hybrid header, four-item quick navigation, or More menu as current. Review Materials, Mock Exam, full Community Forum, and signed-in Student Dashboard remain future product destinations, not current global nav entries. Do not assume the future native-app tab bar is the correct mobile-web navigation.
 - Desktop content should use page-appropriate widths. Reading pages may stay centered and constrained; reference tables and dense study workspaces may need wider containers.
 - Tablet layouts should retain useful hierarchy, readable filters, and adequate content space without cramped labels.
 - Phone browser layouts must remain usable and should prioritize the current task, search, and content. They may use different navigation presentation from desktop without changing the underlying destination model.
@@ -286,7 +286,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 ## Acceptance checks
 
 - The real master logo is unchanged and legible against both the light and dark theme concepts.
-- The planned website navigation supports year → semester → subject, the three Review Materials groups, Mock Exam Portal, Community Forum, and a private Student Dashboard.
+- The current website navigation uses the compact menu/logo header and left off-canvas drawer on all viewport sizes; it preserves year → semester → subject and keeps the catalog destination unique. Future Review Materials, Mock Exam, full Community Forum, and private Student Dashboard features are not represented as current global navigation.
 - The responsive website does not inherit the native app's five-tab structure without separate usability review.
 - Inline/display equations render through the shared path, including fractions, nested fractions, matrices/vectors, subscripts/superscripts, units, and a readable invalid-expression fallback.
 - Dark Mode applies consistently and persists according to the approved preference model.
@@ -313,6 +313,7 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 - **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
 - **2026-10-21:** Linked the modern gamified UX/UI decision plan and documented planning gates for quests, rewards, healthy engagement, exam evidence, and responsive navigation. Documentation-only change.
 - **2026-10-22:** Recorded owner decisions: explicit Light/Dark toggle with existing light-default baseline; independently toggleable gamification mechanics; approved healthy-engagement safeguards including optional Night Owl; exam-specific PRC mapping, a dedicated past-question sourcing/permissions workflow, the proposed 100-question challenge and readiness measures deferred; hybrid global navigation, workspace-only collapsible sidebar and flexible 70/30 Practice layout approved. Documentation-only change.
+- **2026-11-05:** PR #79 replaced the former hybrid/quick-navigation shell with one left off-canvas drawer on desktop and mobile. The compact header places its 44px menu control immediately before the canonical logo. The drawer groups Learning, My learning, and Help and support; Theme is under Preferences; duplicate destinations and unfinished Review Materials/Mock Exam global links were removed. This update aligns this design-system document with the merged current implementation.
 - **2026-10-23:** Approved device-local theme persistence using `cestudy:theme:v1` and pre-React initialization for the first release. Account synchronization and cross-device theme sync remain out of scope.
 
 ## Footer
@@ -342,12 +343,13 @@ CEStudy uses one design language with two intentionally different interfaces. Th
 
 ### Website-specific structure (current baseline, subject to redesign)
 
-- Current main baseline: a brand header with Subject catalog, Year levels, and Math foundations, plus secondary navigation. The documented mobile-web pattern uses a compact quick-navigation bar and a More menu. These are audit baselines, not immutable constraints.
-- PR #44 remains a separate unmerged draft with its own account/profile/history/streak/community routes and navigation implementation. Do not treat draft functionality as shipped on main or change its release gates through this plan.
-- Target website navigation: Year-Level dropdown for 1st, 2nd, 3rd, and 4th year with semester and subject levels; Review Materials Hub mega-menu for Formula Sheets, Problem Sets with Solutions, and Video Tutorials; direct Mock Exam Portal and Community Forum destinations; private signed-in Student Dashboard control.
+- **Current main baseline after PR #79:** a compact brand header with a 44px menu control immediately before the canonical CEStudy logo. The control opens the same left off-canvas navigation drawer on desktop, tablet, and phone.
+- The drawer contains Learning (Home, Subject Catalog once, nested Year Levels, Math Foundations), My learning (device-local Progress), and Help and support (About, Contact, Support, Report a bug, Send feedback, Privacy notice). The Light/Dark toggle is in Preferences. The owner-only Feedback inbox is conditional on its actual unlock session.
+- Review Materials Hub and Mock Exam are not global navigation entries; their legacy routes redirect to Subject Catalog. Community remains reachable by its direct route, but the full forum is not implemented. Dashboard/account/profile/history/streak functionality remains subject to the separate Phase 5 integration and its security gates.
+- The old hybrid header, mobile quick-navigation row, and More menu are superseded, not the current navigation model.
 - Dashboard progress/bookmarks must be private to the correct user, and weak-subject signals must show evidence/coverage rather than implying mastery from a tiny sample.
 - Resource menus show real availability, review state, and provenance. Download only content whose source and redistribution rights have been approved.
-- At tablet/phone widths, the year dropdown and resource mega-menu become operable panels/accordions. The mobile-browser navigation is decided separately from the native app tab bar.
+- The Year Levels hierarchy remains operable within the navigation drawer at all widths. The mobile-browser shell uses the same off-canvas drawer pattern as desktop and does not inherit the native app tab bar.
 - Offline Access should include a download manager for approved reviewer PDFs, formula sheets, and mock-test packages. Specify storage, source/version, update, removal, and offline-attempt synchronization before implementation.
 - Use equation rendering across lessons, formula sheets, problem sets, quizzes, results, and forum posts/comments. Offline materials need local access to any required rendering assets.
 
