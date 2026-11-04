@@ -7,6 +7,8 @@ const viewports = [320, 390, 768, 1024, 1440];
 const routes = [
   "/",
   "/about",
+  "/contact",
+  "/support",
   "/catalog",
   "/years",
   "/year/2",
@@ -236,6 +238,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               ".detail-panel", ".study-lesson", ".review-gate", ".state-panel",
               ".privacy-content > section", ".surface-form", ".answer-option",
               ".answer-feedback", ".about-principle", ".about-next",
+              ".practice-question-card", ".contact-primary-card", ".contact-option-card",
+              ".support-method-card", ".study-entry-panel", ".feedback-action-menu",
             ];
             return selectors.flatMap((selector) =>
               [...document.querySelectorAll(selector)].slice(0, 3).map((node) => ({
@@ -250,9 +254,9 @@ The solutions are \(x=-2\) and \(x=-3\).`,
             whiteSurfaces.length === 0,
             JSON.stringify({ surfaces: darkSurfaces, whiteSurfaces }));
           const darkContentReadability = await page.evaluate(() =>
-            [...document.querySelectorAll(".about-principle p, .about-next p, .privacy-content > section p")]
+            [...document.querySelectorAll(".about-principle p, .about-next p, .privacy-content > section p, .contact-primary-card p, .contact-option-card p, .support-method-card p, .practice-source, .answer-options legend, .answer-feedback p, .answer-feedback ol")]
               .map((node) => {
-                const surface = node.closest(".about-principle, .about-next, .privacy-content > section");
+                const surface = node.closest(".about-principle, .about-next, .privacy-content > section, .contact-primary-card, .contact-option-card, .support-method-card, .practice-question-card, .answer-feedback");
                 return {
                   text: node.textContent?.trim().slice(0, 80) ?? "",
                   foreground: getComputedStyle(node).color,
