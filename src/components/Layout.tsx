@@ -149,7 +149,11 @@ export function Layout({ children }: { children: ReactNode }) {
     const focusableSelector = 'button:not([disabled]), a[href], summary, [tabindex]:not([tabindex="-1"])';
     const getFocusableElements = () => Array.from(
       sidebarRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
-    ).filter((element) => !element.closest('[hidden], [aria-hidden="true"], details:not([open])'));
+    ).filter((element) => {
+      if (element.closest('[hidden], [aria-hidden="true]')) return false;
+      const collapsedDetails = element.closest("details:not([open])");
+      return !collapsedDetails || (element.tagName === "SUMMARY" && element.parentElement === collapsedDetails);
+    });
     getFocusableElements()[0]?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
