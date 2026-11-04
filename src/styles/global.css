@@ -1930,7 +1930,11 @@ body {
 
 
 /* Keep Study outline and worked-solution text rows expanded inside their flex rows. */
-.skeleton-outline-item .skeleton-line-stack,
+.skeleton-outline-item .skeleton-line-stack {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .skeleton-worked-step .skeleton-line-stack {
   flex: 1 1 auto;
   min-width: 0;
