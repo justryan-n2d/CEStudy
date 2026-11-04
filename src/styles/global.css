@@ -1966,3 +1966,11 @@ body {
     var(--ui-skeleton-base) 100%
   );
 }
+
+@media(prefers-reduced-motion:reduce) {
+  .practice-skeleton-region .practice-progress .skeleton-shape {
+    animation: none;
+    background-image: none;
+    background-color: var(--ui-skeleton-base);
+  }
+}
