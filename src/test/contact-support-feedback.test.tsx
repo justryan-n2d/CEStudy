@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import type { ReactNode } from "react";
@@ -65,6 +65,27 @@ describe("contact, support, bug reports, and feedback", () => {
     const url = new URL(String(open.mock.calls[0][0]));
     expect(url.searchParams.get("to")).toBe("cestudy00@gmail.com");
     expect(url.searchParams.get("su")).toBe("CEStudy bug report: The search button is unresponsive");
+  });
+
+  it("keeps required bug details visible and discloses optional context on request", async () => {
+    const user = userEvent.setup();
+    renderPage(<BugReportsPage />);
+
+    expect(screen.getByRole("textbox", { name: /Short summary/ })).toBeVisible();
+    expect(screen.getByRole("textbox", { name: /What happened/ })).toBeVisible();
+
+    const disclosure = screen.getByText("Add details (optional)").closest("details");
+    expect(disclosure).not.toBeNull();
+    expect(disclosure).not.toHaveAttribute("open");
+
+    await user.click(screen.getByText("Add details (optional)"));
+
+    expect(disclosure).toHaveAttribute("open");
+    expect(within(disclosure as HTMLElement).getByLabelText("Page or feature")).toBeVisible();
+    expect(within(disclosure as HTMLElement).getByLabelText("What did you expect?")).toBeVisible();
+    expect(within(disclosure as HTMLElement).getByLabelText("Steps to reproduce")).toBeVisible();
+    expect(screen.getByRole("textbox", { name: /Short summary/ })).toBeVisible();
+    expect(screen.getByRole("textbox", { name: /What happened/ })).toBeVisible();
   });
 
   it("sends feedback and displays the exact success popup", async () => {
