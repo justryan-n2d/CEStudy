@@ -2,7 +2,7 @@
 
 **Status:** Brand foundations established; owner has approved the Light/Dark toggle, website navigation direction, and Practice workspace layout. No application implementation is authorized by this document.  
 **Platforms:** Website-first responsive web now; native Android and iOS later
-**Decision update:** 2026-11-04, explicit five-signal design quality review guidance added; 2026-10-23, device-local theme preference approved for the first release  
+**Decision update:** 2026-11-04, Decision-Light Design (Hick-Hyman Law) approved as a binding interaction standard and explicit five-signal design quality review guidance added; 2026-10-23, device-local theme preference approved for the first release  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
 
 **Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md) and the [modern gamified UX/UI decision plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md).
@@ -127,7 +127,11 @@ Reviewers and coding agents must answer all items before a significant new page,
 - [ ] Is hierarchy clear without excessive colors, borders, shadows, badges, icons, or type styles?
 - [ ] Does the page feel like CEStudy's Blueprint Academy direction rather than a generic template or clone?
 - [ ] Is all educational content accurate, useful, and appropriately verified, with units, assumptions, notation, and worked steps where needed?
-- [ ] Are primary actions discoverable and do all visible interactions have defined, truthful behavior?
+- [ ] Are primary actions discoverable, with one clearly prioritized action per focused task state and no unrelated competing primary buttons?
+- [ ] Are genuine peer choices, such as multiple-choice answers, still equally understandable and prominent?
+- [ ] Are advanced or conditional options progressively disclosed without hiding essential or frequently used controls?
+- [ ] Are visible controls relevant to the current user, task, content availability, and state, with unavailable behavior represented truthfully?
+- [ ] Have common and less-frequent tasks been checked for completion, time on task, errors/recovery, and discoverability without making unsupported retention claims?
 - [ ] Have responsive behavior, keyboard access, focus visibility, contrast, zoom/reflow, reduced motion, and relevant loading/empty/success/error/disabled states been considered?
 - [ ] Has the actual rendered implementation or prototype been inspected and tested, rather than accepted from its initial generated appearance?
 - [ ] Has the page been compared with existing CEStudy pages and the relevant student task? Does each shared component improve clarity, behavior, or consistency?
@@ -137,8 +141,8 @@ Reviewers and coding agents must answer all items before a significant new page,
 
 ### Decisions and ownership
 
-- **Binding:** The principles and checklist in this section; approved brand assets/tokens, website-first direction, Light/Dark toggle with Light default and no System option; truthful content/status, accessibility, and existing security/publication boundaries.
-- **Context-dependent:** Card use, visual effects, layout density, sidebars, tabs, accordions, dialogs/drawers, and motion. Choose based on the task and document the reason for non-obvious choices.
+- **Binding:** The principles and checklist in this section; the Decision-Light Design standard and its five rules; approved brand assets/tokens, website-first direction, Light/Dark toggle with Light default and no System option; truthful content/status, accessibility, and existing security/publication boundaries.
+- **Context-dependent:** Card use, visual effects, layout density, sidebars, tabs, accordions, dialogs/drawers, motion, and which non-essential options should be disclosed. Base visibility on task relevance and actual usage; do not hide frequent or essential controls just to reduce visible choices.
 - **Owner approval required:** Changes to brand/logo geometry or palette, website information architecture, theme choices, proposed gamification defaults/rewards/eligibility/leaderboard policy, exam-readiness metrics, or other currently unapproved product scope.
 - **Not evidence of a defect by itself:** A card, gradient, animation, hero, or dense layout. It becomes an issue when it lacks a task-based purpose, harms comprehension/accessibility/performance, or creates unjustified visual emphasis.
 
@@ -151,6 +155,53 @@ These rules are project-specific applications of established guidance, not unive
 - [Nielsen Norman Group: Card View vs. List View](https://www.nngroup.com/videos/card-view-vs-list-view/) summarizes the trade-off: lists favor efficient scanning/sorting, while cards can group mixed content.
 - [W3C WCAG 2.2](https://www.w3.org/TR/WCAG22/) provides the accessibility baseline for contrast, reflow, keyboard operation, focus, and target size. Apply the success criteria appropriate to the project's declared conformance target and test actual pages.
 - [MDN: Using media queries for accessibility](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Media_queries/Using_for_accessibility) documents `prefers-reduced-motion` support.
+
+## Decision-Light Design standard (binding)
+
+**Owner decision:** Approved 2026-11-04. This standard applies to all significant CEStudy website and future product UI design, review, and implementation work. It supplements the task-based design quality standard above.
+
+**Purpose:** Reduce avoidable interface decision friction so students can focus on finding, understanding, and practicing Civil Engineering material. Use Hick-Hyman Law as a design heuristic: in choice-reaction tasks, response time generally increases with the information uncertainty among available alternatives. The classic model is logarithmic for equally probable alternatives. This does not mean every additional button creates the same delay, that fewer choices always produce a better interface, or that reducing choices automatically increases retention. The task, probability and similarity of choices, user experience, and consequences matter. Validate design decisions with realistic student tasks rather than treating the law as a button-count formula.
+
+### Five binding rules
+
+1. **One primary action.** Identify the student's current task and state, then make its next useful action visually obvious. A screen may contain distinct task regions, but each focused task region should have one clear primary action. Do not invent a call to action where the user is meant to read, compare, or explore.
+2. **Prioritize the main button.** Give the primary action the strongest appropriate visual emphasis. Use the established CEStudy primary-button treatment and preserve contrast, visible focus, accessible names, and clear state feedback. Secondary actions should not compete with it.
+3. **Hide unnecessary options through progressive disclosure.** Keep essential and frequently used controls available. Place genuinely advanced, infrequent, or conditional options behind a clearly labelled and discoverable control, such as "Advanced options" or a relevant settings/menu entry. Reveal conditional controls when their prerequisite becomes relevant. Do not make common tasks require repeated menu-diving.
+4. **Avoid equally prominent competing actions.** Do not give unrelated actions in the same task region equal primary-button emphasis when one is clearly the next step. Use primary, secondary, and quiet/link treatments to communicate hierarchy. This rule does not apply to genuine peer choices that are themselves the task, such as multiple-choice answers, mutually exclusive decisions, or alternatives that students must compare. Those choices must remain equally understandable and appropriately prominent.
+5. **Do not show irrelevant options.** Show controls that are relevant to the current user, task, content availability, and interaction state. Do not display controls for unavailable or unimplemented functionality as though they work. When a control is not yet available because a known sequential prerequisite has not been completed, keep it visibly disabled with a concise explanation when that helps the student understand the sequence; do not hide it in a way that makes the workflow undiscoverable.
+
+### Guardrails and exceptions
+
+- **Do not remove real learning choices.** Do not reduce, preselect, or visually demote answer choices, engineering solution alternatives, formula references, units, assumptions, source material, or comparison data when those items are central to the learning task.
+- **Do not hide essentials.** Primary learning content, current task state, required inputs, frequently used study tools, accessibility controls, privacy/security information, error recovery, and necessary back, cancel, retry, or exit paths must remain available when the task requires them.
+- **Make disclosed options findable.** A hidden option needs a clear label, an understandable reason for its placement, and a predictable route to reveal it. Prefer one secondary disclosure level; repeated layers of hidden menus are a warning sign, not a simplification strategy.
+- **Base visibility on evidence.** Use task analysis, student observation, usage frequency, and support feedback to decide what is primary, secondary, advanced, or irrelevant. Do not assume that a control is unimportant merely because it is visually inconvenient.
+- **Preserve security boundaries.** Hiding a UI control is not authorization. Supabase policies, server-side checks, route guards, and publication rules remain authoritative.
+- **Do not optimize clicks alone.** A shorter interface is not automatically a faster or more successful one. Avoid adding clicks to common tasks just to make a screen look minimal.
+
+### Required review and acceptance checks
+
+Before approving a significant screen or flow, reviewers must verify:
+
+- [ ] The target user, task, current state, and decision being made are identified.
+- [ ] The primary action for each focused task region is named and its priority is visually clear.
+- [ ] Secondary actions are visibly secondary unless they represent genuine peer choices.
+- [ ] Genuine peer choices, including student answer choices, remain equally legible and are not artificially ranked.
+- [ ] Every hidden control is genuinely advanced, infrequent, conditional, or irrelevant to the current state, and its reveal path is clear.
+- [ ] Essential and frequently used content, controls, tools, accessibility support, and recovery paths have not been hidden.
+- [ ] Unavailable and sequentially gated controls communicate their actual state without implying functionality that does not exist.
+- [ ] Common and less-frequent tasks are both tested with realistic student scenarios across relevant viewport sizes, themes, and input methods.
+- [ ] Usability checks consider task completion, time on task, errors/recovery, and whether students can discover secondary tools. Do not claim a retention improvement without longitudinal evidence.
+
+**Audit status:** This document establishes the binding standard only. It does not claim that existing CEStudy routes have already passed a site-wide Decision-Light audit. That audit is a separate deferred work item and a prerequisite to beginning Blueprint Academy Phase 4.
+
+### Research basis
+
+- [W. E. Hick, *On the Rate of Gain of Information* (1952)](https://doi.org/10.1080/17470215208416600), the original choice-reaction-time study.
+- [Proctor and Schneider, *Hick's law for choice reaction time: A review* (2018)](https://doi.org/10.1080/17470218.2017.1322622), a review discussing the law's scope, historical context, and limitations.
+- [Oxford Academic, Introduction to Human-Computer Interaction, section on the Hick-Hyman Law](https://academic.oup.com/book/60808/chapter/528999086), explains the relationship between response alternatives, information, and choice reaction time.
+- [Nielsen Norman Group, Progressive Disclosure](https://www.nngroup.com/articles/progressive-disclosure/), guidance on keeping the most important options visible while making advanced or rarely used features available on request.
+- [Appian SAIL, Progressive Disclosure](https://docs.appian.com/suite/help/26.3/sail/ux-progressive-disclosure.html), practical guidance for conditional controls, advanced options, and sequential flows.
 
 ## Design tokens
 
@@ -252,6 +303,8 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 
 ## Revision record
+
+- **2026-11-04:** Added the owner-approved, binding Decision-Light Design standard based on Hick-Hyman Law. Formalized the five rules, peer-choice and essential-control exceptions, progressive-disclosure guardrails, required review checks, and research references. Explicitly recorded that the existing-route audit is deferred and required before Phase 4. Documentation only; no application UI or behavior changed.
 
 - **2026-11-04:** Expanded the design quality and anti-template standard with five explicit design/copy signals: purple/blue gradient overload, default-centered layouts, repetitive em-dash phrasing, decorative colored headline fragments, and redundant eyebrow labels. Expanded the required checklist from 12 to 17 items. Preserved context-sensitive exceptions, Blueprint Academy, existing brand assets/tokens, website-first IA, and approved theme behavior. Documentation only.
 

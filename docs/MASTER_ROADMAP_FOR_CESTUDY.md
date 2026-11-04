@@ -39,6 +39,7 @@ Use Duolingo, Discord, GitHub, and Autodesk AutoCAD only as references for selec
 6. **Security at the actual boundary.** Hiding a control in the UI does not authorize access to protected data.
 7. **Small reviewable releases.** Prefer focused vertical slices over a high-risk full-site rewrite.
 8. **Intentional, task-based UI.** Follow the binding [design quality and anti-template standard](specs/UX_UI_DESIGN_SYSTEM.md#design-quality-and-anti-template-standard-binding): no default nested-card layouts, generic decorative templates, unsupported metrics, or visually implied functionality. The UX/UI design system is authoritative for layout selection, exceptions, and the review checklist.
+9. **Decision-light interaction.** Follow the binding [Decision-Light Design standard](specs/UX_UI_DESIGN_SYSTEM.md#decision-light-design-standard-binding): one clearly prioritized action per focused task state, visible hierarchy between primary and secondary actions, progressive disclosure for genuinely advanced options, and no irrelevant controls. Preserve genuine peer choices, essential tools, and frequent workflows.
 
 ## 2. Source-of-truth and change-control policy
 
@@ -130,7 +131,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 1: Shared foundation and theme tokens | **incomplete** | PR #56 is merged. Current main CI verifies Light/Dark behavior and the 13-route/five-width browser matrix. Owner visual sign-off and physical Android/TalkBack review remain open; do not restart the theme implementation. |
 | Phase 2: Navigation and route focus | **incomplete** | PR #57 is merged. Current main CI verifies route focus, keyboard/Escape behavior, 44px targets, desktop panels and mobile More menu. Owner visual sign-off and physical-device navigation review remain open; do not rebuild the navigation. |
 | Phase 3: Catalog, subject and lesson consistency | **complete** | PRs #70-#73 are merged into `main`. Catalog/Subject API and page contracts, the SubjectPage stale-route correction, published lesson/Study reader contracts, and synthetic populated-lesson math verification are integrated. Post-merge main CI passed 177 tests across 29 files and 1,757/1,757 theme/browser assertions; Supabase migration/RLS and backup checks passed. Live production smoke run 41798110114 also passed. |
-| Phase 4: Practice workspace | **not started** | Phase 3 foundations and tests are now integrated and verified on `main`; Phase 4 is the next product-roadmap workstream. Preserve current question/answer/feedback/results behavior and the honest unpublished-content gate. |
+| Phase 4: Practice workspace | **not started** | Phase 3 foundations and tests are integrated and verified on `main`; Phase 4 implementation remains gated on completion of the site-wide Decision-Light audit (C). Preserve current question/answer/feedback/results behavior and the honest unpublished-content gate. |
 | Phase 5: Progress and account integration | **paused** | Browser-local progress/streak already exists on `main`. Return to the consolidated PR #67 only after Phase 3 and Phase 4; refresh its branch, review the full diff, and close OAuth/privacy/security gates before merge. |
 | Phase 6: Review Materials Hub | **not started** | Build only after resource metadata, review status, provenance and rights rules are confirmed. |
 | Phase 7: Community | **not started** | Remains blocked on data contracts, publication rules, identity and moderation/access controls. |
@@ -140,7 +141,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 **Current verified `main`:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186` (2026-11-04).
 **Product-roadmap Phase 3:** Complete. PRs #70-#73 are merged; post-merge CI run [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed, and live Chromium smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed.
-**Next product-roadmap workstream:** Phase 4, Practice Workspace. Phase 4 implementation has not started.
+**Next product-roadmap workstream:** Phase 4, Practice Workspace, after the required site-wide Decision-Light audit (C). Phase 4 implementation has not started.
 **Separate loading-skeleton candidate:** PR #74 remains draft and unmerged. Reconcile its branch with current `main`, correct the Practice skeleton answer-row Light-theme appearance, and complete the missing rejection-lifecycle coverage before merge.
 **Current documentation branch:** `docs/mark-product-phase3-complete-2026-11-04`.
 **Application scope of this documentation update:** No application source, database schema/data, production settings, OAuth settings, or deployment configuration is changed.
@@ -225,6 +226,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Theme persistence | Approved | Device-local preference under `cestudy:theme:v1`; no account synchronization or cross-device sync. |
 | Public navigation | Hybrid header with Year Levels dropdown, Review Materials Hub mega-menu, direct Mock Exam Portal and Community Forum entries, and signed-in Student Dashboard/account control. |
 | Sidebar | Collapsible sidebar only for dense signed-in workspaces, not for every public page. |
+| Decision-Light Design | **Approved: 2026-11-04.** Apply the five binding rules and their documented exceptions across significant UI work. Documentation A establishes the standard; the site-wide audit C is deferred and required before Phase 4. |
 | Duplicate destinations | Avoid competing Dashboard and Profile roles. Separate learning overview from account/settings only when the use case is clear. |
 | Practice workspace | Desktop split approximately 70/30 as a starting point. Supporting tools collapsible or dockable. Phone web uses one-column question view and a drawer/tab/sheet for tools. |
 | Gamification | XP/rewards, quests, streak freezes, badges, leaderboards, and retry reward behavior are independently configurable. Exact values, eligibility, retry policy, defaults, privacy, and abuse rules remain unresolved. |
@@ -546,12 +548,15 @@ Acceptance criteria:
 
 ### Phase 4: Practice workspace
 
+**Entry gate:** Complete the deferred site-wide Decision-Light audit (C) described in Section 15 before Phase 4 implementation begins. Documentation task A establishes the binding standard only; it does not certify existing routes or authorize a site-wide redesign. The audit must inspect the current routes and significant task states, record evidence-based findings, and prioritize any corrections for owner review. This is prerequisite design work, not a new numbered product phase.
+
 **Relative effort:** Large. **Risk:** High for long engineering problems and answer correctness.
 
 Primary paths: `src/pages/PracticePage.tsx`, `src/components/PracticeQuestion.tsx`, practice APIs/types, shared math renderer, relevant styles and tests.
 
 Acceptance criteria:
 - Preserve answer selection/submission, feedback, explanations, next question and result flow.
+- Apply Decision-Light Design to each focused practice task state: clearly prioritize the current next action without demoting genuine answer choices or required study tools.
 - Apply the flexible desktop question/tools split and collapsible/dockable panel only where its functionality exists.
 - Phone view prioritizes the full question and moves tools into an accessible sheet/drawer/tab.
 - Timer states correspond only to actual timed behavior.
@@ -654,6 +659,7 @@ For each implementation PR:
 | Gamification rules | Open | Define eligibility, uniqueness, timezone, retries, opt-in, privacy and abuse controls |
 | Community publishing/moderation | Open | Agree read/post/report/edit rules and server-side access controls |
 | Offline access | Future proposal | Specify storage, licensing, versioning, stale state and sync behavior first |
+| Decision-Light site-wide audit (C) | **Deferred by owner, 2026-11-04.** Run after documentation A is integrated and before Phase 4 implementation. Inspect every current route and significant task state against the binding standard, record evidence and prioritize proposed corrections. No existing screen has been audited or redesigned by documentation A. |
 
 ## 16. External technical references
 
@@ -693,6 +699,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Update |
 |---|---|
+| 2026-11-04 | Recorded the owner-approved Decision-Light Design standard in the UX/UI Design System and the roadmap decision register. Set the full-site audit (C) as a deferred pre-Phase-4 entry gate after documentation A. No application UI, behavior, data, or production configuration changed. |
 | 2026-11-04 | Reconciled this roadmap with current `main` after PR #69 merged at `ad96cc6`. Updated the repository snapshot, current CI/theme/navigation evidence, consolidated PR #67 status, and phase tracker. Linked the dedicated Phase 3 implementation plan. Recorded that the 2026-11-01 live backup verified all three required tables and remote read-back. Product roadmap Phase 3 is distinct from the lifecycle Phase 3 in `PHASE_PLAN.md`. |
 
 | Date | Change |
