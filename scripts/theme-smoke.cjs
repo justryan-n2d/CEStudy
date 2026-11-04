@@ -261,7 +261,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           check("Dark primary navigation text contrast meets WCAG AA: " + activeRoute,
             contrastRatio(dark.navText, dark.navBackground) >= 4.5,
             JSON.stringify({ foreground: dark.navText, background: dark.navBackground,
-              ratio: contrastRatio(dark.navText, dark.navBackground) }));          check("No page-wide horizontal overflow in Dark: " + activeRoute,
+              ratio: contrastRatio(dark.navText, dark.navBackground) }));
+          check("No page-wide horizontal overflow in Dark: " + activeRoute,
             Math.max(dark.documentWidth, dark.bodyWidth) <= dark.viewportWidth + 1,
             "viewport=" + dark.viewportWidth + ", document=" + dark.documentWidth + ", body=" + dark.bodyWidth);
 
@@ -344,7 +345,8 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           check("Light primary navigation text contrast meets WCAG AA: " + activeRoute,
             contrastRatio(light.navText, light.navBackground) >= 4.5,
             JSON.stringify({ foreground: light.navText, background: light.navBackground,
-              ratio: contrastRatio(light.navText, light.navBackground) }));          check("No page-wide horizontal overflow in Light: " + activeRoute,
+              ratio: contrastRatio(light.navText, light.navBackground) }));
+          check("No page-wide horizontal overflow in Light: " + activeRoute,
             Math.max(light.documentWidth, light.bodyWidth) <= light.viewportWidth + 1,
             "viewport=" + light.viewportWidth + ", document=" + light.documentWidth + ", body=" + light.bodyWidth);
 
@@ -395,6 +397,12 @@ The solutions are \(x=-2\) and \(x=-3\).`,
       await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
       await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
 
+      const navigationToggle = page.getByRole("button", { name: "Open navigation menu" });
+      const toggleHeight = await navigationToggle.evaluate((node) => Math.round(node.getBoundingClientRect().height));
+      check("Sidebar menu control has a 44px target: " + activeRoute, toggleHeight >= 44, String(toggleHeight));
+      await navigationToggle.click();
+      const drawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+      await drawer.waitFor({ state: "visible", timeout: 5000 });
       const themeTargets = await drawer.locator(".theme-toggle-option").evaluateAll((nodes) =>
         nodes.map((node) => Math.round(node.getBoundingClientRect().height)),
       );
