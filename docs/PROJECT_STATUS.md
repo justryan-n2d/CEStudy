@@ -40,12 +40,15 @@
 | [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Phase 3 Task 1: Catalog API, SubjectPage and `useCatalog` contracts | Closed, merged 2026-11-04 at `d8c3e2bf62b4bf1e0f106d923d76981125ff996b`; includes the reproduced/fixed stale-subject route state. |
 | [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Phase 3 Task 2: published lesson API and Study reader contracts | Closed, merged 2026-11-04 at `c24736168c1e49a6f39c89a7eabb7abb69480932`. |
 | [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Phase 3 Task 3: synthetic populated lesson math/browser verification | Closed, merged 2026-11-04 at `849c9d707b0cafd8c39ab63d9bf57260c54dd186`. |
-| [#74](https://github.com/justryan-n2d/CEStudy/pull/74) | Separate connectivity and loading-skeleton feature | Open, draft, unmerged; 19 commits ahead and 4 behind current `main`, diverged from the pre-Phase-3 base. Standalone CI passed, but visual review identified a Practice answer-row theme mismatch and missing page-level rejected-request lifecycle coverage. Reconcile and fix before merge. |
-| [#67](https://github.com/justryan-n2d/CEStudy/pull/67) | Consolidated Google auth, profile, local history and user-keyed streak candidate | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; current `main` comparison: 99 commits ahead, 23 behind, diverged, GitHub mergeable=false. Reconcile after product roadmap Phases 3 and 4. |
+| [#74](https://github.com/justryan-n2d/CEStudy/pull/74) | Original connectivity/loading-skeleton branch | Closed, unmerged and superseded by merged PR #76. Do not reopen or merge this pre-Phase-3 branch. |
+| [#76](https://github.com/justryan-n2d/CEStudy/pull/76) | Reconciled connectivity awareness and recoverable loading states | Closed, merged 2026-11-04 at `f5d608e2f271489419d6727679b72ec0ffea3a52`. Full CI [41814628057](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628057), dedicated workflow [41814628121](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628121) with 604/604 assertions, and secret scan [41814628030](https://github.com/justryan-n2d/CEStudy/actions/runs/41814628030) passed. |
+| [#67](https://github.com/justryan-n2d/CEStudy/pull/67) | Consolidated Google auth, profile, local history and user-keyed streak candidate | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; current `main` comparison: 99 commits ahead, 31 behind, diverged, GitHub mergeable=false. Reconcile after product roadmap Phases 3 and 4. |
 | [#44](https://github.com/justryan-n2d/CEStudy/pull/44) | Earlier parallel account/streak candidate | Open, draft and not the integration target. Do not merge separately. |
 | [#64-#66](https://github.com/justryan-n2d/CEStudy/pull/64) | Earlier/stacked source slices | Open, draft. Treat as source history for PR #67 only; do not merge independently. |
 
-**PR #69:** merged 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. It adds the binding design-quality and anti-template standard and tool-neutral repository guidance. It does not change application code, production configuration, authentication, or database state.
+**PR #69:** merged 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`; adds the binding design-quality/anti-template standard and tool-neutral repository guidance.
+
+**PR #77:** merged 2026-11-04 at `b8e0a2843325f4b940e30e4b29b3890282ca0dac`; adds the binding Decision-Light Design standard. Its branch CI [41821097351](https://github.com/justryan-n2d/CEStudy/actions/runs/41821097351) and secret scan [41821097200](https://github.com/justryan-n2d/CEStudy/actions/runs/41821097200) passed.
 
 **Merge rule:** Before any feature merge, verify current base/head SHAs and branch relationship, review the complete diff, and rerun required CI, secret scanning and relevant security tests. PR #67 is not ready for merge in its current diverged state.
 
@@ -70,7 +73,7 @@ Task 1 fixed a demonstrated SubjectPage route-transition bug. Task 2 added contr
 
 **Safeguards preserved:** no live lesson/question was published; no live database row, schema, RLS policy, production Supabase/OAuth setting or production deployment configuration was changed by these PRs. The operational release phase remains Phase 7; Phase 3 completion is not broad-launch approval.
 
-**Next product-design workstream:** Complete documentation task A, then run the deferred site-wide Decision-Light audit C across existing routes and significant task states. **Next product implementation workstream:** Phase 4, Practice Workspace, remains not started and is gated on audit C. Keep the connectivity/loading-skeleton PR #74 separate until it is reconciled with current main and the identified Practice skeleton visual issue and rejection-lifecycle coverage are addressed.
+**Next product-design workstream:** Source-level Decision-Light audit C is recorded in [the audit report](reviews/2026-11-04-decision-light-site-wide-audit.md), covering all 21 registered route patterns. Owner triage and live visual/interaction validation remain outstanding. **Next product implementation workstream:** Phase 4, Practice Workspace, remains not started and gated on C sign-off. PR #76 connectivity/loading recovery is already merged; original PR #74 is closed and superseded.
 
 ## Latest production and mainline verification (2026-11-04)
 
