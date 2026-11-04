@@ -9,12 +9,11 @@
 
 .unavailable-state__illustration {
   display: block;
+  flex: 0 0 auto;
   width: clamp(5.5rem, 18vw, 7.25rem);
-  aspect-ratio: 1;
+  height: auto;
   margin: 0 auto 0.25rem;
-  background-color: var(--ui-text-muted, #627487);
-  -webkit-mask: url("/illustrations/cloud-disconnect.svg") center / contain no-repeat;
-  mask: url("/illustrations/cloud-disconnect.svg") center / contain no-repeat;
+  color: var(--ui-text-muted, #627487);
 }
 
 .unavailable-state h1,
