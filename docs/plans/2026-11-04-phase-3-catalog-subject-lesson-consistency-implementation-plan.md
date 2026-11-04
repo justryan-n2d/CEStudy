@@ -60,7 +60,7 @@
 **Files:**
 - Create: `src/test/catalog-api.test.ts`
 - Create: `src/test/subject-page.test.tsx`
-- Create: `src/test/use-catalog.test.ts`
+- Create: `src/test/use-catalog.test.tsx`
 - Modify only if a failing test proves a behavior defect: `src/data/catalog-api.ts`, `src/hooks/useCatalog.ts`, `src/pages/SubjectPage.tsx`, `src/test/catalog-pages.test.tsx`
 
 **Interfaces:**
@@ -106,7 +106,7 @@ Verify initial loading, successful data delivery, error state and ignoring a lat
 
 - [ ] **Step 6: Run the focused hook tests**
 
-Run: `npm run test -- --run src/test/use-catalog.test.ts`
+Run: `npm run test -- --run src/test/use-catalog.test.tsx`
 Expected: the current hook behavior is documented by passing assertions. If a required lifecycle behavior is absent, keep the specific failing assertion as a regression test.
 
 - [ ] **Step 7: Run the Catalog/Subject integration tests**
