@@ -1,11 +1,11 @@
 # CEStudy project status
 
 **Last updated:** 2026-11-04  
-**Current workstream:** Product roadmap Phase 3, Catalog/Subject/Study consistency. Three controlled implementation slices have passed CI in draft PRs #71-#73; owner visual review and integration are still pending.  
+**Current workstream:** Product roadmap Phase 4, Practice Workspace. Blueprint Academy Phase 3, Catalog/Subject/Study consistency, is complete and integrated into `main` through PRs #70-#73.  
 **Operational release phase:** **Phase 7, pre-launch hardening and release gates.**  
-**Release status:** CEStudy is **not approved for a broad student launch**. A read-only live Supabase query on 2026-11-04 reconfirmed 72 catalog subjects, 52 practice questions and 13 lessons; all 52 questions and all 13 lessons remain `needs-review`, with zero published rows. Documentation and planning work does not approve content publication, a broad launch, or production deployment.
+**Release status:** CEStudy is **not approved for a broad student launch**. A read-only live Supabase query on 2026-11-04 reconfirmed 72 catalog subjects, 52 practice questions and 13 lessons; all 52 questions and all 13 lessons remain `needs-review`, with zero published rows. Phase 3 completion does not approve content publication, a broad launch, or production deployment.
 
-**Verified main:** `ad96cc6148b95b563f247d9254bea5a6858b3cd0` (2026-11-04). PR #69 is merged. Current main CI passed 151 tests across 26 files and 1,682/1,682 theme/navigation assertions; the live Chromium smoke run passed 135/135 checks. See the evidence section below.
+**Verified main:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186` (2026-11-04). Post-merge CI [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed 177 tests across 29 files, lint, dependency audit, production build, 1,757/1,757 theme/browser assertions, backup checks and Supabase migration/RLS tests. Live Chromium smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed. See the evidence section below.
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev)
 
@@ -35,11 +35,12 @@
 
 | PR | Current role | State and next gate |
 |---|---|---|
-| [#70](https://github.com/justryan-n2d/CEStudy/pull/70) | Documentation reconciliation and Phase 3 plan | Open, draft, docs-only. Records the owner's learning-objectives decision and Phase 3 status; not merged. |
-| [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Phase 3 Task 1: Catalog API, SubjectPage and `useCatalog` contracts | Open, draft, unmerged. CI passed 164 tests / 29 files and 1,682/1,682 existing browser assertions. |
-| [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Phase 3 Task 2: published lesson API and Study reader contracts | Open, draft, unmerged. CI passed 163 tests / 26 files and 1,682/1,682 existing browser assertions. |
-| [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Phase 3 Task 3: synthetic populated lesson math/browser verification | Open, draft, unmerged. CI passed 152 tests / 26 files and 1,757/1,757 browser assertions; before/after visual artifact uploaded through 2026-11-11. |
-| [#67](https://github.com/justryan-n2d/CEStudy/pull/67) | Consolidated Google auth, profile, local history and user-keyed streak candidate | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; current `main` comparison: 99 commits ahead, 19 behind, diverged, GitHub mergeable=false. Reconcile after product roadmap Phases 3 and 4. |
+| [#70](https://github.com/justryan-n2d/CEStudy/pull/70) | Phase 3 documentation and implementation plan | Closed, merged 2026-11-04 at `004f5e971fdb2a755619708c1a99dbea4bc93550`. |
+| [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Phase 3 Task 1: Catalog API, SubjectPage and `useCatalog` contracts | Closed, merged 2026-11-04 at `d8c3e2bf62b4bf1e0f106d923d76981125ff996b`; includes the reproduced/fixed stale-subject route state. |
+| [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Phase 3 Task 2: published lesson API and Study reader contracts | Closed, merged 2026-11-04 at `c24736168c1e49a6f39c89a7eabb7abb69480932`. |
+| [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Phase 3 Task 3: synthetic populated lesson math/browser verification | Closed, merged 2026-11-04 at `849c9d707b0cafd8c39ab63d9bf57260c54dd186`. |
+| [#74](https://github.com/justryan-n2d/CEStudy/pull/74) | Separate connectivity and loading-skeleton feature | Open, draft, unmerged; 19 commits ahead and 4 behind current `main`, diverged from the pre-Phase-3 base. Standalone CI passed, but visual review identified a Practice answer-row theme mismatch and missing page-level rejected-request lifecycle coverage. Reconcile and fix before merge. |
+| [#67](https://github.com/justryan-n2d/CEStudy/pull/67) | Consolidated Google auth, profile, local history and user-keyed streak candidate | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; current `main` comparison: 99 commits ahead, 23 behind, diverged, GitHub mergeable=false. Reconcile after product roadmap Phases 3 and 4. |
 | [#44](https://github.com/justryan-n2d/CEStudy/pull/44) | Earlier parallel account/streak candidate | Open, draft and not the integration target. Do not merge separately. |
 | [#64-#66](https://github.com/justryan-n2d/CEStudy/pull/64) | Earlier/stacked source slices | Open, draft. Treat as source history for PR #67 only; do not merge independently. |
 
@@ -49,23 +50,35 @@
 
 ## Product roadmap Phase 3 implementation status (2026-11-04)
 
-All three planned Phase 3 implementation slices are CI-verified in separate draft PRs: [Task 1 #71](https://github.com/justryan-n2d/CEStudy/pull/71), [Task 2 #72](https://github.com/justryan-n2d/CEStudy/pull/72), and [Task 3 #73](https://github.com/justryan-n2d/CEStudy/pull/73). Task 1 includes a focused SubjectPage stale-route fix. Task 2 adds tests only because current StudyPage/lesson API behavior already met the contract. Task 3 adds a synthetic published lesson fixture to the CI browser suite without changing live content.
+**Status: COMPLETE AND INTEGRATED.** The owner authorized the merge after reviewing the implementation plan, CI results and the populated-lesson screenshots. PRs #70-#73 were squash-merged in dependency order:
 
-Latest Phase 3 evidence:
-- Task 1: [CI 41781851208](https://github.com/justryan-n2d/CEStudy/actions/runs/41781851208), 164 tests across 29 files; 1,682/1,682 browser assertions.
-- Task 2: [CI 41783133738](https://github.com/justryan-n2d/CEStudy/actions/runs/41783133738), 163 tests across 26 files; 1,682/1,682 browser assertions.
-- Task 3: [CI 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166), 152 tests across 26 files; 1,757/1,757 browser assertions including the synthetic lesson at five widths in both themes.
-- Full-history secret scan [41784514136](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514136) scanned 1,233 commits with no leaks.
-- The populated-lesson run uploaded `cestudy-populated-lesson-visual-review` screenshots, including the empty reviewer baseline and populated lesson at 390px/1440px in Light/Dark; artifact expires 2026-11-11.
+| PR | Integrated deliverable | Merge commit |
+|---|---|---|
+| [#70](https://github.com/justryan-n2d/CEStudy/pull/70) | Canonical roadmap reconciliation and Phase 3 implementation plan | `004f5e971fdb2a755619708c1a99dbea4bc93550` |
+| [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Catalog API, `useCatalog`, SubjectPage contracts and stale-route correction | `d8c3e2bf62b4bf1e0f106d923d76981125ff996b` |
+| [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Published lesson API and Study reader regression contracts | `c24736168c1e49a6f39c89a7eabb7abb69480932` |
+| [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Synthetic populated-lesson math and both-theme browser verification | `849c9d707b0cafd8c39ab63d9bf57260c54dd186` |
 
-**Important:** these changes are still draft PRs, not part of `main`. Product Phase 3 remains current until the owner completes visual review, explicitly authorizes merge, and the integrated mainline passes verification. No live lesson/question was published, and no live Supabase rows, RLS, OAuth or production settings changed.
+**Post-merge verification on final main `849c9d7`:**
+- [CI run 41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed: 177 tests across 29 files, ESLint, dependency audit, Vite production build, backup crypto/retention/verification tests, isolated Supabase migration/RLS tests, and 1,757/1,757 theme/browser assertions.
+- [Live Chromium smoke run 41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) completed successfully.
+- [Push secret scan 41797726053](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726053) completed successfully. The individual Phase 3 PR heads also passed their full-history secret-scan checks; PR #73's [run 41784514136](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514136) scanned 1,233 commits with no leaks.
+- The populated lesson visual-review artifact from [CI run 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166) was inspected before merge. It covers the empty reviewer baseline and a synthetic populated lesson in Light/Dark at 390px and 1440px; the automated browser matrix also covers 320, 390, 768, 1024 and 1440px.
+
+Task 1 fixed a demonstrated SubjectPage route-transition bug. Task 2 added contract tests because the existing Study reader/API implementation already met the verified requirements. Task 3 verifies the shared Markdown/KaTeX route without publishing live content. Learning objectives remain searchable metadata only and are not rendered as a separate lesson section.
+
+**Safeguards preserved:** no live lesson/question was published; no live database row, schema, RLS policy, production Supabase/OAuth setting or production deployment configuration was changed by these PRs. The operational release phase remains Phase 7; Phase 3 completion is not broad-launch approval.
+
+**Next product workstream:** Phase 4, Practice Workspace. It is ready to be planned; Phase 4 implementation has not started. Keep the connectivity/loading-skeleton PR #74 separate until it is reconciled with current main and the identified Practice skeleton visual issue and rejection-lifecycle coverage are addressed.
 
 ## Latest production and mainline verification (2026-11-04)
 
-- **Main CI:** [run 41775563340](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340) on `ad96cc6` passed lint, dependency audit, production build, backup encryption/retention checks, isolated Supabase migration/RLS tests, and **151 tests across 26 files**.
-- **Theme/navigation browser checks:** the same CI run passed **1,682/1,682 assertions** across 13 routes, both themes and viewports 320, 390, 768, 1024 and 1440 px.
-- **Live Chromium:** [run 41775770082](https://github.com/justryan-n2d/CEStudy/actions/runs/41775770082) passed **135/135 checks**, with zero failures and zero browser/runtime errors. It checked direct routes, response headers, Supabase requests using the publishable key, the published-only practice endpoint, and 320/1440 px production overflow.
-- **Full-history secret scan:** scheduled run [41433925558](https://github.com/justryan-n2d/CEStudy/actions/runs/41433925558) on 2026-11-02 scanned 1,191 commits / about 4.53 MB and reported no leaks. The PR #69 merge push scan also passed; its merge-only range reported zero commits scanned, so it is not described as a fresh full-history scan.
+- **Final Phase 3 main:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186`.
+- **Post-merge CI:** [run 41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed 177 tests across 29 files, ESLint, dependency audit, production build, backup crypto/retention/verification tests and isolated Supabase migration/RLS tests.
+- **Theme and responsive browser checks:** the same CI run passed 1,757/1,757 assertions, including the synthetic populated lesson in Light and Dark at all five widths (320, 390, 768, 1024 and 1440 px).
+- **Live Chromium:** [run 41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) completed successfully after the final Phase 3 merge.
+- **Secret scanning:** push scan [41797726053](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726053) succeeded. Phase 3 PR heads also had successful secret scans; the full-history scan [41784514136](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514136) scanned 1,233 commits with no leaks.
+- **Earlier baseline evidence:** before Phase 3 integration, main commit `ad96cc6` passed [CI 41775563340](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340) with 151 tests / 26 files and 1,682/1,682 theme/navigation assertions; live smoke [41775770082](https://github.com/justryan-n2d/CEStudy/actions/runs/41775770082) passed 135/135. These are retained as historical pre-Phase-3 checks.
 - **Backup:** [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) on 2026-11-01 explicitly verified `catalog_subjects`, `practice_questions` and `subject_lessons`, uploaded the encrypted archive/checksum, read both back, verified the remote marker, and retained four verified sets while hiding three stale/incomplete artifacts.
 - **Current live data:** read-only Supabase query on 2026-11-04 returned 72 catalog subjects, 52 practice questions (all `needs-review`) and 13 lessons (all `needs-review`). No content was published or changed.
 

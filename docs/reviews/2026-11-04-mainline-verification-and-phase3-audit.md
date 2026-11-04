@@ -179,3 +179,36 @@ The latest full-history Gitleaks run [41784514136](https://github.com/justryan-n
 The latest browser run uploaded artifact `cestudy-populated-lesson-visual-review`, containing before/after empty-reviewer and populated-lesson screenshots at 390px and 1440px in Light and Dark. The artifact expires 2026-11-11. Its human visual comparison remains an owner review item.
 
 **Integration boundary:** PRs #71-#73 are draft and unmerged. Main remains at the recorded baseline until the owner explicitly authorizes integration. No live database, RLS, production Supabase configuration, OAuth settings, production deployment or lesson publication was changed by these Phase 3 slices.
+
+
+## 10. Post-integration verification and Phase 3 closeout (2026-11-04)
+
+The earlier sections of this document are a point-in-time audit of `main` at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. They are retained as historical baseline evidence. The Phase 3 integration and post-merge checks below supersede the earlier draft/unmerged status.
+
+### Phase 3 merge record
+
+| PR | Integrated scope | Merge commit |
+|---|---|---|
+| [#70](https://github.com/justryan-n2d/CEStudy/pull/70) | Canonical roadmap and Phase 3 plan reconciliation | `004f5e971fdb2a755619708c1a99dbea4bc93550` |
+| [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Catalog/Subject contracts and stale-route correction | `d8c3e2bf62b4bf1e0f106d923d76981125ff996b` |
+| [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Published lesson API and Study reader contracts | `c24736168c1e49a6f39c89a7eabb7abb69480932` |
+| [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Synthetic populated lesson math and both-theme visual regression | `849c9d707b0cafd8c39ab63d9bf57260c54dd186` |
+
+Final `main` after PR #73 is `849c9d707b0cafd8c39ab63d9bf57260c54dd186`.
+
+### Post-merge verification
+
+- [CEStudy CI run 41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) completed successfully on final main. It passed 177 tests across 29 files, ESLint, dependency audit, production build, 1,757/1,757 theme/browser assertions, backup crypto/retention/verification tests, and isolated Supabase migration/RLS tests.
+- [Live production Chromium smoke run 41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) completed successfully.
+- [Push secret scan 41797726053](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726053) completed successfully. The Phase 3 PR heads also passed their required secret scans; PR #73's [full-history scan 41784514136](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514136) scanned 1,233 commits with no leaks.
+- The populated-lesson visual artifact attached to [run 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166) was inspected before merge. It contains synthetic lesson screenshots in Light and Dark at mobile and desktop widths, plus the empty reviewer baseline. Artifact retention ends 2026-11-11.
+
+### Phase 3 result and remaining boundaries
+
+Product-roadmap Phase 3 is **complete and integrated**. The catalog, subject detail, published lesson reader/API contracts, stale-route correction, and populated lesson math verification now reside on `main`. No live lesson/question was published; no live database rows, schema, RLS policies, production Supabase/OAuth settings, or production deployment configuration were changed.
+
+The overall operational release work remains Phase 7. Managed-Supabase restore, B2 lifecycle and failure notifications, protected key recovery copies, physical-device/accessibility QA, qualified human academic review and the controlled student pilot remain separate release gates.
+
+Phase 4, Practice Workspace, is the next product-roadmap workstream. It has not yet started.
+
+The connectivity/loading-skeleton feature in [PR #74](https://github.com/justryan-n2d/CEStudy/pull/74) is separate from Phase 3. Its standalone automated checks passed, but the branch was created from the pre-Phase-3 mainline and must be reconciled with current main. Visual review identified a mismatch in Practice answer-row placeholder colors, and the page-level rejection lifecycle tests do not yet cover all three request families. Do not merge PR #74 until those items are corrected and its checks pass on the refreshed branch.
