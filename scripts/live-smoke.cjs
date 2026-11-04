@@ -163,6 +163,16 @@ async function main() {
         const sidebar = page.getByRole("dialog", { name: "CEStudy navigation" });
         check("Left sidebar opens by tap", await sidebar.isVisible().catch(() => false), "drawer opened");
         const pages = sidebar.getByRole("navigation", { name: "CEStudy pages" });
+        const yearLevelsButton = pages.getByRole("button", { name: "Year Levels" });
+        check("Mobile sidebar keeps the Year Levels disclosure",
+          await yearLevelsButton.isVisible().catch(() => false));
+        await yearLevelsButton.click();
+        const yearLevelsPanel = sidebar.getByRole("region", { name: "Year-level navigation" });
+        check("Mobile Year Levels menu opens inside the sidebar",
+          await yearLevelsPanel.isVisible().catch(() => false));
+        check("Mobile Year Levels menu does not duplicate Subject Catalog",
+          await pages.getByRole("link", { name: "Subject Catalog" }).count() === 1 &&
+          await yearLevelsPanel.getByRole("link", { name: "Subject Catalog" }).count() === 0);
         check("Sidebar includes support and feedback",
           await pages.getByRole("link", { name: "Support us" }).count() === 1 &&
           await pages.getByRole("link", { name: "Send feedback" }).count() === 1,
