@@ -300,11 +300,20 @@ async function main() {
           const messageBox = message ? message.getBoundingClientRect() : null;
           const retryBox = retry ? retry.getBoundingClientRect() : null;
           const artStyle = illustration ? getComputedStyle(illustration) : null;
+          const paths = illustration ? [...illustration.querySelectorAll("path")] : [];
+          const illustrationHasPaintedPaths = paths.some((path) => {
+            const bounds = path.getBBox();
+            const fill = getComputedStyle(path).fill;
+            return bounds.width > 0 && bounds.height > 0 && fill !== "none" && fill !== "transparent";
+          });
           return {
             title: element.querySelector("h1,h2,h3")?.textContent?.trim() || "",
             illustrationVisible: Boolean(artBox && artBox.width > 0 && artBox.height > 0),
-            illustrationMask: artStyle?.maskImage || artStyle?.webkitMaskImage || "",
-            illustrationColor: artStyle?.backgroundColor || "",
+            illustrationTagName: illustration?.tagName.toLowerCase() || "",
+            illustrationPathCount: paths.length,
+            illustrationHasPaintedPaths,
+            illustrationColor: artStyle?.color || "",
+            illustrationFill: paths[0] ? getComputedStyle(paths[0]).fill : "",
             retryText: retry?.textContent?.trim() || "",
             retryDisabled: retry?.disabled ?? true,
             retryOpacity: retry ? Number(getComputedStyle(retry).opacity) : 0,
@@ -315,8 +324,10 @@ async function main() {
             viewportWidth: window.innerWidth,
           };
         });
-        check("Shared unavailable illustration and Retry render on " + activeRoute,
-          ui.illustrationVisible && ui.illustrationMask !== "none" && Boolean(ui.illustrationColor) &&
+        check("Shared unavailable SVG artwork and Retry render on " + activeRoute,
+          ui.illustrationVisible && ui.illustrationTagName === "svg" &&
+            ui.illustrationPathCount === 3 && ui.illustrationHasPaintedPaths &&
+            Boolean(ui.illustrationColor) && ui.illustrationFill === ui.illustrationColor &&
             ui.retryText === "Retry" && !ui.retryDisabled && ui.retryOpacity >= 0.99 &&
             ui.retryBelowMessage && ui.retryWidth >= 128,
           JSON.stringify(ui));
@@ -332,10 +343,14 @@ async function main() {
             { timeout: 5000 },
           );
           const themedColor = await alert.locator("[data-testid='unavailable-state-illustration']")
-            .evaluate((element) => getComputedStyle(element).backgroundColor);
-          check(themeName + " theme styles the shared unavailable illustration: " + activeRoute,
-            Boolean(themedColor) && themedColor !== "rgba(0, 0, 0, 0)",
-            "illustration color=" + themedColor);
+            .evaluate((element) => ({
+              color: getComputedStyle(element).color,
+              fill: getComputedStyle(element.querySelector("path")).fill,
+            }));
+          check(themeName + " theme colors the inline unavailable SVG paths: " + activeRoute,
+            Boolean(themedColor.color) && themedColor.fill === themedColor.color &&
+              themedColor.color !== "rgba(0, 0, 0, 0)",
+            JSON.stringify(themedColor));
           await page.screenshot({
             path: path.join("artifacts", "unavailable-" + route.id + "-" + themeName.toLowerCase() + "-" + width + "px.png"),
             fullPage: true,
