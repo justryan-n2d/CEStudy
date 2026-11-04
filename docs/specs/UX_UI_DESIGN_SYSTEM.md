@@ -2,7 +2,7 @@
 
 **Status:** Brand foundations established; owner has approved the Light/Dark toggle, website navigation direction, and Practice workspace layout. No application implementation is authorized by this document.  
 **Platforms:** Website-first responsive web now; native Android and iOS later
-**Decision update:** 2026-10-29, anti-AI-slop design standard added; 2026-10-23, device-local theme preference approved for the first release  
+**Decision update:** 2026-11-04, explicit five-signal anti-AI-slop review guidance added; 2026-10-23, device-local theme preference approved for the first release  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
 
 **Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md) and the [modern gamified UX/UI decision plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md).
@@ -51,6 +51,23 @@ This standard does not ban simplicity, reusable components, cards, shadows, grad
 | Arbitrary type combinations or display typography | Weakens hierarchy and technical readability. | Existing Inter/system stack and established type scale; use emphasis only for hierarchy. | Typography has consistent roles, readable line length, and supports equations and long-form reading. |
 | Gamification overload | Rewards can overpower study content and encourage engagement without learning value. | Quiet, optional progress summaries and contextual feedback. | Every mechanic defines what it measures, why it helps learning, how it is verified, and how distraction/privacy are controlled. |
 | Fake functionality or content | Users cannot trust a control, availability label, statistic, or engineering explanation. | Real behavior or explicitly labelled prototype state; verified content and provenance. | All interactive controls have defined behavior and all factual metrics/statuses have an actual source. |
+| Purple/blue overload or gradients used as a default visual identity | Repeated saturated purple, blue-purple gradients, glow, or gradient-filled controls can make unrelated pages look like the same generic AI-generated SaaS template and compete with CEStudy's own identity. | Use the approved CEStudy blue `#0754B5` selectively, with neutral surfaces and semantic colors that communicate real states. | Color and gradients have a documented purpose; the interface does not depend on a purple/blue gradient aesthetic to look finished or establish hierarchy. |
+| Centering every section by default | Repeated centered headlines, paragraphs, cards, and controls ignore reading direction and content shape, making dense educational material harder to scan. | Choose alignment for the task. Use left alignment for most reading, explanatory, and technical content; reserve centered alignment for compact, genuinely balanced contexts. | Alignment is justified by content and task, not applied as a page-wide template. Long-form text, lists, tables, equations, and workspaces remain easy to scan. |
+| Em dashes used as a default copy style | Habitual em-dash phrasing can make otherwise different sections sound templated and interrupt concise instructional copy. | Write direct, natural sentences. Prefer periods, commas, colons, or parentheses when they express the relationship clearly. | Copy is read aloud and edited for natural rhythm; em dashes are not used as a repetitive stylistic crutch. |
+| Arbitrarily color-highlighted words in headlines | Coloring one word or phrase only for visual novelty creates artificial emphasis and marketing gloss without clarifying meaning. | Use the established type hierarchy. Apply color emphasis only when it communicates a real link, state, category, or approved semantic distinction. | Every differently colored headline fragment has a specific meaning; removing the color would remove useful information, not just decoration. |
+| Repeated or unnecessary eyebrow labels | Small uppercase labels above every heading add visual noise and repeat information that the headline already communicates. | Start with a clear heading. Keep an eyebrow only when it adds useful context such as category, section ownership, status, or wayfinding. | Each eyebrow contributes information not already present in the heading or nearby navigation; remove redundant labels. |
+
+### Five recurring AI-generated design and copy signals
+
+Treat these as explicit review signals, not automatic proof that a design is poor. A technique may be appropriate in a specific context. The concern is unexamined repetition, lack of purpose, and use as a substitute for hierarchy or useful content.
+
+1. **Purple/blue overload and gradients:** Do not default to saturated purple, blue-purple gradients, glowing surfaces, or gradient-filled calls to action. Preserve CEStudy's approved `#0754B5` brand blue and use it with restraint. A gradient is acceptable only when it serves a clear, documented purpose and does not weaken contrast or product identity.
+2. **Everything centered:** Do not center every headline, paragraph, section, card, and control by habit. Choose alignment from the content and user task. Reading and technical material will generally benefit from left alignment; centered composition remains valid for compact states or content that is genuinely balanced.
+3. **Em-dash-heavy copy:** Do not use em dashes as a default writing rhythm or as a shortcut for connecting every thought. Prefer concise, natural sentences and ordinary punctuation. An em dash is not prohibited when it is genuinely the clearest grammatical choice.
+4. **Decorative color inside headlines:** Do not highlight arbitrary words in a headline with a different color solely to make the text appear more dynamic. Color emphasis must communicate a real semantic distinction, link, state, or approved brand role.
+5. **Eyebrow-label overuse:** Do not place small uppercase labels above every heading or section. Keep an eyebrow only when it adds useful context, category, status, or wayfinding that the heading does not already provide.
+
+The review question is not whether one of these techniques appears once. Ask whether it is repeated without a task-based reason, adds redundant emphasis, or makes CEStudy resemble a generic template.
 
 ### Choose layout by the job being done
 
@@ -99,6 +116,11 @@ Gamification must remain secondary to learning content and useful feedback. Each
 Reviewers and coding agents must answer all items before a significant new page, component family, or redesign is considered ready:
 
 - [ ] Does the design communicate its purpose and target users clearly?
+- [ ] Is purple/blue color and gradient use restrained, with the approved CEStudy blue used intentionally rather than a generic gradient aesthetic?
+- [ ] Is alignment chosen for the content and task, rather than centering every section by default?
+- [ ] Is copy natural and concise, without repetitive em-dash phrasing?
+- [ ] Do differently colored words or phrases in headlines communicate real meaning rather than decorative emphasis?
+- [ ] Does each eyebrow label add context or wayfinding that the heading does not already communicate?
 - [ ] Is the layout appropriate for the actual task, rather than copied from a generic template?
 - [ ] Are nested cards and containers limited to cases with a clear purpose?
 - [ ] Can any decorative component be removed without reducing usability, comprehension, identity, or meaningful feedback?
