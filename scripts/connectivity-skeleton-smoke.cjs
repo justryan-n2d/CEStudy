@@ -322,8 +322,8 @@ async function main() {
     check("Sidebar enters an accessible closing state before visual exit",
       closingState.closing && closingState.hiddenFromAssistiveTechnology,
       JSON.stringify(closingState));
-    check("Sidebar visibly slides to the right while closing",
-      drawerClosingLeft > drawerStartLeft + 20,
+    check("Sidebar visibly slides to the left while closing",
+      drawerClosingLeft < drawerStartLeft - 20,
       JSON.stringify({ drawerStartLeft, drawerClosingLeft }));
     await page.waitForFunction(() => {
       const layer = document.querySelector(".site-sidebar-layer");
