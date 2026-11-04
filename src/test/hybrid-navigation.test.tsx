@@ -112,6 +112,22 @@ describe("CEStudy sidebar navigation", () => {
     expect(within(panel).queryByRole("link", { name: "Math Foundations" })).not.toBeInTheDocument();
   });
 
+  it("keeps keyboard focus inside the open sidebar", async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    await user.click(screen.getByRole("button", { name: "Open navigation menu" }));
+    const drawer = screen.getByRole("dialog", { name: "CEStudy navigation" });
+    const close = within(drawer).getByRole("button", { name: "Close navigation menu" });
+    const dark = within(drawer).getByRole("button", { name: "Dark" });
+
+    expect(close).toHaveFocus();
+    await user.keyboard("{Shift>}{Tab}{/Shift}");
+    expect(dark).toHaveFocus();
+    await user.keyboard("{Tab}");
+    expect(close).toHaveFocus();
+  });
+
   it("closes on Escape and returns focus to the menu trigger", async () => {
     const user = userEvent.setup();
     renderLayout();
