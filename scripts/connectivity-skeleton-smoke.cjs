@@ -336,7 +336,9 @@ async function main() {
         check("Unavailable layout has no horizontal overflow: " + activeRoute,
           ui.documentWidth <= ui.viewportWidth + 1, JSON.stringify(ui));
 
-        const themeGroup = page.getByRole("dialog", { name: "CEStudy navigation" }).getByRole("group", { name: "Color theme" });
+        await page.getByRole("button", { name: "Open navigation menu" }).click();
+        const unavailableThemeDrawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+        const themeGroup = unavailableThemeDrawer.getByRole("group", { name: "Color theme" });
         for (const themeName of ["Light", "Dark"]) {
           await themeGroup.getByRole("button", { name: themeName }).click();
           await page.waitForFunction(
