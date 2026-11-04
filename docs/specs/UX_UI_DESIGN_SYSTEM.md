@@ -2,7 +2,7 @@
 
 **Status:** Brand foundations established; owner has approved the Light/Dark toggle, website navigation direction, and Practice workspace layout. No application implementation is authorized by this document.  
 **Platforms:** Website-first responsive web now; native Android and iOS later
-**Decision update:** 2026-11-04, explicit five-signal anti-AI-slop review guidance added; 2026-10-23, device-local theme preference approved for the first release  
+**Decision update:** 2026-11-04, explicit five-signal design quality review guidance added; 2026-10-23, device-local theme preference approved for the first release  
 **Product goal:** Help Civil Engineering students find subjects and useful math foundations quickly.
 
 **Website strategy (updated 2026-10-21):** CEStudy is website-first, not mobile-first. Plan the desktop information architecture and primary website workflows first, then adapt the approved structure for tablet and phone browsers. Mobile-browser usability remains required, but must not dictate the entire website architecture. The future native app will receive a separately designed interaction model. See the [dated website-first information architecture plan](../plans/2026-10-21-website-first-information-architecture-plan.md) and the [modern gamified UX/UI decision plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md).
@@ -17,7 +17,7 @@
 6. **Motion with purpose.** Motion may show hover, focus, selection, feedback, or the arrival of content. It must not delay studying or act as decoration.
 7. **Performance is a design requirement.** Prefer CSS and existing dependencies; avoid large animations, continuous effects, unnecessary image payloads, repeated data fetching, and gratuitous blur or shadow.
 
-## Anti-AI-slop design standard (binding)
+## Design quality and anti-template standard (binding)
 
 **Purpose:** Make CEStudy visually distinctive through deliberate, useful design rather than novelty or decoration. This standard applies to designers and coding agents proposing or changing any meaningful UI.
 
@@ -51,13 +51,13 @@ This standard does not ban simplicity, reusable components, cards, shadows, grad
 | Arbitrary type combinations or display typography | Weakens hierarchy and technical readability. | Existing Inter/system stack and established type scale; use emphasis only for hierarchy. | Typography has consistent roles, readable line length, and supports equations and long-form reading. |
 | Gamification overload | Rewards can overpower study content and encourage engagement without learning value. | Quiet, optional progress summaries and contextual feedback. | Every mechanic defines what it measures, why it helps learning, how it is verified, and how distraction/privacy are controlled. |
 | Fake functionality or content | Users cannot trust a control, availability label, statistic, or engineering explanation. | Real behavior or explicitly labelled prototype state; verified content and provenance. | All interactive controls have defined behavior and all factual metrics/statuses have an actual source. |
-| Purple/blue overload or gradients used as a default visual identity | Repeated saturated purple, blue-purple gradients, glow, or gradient-filled controls can make unrelated pages look like the same generic AI-generated SaaS template and compete with CEStudy's own identity. | Use the approved CEStudy blue `#0754B5` selectively, with neutral surfaces and semantic colors that communicate real states. | Color and gradients have a documented purpose; the interface does not depend on a purple/blue gradient aesthetic to look finished or establish hierarchy. |
+| Purple/blue overload or gradients used as a default visual identity | Repeated saturated purple, blue-purple gradients, glow, or gradient-filled controls can make unrelated pages look like the same generic SaaS template and compete with CEStudy's own identity. | Use the approved CEStudy blue `#0754B5` selectively, with neutral surfaces and semantic colors that communicate real states. | Color and gradients have a documented purpose; the interface does not depend on a purple/blue gradient aesthetic to look finished or establish hierarchy. |
 | Centering every section by default | Repeated centered headlines, paragraphs, cards, and controls ignore reading direction and content shape, making dense educational material harder to scan. | Choose alignment for the task. Use left alignment for most reading, explanatory, and technical content; reserve centered alignment for compact, genuinely balanced contexts. | Alignment is justified by content and task, not applied as a page-wide template. Long-form text, lists, tables, equations, and workspaces remain easy to scan. |
 | Em dashes used as a default copy style | Habitual em-dash phrasing can make otherwise different sections sound templated and interrupt concise instructional copy. | Write direct, natural sentences. Prefer periods, commas, colons, or parentheses when they express the relationship clearly. | Copy is read aloud and edited for natural rhythm; em dashes are not used as a repetitive stylistic crutch. |
 | Arbitrarily color-highlighted words in headlines | Coloring one word or phrase only for visual novelty creates artificial emphasis and marketing gloss without clarifying meaning. | Use the established type hierarchy. Apply color emphasis only when it communicates a real link, state, category, or approved semantic distinction. | Every differently colored headline fragment has a specific meaning; removing the color would remove useful information, not just decoration. |
 | Repeated or unnecessary eyebrow labels | Small uppercase labels above every heading add visual noise and repeat information that the headline already communicates. | Start with a clear heading. Keep an eyebrow only when it adds useful context such as category, section ownership, status, or wayfinding. | Each eyebrow contributes information not already present in the heading or nearby navigation; remove redundant labels. |
 
-### Five recurring AI-generated design and copy signals
+### Five common template-driven design and copy pitfalls
 
 Treat these as explicit review signals, not automatic proof that a design is poor. A technique may be appropriate in a specific context. The concern is unexamined repetition, lack of purpose, and use as a substitute for hierarchy or useful content.
 
@@ -111,7 +111,7 @@ For each interactive element, document its trigger, result, available states, an
 
 Gamification must remain secondary to learning content and useful feedback. Each proposed XP, quest, streak, badge, leaderboard, or animation must specify: the learning/user benefit; the event or data that proves it; its visual priority; privacy and anti-abuse boundaries; and how it can be disabled or made less distracting where appropriate. A mechanic being independently toggleable does not approve its reward values, eligibility rules, ranking model, or default enabled state. Preserve the existing owner-approved boundaries in the [Modern Gamified UX/UI Decision Plan](../plans/2026-10-21-modern-gamified-ux-decision-plan.md); board-readiness claims and the deferred exam-specific features remain unapproved.
 
-### Anti-AI-slop review checklist (required before significant UI approval)
+### Design quality review checklist (required before significant UI approval)
 
 Reviewers and coding agents must answer all items before a significant new page, component family, or redesign is considered ready:
 
@@ -125,7 +125,7 @@ Reviewers and coding agents must answer all items before a significant new page,
 - [ ] Are nested cards and containers limited to cases with a clear purpose?
 - [ ] Can any decorative component be removed without reducing usability, comprehension, identity, or meaningful feedback?
 - [ ] Is hierarchy clear without excessive colors, borders, shadows, badges, icons, or type styles?
-- [ ] Does the page feel like CEStudy's Blueprint Academy direction rather than a generic AI-generated template or clone?
+- [ ] Does the page feel like CEStudy's Blueprint Academy direction rather than a generic template or clone?
 - [ ] Is all educational content accurate, useful, and appropriately verified, with units, assumptions, notation, and worked steps where needed?
 - [ ] Are primary actions discoverable and do all visible interactions have defined, truthful behavior?
 - [ ] Have responsive behavior, keyboard access, focus visibility, contrast, zoom/reflow, reduced motion, and relevant loading/empty/success/error/disabled states been considered?
@@ -253,9 +253,9 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Revision record
 
-- **2026-11-04:** Expanded the anti-AI-slop review standard with five explicit design/copy signals: purple/blue gradient overload, default-centered layouts, repetitive em-dash phrasing, decorative colored headline fragments, and redundant eyebrow labels. Expanded the required checklist from 12 to 17 items. Preserved context-sensitive exceptions, Blueprint Academy, existing brand assets/tokens, website-first IA, and approved theme behavior. Documentation only.
+- **2026-11-04:** Expanded the design quality and anti-template standard with five explicit design/copy signals: purple/blue gradient overload, default-centered layouts, repetitive em-dash phrasing, decorative colored headline fragments, and redundant eyebrow labels. Expanded the required checklist from 12 to 17 items. Preserved context-sensitive exceptions, Blueprint Academy, existing brand assets/tokens, website-first IA, and approved theme behavior. Documentation only.
 
-- **2026-10-29:** Added the binding anti-AI-slop standard, task-based layout selection guidance, nested-container acceptance criteria, interaction/prototype truth requirements, and a required design review checklist. Documentation only; approved product decisions and application code are unchanged.
+- **2026-10-29:** Added the binding design quality and anti-template standard, task-based layout selection guidance, nested-container acceptance criteria, interaction/prototype truth requirements, and a required design review checklist. Documentation only; approved product decisions and application code are unchanged.
 
 - **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
 - **2026-10-21:** Linked the modern gamified UX/UI decision plan and documented planning gates for quests, rewards, healthy engagement, exam evidence, and responsive navigation. Documentation-only change.
