@@ -218,4 +218,52 @@ describe("LaTeX math rendering",()=>{
     expect(document.querySelector(".markdown-content")?.textContent).toContain("This is a well-known example.");
   });
 
+
+  it("renders a practical review lesson with a topical outline, concepts, formulas, and worked steps", async () => {
+    const markdown = String.raw`## Topic outline
+- Standard form of a quadratic trinomial
+- Factoring into two linear expressions
+- Checking the resulting roots
+
+## Conceptual explanation
+A quadratic trinomial has a squared term, a linear term, and a constant. Factoring rewrites the expression as a product of simpler factors.
+
+## Formula and method
+The example starts with \(x^2 + 5x + 6 = 0\). We need two numbers whose product is 6 and whose sum is 5.
+
+\[
+x^2 + 5x + 6 = (x + 2)(x + 3)
+\]
+
+## Step-by-step worked solution
+Problem: Solve \(x^2 + 5x + 6 = 0\).
+
+1. Find two numbers with product 6 and sum 5: 2 and 3.
+2. Rewrite the trinomial as \( (x + 2)(x + 3) = 0 \).
+3. Set each factor equal to zero.
+
+\[
+x + 2 = 0 \quad \Rightarrow \quad x = -2
+\]
+
+\[
+x + 3 = 0 \quad \Rightarrow \quad x = -3
+\]
+
+The solutions are \(x=-2\) and \(x=-3\).`;
+
+    render(<MarkdownContent markdown={markdown} />);
+
+    expect(screen.getByRole("heading", { name: "Topic outline" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Conceptual explanation" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Formula and method" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Step-by-step worked solution" })).toBeInTheDocument();
+    expect(screen.getByText(/Find two numbers with product 6 and sum 5/)).toBeInTheDocument();
+
+    await waitFor(() => expect(document.querySelectorAll(".katex")).toHaveLength(8));
+    expect(document.querySelector(".katex-display")).toBeInTheDocument();
+    expect(document.querySelectorAll(".latex-math-error")).toHaveLength(0);
+    expect(document.querySelectorAll(".markdown-content ol li")).toHaveLength(3);
+  });
+
 });
