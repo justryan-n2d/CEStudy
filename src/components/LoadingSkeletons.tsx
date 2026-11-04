@@ -44,10 +44,10 @@ function SubjectCardPlaceholder() {
   );
 }
 
-function SubjectCardGrid() {
+function SubjectCardGrid({ count = 6 }: { count?: number }) {
   return (
     <div className="subject-grid">
-      {Array.from({ length: 6 }, (_, index) => <SubjectCardPlaceholder key={index} />)}
+      {Array.from({ length: count }, (_, index) => <SubjectCardPlaceholder key={index} />)}
     </div>
   );
 }
@@ -78,7 +78,7 @@ export function YearLevelSkeleton({ label }: { label: string }) {
                 <SkeletonHeading className="skeleton-line--medium" />
               </div>
             </div>
-            <SubjectCardGrid />
+            <SubjectCardGrid count={3} />
           </section>
         ))}
       </div>
