@@ -46,11 +46,36 @@ describe("homepage and year-level navigation", () => {
     expect(screen.queryByRole("link", { name: /view all years/i })).not.toBeInTheDocument();
     const marquee = document.querySelector(".home-marquee");
     expect(marquee).toHaveAttribute("aria-hidden", "true");
-    expect(marquee?.querySelectorAll(".home-marquee-group")).toHaveLength(2);
+    const groups = [...(marquee?.querySelectorAll(".home-marquee-group") ?? [])];
+    expect(groups).toHaveLength(2);
+    expect(groups[0]?.textContent).toBe(groups[1]?.textContent);
+    expect(groups[0]?.querySelectorAll(".home-marquee-item")).toHaveLength(14);
+    for (const subject of [
+      "Statics of Rigid Bodies",
+      "Fundamentals of Surveying",
+      "Mechanics of Deformable Bodies",
+      "Construction Materials and Testing",
+      "Structural Theory",
+      "Highway and Railroad Engineering",
+      "Principles of Steel Design",
+      "Principles of Reinforced/Prestressed Concrete",
+      "Hydrology",
+      "Hydraulics",
+      "Geotechnical Engineering 1 (Soil Mechanics)",
+      "Principles of Transportation Engineering",
+      "Quantity Surveying",
+      "Construction Methods and Project Management",
+    ]) {
+      expect(groups[0]?.textContent).toContain(subject);
+    }
+    expect(groups[0]?.textContent).not.toMatch(/learn by year|strengthen math foundations|practice step by step|build your ce foundation/i);
     expect(stylesheet).toContain("@keyframes cestudy-home-marquee");
-    expect(stylesheet).toContain("min-width: 100vw;");
-    expect(stylesheet).toContain("justify-content: space-around;");
-    expect(stylesheet).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.home-marquee-track\s*\{/);
+    expect(stylesheet).toContain(".home-marquee::before");
+    expect(stylesheet).toContain(".home-marquee::after");
+    expect(stylesheet).toContain("pointer-events: none;");
+    expect(stylesheet).not.toContain(".home-marquee:hover .home-marquee-track");
+    expect(stylesheet).not.toContain("animation-play-state: paused");
+    expect(stylesheet).toMatch(/@media\\s*\\(prefers-reduced-motion:\\s*reduce\\)[\\s\\S]*?\\.home-marquee-track\\s*\\{/);
     for (const year of ["First year", "Second year", "Third year", "Fourth year"]) {
       expect(screen.getByRole("link", { name: `Browse ${year} subjects` })).toBeInTheDocument();
     }
