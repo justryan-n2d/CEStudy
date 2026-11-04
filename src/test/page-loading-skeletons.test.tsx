@@ -1,4 +1,5 @@
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { CatalogSubject } from "../types/catalog";
@@ -98,6 +99,15 @@ const catalogRoutes = [
   },
 ];
 
+const retryRoutes = [
+  { name: "Subject Catalog", path: "/catalog", request: "catalog" },
+  { name: "Year Levels", path: "/year/2", request: "catalog" },
+  { name: "Math Foundations", path: "/math-foundations", request: "catalog" },
+  { name: "Subject Details", path: "/subjects/basic-algebra", request: "catalog" },
+  { name: "Study Reader", path: "/study/basic-algebra", request: "lessons" },
+  { name: "Practice", path: "/practice/basic-algebra", request: "practice" },
+] as const;
+
 describe("learning page loading skeletons", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -173,12 +183,31 @@ describe("learning page loading skeletons", () => {
     expect(await screen.findByRole("heading", { name: "Questions coming soon" })).toBeInTheDocument();
   });
 
-  it("shows page-specific errors rather than leaving skeletons visible after request failures", async () => {
+  it("shows a page-level error after a rejected request", async () => {
     mocks.fetchCatalogSubjects.mockRejectedValue(new Error("Catalog request failed."));
     renderPage("/catalog");
 
     expectSkeletonStatus("subject-grid", "Loading the subject catalog…");
     expect(await screen.findByRole("alert")).toHaveTextContent("Catalog unavailable");
+    expect(document.querySelector("[data-skeleton]")).not.toBeInTheDocument();
+  });
+
+  it.each(retryRoutes)("$name retries its failed request and leaves the unavailable state", async (route) => {
+    const user = userEvent.setup();
+    const request = route.request === "catalog"
+      ? mocks.fetchCatalogSubjects
+      : route.request === "lessons"
+        ? mocks.fetchPublishedLessons
+        : mocks.fetchPublishedPracticeQuestions;
+    request.mockRejectedValueOnce(new Error("Temporary request failure.")).mockResolvedValueOnce([]);
+
+    renderPage(route.path);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("unavailable");
+    await user.click(screen.getByRole("button", { name: "Retry" }));
+
+    await waitFor(() => expect(request).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
     expect(document.querySelector("[data-skeleton]")).not.toBeInTheDocument();
   });
 });
