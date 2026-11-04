@@ -51,4 +51,22 @@ describe("UnavailableState", () => {
     expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Return to subjects" })).toHaveAttribute("href", "/catalog");
   });
+
+  it("renders the disconnect artwork as real inline SVG paths, not an external CSS mask", () => {
+    render(
+      <UnavailableState
+        title="Catalog unavailable"
+        message="The subject catalog could not be loaded."
+        onRetry={vi.fn()}
+      />,
+    );
+
+    const illustration = screen.getByTestId("unavailable-state-illustration");
+    expect(illustration.tagName.toLowerCase()).toBe("svg");
+    expect(illustration).toHaveAttribute("viewBox", "0 0 24 24");
+    expect(illustration.querySelectorAll("path")).toHaveLength(3);
+    expect([...illustration.querySelectorAll("path")].every((path) =>
+      path.getAttribute("fill") === "currentColor"
+    )).toBe(true);
+  });
 });
