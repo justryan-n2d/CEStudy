@@ -2088,7 +2088,7 @@ body {
 }
 
 .site-sidebar-layer.is-closing .site-sidebar {
-  transform: translateX(105%);
+  transform: translateX(-105%);
 }
 
 .site-sidebar-heading {
