@@ -8,7 +8,7 @@ These instructions apply to repository-wide coding and review tasks. Follow the 
 - Keep the upstream skill separate. Do not copy or vendor its implementation into CEStudy, and do not add it as a production npm dependency.
 - Use the upstream project's current guidance as a design reference for visual direction, page patterns, typography, spacing, accessibility, responsive behavior, and quality checks.
 - A link in this repository does not install the skill or make it automatically active. Claim automatic activation only after confirming that the selected coding environment has installed and loaded the skill.
-- ChatGPT workflows may consult the published guidance manually. A compatible coding agent may use the actual skill only when its supported installation and access requirements are satisfied.
+- Any development environment may consult the published guidance manually. Automated tooling may use an installed skill only when its supported installation and access requirements are satisfied.
 
 ## Before changing UI or UX
 
