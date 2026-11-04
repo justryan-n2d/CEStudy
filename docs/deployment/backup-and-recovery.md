@@ -75,7 +75,7 @@ For a managed-Supabase-target recovery rehearsal (still outstanding), perform th
 
 - [x] Create the password-protected RSA private key and public certificate in Termux, commit the public certificate, and configure the database/B2 repository secrets.
 - [ ] Configure and confirm the B2 lifecycle rule for `termux/weekly/` and GitHub failed-workflow email notifications.
-- [x] Complete a successful live weekly-workflow run: [run 39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) succeeded on `main`, read the encrypted archive back for SHA-256 verification, and completed retention.
+- [x] Complete a successful live weekly-workflow run with the corrected three-table validator: [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) verified the current tables and remote archive/checksum/marker read-back.
 - [x] Decrypt the actual B2 backup in Termux, verify its checksum and AES-GCM authentication, restore its `public` application schema into isolated local PostgreSQL 18.2, and validate counts, RLS, and client permissions. Evidence: [restore drill](restore-drill-2026-10-16.md).
 - [x] Fresh encrypted archive, checksum and verification marker uploaded and read-back verified with the corrected three-table validator in [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868); four verified sets were retained and three stale/incomplete artifacts hidden.
 - [x] Run backup from corrected `main`: [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) logged successful verification for `catalog_subjects`, `practice_questions`, and `subject_lessons`, followed by archive/checksum/marker read-back and successful retention.
