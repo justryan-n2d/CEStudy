@@ -4,6 +4,8 @@
 
 CEStudy helps Civil Engineering students from first year through fourth year browse subjects, revisit prerequisite mathematics, and build toward a reliable practice library.
 
+**New contributor?** Start with the [repository guide](docs/REPOSITORY_GUIDE.md) for the code map, data flow, security boundaries, local checks, and contribution workflow.
+
 ## Current status
 
 **Live website:** [https://cestudy.pages.dev](https://cestudy.pages.dev), deployed on Cloudflare Pages. The old, failed legacy Cloudflare Worker named `cestudy` was removed; Pages remains the active frontend host.  
