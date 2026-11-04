@@ -77,10 +77,10 @@ Test these cases using the existing Supabase mock pattern:
 - A Supabase query error rejects with the existing safe user-facing catalog error, without exposing raw database details.
 - Static catalog records have unique slugs, valid year-level values (`1` to `4` or `null`), valid availability/classification values and non-empty source notes.
 
-- [ ] **Step 2: Verify the relevant API test failure**
+- [ ] **Step 2: Run the API characterization tests**
 
 Run: `npm run test -- --run src/test/catalog-api.test.ts`
-Expected: the new test file fails before implementation because the focused test contract does not yet exist. Do not weaken assertions to make the current implementation pass.
+Expected: assertions for behavior already present in `catalog-api.ts` pass. If a test exposes a real defect, isolate that assertion as a regression test and verify the failing behavior before changing production code. Do not force an artificial failure merely to create a RED step.
 
 - [ ] **Step 3: Add the Subject Page behavior tests**
 
@@ -94,19 +94,21 @@ Use `MemoryRouter` with `/subjects/:slug` and mock `fetchCatalogSubjects`. Verif
 - Related subjects exclude the current subject and contain no more than three records.
 - Basic Algebra continues to link directly to `/study/basic-algebra`.
 
-- [ ] **Step 4: Verify the relevant Subject Page test failure**
+- [ ] **Step 4: Run the Subject Page characterization tests**
 
 Run: `npm run test -- --run src/test/subject-page.test.tsx`
-Expected: the tests expose that the dedicated Subject Page contract has no existing test coverage. Any actual assertion failure after adding the tests must be evaluated against current behavior before changing the page.
+Expected: assertions matching current loading, error, not-found, source, availability and related-subject behavior pass. If a requirement is not met, retain a focused failing regression test before making the minimum correction.
 
-- [ ] **Step 5: Add focused `useCatalog` loading/error lifecycle tests**
+- [ ] **Step 5: Add focused `useCatalog` loading/error lifecycle characterization tests**
 
 Verify initial loading, successful data delivery, error state and ignoring a late promise after unmount. Preserve the current hook interface; do not add retries or new user-visible actions unless a separate requirement is approved.
 
-Run: `npm run test -- --run src/test/use-catalog.test.ts`
-Expected: all hook cases pass after the minimum implementation or test-only corrections are complete.
+- [ ] **Step 6: Run the focused hook tests**
 
-- [ ] **Step 6: Run the Catalog/Subject integration tests**
+Run: `npm run test -- --run src/test/use-catalog.test.ts`
+Expected: the current hook behavior is documented by passing assertions. If a required lifecycle behavior is absent, keep the specific failing assertion as a regression test.
+
+- [ ] **Step 7: Run the Catalog/Subject integration tests**
 
 Run: `npm run test -- --run src/test/catalog-api.test.ts src/test/subject-page.test.tsx src/test/use-catalog.test.ts src/test/catalog-pages.test.tsx src/test/catalog.test.ts src/test/subject-card.test.tsx`
 Expected: all focused tests pass; the existing search/filter, result announcement, navigation and availability behavior remains intact.
@@ -131,10 +133,10 @@ Expected: all focused tests pass; the existing search/filter, result announcemen
 
 Add assertions that the query filters by the requested `subject_slug` and `status = published`, orders by `unit_number` ascending, excludes `review_notes` and `reviewed_at` from the selected columns, rejects with the current safe error on a Supabase failure, returns an empty list for no published rows, and drops malformed or unexpectedly non-published rows from a response.
 
-- [ ] **Step 2: Verify the lesson API test failure**
+- [ ] **Step 2: Run the lesson API characterization tests**
 
 Run: `npm run test -- --run src/test/lesson-api.test.ts`
-Expected: any newly added query/error/invalid-row assertion that the current API fails is reproduced before implementation. Existing published-only assertions remain passing.
+Expected: existing public-column selection, published-only filtering and empty-result behavior pass. Add or isolate a failing regression assertion only if the expanded contract identifies an actual behavior defect.
 
 - [ ] **Step 3: Extend the Study Page tests**
 
@@ -148,10 +150,10 @@ Add cases for:
 - A subject-route change does not allow a late response for the previous subject to replace the new subject's content.
 - Completion and undo remain local to the current browser; no Supabase write is introduced.
 
-- [ ] **Step 4: Verify the Study Page test failure**
+- [ ] **Step 4: Run the Study Page characterization tests**
 
 Run: `npm run test -- --run src/test/study-page.test.tsx`
-Expected: each new assertion is evaluated against the current page and fails only where the required behavior is absent. The existing four reader tests remain intact.
+Expected: existing empty, published lesson, search/navigation and local completion behavior remains passing. Any proposed new requirement that is not met must be isolated in a focused failing test before code changes.
 
 - [ ] **Step 5: Implement the smallest reader/API corrections**
 
@@ -184,10 +186,10 @@ Extend the existing renderer tests only for uncovered edge cases. Reuse represen
 
 Add a synthetic `subject_lessons` REST response fixture in the local Playwright smoke script. Intercept only the local preview request for the test subject, return one synthetic row with `status: published`, and include a realistic lesson body containing headings, objectives, inline math, a display equation and a worked solution. Do not call the live database for this fixture.
 
-- [ ] **Step 2: Verify the renderer regression test**
+- [ ] **Step 2: Run the renderer characterization tests**
 
 Run: `npm run test -- --run src/test/latex-rendering.test.tsx`
-Expected: all existing math/rendering tests pass; new tests fail only when they demonstrate an uncovered behavior.
+Expected: all existing math/rendering tests remain passing. New assertions document current behavior; if they demonstrate a genuine renderer defect, isolate that case and confirm the failure before fixing it.
 
 - [ ] **Step 3: Add browser assertions for the populated lesson**
 
