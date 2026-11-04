@@ -361,6 +361,8 @@ async function main() {
           });
         }
 
+        await page.keyboard.press("Escape");
+        await page.getByRole("dialog", { name: "CEStudy navigation" }).waitFor({ state: "detached", timeout: 5000 });
         responseMode = "empty";
         requestGate = createGate();
         await alert.getByRole("button", { name: "Retry" }).click();
