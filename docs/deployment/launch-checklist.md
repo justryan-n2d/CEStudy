@@ -5,7 +5,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 ## Dependency and build
 
 - [x] `package-lock.json` is committed and `npm ci` succeeds.
-- [x] Latest main CI after the Stage 1 audit and Privacy notice merge passed lint, tests, dependency audit, build/header packaging, backup crypto/retention checks, and isolated Supabase RLS tests in [run 39142266631](https://github.com/justryan-n2d/CEStudy/actions/runs/39142266631) on commit `97d6e8d`.
+- [x] Latest main CI on `ad96cc6` passed lint, 151 tests across 26 files, dependency audit, production build/header packaging, backup crypto/retention checks and isolated Supabase migration/RLS tests in [run 41775563340](https://github.com/justryan-n2d/CEStudy/actions/runs/41775563340).
 - [x] `npm audit --audit-level=high` reports no high or critical dependency vulnerabilities; the successful audit reported 0 vulnerabilities after upgrading Vitest to 4.1.11.
 - [x] Review `.gitignore` and current source-code search results: `.env` files, key files, `secrets/`, and `credentials/` are excluded, and searches found no common Supabase service-role key or database-URL patterns.
 - [x] Latest-main full-history Gitleaks scan passed on commit `e66b95a`: [workflow run 38909521941](https://github.com/justryan-n2d/CEStudy/actions/runs/38909521941). The scheduled workflow lives at [secret-scan.yml](../../.github/workflows/secret-scan.yml) and also runs on pushes, pull requests, and manual dispatch.
@@ -25,7 +25,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] Backup/recovery procedure documented in [backup and recovery plan](backup-and-recovery.md).
 - [x] The real encrypted off-site backup was verified and restored to isolated local PostgreSQL 18.2; see [restore-drill evidence](restore-drill-2026-10-16.md).
 - [x] A fresh encrypted snapshot was uploaded and read-back verified in the latest [backup workflow run 39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) on 2026-10-20; retention kept four verified sets and hid three stale/incomplete artifacts. The run was successful and had clean summary logs, but its pre-PR validator still checked only `catalog_subjects` and `practice_questions`.
-- [ ] Run backup from current `main` using the merged three-table validator. Confirm `catalog_subjects`, `practice_questions`, and `subject_lessons` are each explicitly logged as verified, and archive/checksum/marker read-back plus retention succeed. The latest successful live run [39433566649](https://github.com/justryan-n2d/CEStudy/actions/runs/39433566649) predates that validator.
+- [x] Run backup from corrected `main`: [run 41290656868](https://github.com/justryan-n2d/CEStudy/actions/runs/41290656868) explicitly logged `catalog_subjects`, `practice_questions`, and `subject_lessons` as verified; archive/checksum/marker read-back and retention succeeded.
 - [ ] Restore the refreshed backup into a separate managed Supabase test project after explicit cost approval; local restore does not test managed Supabase system roles or settings.
 - [x] Live Chromium network capture confirmed the deployed browser requests use `qqmdwltfgpqtcvdbcmto.supabase.co` and an `sb_publishable_` key; no privileged key was detected. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
 
@@ -34,7 +34,7 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] GitHub repository linked to Pages; build command is `npm run build`, output directory is `dist`.
 - [x] Pages deployment for the public Privacy notice succeeded, and `public/_redirects` and `public/_headers` are included in the production build. The live route is [https://cestudy.pages.dev/privacy](https://cestudy.pages.dev/privacy).
 - [x] Live Chromium captured real catalog requests to the dedicated CEStudy Supabase URL; all returned HTTP 200 and the API returned 72 subjects. See [live browser run 38909783333](https://github.com/justryan-n2d/CEStudy/actions/runs/38909783333).
-- [x] Chromium responsive checks at 320 px and 1440 px passed with no horizontal overflow. A separate physical-device and accessibility check remains advisable.
+- [x] Current theme/navigation CI passed 1,682/1,682 assertions across 13 routes, Light/Dark, and 320/390/768/1024/1440 px; live production Chromium smoke passed 135/135 checks with zero runtime errors. A separate physical-device and accessibility check remains required.
 - [x] Post-correction Chromium smoke test [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) passed 135/135 checks. Direct navigation and heading checks include the `/privacy` route, as well as the existing catalog, year-level, math, subject, practice, contact, support, bug-report, and feedback routes.
 - [x] The rendered catalog source link matches the [official CHED 2017 memorandum archive](https://legacy.ched.gov.ph/2017-ched-memorandum-orders/); the linked PDF returned HTTP 200 and `application/pdf` in Chromium. Catalog search/filters are user-reported as working, but a full automated matrix of search/filter empty states remains pending.
 - [x] Post-correction Chromium [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712) reported no browser console, page, request, or same-origin HTTP errors.
@@ -44,7 +44,8 @@ Do not announce or open CEStudy broadly to student users until each blocking ite
 - [x] Public UI/API check confirmed no draft questions or lessons are exposed; the latest Chromium smoke test also confirmed the published-only practice API returned zero question rows.
 - [x] Re-run the production Chromium smoke suite after the 2026-10-18 publication-status correction and Privacy notice release: [run 39143299712](https://github.com/justryan-n2d/CEStudy/actions/runs/39143299712), 135/135 checks passed with zero failures.
 
-- [ ] On a physical Android phone, test portrait/landscape, keyboard-only navigation, TalkBack, 200% text zoom, touch targets, all five catalog filters in combinations, no-results recovery, and direct-route refresh. Record device/browser and findings before launch.
+- [ ] On a physical Android phone, test portrait/landscape, TalkBack traversal/announcements, 200% text zoom, touch targets, and direct-route refresh. Record device model, Android/browser version and findings before launch.
+- [ ] Complete desktop keyboard-only navigation and the full five-filter combination/no-results/loading/error matrix. Automated tests cover key paths, not every combination or assistive-technology behavior.
 
 ## Educational content and pilot
 
