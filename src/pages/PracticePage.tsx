@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BrandLoader } from "../components/BrandLoader";
+import { PracticeQuestionSkeleton } from "../components/LoadingSkeletons";
 import { PracticeQuestion } from "../components/PracticeQuestion";
 import { fetchPublishedPracticeQuestions } from "../data/practice-api";
 import type { PracticeQuestion as PracticeQuestionData } from "../types/study-content";
@@ -29,7 +29,7 @@ export function PracticePage() {
 
   return <div className="page-wrap practice-wrap"><Link className="back-link" to="/math-foundations">← Math foundations</Link>
     <section className="page-intro"><span className="kicker">Mathematics foundations</span><h1>Algebra Foundations practice</h1></section>
-    {loading?<div className="state-panel"><BrandLoader label="Loading practice…"/></div>
+    {loading?<PracticeQuestionSkeleton label="Loading practice…"/>
     :error?<div className="state-panel state-error" role="alert"><h2>Practice unavailable</h2><p>{error}</p></div>
     :questions.length===0?<div className="state-panel review-gate"><h2>Questions coming soon</h2><p>We're reviewing these questions.</p><Link className="button button-secondary" to="/catalog">Browse subjects</Link></div>
     :complete?<div className="state-panel review-gate" role="status"><span className="review-gate-icon" aria-hidden="true">✓</span><h2>Practice session complete</h2><p>You answered {score} out of {questions.length} questions correctly.</p><button className="button button-primary" type="button" onClick={restart}>Try again</button><Link className="button button-secondary" to="/math-foundations">Explore more math topics</Link></div>

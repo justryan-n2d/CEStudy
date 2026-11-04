@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { BrandLoader } from "../components/BrandLoader";
+import { YearLevelSkeleton } from "../components/LoadingSkeletons";
 import { useCatalog } from "../hooks/useCatalog";
 import { SubjectCard } from "../components/SubjectCard";
 import { CurriculumNotice } from "../components/CurriculumNotice";
@@ -24,7 +24,7 @@ export function YearLevelPage() {
       </section>
       <CurriculumNotice />
       {error ? <div className="state-panel state-error" role="alert">{error}</div>
-        : loading ? <div className="state-panel"><BrandLoader label="Loading subjects…" /></div>
+        : loading ? <YearLevelSkeleton label="Loading year-level subjects…" />
         : list.length === 0 ? <div className="state-panel"><h2>No listed subjects yet</h2><Link to="/catalog">Browse the full catalog</Link></div>
         : semesters.map((semester, index) => (
           <ScrollReveal className="reveal-section" key={semester} delayMs={Math.min(index * 55, 165)}>

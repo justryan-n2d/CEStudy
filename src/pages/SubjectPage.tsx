@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BrandLoader } from "../components/BrandLoader";
+import { SubjectDetailSkeleton } from "../components/LoadingSkeletons";
 import { CurriculumNotice } from "../components/CurriculumNotice";
 import { ScrollReveal } from "../components/ScrollReveal";
 import { SubjectCard } from "../components/SubjectCard";
@@ -44,7 +44,7 @@ export function SubjectPage() {
     return () => { active = false; };
   }, [slug]);
 
-  if (loading) return <div className="page-wrap"><BrandLoader label="Loading subject…" /></div>;
+  if (loading) return <SubjectDetailSkeleton label="Loading subject details…" />;
   if (error) return (
     <div className="page-wrap state-panel state-error" role="alert">
       <h1>Subject unavailable</h1><p>{error}</p><Link to="/catalog">Return to subjects</Link>

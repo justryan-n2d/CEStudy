@@ -1,4 +1,4 @@
-import { BrandLoader } from "../components/BrandLoader";
+import { SubjectGridSkeleton } from "../components/LoadingSkeletons";
 import { SubjectCard } from "../components/SubjectCard";
 import { useCatalog } from "../hooks/useCatalog";
 import { ScrollReveal } from "../components/ScrollReveal";
@@ -11,7 +11,7 @@ export function MathFoundationsPage() {
       <section className="page-intro"><h1>Math foundations</h1><p>Supplementary math topics for any year level.</p></section>
       <ScrollReveal className="reveal-section">
         {error ? <div className="state-panel state-error" role="alert">{error}</div>
-          : loading ? <div className="state-panel"><BrandLoader label="Loading math topics…" /></div>
+          : loading ? <SubjectGridSkeleton label="Loading math topics…" />
           : <div className="subject-grid foundation-grid">{foundations.map(subject => <SubjectCard key={subject.slug} subject={subject} />)}</div>}
       </ScrollReveal>
     </div>

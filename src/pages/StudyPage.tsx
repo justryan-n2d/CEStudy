@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { BrandLoader } from "../components/BrandLoader";
+import { StudyReaderSkeleton } from "../components/LoadingSkeletons";
 import { MarkdownContent } from "../components/MarkdownContent";
 import { fetchPublishedLessons } from "../data/lesson-api";
 import type { SubjectLesson } from "../types/lesson-content";
@@ -84,7 +84,7 @@ export function StudyPage() {
         <p>Explore any topic, or follow published lessons in order when you want more structure.</p>
       </section>
 
-      {loading ? <div className="state-panel"><BrandLoader label="Loading reviewer…" /></div>
+      {loading ? <StudyReaderSkeleton label="Loading reviewer…" />
       : error ? <div className="state-panel state-error" role="alert"><h2>Reviewer unavailable</h2><p>{error}</p></div>
       : lessons.length === 0 ? (
         <section className="state-panel study-empty">

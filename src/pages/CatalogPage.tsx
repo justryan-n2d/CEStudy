@@ -1,6 +1,6 @@
 import { useMemo,useState } from "react";
 import { CatalogFilters } from "../components/CatalogFilters";
-import { BrandLoader } from "../components/BrandLoader";
+import { SubjectGridSkeleton } from "../components/LoadingSkeletons";
 import { CurriculumNotice } from "../components/CurriculumNotice";
 import { SubjectCard } from "../components/SubjectCard";
 import { ScrollReveal } from "../components/ScrollReveal";
@@ -32,7 +32,7 @@ export function CatalogPage(){
     <ScrollReveal className="reveal-section" delayMs={60}>
       <div className="results-heading"><h2>{loading?"Loading subjects…":"Subjects and topics"}</h2><span role="status" aria-live="polite" aria-atomic="true">{loading?"":filtered.length+" result"+(filtered.length===1?"":"s")}</span></div>
       {error?<div className="state-panel state-error" role="alert"><h3>Catalog unavailable</h3><p>{error}</p><p>Check your Supabase project URL, publishable key, and public read policy.</p></div>
-      :loading?<div className="state-panel"><BrandLoader label="Loading the subject catalog…"/></div>
+      :loading?<SubjectGridSkeleton label="Loading the subject catalog…"/>
       :filtered.length?<div className="subject-grid">{filtered.map(s=><SubjectCard key={s.slug} subject={s}/>)}</div>
       :<div className="state-panel"><h3>No subjects found</h3><p>Try another search or clear one or more filters.</p><button className="button button-secondary" type="button" onClick={clear}>Reset search and filters</button></div>}
     </ScrollReveal>
