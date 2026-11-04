@@ -55,7 +55,7 @@ async function main() {
     if (message.type() !== "error") return;
     const expectedSyntheticServiceError = activeRoute === "online browser with a failing service request" &&
       responseMode === "catalog-error" &&
-      /500 \\(Internal Server Error\\)/.test(message.text());
+      message.text().includes("500 (Internal Server Error)");
     if (!expectedSyntheticServiceError) {
       runtimeErrors.push(activeRoute + ": console " + message.text());
     }
