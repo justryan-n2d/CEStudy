@@ -260,7 +260,7 @@ The solutions are \(x=-2\) and \(x=-3\).`;
     expect(screen.getByRole("heading", { name: "Step-by-step worked solution" })).toBeInTheDocument();
     expect(screen.getByText(/Find two numbers with product 6 and sum 5/)).toBeInTheDocument();
 
-    await waitFor(() => expect(document.querySelectorAll(".katex")).toHaveLength(7));
+    await waitFor(() => expect(document.querySelectorAll(".katex")).toHaveLength(8));
     expect(document.querySelector(".katex-display")).toBeInTheDocument();
     expect(document.querySelectorAll(".latex-math-error")).toHaveLength(0);
     expect(document.querySelectorAll(".markdown-content ol li")).toHaveLength(3);

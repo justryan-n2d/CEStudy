@@ -122,28 +122,28 @@ async function main() {
 A quadratic trinomial has a squared term, a linear term, and a constant. Factoring rewrites the expression as a product of simpler factors.
 
 ## Formula and method
-Start with \\(x^2 + 5x + 6 = 0\\). Find two numbers whose product is 6 and whose sum is 5.
+Start with \(x^2 + 5x + 6 = 0\). Find two numbers whose product is 6 and whose sum is 5.
 
-\\[
+\[
 x^2 + 5x + 6 = (x + 2)(x + 3)
-\\]
+\]
 
 ## Step-by-step worked solution
-Problem: Solve \\(x^2 + 5x + 6 = 0\\).
+Problem: Solve \(x^2 + 5x + 6 = 0\).
 
 1. Find two numbers with product 6 and sum 5: 2 and 3.
-2. Rewrite the trinomial as \\( (x + 2)(x + 3) = 0 \\).
+2. Rewrite the trinomial as \( (x + 2)(x + 3) = 0 \).
 3. Set each factor equal to zero.
 
-\\[
+\[
 x + 2 = 0
-\\]
+\]
 
-\\[
+\[
 x + 3 = 0
-\\]
+\]
 
-The solutions are \\(x=-2\\) and \\(x=-3\\).`,
+The solutions are \(x=-2\) and \(x=-3\).`,
       source_note: "Synthetic Playwright fixture only. This content is not stored or published in Supabase.",
       status: "published",
       updated_at: "2026-11-04T00:00:00.000Z",
