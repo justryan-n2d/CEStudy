@@ -307,7 +307,7 @@ async function main() {
 
     const menuToggle = page.getByRole("button", { name: "Open navigation menu" });
     await menuToggle.click();
-    const animatedDrawer = page.getByRole("dialog", { name: "CEStudy navigation" });
+    const animatedDrawer = page.locator(".site-sidebar");
     await animatedDrawer.waitFor({ state: "visible", timeout: 5000 });
     await page.waitForTimeout(280);
     const drawerStartLeft = await animatedDrawer.evaluate((element) => element.getBoundingClientRect().left);
