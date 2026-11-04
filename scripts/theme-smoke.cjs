@@ -51,7 +51,121 @@ async function main() {
   await fs.mkdir("artifacts", { recursive: true });
   const browser = await chromium.launch({ headless: true });
   try {
+    const syntheticCatalogRows = [
+      {
+        slug: "calculus-1", title: "Calculus 1",
+        summary: "Foundational limits, derivatives, and engineering applications.",
+        year_level: 1, semester: "First semester", category: "year-level",
+        classification: "ched-common-course", specialization: null,
+        aliases: ["differential calculus"],
+        source_reference: "https://example.invalid/curriculum",
+        source_note: "Synthetic Playwright catalog fixture only.",
+        availability: "has-published-content", display_order: 1,
+      },
+      {
+        slug: "statics-of-rigid-bodies", title: "Statics of Rigid Bodies",
+        summary: "Forces, equilibrium, moments, and rigid-body analysis.",
+        year_level: 2, semester: "First semester", category: "year-level",
+        classification: "ched-common-course", specialization: null,
+        aliases: ["statics", "engineering statics"],
+        source_reference: "https://example.invalid/curriculum",
+        source_note: "Synthetic Playwright catalog fixture only.",
+        availability: "has-published-content", display_order: 2,
+      },
+      {
+        slug: "strength-of-materials", title: "Strength of Materials",
+        summary: "Stress, strain, deformation, and member behavior.",
+        year_level: 3, semester: "First semester", category: "year-level",
+        classification: "ched-common-course", specialization: null,
+        aliases: ["mechanics of materials"],
+        source_reference: "https://example.invalid/curriculum",
+        source_note: "Synthetic Playwright catalog fixture only.",
+        availability: "has-published-content", display_order: 3,
+      },
+      {
+        slug: "structural-design", title: "Structural Design",
+        summary: "Analysis and design concepts for civil engineering structures.",
+        year_level: 4, semester: "First semester", category: "year-level",
+        classification: "ched-common-course", specialization: null,
+        aliases: ["structural engineering"],
+        source_reference: "https://example.invalid/curriculum",
+        source_note: "Synthetic Playwright catalog fixture only.",
+        availability: "has-published-content", display_order: 4,
+      },
+      {
+        slug: "basic-algebra", title: "Basic and Advanced Algebra",
+        summary: "Arithmetic, factoring, functions, equations, and engineering formula rearrangement.",
+        year_level: null, semester: null, category: "math-foundation",
+        classification: "supplementary-math-foundation", specialization: null,
+        aliases: ["algebra", "factoring", "equations"],
+        source_reference: "CEStudy supplementary review catalog",
+        source_note: "Synthetic Playwright catalog fixture only.",
+        availability: "has-published-content", display_order: 5,
+      },
+    ];
+
+    const syntheticPublishedLesson = {
+      id: "synthetic-playwright-algebra-unit-01",
+      subject_slug: "basic-algebra",
+      unit_number: 1,
+      slug: "factoring-quadratic-trinomials",
+      title: "Factoring Quadratic Trinomials",
+      learning_objectives: [
+        "Identify two numbers whose product and sum match the target coefficients.",
+      ],
+      lesson_markdown: String.raw`## Topic outline
+- Standard form of a quadratic trinomial
+- Factoring into two linear expressions
+- Checking the resulting roots
+
+## Conceptual explanation
+A quadratic trinomial has a squared term, a linear term, and a constant. Factoring rewrites the expression as a product of simpler factors.
+
+## Formula and method
+Start with \\(x^2 + 5x + 6 = 0\\). Find two numbers whose product is 6 and whose sum is 5.
+
+\\[
+x^2 + 5x + 6 = (x + 2)(x + 3)
+\\]
+
+## Step-by-step worked solution
+Problem: Solve \\(x^2 + 5x + 6 = 0\\).
+
+1. Find two numbers with product 6 and sum 5: 2 and 3.
+2. Rewrite the trinomial as \\( (x + 2)(x + 3) = 0 \\).
+3. Set each factor equal to zero.
+
+\\[
+x + 2 = 0
+\\]
+
+\\[
+x + 3 = 0
+\\]
+
+The solutions are \\(x=-2\\) and \\(x=-3\\).`,
+      source_note: "Synthetic Playwright fixture only. This content is not stored or published in Supabase.",
+      status: "published",
+      updated_at: "2026-11-04T00:00:00.000Z",
+    };
+
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.route("https://cestudy-math-smoke.invalid/rest/v1/**", async (route) => {
+      const resource = new URL(route.request().url()).pathname.split("/").filter(Boolean).pop();
+      const payload = resource === "subject_lessons"
+        ? [syntheticPublishedLesson]
+        : resource === "catalog_subjects"
+          ? syntheticCatalogRows
+          : [];
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        headers: { "content-range": `0-${Math.max(0, payload.length - 1)}/${payload.length}` },
+        body: JSON.stringify(payload),
+      });
+    });
+
+
     page.on("pageerror", (error) => runtimeErrors.push(activeRoute + ": " + error.message));
     page.on("console", (message) => {
       if (message.type() === "error") runtimeErrors.push(activeRoute + ": console " + message.text());
@@ -445,6 +559,120 @@ async function main() {
         await page.waitForFunction(() => window.location.pathname === "/review-materials" && document.activeElement?.id === "main-content");
         check("Mobile destination navigation hands focus to main content: " + activeRoute,
           await page.locator("#main-content").evaluate((node) => node === document.activeElement));
+      }
+    }
+
+    for (const width of viewports) {
+      activeRoute = "synthetic populated engineering-math lesson at " + width + "px";
+      await page.setViewportSize({ width, height: 900 });
+      const response = await page.goto(baseUrl + "/study/basic-algebra/1", {
+        waitUntil: "domcontentloaded",
+        timeout: 30000,
+      });
+      check("Synthetic lesson route returns HTTP 200: " + activeRoute,
+        Boolean(response && response.status() === 200),
+        "status=" + (response?.status() ?? "no response"));
+
+      await page.getByRole("heading", { name: "Factoring Quadratic Trinomials" })
+        .waitFor({ state: "visible", timeout: 12000 });
+      await page.waitForFunction(
+        () => document.querySelectorAll(".study-lesson .katex").length >= 7,
+        null,
+        { timeout: 10000 },
+      );
+
+      const lessonContent = await page.evaluate(() => {
+        const article = document.querySelector(".study-lesson");
+        const articleRect = article?.getBoundingClientRect();
+        const mathNodes = [...(article?.querySelectorAll(".katex") ?? [])];
+        return {
+          title: article?.querySelector("h2")?.textContent?.trim() ?? "",
+          sectionHeadings: [...(article?.querySelectorAll(".markdown-content h2, .markdown-content h3, .markdown-content h4") ?? [])]
+            .map((node) => node.textContent?.trim() ?? ""),
+          articleText: article?.textContent ?? "",
+          mathCount: mathNodes.length,
+          displayMathCount: article?.querySelectorAll(".katex-display").length ?? 0,
+          mathErrors: article?.querySelectorAll(".latex-math-error").length ?? 0,
+          objectiveHeadingCount: [...(article?.querySelectorAll("h1, h2, h3, h4, h5, h6") ?? [])]
+            .filter((node) => /learning objectives/i.test(node.textContent ?? "")).length,
+          articleWidth: article?.clientWidth ?? 0,
+          articleScrollWidth: article?.scrollWidth ?? 0,
+          viewportWidth: window.innerWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          mathBoundsFit: Boolean(articleRect) && mathNodes.every((node) => {
+            const rect = node.getBoundingClientRect();
+            return rect.left >= articleRect.left - 1 && rect.right <= articleRect.right + 1;
+          }),
+          formulaColor: mathNodes[0] ? getComputedStyle(mathNodes[0]).color : "",
+          articleBackground: article ? getComputedStyle(article).backgroundColor : "",
+          outlinePresent: [...(article?.querySelectorAll("h2, h3, h4") ?? [])]
+            .some((node) => node.textContent?.trim() === "Topic outline"),
+          workedSteps: article?.querySelectorAll(".markdown-content ol li").length ?? 0,
+          objectiveVisibleInArticle: (article?.textContent ?? "").includes(
+            "Identify two numbers whose product and sum match the target coefficients.",
+          ),
+        };
+      });
+
+      check("Synthetic lesson contains the expected practical review structure: " + activeRoute,
+        lessonContent.title === "Factoring Quadratic Trinomials" &&
+          ["Topic outline", "Conceptual explanation", "Formula and method", "Step-by-step worked solution"]
+            .every((heading) => lessonContent.sectionHeadings.includes(heading)),
+        JSON.stringify({ title: lessonContent.title, headings: lessonContent.sectionHeadings }));
+      check("Synthetic lesson has at least seven rendered KaTeX expressions: " + activeRoute,
+        lessonContent.mathCount >= 7 && lessonContent.displayMathCount >= 3,
+        JSON.stringify({ mathCount: lessonContent.mathCount, displayMathCount: lessonContent.displayMathCount }));
+      check("Valid lesson formulas have no rendering errors: " + activeRoute,
+        lessonContent.mathErrors === 0, "mathErrors=" + lessonContent.mathErrors);
+      check("Worked solution is presented as three ordered steps: " + activeRoute,
+        lessonContent.workedSteps === 3, "workedSteps=" + lessonContent.workedSteps);
+      check("Learning objectives remain search metadata and are not displayed in the lesson: " + activeRoute,
+        lessonContent.objectiveHeadingCount === 0 && !lessonContent.objectiveVisibleInArticle);
+      check("Lesson math does not overflow its article or viewport: " + activeRoute,
+        lessonContent.articleScrollWidth <= lessonContent.articleWidth + 1 &&
+          lessonContent.documentWidth <= lessonContent.viewportWidth + 1 &&
+          lessonContent.mathBoundsFit,
+        JSON.stringify({
+          articleWidth: lessonContent.articleWidth,
+          articleScrollWidth: lessonContent.articleScrollWidth,
+          viewportWidth: lessonContent.viewportWidth,
+          documentWidth: lessonContent.documentWidth,
+          mathBoundsFit: lessonContent.mathBoundsFit,
+        }));
+
+      const themeGroup = page.getByRole("group", { name: "Color theme" });
+      for (const themeName of ["Dark", "Light"]) {
+        await themeGroup.getByRole("button", { name: themeName }).click();
+        await page.waitForFunction(
+          (expectedTheme) => document.documentElement.dataset.theme === expectedTheme,
+          themeName.toLowerCase(),
+          { timeout: 5000 },
+        );
+        const themeMetrics = await page.evaluate(() => {
+          const article = document.querySelector(".study-lesson");
+          const firstMath = article?.querySelector(".katex");
+          return {
+            theme: document.documentElement.dataset.theme ?? "",
+            foreground: firstMath ? getComputedStyle(firstMath).color : "",
+            background: article ? getComputedStyle(article).backgroundColor : "",
+            documentWidth: document.documentElement.scrollWidth,
+            viewportWidth: window.innerWidth,
+            mathErrorCount: article?.querySelectorAll(".latex-math-error").length ?? 0,
+          };
+        });
+        check(themeName + " theme is applied to the populated lesson: " + activeRoute,
+          themeMetrics.theme === themeName.toLowerCase(), themeMetrics.theme);
+        check(themeName + " theme keeps KaTeX readable at WCAG AA contrast: " + activeRoute,
+          contrastRatio(themeMetrics.foreground, themeMetrics.background) >= 4.5,
+          JSON.stringify({
+            foreground: themeMetrics.foreground,
+            background: themeMetrics.background,
+            ratio: contrastRatio(themeMetrics.foreground, themeMetrics.background),
+          }));
+        check(themeName + " theme has no page overflow or math errors: " + activeRoute,
+          themeMetrics.documentWidth <= themeMetrics.viewportWidth + 1 &&
+            themeMetrics.mathErrorCount === 0,
+          JSON.stringify(themeMetrics));
       }
     }
 

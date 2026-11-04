@@ -38,6 +38,9 @@ jobs:
       - name: Run tests
         run: npm run test -- --run
       - name: Build production assets
+        env:
+          VITE_SUPABASE_URL: https://cestudy-math-smoke.invalid
+          VITE_SUPABASE_PUBLISHABLE_KEY: cestudy-ci-only-not-a-real-key
         run: npm run build
       - name: Verify Pages routing and security headers are packaged
         run: |
