@@ -2317,3 +2317,113 @@ body {
     display: none;
   }
 }
+
+
+/* Preserve the year → semester → subject hierarchy inside the sidebar */
+.site-sidebar .year-level-nav {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.site-sidebar .year-level-nav .nav-dropdown-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  justify-content: space-between;
+  border: 0;
+  border-radius: 9px;
+  padding: .55rem .68rem;
+  color: var(--ui-text);
+  font-family: inherit;
+  font-size: .86rem;
+  font-weight: 650;
+  text-align: left;
+  white-space: normal;
+}
+
+.site-sidebar .year-level-nav .nav-dropdown-trigger:hover,
+.site-sidebar .year-level-nav .nav-dropdown-trigger[aria-expanded="true"] {
+  background: var(--ui-hover);
+  color: var(--ui-heading);
+}
+
+.site-sidebar .year-level-nav .nav-dropdown-trigger.active {
+  background: var(--ui-hover);
+  color: var(--ui-link);
+  box-shadow: inset 3px 0 0 var(--brand-blue);
+  font-weight: 800;
+}
+
+.site-sidebar .year-level-menu {
+  position: static;
+  width: 100%;
+  max-height: none;
+  overflow: visible;
+  margin-top: .3rem;
+  padding: .65rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  background: var(--ui-surface-muted);
+  box-shadow: none;
+}
+
+.site-sidebar .navigation-panel-heading {
+  display: grid;
+  gap: .3rem;
+  margin-bottom: .55rem;
+}
+
+.site-sidebar .navigation-panel-heading h2 {
+  margin: .18rem 0 .15rem;
+  font-size: .92rem;
+}
+
+.site-sidebar .navigation-panel-heading > a {
+  justify-self: start;
+  min-height: 44px;
+  padding-inline: .45rem;
+  font-size: .74rem;
+}
+
+.site-sidebar .year-level-menu-years {
+  grid-template-columns: minmax(0, 1fr);
+  gap: .4rem;
+}
+
+.site-sidebar .year-level-menu-year {
+  border-radius: 9px;
+}
+
+.site-sidebar .year-level-menu-year > summary {
+  min-height: 44px;
+  padding: .45rem .5rem;
+  font-size: .76rem;
+}
+
+.site-sidebar .year-level-menu-count {
+  font-size: .62rem;
+}
+
+.site-sidebar .year-level-menu-year-content {
+  padding-inline: .5rem;
+}
+
+.site-sidebar .year-level-menu-overview,
+.site-sidebar .year-level-menu-semester > summary,
+.site-sidebar .year-level-menu-semester li a {
+  min-height: 44px;
+}
+
+.site-sidebar .year-level-menu-semester > summary {
+  font-size: .72rem;
+}
+
+.site-sidebar .year-level-menu-semester li a {
+  font-size: .72rem;
+}
+
+.site-sidebar .year-level-menu-semester li small {
+  font-size: .64rem;
+}
