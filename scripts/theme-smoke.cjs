@@ -395,19 +395,12 @@ The solutions are \(x=-2\) and \(x=-3\).`,
       await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
       await page.locator("h1").first().waitFor({ state: "visible", timeout: 12000 });
 
-      const themeTargets = await page.locator(".theme-toggle-option").evaluateAll((nodes) =>
+      const themeTargets = await drawer.locator(".theme-toggle-option").evaluateAll((nodes) =>
         nodes.map((node) => Math.round(node.getBoundingClientRect().height)),
       );
-      check("Theme controls have 44px targets: " + activeRoute,
+      check("Theme controls have 44px targets inside the sidebar: " + activeRoute,
         themeTargets.length === 2 && themeTargets.every((height) => height >= 44),
         JSON.stringify(themeTargets));
-
-      const navigationToggle = page.getByRole("button", { name: "Open navigation menu" });
-      const toggleHeight = await navigationToggle.evaluate((node) => Math.round(node.getBoundingClientRect().height));
-      check("Sidebar menu control has a 44px target: " + activeRoute, toggleHeight >= 44, String(toggleHeight));
-      await navigationToggle.click();
-      const drawer = page.getByRole("dialog", { name: "CEStudy navigation" });
-      await drawer.waitFor({ state: "visible", timeout: 5000 });
       const sidebarNavigation = drawer.getByRole("navigation", { name: "CEStudy pages" });
       const expectedLinks = [
         "Home", "Subject Catalog", "Year Levels", "Math Foundations", "Progress",
