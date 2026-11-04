@@ -15,13 +15,13 @@ function allowedOrigins(): string[] {
   const raw = Deno.env.get("ALLOWED_ORIGINS")?.trim();
   return [...new Set(raw ? raw.split(",").map((value) => value.trim()).filter(Boolean) : DEFAULT_ALLOWED_ORIGINS)];
 }
-function isAllowedOrigin(origin: string | null): origin is string {
+export function isAllowedOrigin(origin: string | null): origin is string {
   if (!origin) return false;
   if (allowedOrigins().includes(origin)) return true;
   try {
     const parsed = new URL(origin);
     return parsed.protocol === "https:" && parsed.port === "" && parsed.origin === origin
-      && /^[a-z0-9-]+\.cestudy\.pages\.dev$/i.test(parsed.hostname);
+      && /^[a-f0-9]{8}\.cestudy\.pages\.dev$/i.test(parsed.hostname);
   } catch { return false; }
 }
 function respond(req: Request, status: number, body: RecordValue) {
@@ -139,7 +139,7 @@ async function verifyToken(token: string, key: string): Promise<boolean> {
   const [payload, signature, ...extra] = token.split(".");
   if (!payload || !signature || extra.length) return false;
   try {
-    if (!await crypto.subtle.verify("HMAC", await hmacKey(key), fromB64url(signature), new TextEncoder().encode(payload))) return false;
+    if (!await crypto.subtle.verify("HMAC", await hmacKey(key), new Uint8Array(fromB64url(signature)), new TextEncoder().encode(payload))) return false;
     const claims = JSON.parse(new TextDecoder().decode(fromB64url(payload))) as RecordValue;
     const now = Math.floor(Date.now() / 1000);
     return claims.sub === "cestudy-content-review-owner"
@@ -287,7 +287,7 @@ async function syncCatalogAvailability() {
   if (!result.ok) throw new Error("catalog_sync_update_failed");
 }
 
-Deno.serve(async (req: Request) => {
+export async function handleRequest(req: Request) {
   const origin = req.headers.get("origin");
   if (!isAllowedOrigin(origin)) return respond(req, 403, { ok: false, message: "This origin is not allowed." });
   if (req.method === "OPTIONS") return new Response("ok", { headers: respond(req, 200, { ok: true }).headers });
@@ -345,4 +345,6 @@ Deno.serve(async (req: Request) => {
   } catch {
     return respond(req, 503, { ok: false, message: "Content review is temporarily unavailable. Try again later." });
   }
-});
+}
+
+if (import.meta.main) Deno.serve(handleRequest);
