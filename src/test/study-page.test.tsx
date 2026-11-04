@@ -118,7 +118,7 @@ describe("student lesson reader", () => {
     fetchPublishedLessonsMock.mockResolvedValue([publishedLesson]);
     renderStudy("/study/basic-algebra/1");
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
-    expect(screen.queryByText("Identify a test objective")).not.toBeInTheDocument();
+    expect(screen.getByText("Identify a test objective").closest("small")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: /Learning Objectives/i })).not.toBeInTheDocument();
     expect(screen.getByRole("article")).toHaveTextContent("This lesson is published.");
   });
@@ -190,6 +190,13 @@ describe("student lesson reader", () => {
   });
 
   it("omits unavailable previous and next navigation at the lesson boundaries", async () => {
+    const secondLesson: SubjectLesson = {
+      ...publishedLesson,
+      id: "public-test-middle-lesson",
+      unitNumber: 2,
+      slug: "middle-topic",
+      title: "Middle Published Lesson",
+    };
     const lastLesson: SubjectLesson = {
       ...publishedLesson,
       id: "public-test-last-lesson",
@@ -197,19 +204,20 @@ describe("student lesson reader", () => {
       slug: "last-topic",
       title: "Last Published Lesson",
     };
-    fetchPublishedLessonsMock.mockResolvedValue([publishedLesson, factoringLesson, lastLesson]);
+    fetchPublishedLessonsMock.mockResolvedValue([publishedLesson, secondLesson, lastLesson]);
 
     const firstView = renderStudy("/study/basic-algebra/1");
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /← Previous/ })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Next topic →" })).toHaveAttribute("href", "/study/basic-algebra/4");
+    expect(screen.getByRole("link", { name: "Next topic →" })).toHaveAttribute("href", "/study/basic-algebra/2");
     firstView.unmount();
 
     renderStudy("/study/basic-algebra/3");
     expect(await screen.findByRole("heading", { name: "Last Published Lesson" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "← Previous" })).toHaveAttribute("href", "/study/basic-algebra/4");
+    expect(screen.getByRole("link", { name: "← Previous" })).toHaveAttribute("href", "/study/basic-algebra/2");
     expect(screen.queryByRole("link", { name: "Next topic →" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Practice problems →" })).toHaveAttribute("href", "/practice/basic-algebra");
+    expect(screen.getAllByRole("link", { name: "Practice problems →" })).toHaveLength(2);
+    expect(screen.getAllByRole("link", { name: "Practice problems →" }).every((link) => link.getAttribute("href") === "/practice/basic-algebra")).toBe(true);
   });
 
   it("ignores a late response for the previous subject after the route changes", async () => {

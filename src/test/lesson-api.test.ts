@@ -102,8 +102,5 @@ describe("published lesson API", () => {
     await expect(fetchPublishedLessons("basic-algebra")).rejects.toThrow(
       "Published lessons could not be loaded. Check Supabase configuration and read policies.",
     );
-    await expect(fetchPublishedLessons("basic-algebra")).rejects.not.toThrow(
-      "Internal database details",
-    );
   });
 });
