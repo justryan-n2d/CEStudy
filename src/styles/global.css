@@ -2221,7 +2221,9 @@ body {
 .home-marquee-group {
   display: flex;
   flex: 0 0 auto;
+  min-width: 100vw;
   align-items: center;
+  justify-content: space-around;
   gap: 1.25rem;
   padding: .85rem 1.2rem;
   white-space: nowrap;
