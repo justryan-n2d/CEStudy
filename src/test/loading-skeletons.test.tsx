@@ -27,10 +27,12 @@ describe("content-shaped loading skeletons", () => {
     render(<SubjectGridSkeleton label="Loading the subject catalog…" />);
 
     expectSingleLoadingStatus("Loading the subject catalog…");
-    const grid = document.querySelector("[data-skeleton='subject-grid']");
+    const region = document.querySelector("[data-skeleton='subject-grid']");
+    const grid = region?.querySelector(".subject-grid");
     expect(grid).toHaveClass("subject-grid");
     expect(grid?.querySelectorAll(".subject-card")).toHaveLength(6);
-    expect(grid?.querySelector(".state-panel")).not.toBeInTheDocument();
+    expect(region?.querySelectorAll(".subject-grid")).toHaveLength(1);
+    expect(region?.querySelector(".state-panel")).not.toBeInTheDocument();
   });
 
   it("preserves the semester section hierarchy on Year Levels", () => {

@@ -58,7 +58,7 @@ function SkeletonHeading({ className = "" }: { className?: string }) {
 
 export function SubjectGridSkeleton({ label }: { label: string }) {
   return (
-    <SkeletonRegion label={label} testId="subject-grid" className="subject-grid skeleton-subject-grid">
+    <SkeletonRegion label={label} testId="subject-grid" className="skeleton-subject-grid-region">
       <div aria-hidden="true">
         <SubjectCardGrid />
       </div>
