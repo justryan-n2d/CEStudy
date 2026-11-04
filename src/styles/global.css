@@ -2467,3 +2467,38 @@ body {
 .site-sidebar-link .site-sidebar-icon {
   position: relative;
 }
+
+
+/* Sidebar navigation labels must remain readable in both color themes.
+   Keep brand blue on the indicator/icon, not on small active link text. */
+:root[data-theme="light"] .site-sidebar-link,
+:root[data-theme="light"] .site-sidebar .year-level-nav .nav-dropdown-trigger,
+:root[data-theme="light"] .site-sidebar .year-level-menu-semester > summary,
+:root[data-theme="light"] .site-sidebar .year-level-menu-semester li a {
+  color: #0b263d;
+}
+
+:root[data-theme="dark"] .site-sidebar-link,
+:root[data-theme="dark"] .site-sidebar .year-level-nav .nav-dropdown-trigger,
+:root[data-theme="dark"] .site-sidebar .year-level-menu-semester > summary,
+:root[data-theme="dark"] .site-sidebar .year-level-menu-semester li a {
+  color: #f3f7fb;
+}
+
+:root[data-theme="light"] .site-sidebar-link .site-sidebar-icon .navigation-glyph {
+  color: #52687b;
+}
+
+:root[data-theme="dark"] .site-sidebar-link .site-sidebar-icon .navigation-glyph {
+  color: #b6c4d4;
+}
+
+:root[data-theme="light"] .site-sidebar-link.active .navigation-glyph,
+:root[data-theme="light"] .site-sidebar .year-level-nav .nav-dropdown-trigger.active .navigation-glyph {
+  color: #0754b5;
+}
+
+:root[data-theme="dark"] .site-sidebar-link.active .navigation-glyph,
+:root[data-theme="dark"] .site-sidebar .year-level-nav .nav-dropdown-trigger.active .navigation-glyph {
+  color: #90c4ff;
+}
