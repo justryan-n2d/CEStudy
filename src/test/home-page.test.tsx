@@ -57,6 +57,8 @@ describe("homepage and year-level navigation", () => {
   it("uses white by default and the actual master-logo blue as an accent", () => {
     expect(stylesheet).toContain("background:#fff;");
     expect(stylesheet).toContain("--brand-blue:#0754B5");
+    expect(stylesheet).toContain(".site-sidebar .site-sidebar-navigation .site-sidebar-group a.site-sidebar-link");
+    expect(stylesheet).toContain(":root[data-theme=\"dark\"] .site-sidebar .site-sidebar-navigation .site-sidebar-group button.site-sidebar-link");
     expect(stylesheet).toContain(".button-primary{background:var(--brand-blue)");
     expect(stylesheet).toContain("background:var(--blue-soft)");
     expect(stylesheet).not.toContain("backdrop-filter:blur");
