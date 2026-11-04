@@ -15,7 +15,7 @@ This document records the integration approach. It does not authorize an unrestr
 
 | Topic | Decision |
 |---|---|
-| How it is used | ChatGPT plus GitHub workflow, with a compatible coding agent where feasible |
+| How it is used | Repository-first workflow with GitHub review and compatible development tooling where feasible |
 | Development device | Android phone only; do not make a laptop, Termux, or local terminal a required step |
 | Budget | Free only; usage limits are acceptable |
 | Upstream files | Keep the upstream skill separate. Commit CEStudy-specific instructions and the official upstream link, not a copy of the upstream skill |
@@ -25,11 +25,11 @@ This document records the integration approach. It does not authorize an unrestr
 
 ## 3. Recommended operating model
 
-### ChatGPT: design coordinator
+### Design coordination workflow
 
-Use ChatGPT to inspect the relevant repository files and open PRs, consult the published UI UX Pro Max guidance manually, formulate a concrete design proposal, and review the resulting diff. The request should name the target page or flow and specify existing behavior that must remain unchanged.
+Inspect the relevant repository files and open pull requests, consult the published UI UX Pro Max guidance manually, formulate a concrete design proposal, and review the resulting diff. Every task should name the target page or flow and specify existing behavior that must remain unchanged.
 
-The upstream link and `AGENTS.md` do not automatically install the skill in ChatGPT. When the actual skill is not loaded by the current environment, describe its guidance as manually consulted rather than claiming that the skill is active.
+A repository link and `AGENTS.md` do not automatically install or activate an external skill. When the skill is not installed and loaded in the current environment, describe its guidance as manually consulted rather than claiming that the skill is active.
 
 ### GitHub: source of truth
 
