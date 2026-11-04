@@ -13,7 +13,7 @@
 - Preserve Blueprint Academy, current website navigation, the canonical CEStudy logo, the existing Light/Dark theme toggle, Light default, and theme preference key `cestudy:theme:v1`.
 - Use existing theme tokens: `--ui-surface`, `--ui-surface-raised`, `--ui-surface-muted`, `--ui-text`, `--ui-text-muted`, and `--ui-border`. Do not hard-code Light-only colors into skeleton shapes.
 - Use an approximately 1.2-second CSS-only shimmer on a 200% background track. Keep the highlight subtle and disable animation under `prefers-reduced-motion: reduce`.
-- Keep the loading placeholder shaped like the content it replaces. Do not add extra card layers, decorative labels, gradients, glows, spinner overlays, or a generic repeated dashboard grid.
+- Keep the loading placeholder shaped like the content it replaces. Practice answer-option placeholder rows must use the active theme's muted surface token, not inherit the real answer-option theme surface. Do not add extra card layers, decorative labels, gradients, glows, spinner overlays, or a generic repeated dashboard grid.
 - Decorative skeleton geometry must be hidden from assistive technology. Each loading composition exposes one concise `role="status"` announcement and marks its content region `aria-busy="true"`.
 - Browser `navigator.onLine` is only a browser-reported network signal. Never call it `internetAvailable` or `supabaseConnected`, and never claim it verifies the public internet, Cloudflare, DNS, or Supabase availability.
 - Do not add periodic probes, third-party health checks, timers, automatic retries, automatic reloads, service workers, PWA caching, background sync, or queued submissions.
@@ -165,7 +165,7 @@ Mock each existing data API at its network boundary with a deferred promise. Ver
 - Study Reader: `StudyReaderSkeleton` while the published lesson request is pending.
 - Practice: `PracticeQuestionSkeleton` while the published question request is pending.
 
-For each page, resolve the deferred request and assert the skeleton disappears before the existing populated, empty, or error state is displayed. Include at least one rejected request per API family and verify the contextual error remains visible, not the skeleton.
+For each page, resolve the deferred request and assert the skeleton disappears before the existing populated, empty, or error state is displayed. Include rejected-request recovery for the catalog, lesson, and practice API families. Verify Retry reissues the corresponding request, restores its page-shaped skeleton while pending, and clears the unavailable state after success.
 
 - [ ] **Step 2: Verify the relevant failure**
 
@@ -175,7 +175,7 @@ Expected: tests fail because the six pages still use the logo loader or do not r
 
 - [ ] **Step 3: Migrate only the six approved loading branches**
 
-Replace each page's `BrandLoader` with the corresponding composition. Keep page headings, search/filter controls, curriculum notices, loaded content, empty states, error copy, navigation, and local completion behavior unchanged. Remove redundant state-panel wrappers only where they would create an extra surface absent from the loaded page.
+Replace each page's `BrandLoader` with the corresponding composition. Keep page headings, search/filter controls, curriculum notices, loaded content, empty states, navigation, and local completion behavior unchanged. Use student-safe contextual request-failure copy; do not expose Supabase configuration or raw backend diagnostics. Remove redundant state-panel wrappers only where they would create an extra surface absent from the loaded page.
 
 - [ ] **Step 4: Verify the focused pass**
 
@@ -254,12 +254,20 @@ The six content-loading routes also share one recoverable request-failure state:
 - Student-facing messages must remain useful and must not expose implementation diagnostics such as Supabase URL, key, or public-read-policy configuration. The global browser-offline notice remains independent and must not claim to verify internet or Supabase health.
 - Apply this shared state only to the six page-level catalog/lesson/practice request failures. Do not replace legitimate empty, not-found, review-gate, form-validation, or owner-authentication states.
 
+## Implementation and verification status (2026-11-04)
+
+The shared unavailable state is implemented on all six approved content-loading routes. The owner-supplied SVG is used as a theme-colored mask. Each route has a Retry action that repeats its page data request and returns to its existing skeleton while pending. Subject Details retains its Return to subjects link. Student-facing failure messages do not expose Supabase setup or raw service diagnostics.
+
+The first browser smoke pass on the earlier implementation head passed 594/594 checks with zero runtime errors, including six route error states and retry recovery. Its full-repository CI run found five stale assertions in older tests (technical error copy, old SubjectPage loading text, and the Subject Details navigation link). Those expectations were updated on the current branch, and the missing navigation link was restored. The Practice answer-row Light-theme mismatch was also fixed by increasing selector specificity, and an explicit Light/Dark browser assertion was added. **These latest test and CSS corrections still require a fresh full CI and browser run.**
+
+The latest feature branch is still based on pre-Phase-3 main and is diverged from current main by five commits. It is not merge-ready. Do not force-push, bypass branch protection, or merge until the branch is safely reconciled and current full CI, browser checks, and secret scan pass.
+
 ## Completion and integration gate
 
-The connectivity/skeleton feature is a separate draft PR. It must pass all new checks and the existing main CI before it is eligible for owner review.
+PR #74 remains a separate open feature candidate. It must be reconciled with current main, reviewed as a complete diff, and pass the latest full repository CI, its browser verification, and secret scanning before merge consideration. The Phase 3 PRs #70-#73 are already merged and must not be replayed or reconciled as open PRs.
 
-After this feature is reviewed and integrated, reconcile Phase 3 PRs #70-#73 against the updated mainline, resolve any conflicts, review the combined diff, integrate only with explicit owner authorization, and rerun mainline CI. Start Phase 4 only after that combined mainline verification passes.
+Phase 4 is explicitly paused by the owner. This plan does not authorize Phase 4 planning or implementation. Do not start a Phase 4 branch, write Phase 4 code, or open a Phase 4 PR until the owner gives a new instruction.
 
 ## Unresolved product decisions
 
-None. The browser-offline notice, page-level service-error handling, six skeleton mappings, motion behavior, theme support, and integration order are specified above.
+None. The browser-offline notice, page-level service-error handling, shared unavailable-state visual, retry behavior, six skeleton mappings, motion behavior, theme support, and PR integration gate are specified above.
