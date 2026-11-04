@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "../components/Layout";
@@ -153,6 +153,26 @@ describe("CEStudy sidebar navigation", () => {
 
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "CEStudy navigation" })).not.toBeInTheDocument());
     expect(trigger).toHaveFocus();
+  });
+
+  it("slides the sidebar out to the right before it is hidden", async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const trigger = screen.getByRole("button", { name: "Open navigation menu" });
+    await user.click(trigger);
+    const drawer = screen.getByRole("dialog", { name: "CEStudy navigation" });
+    const layer = document.querySelector(".site-sidebar-layer");
+    expect(layer).not.toBeNull();
+
+    await user.click(within(drawer).getByRole("button", { name: "Close navigation menu" }));
+
+    expect(layer).toHaveClass("is-closing");
+    expect(layer).toHaveAttribute("aria-hidden", "true");
+    expect(drawer).not.toHaveAttribute("role", "dialog");
+
+    fireEvent.transitionEnd(drawer, { propertyName: "transform" });
+    await waitFor(() => expect(layer).not.toHaveClass("is-closing"));
   });
 
   it("marks the learning destination active and closes after route navigation", async () => {
