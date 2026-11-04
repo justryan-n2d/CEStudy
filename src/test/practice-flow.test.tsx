@@ -46,6 +46,6 @@ describe("practice flow",()=>{
     expect(screen.queryByText(/session is not saved between visits/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/student-facing AI tutor/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Draft questions are kept private/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("link",{name:"Browse subjects"})).toBeInTheDocument();
+    expect(screen.getByRole("link",{name:"Browse subjects"})).toHaveClass("button-primary");
   });
 });
