@@ -87,7 +87,7 @@ describe("CEStudy sidebar navigation", () => {
 
     const trigger = screen.getByRole("button", { name: "Open navigation menu" });
     await user.click(trigger);
-    await user.click(screen.getByRole("button", { name: "Close navigation menu" }));
+    await user.click(screen.getByRole("button", { name: "Dismiss navigation backdrop" }));
 
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "CEStudy navigation" })).not.toBeInTheDocument());
     expect(trigger).toHaveFocus();
