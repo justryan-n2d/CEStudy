@@ -244,6 +244,16 @@ Commit message: `test: verify connectivity notice and loading skeletons`.
 
 ---
 
+## Shared page-unavailable state and retry
+
+The six content-loading routes also share one recoverable request-failure state: Subject Catalog, Year Levels, Math Foundations, Subject Details, Study Reader, and Practice.
+
+- Use the owner-supplied cloud-disconnect SVG at `public/illustrations/cloud-disconnect.svg`. Render it as a theme-colored mask so it remains visible in Light and Dark themes.
+- Use one reusable `UnavailableState` component with the page-specific title/message and a visible **Retry** button directly below the message.
+- Retry must reissue the failed page request. While it is pending, return to that page's existing content-shaped skeleton; on success, remove the unavailable state and show the existing content or empty/review-gate state. On another failure, show the same recoverable state again.
+- Student-facing messages must remain useful and must not expose implementation diagnostics such as Supabase URL, key, or public-read-policy configuration. The global browser-offline notice remains independent and must not claim to verify internet or Supabase health.
+- Apply this shared state only to the six page-level catalog/lesson/practice request failures. Do not replace legitimate empty, not-found, review-gate, form-validation, or owner-authentication states.
+
 ## Completion and integration gate
 
 The connectivity/skeleton feature is a separate draft PR. It must pass all new checks and the existing main CI before it is eligible for owner review.
