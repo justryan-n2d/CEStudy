@@ -231,17 +231,30 @@ Expected: lint is clean, the full Vitest suite passes, and Vite builds productio
 
 ## Phase 3 completion criteria
 
-**Implementation status as of 2026-11-04:** all three controlled implementation slices have completed their planned code/test work and passed the relevant GitHub CI gates in separate draft PRs #71-#73. The code is **not yet integrated into main**. Keep product roadmap Phase 3 in `current` state until the owner inspects the visual-review artifact, authorizes the merges, and the integrated mainline is reverified.
+<badge>COMPLETE</badge> **Integrated into `main` on 2026-11-04.** The owner authorized integration after reviewing the implementation and populated-lesson visual artifact. The four focused PRs were merged in sequence:
 
+| PR | Result | Merge commit |
+|---|---|---|
+| [#70](https://github.com/justryan-n2d/CEStudy/pull/70) | Roadmap, status reconciliation and this implementation plan | `004f5e971fdb2a755619708c1a99dbea4bc93550` |
+| [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Catalog API/hook/SubjectPage contracts and stale-route fix | `d8c3e2bf62b4bf1e0f106d923d76981125ff996b` |
+| [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Published lesson API and Study reader contracts | `c24736168c1e49a6f39c89a7eabb7abb69480932` |
+| [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Synthetic populated lesson math and both-theme visual regression | `849c9d707b0cafd8c39ab63d9bf57260c54dd186` |
 
-- Catalog search/filter behavior, availability, source/provenance and empty/error recovery remain covered by tests.
+**Final integrated main:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186`.
+
+**Post-merge verification:**
+- [CEStudy CI 41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed 177 tests across 29 files, lint, dependency audit, production build, backup crypto/retention and verification tests, isolated Supabase migration/RLS tests, and 1,757/1,757 theme/browser assertions.
+- [Live website Chromium smoke 41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed.
+- The push secret scan [41797726053](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726053) passed. Phase 3 PR heads had their own successful secret-scan checks; PR #73's [full-history scan 41784514136](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514136) covered 1,233 commits without leaks.
+
+All acceptance criteria below are satisfied by the merged code and regression coverage:
+- Catalog search/filter behavior, availability, source/provenance and empty/error recovery remain covered.
 - Subject detail loading/error/not-found, source links, optional year/semester and related-subject behavior are directly covered.
 - Student lesson APIs request public columns only and return published rows only; malformed/unpublished content remains hidden.
 - Study reader loading/error/empty/search/navigation/completion behavior is covered without changing local-only progress boundaries.
 - A synthetic populated lesson renders representative engineering math in both themes at all five target widths without page-wide overflow or formula-rendering errors.
-- The full lint, unit test, production build, database migration/RLS and browser CI gates pass.
-- No change to live content publication, database schema, production settings, authentication or deployment is included.
+- Full lint, unit test, production build, database migration/RLS and browser CI gates passed on integrated main.
+- No live content publication, database schema, production settings, authentication or deployment changes were included.
 
-## Execution and merge rule
+**Scope boundary:** Learning objectives remain searchable metadata only. No Learning Objectives section is displayed. Phase 4 owns the Practice Workspace design and interactions; no Phase 4 behavior was introduced here. The next workstream is Phase 4, which can now be planned and started. PR #74 (connectivity and loading skeletons) remains a separate draft and must be reconciled before merging because it overlaps SubjectPage and has unresolved visual/test gaps.
 
-The owner decision on learning objectives is recorded above. The three tasks were implemented one at a time and remain separate draft PRs for review. Do not merge without explicit owner authorization. After integration, rerun mainline CI and verify the combined diff. Do not hand the entire Catalog, Subject and Study surface to a coding agent as one simultaneous redesign.
