@@ -128,7 +128,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 0: Canonical plan and baseline | **incomplete** | Current `main`, PR metadata, source paths, test commands and current CI/live evidence are recorded. A complete independent visual sign-off and physical-device review are not recorded. |
 | Phase 1: Shared foundation and theme tokens | **incomplete** | PR #56 is merged. Current main CI verifies Light/Dark behavior and the 13-route/five-width browser matrix. Owner visual sign-off and physical Android/TalkBack review remain open; do not restart the theme implementation. |
 | Phase 2: Navigation and route focus | **incomplete** | PR #57 is merged. Current main CI verifies route focus, keyboard/Escape behavior, 44px targets, desktop panels and mobile More menu. Owner visual sign-off and physical-device navigation review remain open; do not rebuild the navigation. |
-| Phase 3: Catalog, subject and lesson consistency | **current** | Repository audit is recorded and the dedicated implementation plan is created at `docs/plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md`. Application code has not been changed by the audit. Work through Catalog/Subject, Study, then shared math verification as separate test-first slices. |
+| Phase 3: Catalog, subject and lesson consistency | **current** | The three controlled implementation slices are CI-verified in draft PRs #71-#73. Task 1 fixes the SubjectPage stale-route state and adds Catalog/Subject contracts; Task 2 adds Study/API contracts with no reader source change needed; Task 3 verifies a synthetic populated lesson in both themes at five widths. Owner screenshot review and authorized integration into main remain pending. |
 | Phase 4: Practice workspace | **not started** | Start only after Phase 3 foundations and tests are established. Preserve the current question/answer/feedback/results behavior and honest unpublished-content gate. |
 | Phase 5: Progress and account integration | **paused** | Browser-local progress/streak already exists on `main`. Return to the consolidated PR #67 only after Phase 3 and Phase 4; refresh its branch, review the full diff, and close OAuth/privacy/security gates before merge. |
 | Phase 6: Review Materials Hub | **not started** | Build only after resource metadata, review status, provenance and rights rules are confirmed. |
@@ -138,6 +138,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 10: Offline access and native app | **not started** | Separate future architecture and design work; excluded from the current website theme foundation. |
 
 **Current verified `main`:** `ad96cc6148b95b563f247d9254bea5a6858b3cd0` (2026-11-04).
+**Phase 3 draft implementation:** PRs #71-#73 are CI-green and unmerged. Main remains unchanged until the owner authorizes integration.
 **Current documentation branch:** `docs/2026-11-04-roadmap-sync-phase3-plan`.
 **Application scope of this documentation update:** No application source, database schema/data, production settings, OAuth settings, or deployment configuration is changed.
 
@@ -527,7 +528,7 @@ Acceptance criteria:
 
 ### Phase 3: Catalog, subject and lesson consistency
 
-**Status: CURRENT - repository audit recorded; implementation plan prepared.** The audit found existing Catalog and Study functionality with useful regression coverage, but no dedicated `SubjectPage` test and no direct `catalog-api` test. The dedicated plan is recorded at [`docs/plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md`](plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md). No application code was changed by this audit.
+**Status: CURRENT - implementation slices CI-verified in draft PRs; integration pending.** The dedicated plan is recorded at [`docs/plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md`](plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md). Task 1 is in [PR #71](https://github.com/justryan-n2d/CEStudy/pull/71), Task 2 in [PR #72](https://github.com/justryan-n2d/CEStudy/pull/72), and Task 3 in [PR #73](https://github.com/justryan-n2d/CEStudy/pull/73). All remain draft and unmerged. The populated-lesson screenshot artifact is available in [CI run 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166) through 2026-11-11. Keep Phase 3 current until owner visual sign-off, explicit merge authorization and post-integration CI.
 
 **Relative effort:** Medium. **Risk:** Medium.
 
@@ -535,7 +536,7 @@ Primary paths: `src/pages/CatalogPage.tsx`, `src/components/CatalogFilters.tsx`,
 
 Acceptance criteria:
 - Preserve search/filter behavior, availability messaging, source/provenance and useful empty/error recovery.
-- Use one visual hierarchy for objectives, sections, formulas, solutions and next steps.
+- Structure lesson content around topical outlines, conceptual explanations, formulas and step-by-step worked solutions. Learning objectives remain searchable metadata only; do not show a separate Learning Objectives section in the student-facing lesson reader.
 - Do not invent year/semester assignments.
 - Equation formatting changes preserve canonical text and mathematical meaning.
 - Verify all representative formula fixtures in both themes and narrow layouts.

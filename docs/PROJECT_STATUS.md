@@ -1,7 +1,7 @@
 # CEStudy project status
 
 **Last updated:** 2026-11-04  
-**Current workstream:** Product roadmap Phase 3, Catalog/Subject/Study consistency, after documentation reconciliation and evidence-based release verification.  
+**Current workstream:** Product roadmap Phase 3, Catalog/Subject/Study consistency. Three controlled implementation slices have passed CI in draft PRs #71-#73; owner visual review and integration are still pending.  
 **Operational release phase:** **Phase 7, pre-launch hardening and release gates.**  
 **Release status:** CEStudy is **not approved for a broad student launch**. A read-only live Supabase query on 2026-11-04 reconfirmed 72 catalog subjects, 52 practice questions and 13 lessons; all 52 questions and all 13 lessons remain `needs-review`, with zero published rows. Documentation and planning work does not approve content publication, a broad launch, or production deployment.
 
@@ -35,6 +35,10 @@
 
 | PR | Current role | State and next gate |
 |---|---|---|
+| [#70](https://github.com/justryan-n2d/CEStudy/pull/70) | Documentation reconciliation and Phase 3 plan | Open, draft, docs-only. Records the owner's learning-objectives decision and Phase 3 status; not merged. |
+| [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Phase 3 Task 1: Catalog API, SubjectPage and `useCatalog` contracts | Open, draft, unmerged. CI passed 164 tests / 29 files and 1,682/1,682 existing browser assertions. |
+| [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Phase 3 Task 2: published lesson API and Study reader contracts | Open, draft, unmerged. CI passed 163 tests / 26 files and 1,682/1,682 existing browser assertions. |
+| [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Phase 3 Task 3: synthetic populated lesson math/browser verification | Open, draft, unmerged. CI passed 152 tests / 26 files and 1,757/1,757 browser assertions; before/after visual artifact uploaded through 2026-11-11. |
 | [#67](https://github.com/justryan-n2d/CEStudy/pull/67) | Consolidated Google auth, profile, local history and user-keyed streak candidate | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; current `main` comparison: 99 commits ahead, 19 behind, diverged, GitHub mergeable=false. Reconcile after product roadmap Phases 3 and 4. |
 | [#44](https://github.com/justryan-n2d/CEStudy/pull/44) | Earlier parallel account/streak candidate | Open, draft and not the integration target. Do not merge separately. |
 | [#64-#66](https://github.com/justryan-n2d/CEStudy/pull/64) | Earlier/stacked source slices | Open, draft. Treat as source history for PR #67 only; do not merge independently. |
@@ -42,6 +46,19 @@
 **PR #69:** merged 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. It adds the binding design-quality and anti-template standard and tool-neutral repository guidance. It does not change application code, production configuration, authentication, or database state.
 
 **Merge rule:** Before any feature merge, verify current base/head SHAs and branch relationship, review the complete diff, and rerun required CI, secret scanning and relevant security tests. PR #67 is not ready for merge in its current diverged state.
+
+## Product roadmap Phase 3 implementation status (2026-11-04)
+
+All three planned Phase 3 implementation slices are CI-verified in separate draft PRs: [Task 1 #71](https://github.com/justryan-n2d/CEStudy/pull/71), [Task 2 #72](https://github.com/justryan-n2d/CEStudy/pull/72), and [Task 3 #73](https://github.com/justryan-n2d/CEStudy/pull/73). Task 1 includes a focused SubjectPage stale-route fix. Task 2 adds tests only because current StudyPage/lesson API behavior already met the contract. Task 3 adds a synthetic published lesson fixture to the CI browser suite without changing live content.
+
+Latest Phase 3 evidence:
+- Task 1: [CI 41781851208](https://github.com/justryan-n2d/CEStudy/actions/runs/41781851208), 164 tests across 29 files; 1,682/1,682 browser assertions.
+- Task 2: [CI 41783133738](https://github.com/justryan-n2d/CEStudy/actions/runs/41783133738), 163 tests across 26 files; 1,682/1,682 browser assertions.
+- Task 3: [CI 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166), 152 tests across 26 files; 1,757/1,757 browser assertions including the synthetic lesson at five widths in both themes.
+- Full-history secret scan [41784514136](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514136) scanned 1,233 commits with no leaks.
+- The populated-lesson run uploaded `cestudy-populated-lesson-visual-review` screenshots, including the empty reviewer baseline and populated lesson at 390px/1440px in Light/Dark; artifact expires 2026-11-11.
+
+**Important:** these changes are still draft PRs, not part of `main`. Product Phase 3 remains current until the owner completes visual review, explicitly authorizes merge, and the integrated mainline passes verification. No live lesson/question was published, and no live Supabase rows, RLS, OAuth or production settings changed.
 
 ## Latest production and mainline verification (2026-11-04)
 
@@ -238,7 +255,7 @@ The ordered product sequence below follows the canonical UX/UI roadmap. The over
 
 1. **Synchronize and preserve evidence:** this documentation branch updates the roadmap, project status, phase tracker, backup guide, launch checklist and README with PR #69, current main CI, current PR #67 metadata, the 2026-11-01 backup, and the 2026-11-04 live database counts.
 2. **Close remaining verification gaps:** keep the successful automated theme/navigation and backup checks recorded. Complete the remaining managed Supabase restore only after separate-project cost review, B2 lifecycle inspection, recovery-key protection, failure notification settings, and owner physical-device/accessibility review. Do not claim those manual items complete based on CI.
-3. **Product roadmap Phase 3:** review the dedicated [Catalog, Subject and Lesson implementation plan](plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md). Implement one test-first slice at a time; preserve the current Blueprint Academy shell and avoid a multi-page redesign.
+3. **Product roadmap Phase 3:** review the CI-verified draft PRs [#71](https://github.com/justryan-n2d/CEStudy/pull/71), [#72](https://github.com/justryan-n2d/CEStudy/pull/72) and [#73](https://github.com/justryan-n2d/CEStudy/pull/73), including the visual-review artifact. Keep them unmerged until the owner authorizes integration; after integration, rerun mainline CI before moving to Phase 4.
 4. **Product roadmap Phase 4:** proceed only after Phase 3 foundations and tests are merged and verified. Improve the Practice Workspace without changing question correctness, publication rules, or answer/result behavior.
 5. **Product roadmap Phase 5:** reconcile the consolidated [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67) branch against current main only after Phases 3 and 4. Complete the Google/Supabase OAuth, callback recovery, privacy, sign-out and per-user isolation gates before any merge or release.
 

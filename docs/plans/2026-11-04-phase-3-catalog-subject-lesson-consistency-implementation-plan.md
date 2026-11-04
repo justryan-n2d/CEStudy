@@ -69,7 +69,7 @@
 - Consumes: `useCatalog()` returning `{ subjects, loading, error }`.
 - Preserves: `SubjectPage` route `/subjects/:slug` and the current Basic Algebra reviewer route `/study/basic-algebra`.
 
-- [ ] **Step 1: Add the Catalog API regression tests**
+- [x] **Step 1: Add the Catalog API regression tests**
 
 Test these cases using the existing Supabase mock pattern:
 - When Supabase is not configured, the API returns the typed static `CATALOG_SUBJECTS` fallback.
@@ -78,12 +78,12 @@ Test these cases using the existing Supabase mock pattern:
 - A Supabase query error rejects with the existing safe user-facing catalog error, without exposing raw database details.
 - Static catalog records have unique slugs, valid year-level values (`1` to `4` or `null`), valid availability/classification values and non-empty source notes.
 
-- [ ] **Step 2: Run the API characterization tests**
+- [x] **Step 2: Run the API characterization tests**
 
 Run: `npm run test -- --run src/test/catalog-api.test.ts`
 Expected: assertions for behavior already present in `catalog-api.ts` pass. If a test exposes a real defect, isolate that assertion as a regression test and verify the failing behavior before changing production code. Do not force an artificial failure merely to create a RED step.
 
-- [ ] **Step 3: Add the Subject Page behavior tests**
+- [x] **Step 3: Add the Subject Page behavior tests**
 
 Use `MemoryRouter` with `/subjects/:slug` and mock `fetchCatalogSubjects`. Verify:
 - Loading is announced while the request is pending.
@@ -95,26 +95,26 @@ Use `MemoryRouter` with `/subjects/:slug` and mock `fetchCatalogSubjects`. Verif
 - Related subjects exclude the current subject and contain no more than three records.
 - Basic Algebra continues to link directly to `/study/basic-algebra`.
 
-- [ ] **Step 4: Run the Subject Page characterization tests**
+- [x] **Step 4: Run the Subject Page characterization tests**
 
 Run: `npm run test -- --run src/test/subject-page.test.tsx`
 Expected: assertions matching current loading, error, not-found, source, availability and related-subject behavior pass. If a requirement is not met, retain a focused failing regression test before making the minimum correction.
 
-- [ ] **Step 5: Add focused `useCatalog` loading/error lifecycle characterization tests**
+- [x] **Step 5: Add focused `useCatalog` loading/error lifecycle characterization tests**
 
 Verify initial loading, successful data delivery, error state and ignoring a late promise after unmount. Preserve the current hook interface; do not add retries or new user-visible actions unless a separate requirement is approved.
 
-- [ ] **Step 6: Run the focused hook tests**
+- [x] **Step 6: Run the focused hook tests**
 
 Run: `npm run test -- --run src/test/use-catalog.test.tsx`
 Expected: the current hook behavior is documented by passing assertions. If a required lifecycle behavior is absent, keep the specific failing assertion as a regression test.
 
-- [ ] **Step 7: Run the Catalog/Subject integration tests**
+- [x] **Step 7: Run the Catalog/Subject integration tests**
 
 Run: `npm run test -- --run src/test/catalog-api.test.ts src/test/subject-page.test.tsx src/test/use-catalog.test.ts src/test/catalog-pages.test.tsx src/test/catalog.test.ts src/test/subject-card.test.tsx`
 Expected: all focused tests pass; the existing search/filter, result announcement, navigation and availability behavior remains intact.
 
-**Review gate:** inspect the diff to confirm no unverified curriculum metadata, labels, subject assignments or extra decorative content was added. Commit this independently passing slice before Task 2.
+**Review gate: passed for the draft slice.** PR [#71](https://github.com/justryan-n2d/CEStudy/pull/71) contains the Catalog/Subject contract tests and the minimal SubjectPage route-state reset fix. CI run [41781851208](https://github.com/justryan-n2d/CEStudy/actions/runs/41781851208) passed 164 tests across 29 files, lint/build, 1,682/1,682 existing browser assertions, Supabase migration/RLS checks, Cloudflare preview and full-history secret scanning. The branch remains draft and unmerged.
 
 ---
 
@@ -130,16 +130,16 @@ Expected: all focused tests pass; the existing search/filter, result announcemen
 - Consumes: `SubjectLesson` from `src/types/lesson-content.ts`.
 - Preserves: `/study/:slug` and `/study/:slug/:unit`, topic search, `MarkdownContent`, local completion and current previous/next links.
 
-- [ ] **Step 1: Extend the lesson API tests**
+- [x] **Step 1: Extend the lesson API tests**
 
 Add assertions that the query filters by the requested `subject_slug` and `status = published`, orders by `unit_number` ascending, excludes `review_notes` and `reviewed_at` from the selected columns, rejects with the current safe error on a Supabase failure, returns an empty list for no published rows, and drops malformed or unexpectedly non-published rows from a response.
 
-- [ ] **Step 2: Run the lesson API characterization tests**
+- [x] **Step 2: Run the lesson API characterization tests**
 
 Run: `npm run test -- --run src/test/lesson-api.test.ts`
 Expected: existing public-column selection, published-only filtering and empty-result behavior pass. Add or isolate a failing regression assertion only if the expanded contract identifies an actual behavior defect.
 
-- [ ] **Step 3: Extend the Study Page tests**
+- [x] **Step 3: Extend the Study Page tests**
 
 Add cases for:
 - Loading state while the lesson request is pending.
@@ -151,21 +151,21 @@ Add cases for:
 - A subject-route change does not allow a late response for the previous subject to replace the new subject's content.
 - Completion and undo remain local to the current browser; no Supabase write is introduced.
 
-- [ ] **Step 4: Run the Study Page characterization tests**
+- [x] **Step 4: Run the Study Page characterization tests**
 
 Run: `npm run test -- --run src/test/study-page.test.tsx`
 Expected: existing empty, published lesson, search/navigation and local completion behavior remains passing. Any proposed new requirement that is not met must be isolated in a focused failing test before code changes.
 
-- [ ] **Step 5: Implement the smallest reader/API corrections**
+- [x] **Step 5: Implement the smallest reader/API corrections**
 
 Only fix demonstrated failures. Preserve published-only filtering, current `SubjectLesson` types, unit ordering, safe error copy, local-only completion and the existing route contract. Do not redesign the entire lesson page or add account/progress syncing.
 
-- [ ] **Step 6: Verify Study and lesson API integration**
+- [x] **Step 6: Verify Study and lesson API integration**
 
 Run: `npm run test -- --run src/test/lesson-api.test.ts src/test/lesson-content.test.ts src/test/study-page.test.tsx src/test/learning-progress.test.ts src/test/learning-streak.test.ts`
 Expected: all focused tests pass, draft lesson content remains hidden, and completion continues to write only browser-local state.
 
-**Review gate:** review the changed Study Page at phone and desktop widths before accepting any visual adjustment. Keep math source, lesson wording and source attribution unchanged unless an independently reviewed content correction is required.
+**Review gate: passed for the contract slice.** PR [#72](https://github.com/justryan-n2d/CEStudy/pull/72) adds the reader/API tests without changing StudyPage or lesson API behavior; the existing implementation already met the verified contract. CI run [41783133738](https://github.com/justryan-n2d/CEStudy/actions/runs/41783133738) passed 163 tests across 26 files, lint/build, 1,682/1,682 existing browser assertions, backup checks and Supabase migration/RLS tests. No visual adjustment was made. The branch remains draft and unmerged.
 
 ---
 
@@ -181,18 +181,18 @@ Expected: all focused tests pass, draft lesson content remains hidden, and compl
 - Consumes: the current KaTeX rendering path and semantic theme tokens.
 - Produces: browser smoke coverage for a synthetic published lesson on the local built preview, without writing to Supabase or changing live data.
 
-- [ ] **Step 1: Add deterministic formula and theme fixtures**
+- [x] **Step 1: Add deterministic formula and theme fixtures**
 
 Extend the existing renderer tests only for uncovered edge cases. Reuse representative formulas already in the test suite: inline and display fractions, nested fractions, matrices, quadratic/trigonometric expressions and explanatory prose. Add assertions that malformed formulas remain readable source text and that the original Markdown fixture is not mutated.
 
 Add a synthetic `subject_lessons` REST response fixture in the local Playwright smoke script. Intercept only the local preview request for the test subject, return one synthetic row with `status: published`, and include a realistic lesson body containing a topical outline, conceptual explanation, inline math, a display equation and a step-by-step worked solution. Keep the objectives array as searchable metadata only; do not render it as a separate section. Do not call the live database for this fixture.
 
-- [ ] **Step 2: Run the renderer characterization tests**
+- [x] **Step 2: Run the renderer characterization tests**
 
 Run: `npm run test -- --run src/test/latex-rendering.test.tsx`
 Expected: all existing math/rendering tests remain passing. New assertions document current behavior; if they demonstrate a genuine renderer defect, isolate that case and confirm the failure before fixing it.
 
-- [ ] **Step 3: Add browser assertions for the populated lesson**
+- [x] **Step 3: Add browser assertions for the populated lesson**
 
 On the built local preview, visit `/study/basic-algebra/1` with the synthetic API response and verify:
 - The lesson heading and source Markdown render.
@@ -203,19 +203,19 @@ On the built local preview, visit `/study/basic-algebra/1` with the synthetic AP
 - At 320, 390, 768, 1024 and 1440 px, the equation container does not cause page-wide horizontal overflow.
 - No new theme state or user preference is written other than the existing `cestudy:theme:v1` key.
 
-- [ ] **Step 4: Verify the browser smoke on the local production build**
+- [x] **Step 4: Verify the browser smoke on the local production build**
 
 Run through the existing CI workflow: `npm run build`, then the configured `scripts/theme-smoke.cjs` job with its Playwright module and preview URL. The workflow already installs Chromium and starts the built app on port 4173.
 Expected: the existing 1,682 theme/navigation checks plus the new synthetic lesson assertions pass with zero runtime errors.
 
-- [ ] **Step 5: Run the full Phase 3 regression set**
+- [x] **Step 5: Run the full Phase 3 regression set**
 
 Run: `npm run lint`
 Run: `npm run test -- --run`
 Run: `npm run build`
 Expected: lint is clean, the full Vitest suite passes, and Vite builds production assets. CI must also pass the existing Supabase migration/RLS tests, backup crypto/retention tests and Chromium smoke job.
 
-**Review gate:** compare before/after screenshots for the populated lesson at phone and desktop widths in both themes. Reject changes that add generic gradients, unnecessary centered sections, word-highlight headline styling, decorative eyebrow copy, nested cards without a functional reason, or functionality that is not real.
+**Automated review gate: passed.** PR [#73](https://github.com/justryan-n2d/CEStudy/pull/73) uses a synthetic published lesson and a test-only `.invalid` Supabase endpoint. CI run [41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166) passed 152 tests across 26 files and 1,757/1,757 browser assertions, including the populated lesson in Light/Dark at all five widths, KaTeX readability, no formula errors and no horizontal overflow. The job captured empty-reviewer and populated-lesson screenshots at 390px and 1440px in both themes and uploaded them as the `cestudy-populated-lesson-visual-review` artifact (available until 2026-11-11). Owner visual comparison of that artifact remains the manual sign-off. The branch remains draft and unmerged. No visual redesign or decorative additions were introduced.
 
 ---
 
@@ -231,6 +231,9 @@ Expected: lint is clean, the full Vitest suite passes, and Vite builds productio
 
 ## Phase 3 completion criteria
 
+**Implementation status as of 2026-11-04:** all three controlled implementation slices have completed their planned code/test work and passed the relevant GitHub CI gates in separate draft PRs #71-#73. The code is **not yet integrated into main**. Keep product roadmap Phase 3 in `current` state until the owner inspects the visual-review artifact, authorizes the merges, and the integrated mainline is reverified.
+
+
 - Catalog search/filter behavior, availability, source/provenance and empty/error recovery remain covered by tests.
 - Subject detail loading/error/not-found, source links, optional year/semester and related-subject behavior are directly covered.
 - Student lesson APIs request public columns only and return published rows only; malformed/unpublished content remains hidden.
@@ -239,6 +242,6 @@ Expected: lint is clean, the full Vitest suite passes, and Vite builds productio
 - The full lint, unit test, production build, database migration/RLS and browser CI gates pass.
 - No change to live content publication, database schema, production settings, authentication or deployment is included.
 
-## Unresolved execution rule
+## Execution and merge rule
 
-After the owner reviews this plan and decides the learning-objectives question, implement one task at a time. Do not hand the entire Catalog, Subject and Study surface to a coding agent as one simultaneous redesign.
+The owner decision on learning objectives is recorded above. The three tasks were implemented one at a time and remain separate draft PRs for review. Do not merge without explicit owner authorization. After integration, rerun mainline CI and verify the combined diff. Do not hand the entire Catalog, Subject and Study surface to a coding agent as one simultaneous redesign.

@@ -141,7 +141,7 @@ It separates the work into three reviewable test-first tasks:
 2. Published lesson API and Study reader states/navigation.
 3. Synthetic populated lesson math rendering in Light/Dark at all five target widths.
 
-No application code was changed during this audit.
+No application code was changed during the initial read-only audit. The subsequent controlled Phase 3 implementation work is recorded in Section 9 below.
 
 ### Owner decision recorded on 2026-11-04
 
@@ -158,3 +158,24 @@ The intended lesson structure is practical review material organized around topi
 - No lesson/question was published.
 - No managed Supabase test project was created.
 - No physical-device test was claimed.
+
+
+## 9. Controlled Phase 3 implementation progress (2026-11-04)
+
+The owner approved keeping lesson objectives as searchable metadata only. CEStudy's lesson reader does not show a separate Learning Objectives section. Lesson content remains organized around topical outlines, conceptual explanations, formulas and step-by-step worked solutions.
+
+Three independent draft PRs were created from the verified main baseline. All remain open, draft and unmerged:
+
+| PR | Scope | Verified result |
+|---|---|---|
+| [#71](https://github.com/justryan-n2d/CEStudy/pull/71) | Catalog API, `useCatalog`, SubjectPage tests and SubjectPage route-change state reset | [CI 41781851208](https://github.com/justryan-n2d/CEStudy/actions/runs/41781851208): 164 tests / 29 files; lint/build passed; 1,682/1,682 existing browser assertions; Supabase migration/RLS and secret scan passed |
+| [#72](https://github.com/justryan-n2d/CEStudy/pull/72) | Published lesson API and StudyPage behavior contract tests | [CI 41783133738](https://github.com/justryan-n2d/CEStudy/actions/runs/41783133738): 163 tests / 26 files; lint/build passed; 1,682/1,682 existing browser assertions; Supabase migration/RLS and secret scan passed |
+| [#73](https://github.com/justryan-n2d/CEStudy/pull/73) | Synthetic populated lesson, KaTeX rendering and both-theme browser verification | [CI 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166): 152 tests / 26 files; lint/build passed; 1,757/1,757 browser assertions; Supabase migration/RLS and secret scan passed |
+
+Task 1 reproduced a stale-subject route-change defect and fixed it by resetting the SubjectPage loading, error and subject state for a new slug. Task 2 confirmed the current reader/API implementation already satisfied the intended behavior, so no StudyPage or lesson API source change was required. Task 3 verified the shared Markdown/KaTeX path with synthetic data only.
+
+The latest full-history Gitleaks run [41784514136](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514136) scanned 1,233 commits and reported no leaks. The synthetic build uses the reserved `.invalid` host `cestudy-math-smoke.invalid` and a non-secret CI sentinel key; the Playwright route intercepts its REST requests. No live Supabase endpoint, records or publication statuses are used by the populated-lesson test.
+
+The latest browser run uploaded artifact `cestudy-populated-lesson-visual-review`, containing before/after empty-reviewer and populated-lesson screenshots at 390px and 1440px in Light and Dark. The artifact expires 2026-11-11. Its human visual comparison remains an owner review item.
+
+**Integration boundary:** PRs #71-#73 are draft and unmerged. Main remains at the recorded baseline until the owner explicitly authorizes integration. No live database, RLS, production Supabase configuration, OAuth settings, production deployment or lesson publication was changed by these Phase 3 slices.
