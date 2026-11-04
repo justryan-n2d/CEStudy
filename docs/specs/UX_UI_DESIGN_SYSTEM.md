@@ -253,6 +253,8 @@ Use Inter with system fallbacks. Body text starts at 16px; keep heading sizes re
 
 ## Revision record
 
+- **2026-11-04:** Expanded the anti-AI-slop review standard with five explicit design/copy signals: purple/blue gradient overload, default-centered layouts, repetitive em-dash phrasing, decorative colored headline fragments, and redundant eyebrow labels. Expanded the required checklist from 12 to 17 items. Preserved context-sensitive exceptions, Blueprint Academy, existing brand assets/tokens, website-first IA, and approved theme behavior. Documentation only.
+
 - **2026-10-29:** Added the binding anti-AI-slop standard, task-based layout selection guidance, nested-container acceptance criteria, interaction/prototype truth requirements, and a required design review checklist. Documentation only; approved product decisions and application code are unchanged.
 
 - **2026-10-21T19:10:04+08:00 (Asia/Manila):** Added the requested website navigation model, native five-tab app design, Offline Access, LaTeX/equation rendering, and Dark Mode requirements. Documentation-only change.
