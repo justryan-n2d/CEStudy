@@ -1,4 +1,5 @@
 import { useId } from "react";
+import type { ReactNode } from "react";
 import "./UnavailableState.css";
 
 type UnavailableStateProps = {
@@ -6,6 +7,7 @@ type UnavailableStateProps = {
   message: string;
   onRetry: () => void;
   headingLevel?: "h1" | "h2" | "h3";
+  secondaryAction?: ReactNode;
 };
 
 export function UnavailableState({
@@ -13,6 +15,7 @@ export function UnavailableState({
   message,
   onRetry,
   headingLevel = "h2",
+  secondaryAction,
 }: UnavailableStateProps) {
   const id = useId();
   const Heading = headingLevel;
@@ -34,6 +37,7 @@ export function UnavailableState({
       <button className="button button-primary" type="button" onClick={onRetry}>
         Retry
       </button>
+      {secondaryAction ? <div className="unavailable-state__secondary-action">{secondaryAction}</div> : null}
     </section>
   );
 }
