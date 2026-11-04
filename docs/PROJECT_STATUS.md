@@ -1,7 +1,7 @@
 # CEStudy project status
 
 **Last updated:** 2026-11-04  
-**Current workstream:** Product roadmap Phase 4, Practice Workspace. Blueprint Academy Phase 3, Catalog/Subject/Study consistency, is complete and integrated into `main` through PRs #70-#73.  
+**Current workstream:** Decision-Light Design documentation (A), followed by the deferred site-wide UX audit (C). Blueprint Academy Phase 3, Catalog/Subject/Study consistency, is complete and integrated into `main` through PRs #70-#73. Phase 4, Practice Workspace, remains not started and must not begin until audit C is completed.  
 **Operational release phase:** **Phase 7, pre-launch hardening and release gates.**  
 **Release status:** CEStudy is **not approved for a broad student launch**. A read-only live Supabase query on 2026-11-04 reconfirmed 72 catalog subjects, 52 practice questions and 13 lessons; all 52 questions and all 13 lessons remain `needs-review`, with zero published rows. Phase 3 completion does not approve content publication, a broad launch, or production deployment.
 
@@ -14,6 +14,7 @@
 - **2026-10-29 UX/UI planning update:** A documentation-only branch adds a binding design quality and anti-template standard to `docs/specs/UX_UI_DESIGN_SYSTEM.md`, including task-based layout rules, nested-container acceptance criteria, interaction/prototype truth, and a required design-review checklist. The master roadmap and related IA/gamification plans link to that authority. No application files, feature behavior, auth, database, production settings, merge, or production deployment are changed by this work. GitHub's automatic branch checks may build a preview. The branch remains subject to owner review and repository validation.
 
 - **Source of truth:** [MASTER_ROADMAP_FOR_CESTUDY.md](MASTER_ROADMAP_FOR_CESTUDY.md) is already present on `main`. Its approved Blueprint Academy direction, implementation sequence, acceptance criteria, and release safeguards take priority over conflicting PR layouts or styling.
+- **Decision-Light Design (owner-approved 2026-11-04):** Documentation task A adds the binding Hick-Hyman-based five-rule standard to the UX/UI Design System and roadmap. The separate site-wide audit C is deferred until A is integrated, and is required before Phase 4. Do not describe the current site as audited or redesign existing routes as part of A.
 - **Supporting design decisions:** PR #51 is merged. Its IA, gamified UX, and design-system documents are reconciled with the canonical roadmap and approved device-local theme decision.
 - **Stage 0, Gitleaks security gate: verified complete on 2026-10-23.** PR #59 merged at `a2c05dff7532b8f48838bcda9e73615613599086` after CI, the PR-diff secret scan, and a full-history scan of 1,014 commits / about 3.89 MB passed with no leaks. PR #47 is closed as superseded. This completes the Gitleaks allowlist gate only; Phase 0 and Phase 7 retain their other outstanding checks.
 - **Stage 1, theme foundation:** PR #56 merged on 2026-10-23 at `6aef33f37ea69c9b53acdbd975edf9b8feb2d0a5`. Final head `8208d8dbd2012a474a20bca5aa5cc0ad4b975146` passed CI, secret scan, Supabase migration/RLS checks, and 853/853 Chromium assertions. The owner content-review dark-theme regression test first failed as expected and passed after the CSS fix. Phase 1 remains **current**, not complete, until independent review and manual preview inspection are available; external preview access was blocked by environment DNS/network.
@@ -69,7 +70,7 @@ Task 1 fixed a demonstrated SubjectPage route-transition bug. Task 2 added contr
 
 **Safeguards preserved:** no live lesson/question was published; no live database row, schema, RLS policy, production Supabase/OAuth setting or production deployment configuration was changed by these PRs. The operational release phase remains Phase 7; Phase 3 completion is not broad-launch approval.
 
-**Next product workstream:** Phase 4, Practice Workspace. It is ready to be planned; Phase 4 implementation has not started. Keep the connectivity/loading-skeleton PR #74 separate until it is reconciled with current main and the identified Practice skeleton visual issue and rejection-lifecycle coverage are addressed.
+**Next product-design workstream:** Complete documentation task A, then run the deferred site-wide Decision-Light audit C across existing routes and significant task states. **Next product implementation workstream:** Phase 4, Practice Workspace, remains not started and is gated on audit C. Keep the connectivity/loading-skeleton PR #74 separate until it is reconciled with current main and the identified Practice skeleton visual issue and rejection-lifecycle coverage are addressed.
 
 ## Latest production and mainline verification (2026-11-04)
 
@@ -269,7 +270,8 @@ The ordered product sequence below follows the canonical UX/UI roadmap. The over
 1. **Synchronize and preserve evidence:** this documentation branch updates the roadmap, project status, phase tracker, backup guide, launch checklist and README with PR #69, current main CI, current PR #67 metadata, the 2026-11-01 backup, and the 2026-11-04 live database counts.
 2. **Close remaining verification gaps:** keep the successful automated theme/navigation and backup checks recorded. Complete the remaining managed Supabase restore only after separate-project cost review, B2 lifecycle inspection, recovery-key protection, failure notification settings, and owner physical-device/accessibility review. Do not claim those manual items complete based on CI.
 3. **Product roadmap Phase 3:** review the CI-verified draft PRs [#71](https://github.com/justryan-n2d/CEStudy/pull/71), [#72](https://github.com/justryan-n2d/CEStudy/pull/72) and [#73](https://github.com/justryan-n2d/CEStudy/pull/73), including the visual-review artifact. Keep them unmerged until the owner authorizes integration; after integration, rerun mainline CI before moving to Phase 4.
-4. **Product roadmap Phase 4:** proceed only after Phase 3 foundations and tests are merged and verified. Improve the Practice Workspace without changing question correctness, publication rules, or answer/result behavior.
+4. **Decision-Light site-wide audit (C):** after documentation task A is integrated, inspect every current route and significant task state against the binding standard. Record evidence, common and advanced task paths, accessibility and responsive findings, and prioritize proposed corrections. Do not start Phase 4 implementation during this audit.
+5. **Product roadmap Phase 4:** proceed only after Phase 3 foundations and tests are merged and verified and audit C is completed. Improve the Practice Workspace without changing question correctness, publication rules, or answer/result behavior.
 5. **Product roadmap Phase 5:** reconcile the consolidated [PR #67](https://github.com/justryan-n2d/CEStudy/pull/67) branch against current main only after Phases 3 and 4. Complete the Google/Supabase OAuth, callback recovery, privacy, sign-out and per-user isolation gates before any merge or release.
 
 ## Documentation practice
