@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { Layout } from "../components/Layout";
@@ -41,35 +40,18 @@ describe("homepage and year-level navigation", () => {
     expect(screen.getByRole("link", { name: "Browse First year subjects" })).toHaveAttribute("href", "/year/1");
     expect(screen.getByRole("link", { name: "Browse Fourth year subjects" })).toHaveAttribute("href", "/year/4");
   });
-  it("keeps the four main destinations in mobile quick navigation", () => {
-    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
-    const quickNav = document.querySelector('nav[aria-label="Quick navigation"]');
-    expect(quickNav?.querySelector('a[href="/"]')).toHaveTextContent("Home");
-    expect(quickNav?.querySelector('a[href="/catalog"]')).toHaveTextContent("Subjects");
-    expect(quickNav?.querySelector('a[href="/years"]')).toHaveTextContent("Years");
-    expect(quickNav?.querySelector('a[href="/math-foundations"]')).toHaveTextContent("Math");
-  });
+  it("replaces the duplicate all-years link with a continuous decorative marquee", () => {
+    render(<MemoryRouter initialEntries={["/"]}><HomePage /></MemoryRouter>);
 
-  it("provides a direct year-level overview link inside the Year Levels dropdown", async () => {
-    const user = userEvent.setup();
-    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
-    const trigger = screen.getByRole("button", { name: "Year Levels" });
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-    await user.click(trigger);
-    expect(await screen.findByRole("link", { name: "Browse all year levels" })).toHaveAttribute("href", "/years");
-  });
-  it("opens the More menu with an animated dropdown and reduced-motion fallback", async () => {
-    const user = userEvent.setup();
-    render(<MemoryRouter initialEntries={["/"]}><Layout><HomePage /></Layout></MemoryRouter>);
-    const button = screen.getByRole("button", { name: "Open more pages menu" });
-    await user.click(button);
-    expect(button).toHaveAttribute("aria-expanded", "true");
-    const menu = screen.getByRole("navigation", { name: "More CEStudy pages" });
-    expect(menu).toHaveClass("is-open");
-    expect(menu).toBeVisible();
-    expect(stylesheet).toContain("@keyframes ce-menu-drop-in");
-    expect(stylesheet).toContain('.mobile-menu-toggle[aria-expanded="true"] .navigation-glyph');
+    expect(screen.queryByRole("link", { name: /view all years/i })).not.toBeInTheDocument();
+    const marquee = document.querySelector(".home-marquee");
+    expect(marquee).toHaveAttribute("aria-hidden", "true");
+    expect(marquee?.querySelectorAll(".home-marquee-group")).toHaveLength(2);
+    expect(stylesheet).toContain("@keyframes cestudy-home-marquee");
     expect(stylesheet).toContain("@media(prefers-reduced-motion:reduce)");
+    for (const year of ["First year", "Second year", "Third year", "Fourth year"]) {
+      expect(screen.getByRole("link", { name: `Browse ${year} subjects` })).toBeInTheDocument();
+    }
   });
 
   it("uses white by default and the actual master-logo blue as an accent", () => {
