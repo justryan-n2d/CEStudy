@@ -96,7 +96,7 @@ describe("subject page route lifecycle", () => {
 
     await user.click(screen.getByRole("button", { name: "Show second subject" }));
 
-    expect(screen.getByRole("status")).toHaveTextContent("Loading subject…");
+    expect(screen.getByRole("status")).toHaveTextContent("Loading subject details…");
     expect(screen.queryByRole("heading", { name: "First Subject" })).not.toBeInTheDocument();
 
     await waitFor(() => expect(resolveSecond).toBeDefined());
@@ -170,7 +170,8 @@ describe("subject page route lifecycle", () => {
     renderSubjectPage("first-subject");
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Subject unavailable");
-    expect(screen.getByRole("alert")).toHaveTextContent("Catalog request failed.");
+    expect(screen.getByRole("alert")).toHaveTextContent("The subject details could not be loaded. Check your connection and try again.");
+    expect(screen.getByRole("alert")).not.toHaveTextContent("Catalog request failed.");
     expect(screen.getByRole("link", { name: "Return to subjects" })).toHaveAttribute("href", "/catalog");
   });
 });
