@@ -103,8 +103,8 @@ describe("lesson reader", () => {
       expect(container.querySelectorAll(".katex").length).toBeGreaterThanOrEqual(3);
     });
     expect(container.querySelector(".latex-math-error")).not.toBeInTheDocument();
-    expect(container.textContent).not.toContain("\[");
-    expect(container.textContent).not.toContain("\]");
+    expect(container.textContent).not.toContain(String.raw`\[`);
+    expect(container.textContent).not.toContain(String.raw`\]`);
   });
 
   it("removes streak, completion, and progress controls from the reading task", async () => {
