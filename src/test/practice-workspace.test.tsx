@@ -97,6 +97,40 @@ describe("PracticeWorkspace", () => {
     expect(document.querySelector(".practice-workspace__backdrop")).not.toBeInTheDocument();
   });
 
+  it("closes without the exit animation when reduced motion is preferred", async () => {
+    const originalMatchMedia = window.matchMedia;
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: () => ({ matches: true }),
+    });
+
+    try {
+      const user = userEvent.setup();
+      render(
+        <PracticeWorkspace tools={<button type="button">TEST TOOL ACTION</button>}>
+          <h2>TEST PRACTICE QUESTION</h2>
+        </PracticeWorkspace>,
+      );
+
+      const trigger = screen.getByRole("button", { name: "Open practice tools" });
+      await user.click(trigger);
+      expect(screen.getByRole("dialog", { name: "Practice tools" })).toBeInTheDocument();
+
+      await user.keyboard("{Escape}");
+
+      expect(screen.queryByRole("dialog", { name: "Practice tools" })).not.toBeInTheDocument();
+      expect(document.querySelector(".practice-workspace__tools")).not.toHaveClass("is-closing");
+      expect(screen.getByTestId("practice-workspace-content")).not.toHaveAttribute("inert");
+      expect(trigger).not.toHaveAttribute("inert");
+      expect(trigger).toHaveFocus();
+    } finally {
+      Object.defineProperty(window, "matchMedia", {
+        configurable: true,
+        value: originalMatchMedia,
+      });
+    }
+  });
+
   it("closes the mobile tools sheet when its backdrop is activated and completes the exit transition", async () => {
     const user = userEvent.setup();
     render(
