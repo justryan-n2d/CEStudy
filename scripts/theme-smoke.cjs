@@ -150,6 +150,28 @@ The solutions are \(x=-2\) and \(x=-3\).`,
       updated_at: "2026-11-04T00:00:00.000Z",
     };
 
+    const syntheticPublishedPracticeQuestion = {
+      id: "synthetic-playwright-practice-01",
+      subject_slug: "basic-algebra",
+      topic: "Engineering mathematics • synthetic layout fixture",
+      prompt: String.raw`A civil engineering student is checking a simplified rectangular member model. For this synthetic layout test only, assume the effective area and lever arm have already been reviewed and use the relationship \\(M_u = \\phi A_s f_y(d-a/2)\\). The student must identify the expression that correctly isolates the required steel area, while keeping every supplied symbol and factor in the correct position. This intentionally long problem statement verifies that a realistic engineering prompt wraps inside the Practice Workspace rather than stretching the page beyond the phone viewport.`,
+      choices: [
+        String.raw`Option A: \\(A_s = \\frac{M_u}{\\phi f_y(d-a/2)}\\), with the full effective lever arm retained in the denominator.`,
+        String.raw`Option B: \\(A_s = \\frac{M_u(d-a/2)}{\\phi f_y}\\), multiplying by the lever arm instead of dividing by it.`,
+        String.raw`Option C: \\(A_s = \\frac{M_u}{\\phi f_y(d-a/2)}\\), interpreted with the stated positive design factors and the reviewed effective depth.`,
+        String.raw`Option D: \\(A_s = \\frac{\\phi f_y(d-a/2)}{M_u}\\), which reverses the required ratio.`,
+      ],
+      correct_answer: String.raw`Option C: \\(A_s = \\frac{M_u}{\\phi f_y(d-a/2)}\\), interpreted with the stated positive design factors and the reviewed effective depth.`,
+      solution_steps: [
+        String.raw`Start from \\(M_u = \\phi A_s f_y(d-a/2)\\).`,
+        String.raw`Divide both sides by \\(\\phi f_y(d-a/2)\\) to isolate \\(A_s\\).`,
+        String.raw`The resulting expression is \\(A_s = \\frac{M_u}{\\phi f_y(d-a/2)}\\).`,
+      ],
+      explanation: "Synthetic fixture only. The expression is included to test math rendering and wrapping, not to provide approved engineering instruction.",
+      source_note: "Synthetic Playwright fixture only. This question is not stored or published in Supabase.",
+      display_order: 1,
+    };
+
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     let includeSyntheticPublishedLesson = true;
     await page.route("https://cestudy-math-smoke.invalid/rest/v1/**", async (route) => {
@@ -158,7 +180,9 @@ The solutions are \(x=-2\) and \(x=-3\).`,
         ? (includeSyntheticPublishedLesson ? [syntheticPublishedLesson] : [])
         : resource === "catalog_subjects"
           ? syntheticCatalogRows
-          : [];
+          : resource === "practice_questions"
+            ? [syntheticPublishedPracticeQuestion]
+            : [];
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -200,6 +224,10 @@ The solutions are \(x=-2\) and \(x=-3\).`,
 
           const darkButton = themeGroup.getByRole("button", { name: "Dark" });
           await darkButton.click();
+          if (route === "/practice/basic-algebra") {
+            await page.locator(".practice-question-card h2").waitFor({ state: "visible", timeout: 10000 });
+            await page.locator(".practice-question-card .katex").first().waitFor({ state: "visible", timeout: 10000 });
+          }
           await page.waitForFunction(
             () => getComputedStyle(document.querySelector(".site-sidebar-link")).color === "rgb(243, 247, 251)",
             null,
@@ -234,6 +262,28 @@ The solutions are \(x=-2\) and \(x=-3\).`,
                   wrapperMaxWidth: wrapper ? getComputedStyle(wrapper).maxWidth : "",
                   hasToolsPanel: Boolean(root?.querySelector(".practice-workspace__tools")),
                   hasToolsTrigger: Boolean(root?.querySelector(".practice-workspace__tools-trigger")),
+                };
+              })(),
+              practiceContent: (() => {
+                const card = document.querySelector(".practice-question-card");
+                const question = card?.querySelector("h2");
+                const options = [...(card?.querySelectorAll(".answer-option") ?? [])];
+                const math = [...(card?.querySelectorAll(".katex") ?? [])];
+                const mathErrors = [...(card?.querySelectorAll(".latex-math-error") ?? [])];
+                const optionOverflowCount = options.filter((option) => {
+                  const label = option.querySelector("span");
+                  return label && label.scrollWidth > label.clientWidth + 1;
+                }).length;
+                return {
+                  promptVisible: Boolean(question && question.getBoundingClientRect().width > 0),
+                  questionWidth: card?.getBoundingClientRect().width ?? 0,
+                  questionClientWidth: card?.clientWidth ?? 0,
+                  questionScrollWidth: card?.scrollWidth ?? 0,
+                  optionCount: options.length,
+                  optionOverflowCount,
+                  katexCount: math.length,
+                  mathErrorCount: mathErrors.length,
+                  promptText: question?.textContent?.slice(0, 100) ?? "",
                 };
               })(),
             };
@@ -311,6 +361,18 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               workspace.wrapperMaxWidth === "1120px", JSON.stringify(workspace));
             check("Dark practice route omits tools UI when no functional tool is supplied: " + activeRoute,
               !workspace.hasToolsPanel && !workspace.hasToolsTrigger, JSON.stringify(workspace));
+            check("Dark practice renders the synthetic long prompt and all four answer choices: " + activeRoute,
+              dark.practiceContent.promptVisible &&
+                dark.practiceContent.optionCount === 4 &&
+                dark.practiceContent.questionWidth > 0,
+              JSON.stringify(dark.practiceContent));
+            check("Dark practice renders KaTeX without math fallback errors: " + activeRoute,
+              dark.practiceContent.katexCount >= 2 && dark.practiceContent.mathErrorCount === 0,
+              JSON.stringify(dark.practiceContent));
+            check("Dark practice question and options fit without internal horizontal overflow: " + activeRoute,
+              dark.practiceContent.questionScrollWidth <= dark.practiceContent.questionClientWidth + 1 &&
+                dark.practiceContent.optionOverflowCount === 0,
+              JSON.stringify(dark.practiceContent));
           }
 
           if (route === "/" && width === 1440) {
@@ -423,6 +485,18 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               workspace.wrapperMaxWidth === "1120px", JSON.stringify(workspace));
             check("Light practice route omits tools UI when no functional tool is supplied: " + activeRoute,
               !workspace.hasToolsPanel && !workspace.hasToolsTrigger, JSON.stringify(workspace));
+            check("Light practice renders the synthetic long prompt and all four answer choices: " + activeRoute,
+              light.practiceContent.promptVisible &&
+                light.practiceContent.optionCount === 4 &&
+                light.practiceContent.questionWidth > 0,
+              JSON.stringify(light.practiceContent));
+            check("Light practice renders KaTeX without math fallback errors: " + activeRoute,
+              light.practiceContent.katexCount >= 2 && light.practiceContent.mathErrorCount === 0,
+              JSON.stringify(light.practiceContent));
+            check("Light practice question and options fit without internal horizontal overflow: " + activeRoute,
+              light.practiceContent.questionScrollWidth <= light.practiceContent.questionClientWidth + 1 &&
+                light.practiceContent.optionOverflowCount === 0,
+              JSON.stringify(light.practiceContent));
           }
 
           if (route === "/" && width === 1440) {
