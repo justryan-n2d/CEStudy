@@ -27,14 +27,27 @@ const reviewBundle = {
     subjectSlug: "basic-algebra",
     unitNumber: 0,
     slug: "readiness-diagnostic",
-    title: "Readiness Diagnostic Test",
-    learningObjectives: ["Identify prerequisite gaps"],
-    lessonMarkdown: "# TEST DRAFT BODY\n\nPrivate lesson test content.",
-    sourceNote: "Synthetic test fixture.",
-    status: "needs-review" as const,
-    reviewNotes: "",
+    title: "Readiness Diagnostic: Find the Skills to Review",
+    learningObjectives: ["Identify prerequisite gaps."],
+    lessonMarkdown: "# RETIRED DIAGNOSTIC",
+    sourceNote: "Retired legacy fixture.",
+    status: "retired" as const,
+    reviewNotes: "Retired by owner decision.",
     reviewedAt: null,
-    updatedAt: "2026-10-18T00:00:00.000Z",
+    updatedAt: "2026-11-05T00:00:00.000Z",
+  }, {
+    id: "algebra-foundations-unit-04",
+    subjectSlug: "basic-algebra",
+    unitNumber: 0,
+    slug: "solving-linear-equations",
+    title: "Solving Linear Equations",
+    learningObjectives: ["Solve multi-step equations and verify solutions."],
+    lessonMarkdown: "# Solving Linear Equations\\n\\nApply equivalent operations to both sides.",
+    sourceNote: "Synthetic college-level lesson fixture.",
+    status: "needs-review" as const,
+    reviewNotes: "Awaiting human academic review.",
+    reviewedAt: null,
+    updatedAt: "2026-11-05T00:00:00.000Z",
   }],
   questions: [{
     id: "algebra-foundations-u00-q01",
@@ -77,7 +90,7 @@ describe("owner content review", () => {
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
 
-    expect(await screen.findByRole("heading", { name: "Readiness Diagnostic Test" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Solving Linear Equations" })).toBeInTheDocument();
     expect(await screen.findByText("TEST DRAFT BODY")).toBeInTheDocument();
     const verifyButton = screen.getByRole("button", { name: "Mark verified" });
     expect(verifyButton).toBeDisabled();
@@ -92,11 +105,11 @@ describe("owner content review", () => {
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
+    await screen.findByRole("heading", { name: "Solving Linear Equations" });
 
-    await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Readiness Diagnostic Test"));
+    await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Solving Linear Equations"));
     await user.clear(screen.getByLabelText("Lesson title"));
-    await user.type(screen.getByLabelText("Lesson title"), "Corrected Readiness Diagnostic");
+    await user.type(screen.getByLabelText("Lesson title"), "Corrected Solving Linear Equations");
     await user.click(screen.getByRole("button", { name: "Save edits, keep unpublished" }));
 
     await waitFor(() => expect(mocks.updateContentReviewStatus).toHaveBeenCalledWith(
@@ -104,7 +117,7 @@ describe("owner content review", () => {
       "algebra-foundations-unit-00",
       "save-edits",
       "",
-      expect.objectContaining({ title: "Corrected Readiness Diagnostic" }),
+      expect.objectContaining({ title: "Corrected Solving Linear Equations" }),
     ));
     expect(await screen.findByText(/edits saved.*remains unpublished/i)).toBeVisible();
   });
@@ -114,8 +127,8 @@ describe("owner content review", () => {
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
-    await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Readiness Diagnostic Test"));
+    await screen.findByRole("heading", { name: "Solving Linear Equations" });
+    await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Solving Linear Equations"));
 
     await user.click(screen.getByRole("checkbox", { name: /I reviewed this lesson against the approved syllabus/i }));
     const verifyButton = screen.getByRole("button", { name: "Mark verified" });
@@ -126,7 +139,7 @@ describe("owner content review", () => {
     expect(verifyButton).toBeDisabled();
     expect(screen.getByRole("status")).toHaveTextContent(/unsaved changes/i);
     expect(mocks.updateContentReviewStatus).not.toHaveBeenCalledWith(
-      "lesson", "algebra-foundations-unit-00", "verify", expect.anything(), expect.anything(),
+      "lesson", "algebra-foundations-unit-04", "verify", expect.anything(), expect.anything(),
     );
   });
 
@@ -135,7 +148,7 @@ describe("owner content review", () => {
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Readiness Diagnostic Test" });
+    await screen.findByRole("heading", { name: "Solving Linear Equations" });
     await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
 
     expect((await screen.findAllByText("TEST QUESTION PROMPT")).length).toBeGreaterThan(0);
@@ -144,4 +157,15 @@ describe("owner content review", () => {
     expect(screen.getByText("Correct answer:")).toBeVisible();
     expect(screen.getByText("TEST ANSWER EXPLANATION", { selector: "p" })).toBeVisible();
   });
+  it("excludes the retired diagnostic and does not display unit numbers", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
+    await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
+    await user.click(screen.getByRole("button", { name: "Unlock review" }));
+
+    expect(await screen.findByRole("heading", { name: "Solving Linear Equations" })).toBeInTheDocument();
+    expect(screen.queryByText(/Readiness Diagnostic/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Unit \\d+$/)).not.toBeInTheDocument();
+  });
+
 });
