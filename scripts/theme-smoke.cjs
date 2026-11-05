@@ -859,7 +859,7 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           themeMetrics.documentWidth <= themeMetrics.viewportWidth + 1 &&
             themeMetrics.mathErrorCount === 0,
           JSON.stringify(themeMetrics));
-        await page.getByRole("button", { name: "Close navigation menu" }).click();
+        await page.getByRole("dialog", { name: "CEStudy navigation" }).getByRole("button", { name: "Close navigation menu" }).click();
         await page.waitForFunction(
           () => !document.querySelector(".site-sidebar-layer.is-open"),
           null,
