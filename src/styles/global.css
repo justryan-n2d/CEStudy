@@ -2727,3 +2727,183 @@ body {
   border-color: var(--ui-focus);
   box-shadow: none;
 }
+
+
+/* Lesson reader: clear hierarchy, comfortable step spacing, and theme-aware math. */
+.markdown-content {
+  font-size: 1rem;
+  line-height: 1.78;
+}
+
+.markdown-content > :first-child {
+  margin-top: 0;
+}
+
+.markdown-content > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+  color: var(--ui-heading);
+  line-height: 1.32;
+}
+
+.markdown-content h2 {
+  margin: 1.9rem 0 .7rem;
+  font-size: clamp(1.3rem, 2.5vw, 1.55rem);
+}
+
+.markdown-content h3 {
+  margin: 1.6rem 0 .55rem;
+  font-size: 1.18rem;
+}
+
+.markdown-content h4,
+.markdown-content .markdown-step-heading {
+  margin: 1.45rem 0 .45rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+
+.markdown-content p {
+  margin: 0 0 1rem;
+  line-height: 1.78;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  display: grid;
+  gap: .48rem;
+  margin: .8rem 0 1.25rem;
+  padding-left: 1.45rem;
+}
+
+.markdown-content li {
+  padding-left: .15rem;
+  line-height: 1.72;
+}
+
+.markdown-content .markdown-blockquote {
+  margin: 0 0 1.45rem;
+  border-inline-start: 3px solid var(--brand-blue);
+  border-radius: 0 10px 10px 0;
+  padding: .85rem 1rem .15rem;
+  background: var(--ui-surface-muted);
+  color: var(--ui-text);
+}
+
+.markdown-content .markdown-blockquote > :last-child {
+  margin-bottom: .7rem;
+}
+
+.markdown-content .markdown-divider {
+  height: 1px;
+  margin: 1.6rem 0;
+  border: 0;
+  background: var(--ui-border);
+}
+
+.markdown-content .latex-math-block {
+  max-width: 100%;
+  margin: 1rem 0 1.25rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: .35rem .15rem;
+  text-align: center;
+}
+
+.markdown-content .latex-math-inline {
+  overflow-wrap: normal;
+}
+
+.study-recommendations {
+  margin-top: 2rem;
+  border-top: 1px solid var(--ui-border);
+  padding-top: 1.35rem;
+}
+
+.study-recommendations h3 {
+  margin: 0 0 .85rem;
+  color: var(--ui-heading);
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.study-recommendations ul {
+  display: grid;
+  gap: .95rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.study-recommendations li {
+  min-width: 0;
+  padding: 0 0 .9rem;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.study-recommendations li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.study-recommendations a {
+  color: var(--ui-link);
+  font-size: .96rem;
+  font-weight: 800;
+  line-height: 1.45;
+  text-decoration: underline;
+  text-decoration-thickness: .08em;
+  text-underline-offset: .18em;
+}
+
+.study-recommendations li p,
+.study-recommendations-empty {
+  margin: .3rem 0 0;
+  color: var(--ui-text-muted);
+  font-size: .86rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 560px) {
+  .markdown-content {
+    font-size: .98rem;
+    line-height: 1.75;
+  }
+
+  .markdown-content .markdown-blockquote {
+    padding: .8rem .85rem .12rem;
+  }
+
+  .markdown-content .latex-math-block {
+    margin-block: .9rem 1.1rem;
+    text-align: left;
+  }
+
+  .study-recommendations {
+    margin-top: 1.6rem;
+    padding-top: 1.15rem;
+  }
+}
+
+:root[data-theme="dark"] .markdown-content,
+:root[data-theme="dark"] .markdown-content .markdown-blockquote {
+  color: var(--ui-text);
+}
+
+:root[data-theme="dark"] .markdown-content strong,
+:root[data-theme="dark"] .markdown-content h2,
+:root[data-theme="dark"] .markdown-content h3,
+:root[data-theme="dark"] .markdown-content h4,
+:root[data-theme="dark"] .markdown-content .markdown-step-heading {
+  color: var(--ui-heading);
+}
+
+:root[data-theme="dark"] .markdown-content code {
+  color: var(--ui-text);
+  background: var(--ui-surface-raised);
+}
