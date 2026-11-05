@@ -278,4 +278,13 @@ describe("student lesson reader", () => {
     expect(screen.queryByRole("link", { name: /view my progress/i })).not.toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Recommended lessons" })).toBeInTheDocument();
   });
+  it("shows lesson titles without exposing internal unit numbers", async () => {
+    fetchPublishedLessonsMock.mockResolvedValue([publishedLesson, factoringLesson]);
+    renderStudy("/study/basic-algebra/1");
+
+    expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
+    expect(screen.queryByText("Unit 1")).not.toBeInTheDocument();
+    expect(document.querySelector(".study-outline-number")).not.toBeInTheDocument();
+  });
+
 });
