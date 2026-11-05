@@ -47,9 +47,9 @@ const relatedLessons = [
   lesson("unrelated", 4, "Concrete Mix Design", [
     "Determine the water-cement ratio for a concrete mixture.",
   ]),
-  lesson("other-subject", 5, "Order of Operations in Engineering", [
+  { ...lesson("other-subject", 5, "Order of Operations in Engineering", [
     "Use order of operations in engineering calculations.",
-  ]),
+  ]), subjectSlug: "civil-engineering" },
 ];
 
 function renderStudyPage() {
