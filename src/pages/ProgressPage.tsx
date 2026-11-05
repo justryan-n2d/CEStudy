@@ -8,10 +8,6 @@ import {
   type CompletedLesson,
 } from "../data/learning-progress";
 
-function subjectLabel(slug: string): string {
-  return slug.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
 export function ProgressPage() {
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
   const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
