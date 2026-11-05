@@ -110,7 +110,7 @@ describe("lesson reader", () => {
   it("removes streak, completion, and progress controls from the reading task", async () => {
     renderStudyPage();
 
-    expect(await screen.findByRole("heading", { name: "Order of Operations" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Order of Operations", level: 2 })).toBeInTheDocument();
     expect(screen.queryByText(/days streak/i)).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /mark as complete/i })).not.toBeInTheDocument();
     expect(screen.queryByText(/progress is saved on this device/i)).not.toBeInTheDocument();
@@ -120,7 +120,7 @@ describe("lesson reader", () => {
   it("recommends at most three relevant lessons from the same subject", async () => {
     renderStudyPage();
 
-    expect(await screen.findByRole("heading", { name: "Order of Operations" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Order of Operations", level: 2 })).toBeInTheDocument();
 
     const recommendations = screen.getByRole("region", { name: "Recommended lessons" });
     expect(within(recommendations).getByRole("link", { name: "Exponents and Roots" })).toHaveAttribute(
@@ -140,7 +140,7 @@ describe("lesson reader", () => {
     vi.mocked(fetchPublishedLessons).mockResolvedValueOnce([relatedLessons[0]]);
     renderStudyPage();
 
-    expect(await screen.findByRole("heading", { name: "Order of Operations" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Order of Operations", level: 2 })).toBeInTheDocument();
     const recommendations = screen.getByRole("region", { name: "Recommended lessons" });
     expect(within(recommendations).getByText("No related lessons are available yet.")).toBeInTheDocument();
     expect(within(recommendations).queryByRole("link")).not.toBeInTheDocument();
