@@ -861,7 +861,7 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           JSON.stringify(themeMetrics));
         await page.getByRole("dialog", { name: "CEStudy navigation" }).getByRole("button", { name: "Close navigation menu" }).click();
         await page.waitForFunction(
-          () => !document.querySelector(".site-sidebar-layer.is-open"),
+          () => !document.querySelector(".site-sidebar-layer.is-open, .site-sidebar-layer.is-closing"),
           null,
           { timeout: 5000 },
         );
