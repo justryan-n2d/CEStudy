@@ -871,6 +871,11 @@ The solutions are \(x=-2\) and \(x=-3\).`,
             fullPage: true,
           });
         }
+        if (themeName === "Dark") {
+          await page.getByRole("button", { name: "Open navigation menu" }).click();
+          await page.getByRole("dialog", { name: "CEStudy navigation" })
+            .waitFor({ state: "visible", timeout: 5000 });
+        }
       }
     }
 
