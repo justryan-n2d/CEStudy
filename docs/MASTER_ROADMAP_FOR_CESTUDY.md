@@ -2,13 +2,13 @@
 
 **Document status:** Owner-approved direction; canonical planning document for CEStudy UX/UI redesign and roadmap tracking.
 **Owner approval:** Blueprint Academy selected on 2026-10-22 (Asia/Manila).
-**Baseline snapshot:** `main` at `849c9d707b0cafd8c39ab63d9bf57260c54dd186`, verified 2026-11-04 after Blueprint Academy Phase 3 integration.
+**Baseline snapshot:** `main` at `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e`, verified 2026-11-05 after PR #79 merge.
 **Scope of this record:** Product direction, UX/UI decisions, verified baseline, implementation sequence, acceptance criteria, and release safeguards.
 **Application implementation status:** No application code changes are authorized by this document.
 
 > **Authority:** Use this document as the canonical plan for CEStudy's product direction, UX/UI scope, approved design decisions, and implementation sequence. It consolidates the owner-approved directions recorded in [PR #51](https://github.com/justryan-n2d/CEStudy/pull/51). If planning documents conflict, this roadmap's latest owner-approved decision register takes precedence. Actual code, current data contracts, security policy, and CI/release gates remain authoritative for what is implemented and safe to ship. This document does not authorize implementation, merge, deployment, or production changes by itself.
 
-> **Repository note (verified 2026-11-04):** The canonical product direction remains Blueprint Academy. PR #69 and Blueprint Academy Phase 3 PRs #70-#73 are merged on `main`. Phase 3 is complete; current `main` is `849c9d707b0cafd8c39ab63d9bf57260c54dd186`. The separate connectivity/loading-skeleton candidate PR #74 remains draft and must be reconciled with the Phase 3 SubjectPage fix before merge. PR #67 remains the consolidated account/learning-activity candidate and is still draft and diverged from current `main`.
+> **Repository note (verified 2026-11-05):** Blueprint Academy remains the canonical product direction. PRs #69-#73 and PR #79 are merged on `main`; Phase 3 is complete, and PR #79 integrates the owner-approved Decision-Light navigation and interaction corrections. Current `main` is `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e`. The owner accepted the Decision-Light prerequisite closeout before Phase 4. This records owner sign-off and the merged scope, not physical-device accessibility validation; Android/TalkBack, keyboard-only, and text-zoom checks remain separate QA. PR #74 is closed without merge. PR #67 remains an open draft and is not mergeable against current `main`; revisit it only after Phase 4.
 
 ## 1. Purpose and product outcome
 
@@ -57,35 +57,36 @@ This roadmap controls the intended product design, scope, decision register, and
 
 ### 3.1 Main branch snapshot
 
-| Item | Verified state on 2026-11-04 |
+| Item | Verified state on 2026-11-05 |
 |---|---|
 | Repository | [justryan-n2d/CEStudy](https://github.com/justryan-n2d/CEStudy), public repository |
 | Default branch | `main` |
-| Verified `main` SHA after Phase 3 integration | `849c9d707b0cafd8c39ab63d9bf57260c54dd186` |
-| Latest commit | PR #73 merge: `test: verify populated lesson math in both themes` |
+| Verified `main` SHA after PR #79 merge | `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e` |
+| Latest commit | PR #79 squash merge: Decision-Light responsive sidebar and navigation corrections |
 | Stack declared by `package.json` | React 19, TypeScript 5.9, Vite 7, Tailwind CSS 4, React Router 7, Supabase JS, KaTeX 0.19, Vitest and Testing Library |
-| Post-Phase 3 main CI | [run 41797726093, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093): 177 tests across 29 files, lint, dependency audit, production build, backup crypto/retention/verification tests, and isolated Supabase migration/RLS tests |
-| Theme/responsive browser checks | 1,757/1,757 assertions passed in the post-Phase 3 main CI, including synthetic populated-lesson rendering in both themes at 320/390/768/1024/1440 px |
-| Main full-history secret scan | Latest scheduled full-history run [41433925558, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41433925558): 1,191 commits / about 4.53 MB scanned, no leaks. The merge push scan also passed, but its merge-only range reported zero commits scanned and is not represented as a full-history scan. |
-| Live website Chromium smoke | [run 41798110114, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114): live smoke completed successfully after the Phase 3 merge |
+| Main CI after PR #79 merge | [run 41935701479, success](https://github.com/justryan-n2d/CEStudy/actions/runs/41935701479): lint, tests/build, dependency audit, and isolated Supabase migration/RLS jobs completed successfully |
+| Practice/navigation browser checks | [PR run 41874696788](https://github.com/justryan-n2d/CEStudy/actions/runs/41874696788) passed 613/613 assertions with zero failures/runtime errors; it explicitly measured the sidebar exiting to the left. Post-merge main browser run [41935701554](https://github.com/justryan-n2d/CEStudy/actions/runs/41935701554) also succeeded |
+| Secret scanning | PR-head [run 41874696639](https://github.com/justryan-n2d/CEStudy/actions/runs/41874696639) and post-merge main [run 41935701700](https://github.com/justryan-n2d/CEStudy/actions/runs/41935701700) succeeded |
+| Historical Phase 3 evidence | Post-Phase 3 CI [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed 177 tests, browser/math checks and Supabase/backup tests before PR #79; live smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) is retained as earlier evidence |
 
 These checks are GitHub Actions evidence on the named commits/runs. They are not a claim that a local clone or physical Android device was tested in this session. Automated CI and live smoke do not replace physical Android/TalkBack, keyboard-only or 200% text-zoom checks.
 
 ### 3.2 Relevant open pull requests
 
-Current PR metadata was checked against `main` at `849c9d707b0cafd8c39ab63d9bf57260c54dd186` on 2026-11-04.
+Current PR metadata was checked against `main` at `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e` on 2026-11-05.
 
 | PR | Current role and state | Roadmap-aligned handling |
 |---|---|---|
 | [#67 Google auth, profile, local history and streak](https://github.com/justryan-n2d/CEStudy/pull/67) | Open, draft. Head `43aa6de27c30cca098f542597497b74102cf8442`; recorded base/merge-base `887b3f5a0b826ac0019f266de5e53fd6278958d3`. Compared with current `main`, the branch is diverged: 99 commits ahead and 23 behind; GitHub reports mergeable false. | This is the single consolidated account/learning-activity candidate. Do not merge in its current state. After Phases 3 and 4, reconcile the branch against current `main`, review its full diff, and complete all OAuth, privacy, data-isolation and recovery gates. |
-| [#74 connectivity and loading skeletons](https://github.com/justryan-n2d/CEStudy/pull/74) | Open, draft; 19 commits ahead and 4 behind current `main`, diverged from the pre-Phase-3 base. | Do not merge yet. Reconcile with the merged SubjectPage fix, correct the Practice answer-row skeleton theme mismatch, and add rejected-request lifecycle checks for the relevant page API families before re-running required CI and visual review. |
+| [#74 connectivity and loading skeletons](https://github.com/justryan-n2d/CEStudy/pull/74) | Closed without merge; old draft branch is not an integration target. | Its intended connectivity/skeleton behavior is not treated as integrated. Reconsider only as a fresh, focused proposal based on current `main` if the remaining visual and rejected-request lifecycle issues are still needed. |
 | [#44 earlier Google sign-in and local learning activity candidate](https://github.com/justryan-n2d/CEStudy/pull/44) | Open, draft, older branch; not the consolidated candidate. | Historical source only. Do not merge separately or use it as the current implementation target. |
 | [#64, #65 and #66](https://github.com/justryan-n2d/CEStudy/pull/64) | Open, draft, stacked or earlier source slices that feed the PR #67 consolidation. | Do not merge these independently. Reconcile only through the consolidated PR #67 after its base is refreshed and the combined change is reviewed. |
 | [#32 production fraction visual check](https://github.com/justryan-n2d/CEStudy/pull/32) | Open technical proposal. | Evaluate independently if a production-content visual regression test is still required; it is not part of Phase 3 scope. |
+| [#79 Decision-Light sidebar and navigation](https://github.com/justryan-n2d/CEStudy/pull/79) | Closed, merged 2026-11-05 at `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e`. | Integrated the responsive left off-canvas drawer, navigation simplification, site-wide Decision-Light corrections, and related regression/browser coverage. PR-head CI, browser checks, and secret scan passed; the merged-main CI/browser/secret workflows also passed. |
 
 **Merged since the prior roadmap snapshot:** PR #69 merged on 2026-11-04 at `ad96cc6148b95b563f247d9254bea5a6858b3cd0`. It adds the binding design-quality and anti-template standard and tool-neutral repository wording. It does not change application code, database state, authentication settings, or production configuration.
 
-**Theme/navigation implementation:** PR #56 (theme foundation) and PR #57 (hybrid navigation) are merged. The current `main` source includes the theme provider, early theme initialization, explicit Light/Dark control, hybrid desktop navigation, mobile quick navigation and More menu. Current CI and live smoke evidence is recorded above. Independent owner visual sign-off and physical-device accessibility checks are still outstanding; automated success does not replace those checks.
+**Theme/navigation implementation:** PR #56 (theme foundation), PR #57 (earlier navigation), and PR #79 (current navigation) are merged. The current `main` source includes the theme provider, early theme initialization, explicit Light/Dark control, and a single left off-canvas navigation drawer on desktop and mobile. The compact header places its 44px menu control immediately before the canonical logo. The drawer groups Learning, My learning, and Help and support; Year Levels retains its nested hierarchy; Subject Catalog appears once; Light/Dark remains under Preferences. Review Materials and Mock Exam are not global navigation entries; their legacy routes redirect to the catalog. Community remains a direct route until the forum is implemented. PR #79's automated checks and post-merge main workflows passed. Physical Android/TalkBack, keyboard-only, and text-zoom validation remain separate owner/release QA.
 
 **Merge rule for PR #67:** Before any future merge, refresh its branch against current `main`, review the complete diff and all changed files, run current required CI and full-history secret scanning, verify OAuth/provider behavior, and check privacy and account data boundaries. A green run from the old base, a mergeable flag, or a draft's existence is not release approval.
 
@@ -111,7 +112,7 @@ Verified route registration is in `src/App.tsx` at the inspected main commit.
 
 ### 3.4 Existing reusable foundations
 
-- `src/components/Layout.tsx` owns the public shell, current header, current four-item mobile quick navigation, the More menu, and footer.
+- `src/components/Layout.tsx` owns the compact header, responsive left off-canvas navigation drawer, drawer focus/close behavior, theme preference placement, and footer.
 - `src/styles/global.css` contains the established brand values, global typography, button/card conventions, responsive rules, reduced-motion rules, and equation overflow styles.
 - `src/pages/CatalogPage.tsx` uses `CatalogFilters`, `SubjectCard`, and `useCatalog`, with loading/error/empty states.
 - `src/pages/StudyPage.tsx` calls `fetchPublishedLessons`, stores lesson completion locally, and uses `MarkdownContent` for the lesson body.
@@ -129,9 +130,9 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 |---|---|---|
 | Phase 0: Canonical plan and baseline | **incomplete** | Current `main`, PR metadata, source paths, test commands and current CI/live evidence are recorded. A complete independent visual sign-off and physical-device review are not recorded. |
 | Phase 1: Shared foundation and theme tokens | **incomplete** | PR #56 is merged. Current main CI verifies Light/Dark behavior and the 13-route/five-width browser matrix. Owner visual sign-off and physical Android/TalkBack review remain open; do not restart the theme implementation. |
-| Phase 2: Navigation and route focus | **incomplete** | PR #57 is merged. Current main CI verifies route focus, keyboard/Escape behavior, 44px targets, desktop panels and mobile More menu. Owner visual sign-off and physical-device navigation review remain open; do not rebuild the navigation. |
+| Phase 2: Navigation and route focus | **incomplete** | PRs #57 and #79 are merged. Automated checks cover the current responsive drawer, focus/Escape behavior, 44px menu target, and leftward close animation. Manual Android/TalkBack, keyboard-only, and text-zoom validation remain open; do not rebuild the navigation. |
 | Phase 3: Catalog, subject and lesson consistency | **complete** | PRs #70-#73 are merged into `main`. Catalog/Subject API and page contracts, the SubjectPage stale-route correction, published lesson/Study reader contracts, and synthetic populated-lesson math verification are integrated. Post-merge main CI passed 177 tests across 29 files and 1,757/1,757 theme/browser assertions; Supabase migration/RLS and backup checks passed. Live production smoke run 41798110114 also passed. |
-| Phase 4: Practice workspace | **not started** | Phase 3 foundations and tests are integrated and verified on `main`; Phase 4 implementation remains gated on completion of the site-wide Decision-Light audit (C). Preserve current question/answer/feedback/results behavior and the honest unpublished-content gate. |
+| Phase 4: Practice workspace | **implemented in draft; owner acceptance pending** | Tasks 1-3 are implemented on draft [PR #81](https://github.com/justryan-n2d/CEStudy/pull/81), head `9c9b6976eb84e53b9d408fb27644d76fe5f3222c`. Exact-head checks passed: 228 tests / 36 files, lint, production build, 1,698/1,698 theme/responsive browser assertions, 613/613 connectivity checks, Supabase migration/RLS, and secret scan. Lesson-reader refinements on the same draft also implement semantic Markdown/KaTeX, readable worked-step spacing and numbering, no in-reader streak/completion/progress controls, and a restrained relevant-lesson recommendation area. Owner preview review and physical Android/TalkBack, keyboard-only, and 200% text-zoom checks remain open; do not call the phase owner-accepted or release-ready. Preserve the published-only question gate; current Basic Algebra route has no tools UI. |
 | Phase 5: Progress and account integration | **paused** | Browser-local progress/streak already exists on `main`. Return to the consolidated PR #67 only after Phase 3 and Phase 4; refresh its branch, review the full diff, and close OAuth/privacy/security gates before merge. |
 | Phase 6: Review Materials Hub | **not started** | Build only after resource metadata, review status, provenance and rights rules are confirmed. |
 | Phase 7: Community | **not started** | Remains blocked on data contracts, publication rules, identity and moderation/access controls. |
@@ -139,12 +140,14 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Phase 9: Gamification | **not started** | Blocked until the affected reward, eligibility, privacy, retry and anti-abuse rules are approved. |
 | Phase 10: Offline access and native app | **not started** | Separate future architecture and design work; excluded from the current website theme foundation. |
 
-**Current verified `main`:** `849c9d707b0cafd8c39ab63d9bf57260c54dd186` (2026-11-04).
-**Product-roadmap Phase 3:** Complete. PRs #70-#73 are merged; post-merge CI run [41797726093](https://github.com/justryan-n2d/CEStudy/actions/runs/41797726093) passed, and live Chromium smoke [41798110114](https://github.com/justryan-n2d/CEStudy/actions/runs/41798110114) passed.
-**Next product-roadmap workstream:** Phase 4, Practice Workspace, after the required site-wide Decision-Light audit (C). Phase 4 implementation has not started.
-**Separate loading-skeleton candidate:** PR #74 remains draft and unmerged. Reconcile its branch with current `main`, correct the Practice skeleton answer-row Light-theme appearance, and complete the missing rejection-lifecycle coverage before merge.
-**Current documentation branch:** `docs/mark-product-phase3-complete-2026-11-04`.
-**Application scope of this documentation update:** No application source, database schema/data, production settings, OAuth settings, or deployment configuration is changed.
+**Current verified `main`:** `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e` (2026-11-05).
+**Product-roadmap Phase 3:** Complete. PRs #70-#73 remain integrated; the post-Phase 3 checks are retained as historical evidence.
+**Decision-Light prerequisite:** Owner accepted closeout on 2026-11-05 after PR #79 merged. The latest PR-head browser suite passed 613/613 assertions, including leftward sidebar exit; post-merge main CI, browser checks, and secret scan passed. Manual Android/TalkBack, keyboard-only, and 200% text-zoom validation remain release/owner QA.
+**Current product-roadmap workstream:** Phase 4, Practice Workspace, and the owner-directed lesson-reader refinements are implemented in draft PR [#81](https://github.com/justryan-n2d/CEStudy/pull/81) at `9c9b6976eb84e53b9d408fb27644d76fe5f3222c`. Exact-head automation passed 228 tests, 1,698/1,698 theme/responsive checks, 613/613 connectivity checks, Supabase migration/RLS, production build, and secret scan. PR #81 remains unmerged/draft. Owner preview review and manual Android/TalkBack, keyboard-only, and 200% text-zoom QA remain before phase acceptance. The complete Phase 4 scope and automated/manual exit status are recorded in [the Phase 4 plan](plans/2026-11-05-phase-4-practice-workspace-implementation-plan.md).
+**Separate connectivity/skeleton candidate:** PR #74 is closed without merge. Do not treat it as integrated; if the remaining work is required, create a new focused proposal from current `main`.
+**Account integration:** PR #67 remains open, draft, and non-mergeable; revisit only after Phase 4.
+**Current documentation branch:** `docs/phase-4-practice-workspace-blueprint-2026-11-05`.
+**Application scope of this documentation update:** Documentation only. No application source, database schema/data, publication status, production settings, OAuth settings, or deployment configuration is changed.
 
 ## 4. Focused baseline verification
 
@@ -155,7 +158,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Main theme | Verified: current main includes `ThemeProvider`, `ThemeToggle`, and the pre-React `public/theme-init.js` bootstrap. | `src/components/Layout.tsx`, `src/contexts/ThemeContext.tsx`, `src/components/ThemeToggle.tsx`, `index.html`, `public/theme-init.js`, `scripts/theme-smoke.cjs`. | Owner visual sign-off and physical Android/TalkBack testing remain; automated CI covers both themes across 13 routes and five widths. |
 | Equation rendering | Verified: shared KaTeX renderer, lazy wrapper, inline/plain-text math detection, limited Markdown parser, representative tests, and horizontal overflow CSS exist. | `src/components/LatexMath.tsx`; `LazyLatexMath.tsx`; `InlineMathText.tsx`; `MarkdownContent.tsx`; `src/test/latex-rendering.test.tsx`; `src/styles/global.css`. | No fresh local run was possible. Keyboard access to overflowed display equations, accessible fallback announcements, and dark-theme equation coverage are not proven by the inspected test names. |
 | Historical PR #44 source | Its old draft branch contained Google-only auth context, local theme preference, profile/history/streak/menu/community routes and browser tests. | Those checks and branch state are historical; PR #44 is not the current integration candidate. | Use PR #67 as the single consolidated account/learning-activity candidate, reconcile it after product-roadmap Phases 3 and 4, and rerun OAuth, privacy and security gates. |
-| Responsive navigation | Verified: current main has a hybrid desktop header, four-item mobile quick navigation and grouped More menu. The theme/navigation CI suite passed 1,682/1,682 assertions across 13 routes, both themes and five widths; production smoke passed 135/135 checks. | `src/components/Layout.tsx`, `src/components/YearLevelDropdown.tsx`, `src/components/ReviewMaterialsMegaMenu.tsx`, `scripts/theme-smoke.cjs`, `scripts/live-smoke.cjs`. | Physical Android layout, TalkBack, 200% text zoom and real keyboard-only manual checks remain. |
+| Responsive navigation | Verified: current main has a single left off-canvas navigation drawer on desktop and mobile, with a compact menu/logo header, nested Year Levels, Theme under Preferences, and grouped Learning/My learning/Help and support destinations. PR #79 browser coverage passed 613/613 assertions and post-merge main browser checks passed. | `src/components/Layout.tsx`, `src/components/YearLevelDropdown.tsx`, `scripts/theme-smoke.cjs`, `scripts/connectivity-skeleton-smoke.cjs`. | Physical Android layout, TalkBack, 200% text zoom and real keyboard-only manual checks remain. |
 | Main CI / live smoke | Pass on inspected main SHA. | [CI](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495387), [secret scan](https://github.com/justryan-n2d/CEStudy/actions/runs/39758495402), [live smoke](https://github.com/justryan-n2d/CEStudy/actions/runs/39758768389). | These checks do not constitute a WCAG certification or all-target-width redesign test. |
 
 ### 4.2 Theme baseline on current main
@@ -206,7 +209,7 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 **Historical PR #44 behavior:** its branch added a fifth Menu tab, a desktop account/login entry and a streak control; its mobile quick navigation differed from main. These are not the approved current web navigation. The future native mobile app's five-tab design must not be copied automatically into phone web navigation.
 
-**PR #54 candidate changes:** add main-content focus after route changes and 44px tablet navigation link targets with spacing at 681px to 850px. It is a draft explicitly deferred pending alignment with the larger navigation plan. Route-focus handoff is likely reusable; old `.main-nav` spacing should be evaluated against the new hybrid header before adoption.
+**PR #54 candidate changes:** add main-content focus after route changes and 44px tablet navigation link targets with spacing at 681px to 850px. It is a draft explicitly deferred pending alignment with the larger navigation plan. Route-focus handoff is likely reusable; any future focus or spacing changes must be evaluated against the current compact menu/logo header and left off-canvas drawer.
 
 **Responsive verification:** current main CI now covers 320px, 390px, 768px, 1024px and 1440px across 13 routes and both themes. Physical-device review remains separate.
 
@@ -224,9 +227,9 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 | Brand | Preserve canonical logo geometry and `#0754B5` brand-blue baseline. Do not generate a replacement logo. |
 | Theme | Explicit Light/Dark toggle; retain light default; do not add a System option. |
 | Theme persistence | Approved | Device-local preference under `cestudy:theme:v1`; no account synchronization or cross-device sync. |
-| Public navigation | Hybrid header with Year Levels dropdown, Review Materials Hub mega-menu, direct Mock Exam Portal and Community Forum entries, and signed-in Student Dashboard/account control. |
-| Sidebar | Collapsible sidebar only for dense signed-in workspaces, not for every public page. |
-| Decision-Light Design | **Approved: 2026-11-04.** Apply the five binding rules and their documented exceptions across significant UI work. Documentation A establishes the standard; the site-wide audit C is deferred and required before Phase 4. |
+| Public navigation | **Current:** compact header with a 44px menu control immediately before the canonical logo and one left off-canvas drawer on desktop and mobile. Drawer groups Learning, My learning, and Help and support; Year Levels remains nested; Subject Catalog appears once; Light/Dark is under Preferences. |
+| Sidebar | **Current global navigation drawer:** accessible from all routes; supports Escape, focus restoration, reduced motion, and smooth leftward close. Do not add a second persistent sidebar unless a later dense workspace has a demonstrated need. |
+| Decision-Light Design | **Approved 2026-11-04; prerequisite closeout accepted 2026-11-05.** PR #79 integrates the approved Decision-Light navigation and interaction corrections. The owner accepted the Phase 4 entry gate; physical-device accessibility and manual keyboard checks remain separate validation. |
 | Duplicate destinations | Avoid competing Dashboard and Profile roles. Separate learning overview from account/settings only when the use case is clear. |
 | Practice workspace | Desktop split approximately 70/30 as a starting point. Supporting tools collapsible or dockable. Phone web uses one-column question view and a drawer/tab/sheet for tools. |
 | Gamification | XP/rewards, quests, streak freezes, badges, leaderboards, and retry reward behavior are independently configurable. Exact values, eligibility, retry policy, defaults, privacy, and abuse rules remain unresolved. |
@@ -238,46 +241,46 @@ Statuses use the owner's exact labels: **current**, **complete**, **paused**, **
 
 ```text
 Home
-├── Year Levels
-│   └── Year → Semester → Subject (only when verified metadata supports it)
-│       └── Subject Detail
-│           ├── Lessons / Worked Solutions
-│           └── Available Practice
-├── Subject Catalog
-├── Review Materials Hub (planned)
-│   ├── Formula Sheets
-│   ├── Problem Sets with Solutions
-│   └── Video Tutorials
-├── Mock Exam Portal (high-level destination, not authorization for expanded exam features)
-├── Community Forum (existing route on main; full forum functionality remains planned)
-├── Student Dashboard (private learning overview, planned)
-│   ├── Progress and History
-│   ├── Saved Questions and Formulas
-│   └── Relevant activity and settings links
-├── Calculator and Tools
-│   └── Unit Converter (first candidate tool)
-└── Account and Settings
-    ├── Authentication
-    ├── Theme
-    ├── Privacy
-    ├── Sound and Motion preferences
-    └── Local-data and account-data disclosures
+├── Learning
+│   ├── Subject Catalog
+│   ├── Year Levels
+│   │   └── Year → Semester → Subject (verified metadata only)
+│   │       └── Subject Detail
+│   │           ├── Lessons / Worked Solutions
+│   │           └── Available Practice
+│   └── Math Foundations
+├── My learning
+│   └── Progress (device-local on current main)
+├── Help and support
+│   ├── About
+│   ├── Contact
+│   ├── Support
+│   ├── Report a bug
+│   ├── Send feedback
+│   └── Privacy notice
+└── Preferences
+    └── Light / Dark
+
+Future product destinations remain separate from the current global drawer:
+- Review Materials Hub (Phase 6)
+- Mock Exam Portal (separate feature scope; not a working exam system)
+- Full Community Forum (planned; the direct route does not imply full forum functionality)
+- Student Dashboard and account features (Phase 5; private data requires an approved account/access model)
+- Calculator and Tools (Phase 8 begins with a validated unit converter)
 ```
 
 ### Global navigation behavior
 
-- Desktop: use the approved hybrid header and a Year Levels dropdown that can navigate the verified year/semester/subject hierarchy.
-- Review Materials opens a grouped mega-menu for Formula Sheets, Problem Sets with Solutions, and Video Tutorials. Show actual published and reviewed resources only.
-- Mock Exam Portal and Community Forum are direct high-level navigation targets, but their presence must not imply unfinished features work.
-- Signed-out users retain access to the public library. Personal dashboard and account-specific information require the actual approved access model.
-- Use a collapsible sidebar only when a dense signed-in workspace justifies it.
-- Keep dashboard/account roles clear and avoid duplicate navigation paths that differ only by naming.
+- All current routes use the compact header with the 44px menu control immediately before the canonical CEStudy logo.
+- The menu opens one left off-canvas navigation drawer on desktop and mobile. The drawer groups Learning, My learning, and Help and support; nested Year Levels remains within Learning.
+- Subject Catalog appears once in the drawer. Theme selection lives under Preferences. The owner-only Feedback inbox appears only after its real access session is unlocked.
+- Review Materials and Mock Exam are removed from global navigation. Their legacy routes redirect to Subject Catalog. Community remains available only through its direct route until the forum is implemented.
+- The current Progress page describes device-local activity; it must not imply account sync or cross-device history.
+- Do not add a second persistent sidebar or duplicate destination path without evidence that a dense workspace needs it.
 
 ### Phone-web navigation
 
-The current four-item bottom quick navigation is existing behavior and is retained in the merged hybrid navigation. Do not expand it to five tabs just because an older feature branch or future native app uses five destinations. A grouped More menu exposes the remaining web destinations.
-
-Nested menus must support keyboard, touch, visible state, Escape, focus restoration, and useful empty states. Direct routes and refresh behavior must continue to work.
+The same off-canvas drawer pattern is used on phone and desktop web; do not retain the old bottom quick-navigation / More-menu model or inherit the future native app's five-tab bar. The open drawer must support touch and keyboard, visible state, Escape, focus restoration, and reduced motion. Its close transition exits left. Direct routes and refresh behavior must continue to work.
 
 ## 7. Visual system specification
 
@@ -394,7 +397,7 @@ Design desktop information architecture first, then adapt it to tablet and phone
 
 | Viewport | Target behavior |
 |---|---|
-| 1440px | Full hybrid header; grouped resource mega-menu; readable cards; comfortable content width; flexible 70/30 practice workspace |
+| 1440px | Compact menu/logo header; left off-canvas drawer; readable page width; flexible question/tools workspace when actual tools exist |
 | 1024px | Compact but readable header or grouped navigation; useful catalog grids; no clipped labels; adequate question width |
 | 768px | Tablet navigation panel or wrap strategy; grouped menu; fewer grid columns; practice tools remain accessible |
 | 390px | Phone sheet/accordion; single-column lesson/practice; supporting tools on demand; controls not obscured |
@@ -533,7 +536,7 @@ Acceptance criteria:
 
 ### Phase 3: Catalog, subject and lesson consistency
 
-**Status: CURRENT - implementation slices CI-verified in draft PRs; integration pending.** The dedicated plan is recorded at [`docs/plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md`](plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md). Task 1 is in [PR #71](https://github.com/justryan-n2d/CEStudy/pull/71), Task 2 in [PR #72](https://github.com/justryan-n2d/CEStudy/pull/72), and Task 3 in [PR #73](https://github.com/justryan-n2d/CEStudy/pull/73). All remain draft and unmerged. The populated-lesson screenshot artifact is available in [CI run 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166) through 2026-11-11. Keep Phase 3 current until owner visual sign-off, explicit merge authorization and post-integration CI.
+**Status: COMPLETE.** The Phase 3 implementation slices in [PR #70](https://github.com/justryan-n2d/CEStudy/pull/70) through [PR #73](https://github.com/justryan-n2d/CEStudy/pull/73) are integrated into `main`. The catalog, subject, and published lesson-reader contracts are complete. PR #79 then integrated the owner-approved Decision-Light navigation and interaction closeout. The current roadmap's remaining lesson-reader polish is governed by the owner-approved lesson-reader application rules in the [UX/UI Design System](specs/UX_UI_DESIGN_SYSTEM.md#lesson-reader-application-owner-approved-2026-11-05), implemented on the current draft feature work rather than reopening Phase 3 as an unmerged phase.
 
 **Relative effort:** Medium. **Risk:** Medium.
 
@@ -542,26 +545,41 @@ Primary paths: `src/pages/CatalogPage.tsx`, `src/components/CatalogFilters.tsx`,
 Acceptance criteria:
 - Preserve search/filter behavior, availability messaging, source/provenance and useful empty/error recovery.
 - Structure lesson content around topical outlines, conceptual explanations, formulas and step-by-step worked solutions. Learning objectives remain searchable metadata only; do not show a separate Learning Objectives section in the student-facing lesson reader.
+- Apply the binding [Decision-Light lesson-reader pattern](specs/UX_UI_DESIGN_SYSTEM.md#lesson-reader-application-owner-approved-2026-11-05): no streak, completion or progress controls in the reader; topic-outline navigation remains discoverable; no competing Previous / Next footer actions; show at most three relevant, published, same-subject recommendations, or an honest empty state.
+- Render Markdown structure semantically and typeset inline/display mathematics with the shared KaTeX renderer. Give worked steps and equations professional vertical spacing without page-wide overflow.
 - Do not invent year/semester assignments.
 - Equation formatting changes preserve canonical text and mathematical meaning.
-- Verify all representative formula fixtures in both themes and narrow layouts.
+- Verify lesson structure and representative formula fixtures in both themes and narrow layouts.
 
 ### Phase 4: Practice workspace
 
-**Entry gate:** Complete the deferred site-wide Decision-Light audit (C) described in Section 15 before Phase 4 implementation begins. Documentation task A establishes the binding standard only; it does not certify existing routes or authorize a site-wide redesign. The audit must inspect the current routes and significant task states, record evidence-based findings, and prioritize any corrections for owner review. This is prerequisite design work, not a new numbered product phase.
+**Entry gate:** Owner accepted the Decision-Light prerequisite closeout on 2026-11-05 after PR #79 was merged. PR #79 integrates the owner-approved site-wide navigation and Decision-Light corrections; its PR-head browser suite passed 613/613 checks, including the leftward drawer exit, and the merge-head CI, browser checks, and secret scan passed. This is owner sign-off for proceeding with the Practice Workspace. It is not a claim that physical Android/TalkBack, keyboard-only, or 200% text-zoom testing has been completed; those remain separate QA/release checks.
 
-**Relative effort:** Large. **Risk:** High for long engineering problems and answer correctness.
+**Definition:** Phase 4 upgrades the existing Basic Algebra practice flow into a responsive, task-oriented Practice Workspace. It is not a general site redesign, a new mock-exam system, or an expansion of the question bank.
 
-Primary paths: `src/pages/PracticePage.tsx`, `src/components/PracticeQuestion.tsx`, practice APIs/types, shared math renderer, relevant styles and tests.
+**Implementation plan:** [Blueprint Academy Phase 4: Practice Workspace](plans/2026-11-05-phase-4-practice-workspace-implementation-plan.md). This plan is the detailed task/test/acceptance source for the phase.
 
-Acceptance criteria:
-- Preserve answer selection/submission, feedback, explanations, next question and result flow.
-- Apply Decision-Light Design to each focused practice task state: clearly prioritize the current next action without demoting genuine answer choices or required study tools.
-- Apply the flexible desktop question/tools split and collapsible/dockable panel only where its functionality exists.
-- Phone view prioritizes the full question and moves tools into an accessible sheet/drawer/tab.
-- Timer states correspond only to actual timed behavior.
-- Current empty/review gate remains honest while no questions are published.
-- Verify formulas, diagrams, overflow, keyboard flow and session completion at all target widths.
+**Relative effort:** Large. **Risk:** High where long engineering questions, math rendering, focus management, or answer correctness are affected. Work in small independently reviewable slices.
+
+Primary paths: `src/pages/PracticePage.tsx`, `src/components/PracticeQuestion.tsx`, `src/data/practice-api.ts`, `src/types/study-content.ts`, shared math renderer, `src/styles/global.css`, and focused tests/browser smoke scripts.
+
+**In scope:**
+- Preserve and verify the existing sequential session: question loading, answer selection, explicit submission, correct/incorrect feedback, correct-answer disclosure, ordered solution steps, explanation, source note, next question, final score, and restart.
+- Strengthen the loading, retryable error, no-published-question, active, selected, submitted, and completed states. The empty/review gate must remain truthful.
+- Build a question-first workspace frame. On desktop, target a flexible question/tools composition near 70/30 only when a real functional tool exists; let long engineering problems determine the actual width. Do not create an empty tools panel.
+- On phone, retain a single-column question-first layout. Any approved real tool must open in an accessible drawer, sheet, or tab with keyboard/focus handling; without tools, do not show an inert trigger.
+- Reuse the shared `InlineMathText`/KaTeX path for topic, prompt, choices, correct answer, solution steps, and explanation. Preserve mathematical meaning, variables, units, source notes, and reviewed step order.
+- Verify long statements, answer options, and wide equations at 320/390/768/1024/1440 px in Light and Dark, without page-wide overflow.
+- Verify keyboard operation, visible focus, status announcements, touch targets, and reduced-motion behavior for any new motion.
+
+**Current data/content boundary:**
+- The live practice schema supplies topic, prompt, choices, correct answer, solution steps, explanation, source note, publication status, and display order. It does not define structured diagram, image, separate given-data, or unit fields. Do not invent or add these fields in this phase without a separate owner-approved content/schema decision.
+- The public practice API must continue to return only `status = published` rows and public columns. No privileged key, broader RLS grants, direct draft visibility, or bypass is allowed.
+- Use synthetic question fixtures to exercise populated UI. Do not author, edit, review, approve, publish, or retire live questions as part of Phase 4.
+
+**Out of scope:** Question-bank authoring/publication, schema/RLS/grant changes, persistent attempts, user accounts or cross-device sync, analytics, timer modes, skip/revisit/shuffle, retry rewards, AI tutoring, Mock Exam Portal, review-resource hub, board-readiness metrics, leaderboards, and the unit converter (Phase 8).
+
+**Open decisions:** The first functional tools inventory is not approved; calculator, formula reference, scratchpad, and converter must not be assumed. Recommendation: complete and verify the question-first workspace before adding a specific tool, so the UI does not ship a decorative or nonfunctional tools panel. Any structured diagram/data/unit schema and any timed or non-sequential practice mode require a separate decision.
 
 ### Phase 5: Progress and account integration
 
@@ -659,7 +677,7 @@ For each implementation PR:
 | Gamification rules | Open | Define eligibility, uniqueness, timezone, retries, opt-in, privacy and abuse controls |
 | Community publishing/moderation | Open | Agree read/post/report/edit rules and server-side access controls |
 | Offline access | Future proposal | Specify storage, licensing, versioning, stale state and sync behavior first |
-| Decision-Light site-wide audit (C) | **Deferred by owner, 2026-11-04.** Run after documentation A is integrated and before Phase 4 implementation. Inspect every current route and significant task state against the binding standard, record evidence and prioritize proposed corrections. No existing screen has been audited or redesigned by documentation A. |
+| Decision-Light site-wide prerequisite (C) | **Owner accepted closeout 2026-11-05.** PR #79 merged the owner-approved site-wide navigation and Decision-Light corrections and passed its browser/CI/secret checks. This is the owner's decision to proceed to Phase 4; it does not certify physical Android/TalkBack, keyboard-only, or 200% text-zoom validation, which remain release QA. |
 
 ## 16. External technical references
 
@@ -704,6 +722,9 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
+| 2026-11-05 | Added the owner-approved Decision-Light lesson-reader pattern: reading-first content, no streak/completion/progress controls in the reader, topic-outline navigation, and up to three relevant published recommendations. Clarified that Phase 3 is complete and its earlier draft-PR status text is historical. |
+| 2026-11-05 | PR #79 merged to `main` at `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e`; recorded the current compact header and responsive left navigation drawer, owner acceptance of the Decision-Light prerequisite closeout, current CI/browser/secret evidence, and the Phase 4 Practice Workspace definition and implementation plan. Phase 4 scope preserves published-only content and current session behavior; no live content or production data/configuration changed. |
+| 2026-11-05 | Updated the Phase 4 implementation record to draft PR #81 head `9c9b6976eb84e53b9d408fb27644d76fe5f3222c`; exact-head CI passed 228 tests / 36 files, 1,698/1,698 theme/responsive assertions (including visible decimal worked-step numbering), 613/613 connectivity checks, Supabase migration/RLS, backup checks, and secret scan. Recorded the owner-directed lesson-reader refinements on the same branch. Owner preview review and physical Android/TalkBack, keyboard-only, and 200% text zoom remain open; Phase 4 is not owner-accepted or release-ready. |
 | 2026-10-29 | Added the binding design quality and anti-template standard to the UX/UI design system and linked it here as the authoritative detailed rule set. Preserved Blueprint Academy, brand assets, website-first IA, Light/Dark toggle with Light default, no System option, and unresolved gamification/exam-readiness boundaries. Documentation only; no app implementation, merge, or production deployment authorized. |
 | 2026-10-23 | PR #57 merged the roadmap-aligned hybrid public navigation at `b4b18b2b1a2255d88dacdff546a90de2de18238b`. Final head `ae45bc7` passed CI, full-history Gitleaks (1,035 commits, no leaks), Supabase migration/RLS and backup checks, and 1,682/1,682 Chromium assertions across 13 routes, both themes, and five viewport widths. Cloudflare Pages preview deployment succeeded; direct external preview inspection remains unavailable in this environment. PR #54 is closed as superseded. Phase 2 remains current pending independent review/manual preview inspection. No production deployment occurred. |
 | 2026-10-23 | PR #56 merged the shared theme foundation at `6aef33f37ea69c9b53acdbd975edf9b8feb2d0a5`. Final code head `8208d8d` passed CI, secret scan, Supabase migration/RLS and backup checks, and 853/853 Chromium assertions. A test-first regression found and fixed missing dark-theme styling on the owner content-review workspace. Cloudflare Pages preview deployment succeeded; direct external preview inspection remains unavailable in this environment. Phase 1 remains current pending independent review. Phase 2 remains current pending PR #57 retargeting, synchronization, and fresh CI/full-history scan. No production deployment occurred. |
