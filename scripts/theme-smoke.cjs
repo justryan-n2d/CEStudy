@@ -793,6 +793,9 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           outlinePresent: [...(article?.querySelectorAll("h2, h3, h4") ?? [])]
             .some((node) => node.textContent?.trim() === "Topic outline"),
           workedSteps: article?.querySelectorAll(".markdown-content ol li").length ?? 0,
+          orderedListStyleType: article?.querySelector(".markdown-content ol")
+            ? getComputedStyle(article.querySelector(".markdown-content ol")).listStyleType
+            : "",
           objectiveVisibleInArticle: (article?.textContent ?? "").includes(
             "Identify two numbers whose product and sum match the target coefficients.",
           ),
@@ -811,6 +814,9 @@ The solutions are \(x=-2\) and \(x=-3\).`,
         lessonContent.mathErrors === 0, "mathErrors=" + lessonContent.mathErrors);
       check("Worked solution is presented as three ordered steps: " + activeRoute,
         lessonContent.workedSteps === 3, "workedSteps=" + lessonContent.workedSteps);
+      check("Worked-solution numbering is visibly rendered: " + activeRoute,
+        lessonContent.orderedListStyleType === "decimal",
+        "listStyleType=" + lessonContent.orderedListStyleType);
       check("Learning objectives remain search metadata and are not displayed in the lesson: " + activeRoute,
         lessonContent.objectiveHeadingCount === 0 && !lessonContent.objectiveVisibleInArticle);
       check("Lesson math does not overflow its article or viewport: " + activeRoute,
