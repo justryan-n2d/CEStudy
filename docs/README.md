@@ -1,7 +1,8 @@
 # CEStudy documentation
 
 Start with the project scope, roadmap, security requirements, implementation plan, subject catalog design, architecture decision, and Cloudflare Pages deployment guide in the corresponding folders.
-- [Algebra Foundations syllabus draft](curriculum/algebra-foundations-syllabus.md): one self-paced subject syllabus with readiness review followed by College Algebra. This is a CEStudy draft, not an official university syllabus.
+- [Algebra Foundations syllabus draft](curriculum/algebra-foundations-syllabus.md): self-paced college-algebra pathway beginning with Solving Linear Equations; no readiness diagnostic; visible lesson labels use titles only. This is a CEStudy draft, not an official university syllabus.
+- [Algebra Foundations owner decision (2026-11-05)](curriculum/algebra-foundations-owner-decision-2026-11-05.md): binding opening-lesson, no-diagnostic, title-only display, and implementation-scope decisions.
 - [Algebra Foundations academic review](reviews/algebra-foundations-academic-review.md): pre-lesson scope, sequence, outcome, source and assessment desk review; faculty review remains outstanding.
 - [Foundation source map](research/foundation-source-map.md): curriculum distinctions, source coverage, and licensing notes.
 - [Syllabus availability inventory](research/syllabus-availability-inventory.md): public syllabus-search results and evidence limits.
