@@ -106,14 +106,15 @@ export function ContentReviewPage() {
     try {
       const next = await fetchContentReviewBundle();
       const reviewableLessons = next.lessons.filter((item) => item.status !== "retired");
-      const reviewableBundle = { ...next, lessons: reviewableLessons };
+      const reviewableQuestions = next.questions.filter((item) => item.status !== "retired");
+      const reviewableBundle = { ...next, lessons: reviewableLessons, questions: reviewableQuestions };
       setBundle(reviewableBundle);
       setSelectedLessonId((currentId) => currentId && reviewableLessons.some((item) => item.id === currentId)
         ? currentId
         : reviewableLessons.find((item) => item.status !== "published")?.id ?? reviewableLessons[0]?.id ?? null);
-      setSelectedQuestionId((currentId) => currentId && next.questions.some((item) => item.id === currentId)
+      setSelectedQuestionId((currentId) => currentId && reviewableQuestions.some((item) => item.id === currentId)
         ? currentId
-        : next.questions.find((item) => item.status !== "published")?.id ?? next.questions[0]?.id ?? null);
+        : reviewableQuestions.find((item) => item.status !== "published")?.id ?? reviewableQuestions[0]?.id ?? null);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Content review could not be loaded.");
       if (!getContentReviewSessionToken()) setUnlocked(false);
