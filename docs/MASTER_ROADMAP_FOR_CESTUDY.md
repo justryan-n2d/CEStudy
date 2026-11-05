@@ -536,7 +536,7 @@ Acceptance criteria:
 
 ### Phase 3: Catalog, subject and lesson consistency
 
-**Status: CURRENT - implementation slices CI-verified in draft PRs; integration pending.** The dedicated plan is recorded at [`docs/plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md`](plans/2026-11-04-phase-3-catalog-subject-lesson-consistency-implementation-plan.md). Task 1 is in [PR #71](https://github.com/justryan-n2d/CEStudy/pull/71), Task 2 in [PR #72](https://github.com/justryan-n2d/CEStudy/pull/72), and Task 3 in [PR #73](https://github.com/justryan-n2d/CEStudy/pull/73). All remain draft and unmerged. The populated-lesson screenshot artifact is available in [CI run 41784514166](https://github.com/justryan-n2d/CEStudy/actions/runs/41784514166) through 2026-11-11. Keep Phase 3 current until owner visual sign-off, explicit merge authorization and post-integration CI.
+**Status: COMPLETE.** The Phase 3 implementation slices in [PR #70](https://github.com/justryan-n2d/CEStudy/pull/70) through [PR #73](https://github.com/justryan-n2d/CEStudy/pull/73) are integrated into `main`. The catalog, subject, and published lesson-reader contracts are complete. PR #79 then integrated the owner-approved Decision-Light navigation and interaction closeout. The current roadmap's remaining lesson-reader polish is governed by the owner-approved lesson-reader application rules in the [UX/UI Design System](specs/UX_UI_DESIGN_SYSTEM.md#lesson-reader-application-owner-approved-2026-11-05), implemented on the current draft feature work rather than reopening Phase 3 as an unmerged phase.
 
 **Relative effort:** Medium. **Risk:** Medium.
 
@@ -545,9 +545,11 @@ Primary paths: `src/pages/CatalogPage.tsx`, `src/components/CatalogFilters.tsx`,
 Acceptance criteria:
 - Preserve search/filter behavior, availability messaging, source/provenance and useful empty/error recovery.
 - Structure lesson content around topical outlines, conceptual explanations, formulas and step-by-step worked solutions. Learning objectives remain searchable metadata only; do not show a separate Learning Objectives section in the student-facing lesson reader.
+- Apply the binding [Decision-Light lesson-reader pattern](specs/UX_UI_DESIGN_SYSTEM.md#lesson-reader-application-owner-approved-2026-11-05): no streak, completion or progress controls in the reader; topic-outline navigation remains discoverable; no competing Previous / Next footer actions; show at most three relevant, published, same-subject recommendations, or an honest empty state.
+- Render Markdown structure semantically and typeset inline/display mathematics with the shared KaTeX renderer. Give worked steps and equations professional vertical spacing without page-wide overflow.
 - Do not invent year/semester assignments.
 - Equation formatting changes preserve canonical text and mathematical meaning.
-- Verify all representative formula fixtures in both themes and narrow layouts.
+- Verify lesson structure and representative formula fixtures in both themes and narrow layouts.
 
 ### Phase 4: Practice workspace
 
@@ -712,6 +714,8 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 ```
 
 ## 18. Revision history
+
+| 2026-11-05 | Added the owner-approved Decision-Light lesson-reader pattern: reading-first content, no streak/completion/progress controls in the reader, topic-outline navigation, and up to three relevant published recommendations. Clarified that Phase 3 is complete and its earlier draft-PR status text is historical. |
 
 | Date | Update |
 |---|---|
