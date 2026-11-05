@@ -1,26 +1,28 @@
 # CEStudy Syllabus: Algebra Foundations
 
 **Document status:** Original CEStudy syllabus draft for maintainer and academic review  
-**Version:** 0.2 (academic desk review revision)  
+**Version:** 0.3 (owner-approved opening-sequence revision, 2026-11-05)  
 **Scope approved:** 2026-10-18  
 **Academic desk review:** 2026-10-18 (AI-assisted; independent faculty review not yet completed)  
 **Delivery model:** Self-paced learning pathway  
 **Credit units/contact hours:** Not assigned. This is a CEStudy learning syllabus, not an official or accredited university course syllabus.
 
-> **Curriculum rule:** One subject = one syllabus. Algebra Foundations is one CEStudy subject. Its Algebra Readiness phase is built into this syllabus before the College Algebra phase; it is not a separate subject or a second syllabus. Trigonometry, Analytic Geometry, Solid Mensuration, and Advanced Algebra will each have their own separate syllabus.
+> **Curriculum rule:** One subject = one syllabus. Algebra Foundations is one CEStudy subject. It begins directly with the actual lesson **Solving Linear Equations**. There is no readiness diagnostic, optional diagnostic, or separate Algebra Readiness phase in this pathway. Trigonometry, Analytic Geometry, Solid Mensuration, and Advanced Algebra will each have their own separate syllabus.
+>
+> **Display rule:** Student-facing lesson navigation and reading views, plus the private owner review interface, show the lesson title only. Do not display labels such as “Unit 1,” “Unit 2,” or “Unit 3,” and do not prefix titles with sequence numbers. Internal ordering fields may remain in the database and routes, but they are implementation metadata, not visible lesson labels.
 
 ## 1. Course description
 
-Algebra Foundations prepares Civil Engineering students for later mathematics subjects by reviewing essential arithmetic and algebra skills before progressing through College Algebra. Students develop accuracy with numbers and expressions, learn to rearrange formulas, solve equations and inequalities, interpret functions and graphs, work with polynomial, rational, radical, exponential, and logarithmic expressions, and translate word problems into equations.
+Algebra Foundations prepares Civil Engineering students for later mathematics subjects by beginning with college-level linear-equation solving and then developing the arithmetic, expression, function, graph, and equation skills needed for higher mathematics. Students solve one-step and multi-step linear equations, including equations with grouping symbols, fractions, and variables on both sides; verify solutions; rearrange formulas; solve inequalities; interpret functions and graphs; work with polynomial, rational, radical, exponential, and logarithmic expressions; and translate word problems into mathematical models.
 
-The pathway begins with a diagnostic and targeted review. The diagnostic guides practice and does not block students from continuing. The course uses original CEStudy explanations, examples, practice, and assessments. Applications may use simple measurement, rate, cost, and formula contexts, but the subject does not teach later Civil Engineering subjects.
+There is no readiness diagnostic before or alongside the lesson sequence. Prerequisite skills are addressed within relevant lessons and practice rather than through a separate diagnostic or remedial gate. The course uses original CEStudy explanations, examples, practice, and assessments. Applications may use measurement, rate, cost, and formula contexts, but the subject does not teach later Civil Engineering subjects.
 
 ## 2. Intended learners and entry requirements
 
-- **Intended learners:** Civil Engineering students and other learners who need a foundation before College Algebra and higher mathematics.
+- **Intended learners:** Civil Engineering students and other learners who need a foundation in algebra before higher mathematics.
 - **Prerequisites:** None.
-- **Recommended starting point:** Take the readiness diagnostic and use its feedback to decide which review topics need more practice.
-- **Learning format:** Self-paced. Units follow a defined sequence, but no semester weeks, university credit units, contact hours, or grade percentages are assigned in this CEStudy version.
+- **Starting point:** Begin with **Solving Linear Equations**. No readiness diagnostic is placed before it or offered as an optional prerequisite check.
+- **Learning format:** Self-paced. Lessons follow an ordered sequence, but no semester weeks, university credit units, contact hours, or grade percentages are assigned in this CEStudy version. Lesson headings and navigation display titles only, without unit numbers.
 
 ## 3. Course learning outcomes
 
@@ -38,25 +40,23 @@ By the end of Algebra Foundations, students should be able to:
 
 ## 4. Scope and teaching sequence
 
-The sequence below is the approved CEStudy order. Each unit should later be developed into original lessons with learning objectives, clear explanations, worked examples, guided practice, independent practice, feedback, and a unit check. No question bank or answer key is included in this syllabus document.
+The ordered lesson sequence below begins with **Solving Linear Equations**. Each lesson should be developed with clear explanations, worked examples, guided practice, independent practice, feedback, and an outcome-aligned lesson check. No readiness diagnostic is part of this pathway. No question bank or answer key is included in this syllabus document.
 
-### Unit 0. Readiness Diagnostic
-
-**Purpose:** Identify prerequisite skills that need review before or alongside the main College Algebra content.
+### Solving Linear Equations
 
 **Coverage**
-- Signed numbers and real-number operations
-- Fractions, decimals, percentages, ratios, and proportions
-- Order of operations and number properties
-- Basic exponent and square-root skills
-- Combining like terms and using the distributive property
-- Basic factoring and simple equations
-- Substituting values into and rearranging simple formulas
-- Scientific notation
+- Equivalent equations and the balance principle
+- One-step and two-step linear equations using inverse operations
+- Multi-step equations that require simplifying both sides, distributing, and combining like terms
+- Equations with variables on both sides
+- Linear equations with fractional and decimal coefficients
+- Equations that produce one solution, no solution, or infinitely many solutions
+- Translating suitable word problems into linear equations
+- Checking every proposed solution in the original equation
 
-**Expected result:** A topic-level feedback summary that recommends review. The diagnostic is not a gate that prevents the student from continuing.
+**Expected outcome:** Solve one-variable linear equations from basic to multi-step forms, show mathematically valid steps, identify special cases, and verify solutions by substitution.
 
-### Unit 1. Real Numbers and Arithmetic
+### Real Numbers and Arithmetic
 
 **Coverage**
 - Common real-number sets and number-line interpretation
@@ -66,9 +66,9 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Absolute value as distance from zero
 - Estimating and checking arithmetic results
 
-**Unit outcome:** Calculate accurately and select appropriate arithmetic operations when solving a problem.
+**Expected outcome:** Calculate accurately and select appropriate arithmetic operations when solving a problem.
 
-### Unit 2. Algebraic Expressions and Formula Skills
+### Algebraic Expressions and Formula Skills
 
 **Coverage**
 - Variables, constants, coefficients, terms, and expressions
@@ -80,9 +80,9 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Rearranging formulas and preserving equality
 - Identifying values that are not allowed by a denominator or other stated restriction
 
-**Unit outcome:** Simplify expressions and rearrange formulas with correct algebraic steps.
+**Expected outcome:** Simplify expressions and rearrange formulas with correct algebraic steps.
 
-### Unit 3. Exponents, Radicals, and Scientific Notation
+### Exponents, Radicals, and Scientific Notation
 
 **Coverage**
 - Product, quotient, and power rules for exponents
@@ -92,23 +92,20 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Scientific notation and operations with numbers in scientific notation
 - Estimating magnitude and checking units in basic applied calculations
 
-**Unit outcome:** Manipulate powers and radicals using valid rules and represent very large or small numbers appropriately.
+**Expected outcome:** Manipulate powers and radicals using valid rules and represent very large or small numbers appropriately.
 
-### Unit 4. Linear Equations and Inequalities
+### Linear Inequalities and Absolute Value
 
 **Coverage**
-- One-variable linear equations, including equations with fractions
-- Equations involving parentheses and variables on both sides
-- Literal equations and formula rearrangement
-- Translating word problems into linear equations
 - Linear inequalities and compound inequalities
-- Interval notation and number-line solutions
+- Reversing the inequality sign when multiplying or dividing by a negative number
+- Interval notation and number-line solution sets
 - Absolute-value equations and inequalities at an introductory level
-- Checking equations and inequalities against the original statement
+- Checking inequality and absolute-value solutions against the original statement
 
-**Unit outcome:** Solve linear equations and inequalities and express their solution sets correctly.
+**Expected outcome:** Solve introductory linear inequalities and absolute-value statements and express their solution sets correctly.
 
-### Unit 5. Relations, Functions, and Graphs
+### Relations, Functions, and Graphs
 
 **Coverage**
 - Ordered pairs, relations, and the definition of a function
@@ -120,9 +117,9 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - One-to-one functions and inverse functions at an introductory level
 - Reading and interpreting a graph without moving into a full Analytic Geometry course
 
-**Unit outcome:** Represent and interpret a function using notation, tables, rules, and basic graphs.
+**Expected outcome:** Represent and interpret a function using notation, tables, rules, and basic graphs.
 
-### Unit 6. Polynomials and Factoring
+### Polynomials and Factoring
 
 **Coverage**
 - Polynomial terminology, degree, and classification
@@ -135,9 +132,9 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Zeros of polynomial functions
 - Remainder Theorem and Factor Theorem, including how to use them to test factors
 
-**Unit outcome:** Simplify and factor polynomial expressions and use polynomial relationships to solve equations.
+**Expected outcome:** Simplify and factor polynomial expressions and use polynomial relationships to solve equations.
 
-### Unit 7. Quadratic Equations and Functions
+### Quadratic Equations and Functions
 
 **Coverage**
 - Quadratic equations and quadratic functions
@@ -150,9 +147,9 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Word problems that produce quadratic equations
 - Verification of roots in the original equation
 
-**Unit outcome:** Choose a suitable method to solve a quadratic equation and interpret its roots and basic graph.
+**Expected outcome:** Choose a suitable method to solve a quadratic equation and interpret its roots and basic graph.
 
-### Unit 8. Higher-Degree Polynomial Equations
+### Higher-Degree Polynomial Equations
 
 **Coverage**
 - Polynomial equations of degree three and higher
@@ -160,12 +157,12 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Solving higher-degree equations by factoring
 - Rational Root Theorem for nonzero-constant polynomials with integer coefficients, identifying candidate rational zeros
 - Using polynomial division, synthetic division, the Factor Theorem, and known factors to reduce suitable equations
-- Applying the complex-number notation and basic operations introduced in Unit 7 when checking selected higher-degree polynomial equations
+- Applying the complex-number notation and basic operations introduced in Quadratic Equations and Functions when checking selected higher-degree polynomial equations
 - Checking candidate roots and factors in the original equation
 
-**Unit outcome:** Apply factoring and polynomial relationships to solve suitable higher-degree equations.
+**Expected outcome:** Apply factoring and polynomial relationships to solve suitable higher-degree equations.
 
-### Unit 9. Rational and Radical Equations
+### Rational and Radical Equations
 
 **Coverage**
 - Rational expressions and restrictions on denominators
@@ -176,9 +173,9 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Evaluating rational functions at allowed inputs and identifying excluded inputs and zeros where defined
 - Reading simple value tables or graphs for rational functions without studying asymptotes or advanced curve behavior
 
-**Unit outcome:** Solve selected rational and radical equations while stating restrictions and checking answers in the original equation.
+**Expected outcome:** Solve selected rational and radical equations while stating restrictions and checking answers in the original equation.
 
-### Unit 10. Systems of Linear Equations
+### Systems of Linear Equations
 
 **Coverage**
 - Systems in two variables
@@ -188,11 +185,11 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Translating word problems into linear systems
 - Checking the obtained solution in all original equations
 
-**Unit outcome:** Solve and interpret systems of linear equations using substitution or elimination.
+**Expected outcome:** Solve and interpret systems of linear equations using substitution or elimination.
 
 **Boundary:** Matrix operations, determinant evaluation, and Cramer's Rule are outside this subject. They may be considered in the separate Advanced Algebra syllabus.
 
-### Unit 11. Exponential and Logarithmic Functions
+### Exponential and Logarithmic Functions
 
 **Coverage**
 - Exponential expressions and functions
@@ -203,28 +200,27 @@ The sequence below is the approved CEStudy order. Each unit should later be deve
 - Solving logarithmic equations, requiring every logarithm's argument to be positive and checking candidate solutions in the original equation
 - Simple growth and decay applications
 
-**Unit outcome:** Transform between exponential and logarithmic forms and solve basic exponential and logarithmic equations.
+**Expected outcome:** Transform between exponential and logarithmic forms and solve basic exponential and logarithmic equations.
 
-### Unit 12. Integrated Algebra Applications
+### Integrated Algebra Applications
 
 **Coverage**
-- Multi-step problems that combine skills from earlier units
+- Multi-step problems that combine skills from earlier lessons
 - Translating word statements into equations, inequalities, functions, or systems
 - Rearranging formulas before substituting numerical values
 - Keeping track of units and distinguishing exact from rounded values
 - Checking answers by substitution, estimation, and alternative methods
 - Explaining what a solution means in the problem's context
 
-**Unit outcome:** Select and combine algebra methods to model and solve a practical problem and communicate a checkable solution.
+**Expected outcome:** Select and combine algebra methods to model and solve a practical problem and communicate a checkable solution.
 
 ## 5. Assessment approach
 
 This is a self-paced learning pathway, so this version does not assign university grade percentages.
 
-- **Diagnostic feedback:** Used to identify prerequisite gaps and recommend review. It is not a pass/fail gate.
-- **Practice and feedback:** Short guided and independent practice within every unit, including feedback for common errors.
-- **Unit checks:** A check after each unit to verify its stated outcome.
-- **Cumulative checks:** Mixed practice after the linear-equation stage, after polynomial and quadratic work, and after systems and exponential/logarithmic work.
+- **Practice and feedback:** Short guided and independent practice within every lesson, including feedback for common errors. Prerequisite skills are taught or refreshed where they are needed; no diagnostic is administered.
+- **Lesson checks:** A focused check after each lesson to verify its stated outcome.
+- **Cumulative checks:** Mixed practice after the equation-solving and inequality lessons, after polynomial and quadratic work, and after systems and exponential/logarithmic work.
 - **Integrated assessment:** An original, multi-step algebra application that draws on the course learning outcomes.
 - **Review requirement:** Every CEStudy solution and assessment must be checked for mathematical correctness, clarity, originality, and source/permission issues before publication.
 
@@ -240,14 +236,14 @@ CEStudy should present each topic in this order where suitable:
 4. Provide guided practice that isolates one skill at a time.
 5. Move to mixed practice that requires choosing a method.
 6. Give feedback that identifies the likely error and explains how to check it.
-7. Finish with an outcome-aligned unit check.
+7. Finish with an outcome-aligned lesson check.
 
 Use civil-engineering-flavored contexts only when the needed mathematics has already been taught. Do not require knowledge of statics, surveying, trigonometry, analytic geometry, mensuration, or calculus to pass an Algebra Foundations assessment.
 
 ## 7. Scope boundaries
 
 ### Included
-Arithmetic readiness, algebraic expressions, formula rearrangement, exponents and radicals, scientific notation, equations and inequalities, functions and their basic graphs, polynomial operations and factoring, quadratic and selected higher-degree equations, introductory complex-number notation and operations, rational and radical equations, linear systems, exponential and logarithmic equations, and integrated algebra applications.
+Real-number arithmetic, algebraic expressions, formula rearrangement, exponents and radicals, scientific notation, equations and inequalities, functions and their basic graphs, polynomial operations and factoring, quadratic and selected higher-degree equations, introductory complex-number notation and operations, rational and radical equations, linear systems, exponential and logarithmic equations, and integrated algebra applications.
 
 ### Excluded from this subject
 - **Advanced Algebra:** matrices, determinant methods, Cramer's Rule, sequences and series, permutations and combinations, the general binomial theorem, mathematical induction, and partial-fraction decomposition.
@@ -279,6 +275,6 @@ The scope was compared with these publicly available records, but their wording,
 
 ## 10. Review status
 
-This is the revised original CEStudy syllabus draft based on the scope and sequence approved on 2026-10-18. An AI-assisted academic desk review corrected the sequence of complex-number content, made the higher-degree polynomial methods more explicit, tightened the rational-function and logarithm scope, and documented a known difference from one university's course packaging. The findings are recorded in [Algebra Foundations academic review](../reviews/algebra-foundations-academic-review.md).
+This is the original CEStudy syllabus draft, updated on 2026-11-05 to reflect the owner's decision that Solving Linear Equations is the first actual lesson, that no readiness diagnostic is included, and that visible lesson labels use titles only. The 2026-10-18 academic desk review applies to the earlier syllabus version and is not independent faculty sign-off. The updated opening sequence and presentation requirements are recorded in [the owner curriculum decision](algebra-foundations-owner-decision-2026-11-05.md).
 
 This desk review is not independent faculty sign-off. Before the syllabus is treated as ready for student release, a mathematics or engineering-mathematics instructor should review the scope, mathematical precision, learning-outcome alignment, examples to be developed later, and assessment design. It should not be presented as an official university or CHED-issued syllabus.
