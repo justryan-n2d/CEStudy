@@ -90,7 +90,7 @@ describe("lesson reader", () => {
 > 18 - 3(6)^2 \div 6
 > \]
 >
-> Check the result using \(8 + 2 \times 5 = 18\\).`}
+> Check the result using \(8 + 2 \times 5 = 18\).`}
       />,
     );
 
