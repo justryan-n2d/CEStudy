@@ -8,10 +8,6 @@ import {
   type CompletedLesson,
 } from "../data/learning-progress";
 
-function subjectLabel(slug: string): string {
-  return slug.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
 export function ProgressPage() {
   const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
   const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
@@ -60,7 +56,6 @@ export function ProgressPage() {
             {sortedLessons.map((lesson) => (
               <li className="progress-list-item" key={lesson.lessonId}>
                 <div>
-                  <span className="progress-subtitle">{subjectLabel(lesson.subjectSlug)} · Unit {lesson.unitNumber}</span>
                   <h2>{lesson.title}</h2>
                   <span className="progress-complete-label">Completed on this device</span>
                 </div>

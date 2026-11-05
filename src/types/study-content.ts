@@ -18,6 +18,15 @@ export function parsePracticeQuestion(row: Record<string, unknown>): PracticeQue
       row.choices.length < 2 || typeof row.correct_answer !== "string" ||
       !Array.isArray(row.solution_steps) || !row.solution_steps.every((value: unknown) => typeof value === "string") ||
       row.solution_steps.length === 0 || typeof row.explanation !== "string" || typeof row.source_note !== "string") return null;
+
+  const choices = row.choices as string[];
+  const normalizedChoices = choices.map((choice) => choice.trim());
+  if (
+    normalizedChoices.some((choice) => choice.length === 0) ||
+    new Set(normalizedChoices).size !== normalizedChoices.length ||
+    !choices.includes(row.correct_answer)
+  ) return null;
+
   return {
     id: row.id, subjectSlug: row.subject_slug, topic: row.topic, prompt: row.prompt,
     choices: row.choices as string[], correctAnswer: row.correct_answer,

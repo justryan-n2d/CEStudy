@@ -4,9 +4,8 @@ import { StudyReaderSkeleton } from "../components/LoadingSkeletons";
 import { UnavailableState } from "../components/UnavailableState";
 import { MarkdownContent } from "../components/MarkdownContent";
 import { fetchPublishedLessons } from "../data/lesson-api";
+import { getRelatedLessons } from "../data/lesson-recommendations";
 import type { SubjectLesson } from "../types/lesson-content";
-import { readCompletedLessons, readLearningActivityDays, setLessonCompleted, type CompletedLesson } from "../data/learning-progress";
-import { LearningStreakBadge } from "../components/LearningStreakBadge";
 
 function searchText(lesson: SubjectLesson): string {
   return [lesson.title, lesson.slug, ...lesson.learningObjectives, lesson.lessonMarkdown].join(" ").normalize("NFKC").toLowerCase();
@@ -33,8 +32,6 @@ export function StudyPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
-  const [completedLessons, setCompletedLessons] = useState<CompletedLesson[]>(readCompletedLessons);
-  const [activityDays, setActivityDays] = useState<string[]>(readLearningActivityDays);
 
   const retry = () => setRetryCount((current) => current + 1);
 
@@ -44,8 +41,6 @@ export function StudyPage() {
     setError(null);
     setLessons([]);
     setTopicQuery("");
-    setCompletedLessons(readCompletedLessons());
-    setActivityDays(readLearningActivityDays());
     fetchPublishedLessons(subjectSlug)
       .then((items) => { if (active) setLessons(items); })
       .catch((reason: unknown) => {
@@ -60,7 +55,6 @@ export function StudyPage() {
     () => selectedUnit === null ? null : lessons.find((lesson) => lesson.unitNumber === selectedUnit) ?? null,
     [lessons, selectedUnit],
   );
-  const lessonIndex = activeLesson ? lessons.findIndex((lesson) => lesson.id === activeLesson.id) : -1;
   const title = subjectSlug === "basic-algebra" ? "Algebra Foundations" : subjectSlug.replace(/-/g, " ");
   const normalizedQuery = topicQuery.trim().normalize("NFKC").toLowerCase();
   const visibleLessons = useMemo(() => {
@@ -68,19 +62,10 @@ export function StudyPage() {
     return queryTerms.length === 0 ? lessons : lessons.filter((lesson) => queryTerms.every((term) => searchText(lesson).includes(term)));
   }, [lessons, normalizedQuery]);
   const showActiveLesson = activeLesson !== null && (!normalizedQuery || visibleLessons.some((lesson) => lesson.id === activeLesson.id));
-  const activeLessonCompleted = Boolean(activeLesson && completedLessons.some((item) => item.lessonId === activeLesson.id));
-
-  const toggleLessonCompletion = () => {
-    if (!activeLesson) return;
-    const next = setLessonCompleted({
-      lessonId: activeLesson.id,
-      subjectSlug: activeLesson.subjectSlug,
-      unitNumber: activeLesson.unitNumber,
-      title: activeLesson.title,
-    }, !activeLessonCompleted);
-    setCompletedLessons(next);
-    setActivityDays(readLearningActivityDays());
-  };
+  const recommendedLessons = useMemo(
+    () => activeLesson ? getRelatedLessons(activeLesson, lessons, 3) : [],
+    [activeLesson, lessons],
+  );
 
   return (
     <div className="page-wrap study-page">
@@ -122,7 +107,6 @@ export function StudyPage() {
                         <Link key={lesson.id} className={activeLesson?.id === lesson.id ? "study-outline-item active" : "study-outline-item"}
                           to={`/study/${subjectSlug}/${lesson.unitNumber}`} onClick={() => setTopicQuery("")}
                           aria-current={activeLesson?.id === lesson.id ? "page" : undefined}>
-                          <span className="study-outline-number">{lesson.unitNumber}</span>
                           <span className="study-outline-copy">
                             <span>{lesson.title}</span>
                             {normalizedQuery && <small>{topicSnippet(lesson, normalizedQuery)}</small>}
@@ -137,26 +121,24 @@ export function StudyPage() {
 
                 {showActiveLesson && activeLesson ? (
                   <article className="study-lesson">
-                    <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
                     <h2>{activeLesson.title}</h2>
                     <MarkdownContent markdown={activeLesson.lessonMarkdown} />
-                    <LearningStreakBadge activityDays={activityDays} />
-                    <div className="study-lesson-completion">
-                      {activeLessonCompleted ? (
-                        <span className="status status-ready" role="status">Completed</span>
+
+                    <section className="study-recommendations" aria-label="Recommended lessons">
+                      <h3>Recommended lessons</h3>
+                      {recommendedLessons.length > 0 ? (
+                        <ul>
+                          {recommendedLessons.map((lesson) => (
+                            <li key={lesson.id}>
+                              <Link to={`/study/${subjectSlug}/${lesson.unitNumber}`}>{lesson.title}</Link>
+                              {lesson.learningObjectives[0] && <p>{lesson.learningObjectives[0]}</p>}
+                            </li>
+                          ))}
+                        </ul>
                       ) : (
-                        <button type="button" className="button button-secondary" onClick={toggleLessonCompletion}>
-                          Mark as complete
-                        </button>
+                        <p className="study-recommendations-empty">No related lessons are available yet.</p>
                       )}
-                      <p>{activeLessonCompleted ? "Completed and saved on this device." : "Progress is saved on this device only."} <Link to="/progress">View my progress</Link></p>
-                    </div>
-                    <div className="study-lesson-navigation">
-                      {lessonIndex > 0 ? <Link className="button button-secondary" to={`/study/${subjectSlug}/${lessons[lessonIndex - 1].unitNumber}`}>← Previous</Link> : <span />}
-                      {lessonIndex >= 0 && lessonIndex < lessons.length - 1
-                        ? <Link className="button button-primary" to={`/study/${subjectSlug}/${lessons[lessonIndex + 1].unitNumber}`}>Next topic →</Link>
-                        : subjectSlug === "basic-algebra" ? <Link className="button button-primary" to="/practice/basic-algebra">Practice problems →</Link> : null}
-                    </div>
+                    </section>
                   </article>
                 ) : (
                   <section className="study-lesson study-lesson-welcome">

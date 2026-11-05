@@ -1,12 +1,16 @@
+import type { ReactNode } from "react";
 import { InlineMathText } from "./InlineMathText";
 import { LazyLatexMath } from "./LazyLatexMath";
 
 type Block =
   | { type: "heading"; level: 1 | 2 | 3; text: string }
+  | { type: "step-heading"; text: string }
   | { type: "paragraph"; text: string }
   | { type: "unordered-list"; items: string[] }
   | { type: "ordered-list"; items: string[] }
-  | { type: "display-math"; latex: string };
+  | { type: "display-math"; latex: string }
+  | { type: "blockquote"; blocks: Block[] }
+  | { type: "thematic-break" };
 
 function parseDisplayMath(lines: string[], startIndex: number): { blocks: Block[]; nextIndex: number } | null {
   const line = lines[startIndex].trim();
@@ -39,6 +43,10 @@ function parseDisplayMath(lines: string[], startIndex: number): { blocks: Block[
   return null;
 }
 
+function isBlockquoteLine(line: string): boolean {
+  return /^\s{0,3}>/.test(line);
+}
+
 function parseBlocks(markdown: string): Block[] {
   const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
   const blocks: Block[] = [];
@@ -48,6 +56,16 @@ function parseBlocks(markdown: string): Block[] {
     const line = lines[index].trim();
     if (!line) { index++; continue; }
 
+    if (isBlockquoteLine(lines[index])) {
+      const quotedLines: string[] = [];
+      while (index < lines.length && isBlockquoteLine(lines[index])) {
+        quotedLines.push(lines[index].replace(/^\s{0,3}>\s?/, ""));
+        index++;
+      }
+      blocks.push({ type: "blockquote", blocks: parseBlocks(quotedLines.join("\n")) });
+      continue;
+    }
+
     const displayMath = parseDisplayMath(lines, index);
     if (displayMath) {
       blocks.push(...displayMath.blocks);
@@ -55,9 +73,22 @@ function parseBlocks(markdown: string): Block[] {
       continue;
     }
 
+    if (/^(?:-{3,}|_{3,}|\*{3,})$/.test(line)) {
+      blocks.push({ type: "thematic-break" });
+      index++;
+      continue;
+    }
+
     const heading = line.match(/^(#{1,3})\s+(.+)$/);
     if (heading) {
       blocks.push({ type: "heading", level: heading[1].length as 1 | 2 | 3, text: heading[2] });
+      index++;
+      continue;
+    }
+
+    const stepHeading = line.match(/^\*\*(Step\s+\d+\s*[:.)-]?\s*.+)\*\*$/i);
+    if (stepHeading) {
+      blocks.push({ type: "step-heading", text: stepHeading[1] });
       index++;
       continue;
     }
@@ -85,7 +116,14 @@ function parseBlocks(markdown: string): Block[] {
     const paragraph: string[] = [];
     while (index < lines.length) {
       const next = lines[index].trim();
-      if (!next || /^(#{1,3})\s+/.test(next) || /^[-*]\s+/.test(next) || /^\d+\.\s+/.test(next) || parseDisplayMath(lines, index)) break;
+      if (!next
+        || isBlockquoteLine(lines[index])
+        || /^(#{1,3})\s+/.test(next)
+        || /^\*\*(Step\s+\d+\s*[:.)-]?\s*.+)\*\*$/i.test(next)
+        || /^[-*]\s+/.test(next)
+        || /^\d+\.\s+/.test(next)
+        || /^(?:-{3,}|_{3,}|\*{3,})$/.test(next)
+        || parseDisplayMath(lines, index)) break;
       paragraph.push(next);
       index++;
     }
@@ -95,20 +133,35 @@ function parseBlocks(markdown: string): Block[] {
   return blocks;
 }
 
-/** Render a deliberately small, safe subset of Markdown. It never interprets HTML. */
-export function MarkdownContent({ markdown }: { markdown: string }) {
-  const blocks = parseBlocks(markdown);
-  return <div className="markdown-content">{blocks.map((block, index) => {
+function renderBlocks(blocks: Block[], keyPrefix: string): ReactNode[] {
+  return blocks.map((block, index) => {
+    const key = `${keyPrefix}-${index}`;
     if (block.type === "display-math") {
-      return <LazyLatexMath key={index} latex={block.latex} displayMode />;
+      return <LazyLatexMath key={key} latex={block.latex} displayMode />;
+    }
+    if (block.type === "blockquote") {
+      return <blockquote className="markdown-blockquote" key={key}>{renderBlocks(block.blocks, key)}</blockquote>;
+    }
+    if (block.type === "thematic-break") return <hr className="markdown-divider" key={key} />;
+    if (block.type === "step-heading") {
+      return <h4 className="markdown-step-heading" key={key}><InlineMathText text={block.text} /></h4>;
     }
     if (block.type === "heading") {
-      if (block.level === 1) return <h2 key={index}><InlineMathText text={block.text} /></h2>;
-      if (block.level === 2) return <h3 key={index}><InlineMathText text={block.text} /></h3>;
-      return <h4 key={index}><InlineMathText text={block.text} /></h4>;
+      if (block.level === 1) return <h2 key={key}><InlineMathText text={block.text} /></h2>;
+      if (block.level === 2) return <h3 key={key}><InlineMathText text={block.text} /></h3>;
+      return <h4 key={key}><InlineMathText text={block.text} /></h4>;
     }
-    if (block.type === "unordered-list") return <ul key={index}>{block.items.map((item, itemIndex) => <li key={itemIndex}><InlineMathText text={item} /></li>)}</ul>;
-    if (block.type === "ordered-list") return <ol key={index}>{block.items.map((item, itemIndex) => <li key={itemIndex}><InlineMathText text={item} /></li>)}</ol>;
-    return <p key={index}><InlineMathText text={block.text} /></p>;
-  })}</div>;
+    if (block.type === "unordered-list") {
+      return <ul key={key}>{block.items.map((item, itemIndex) => <li key={itemIndex}><InlineMathText text={item} /></li>)}</ul>;
+    }
+    if (block.type === "ordered-list") {
+      return <ol key={key}>{block.items.map((item, itemIndex) => <li key={itemIndex}><InlineMathText text={item} /></li>)}</ol>;
+    }
+    return <p key={key}><InlineMathText text={block.text} /></p>;
+  });
+}
+
+/** Render a safe Markdown subset with headings, lists, quotations, and KaTeX math. */
+export function MarkdownContent({ markdown }: { markdown: string }) {
+  return <div className="markdown-content">{renderBlocks(parseBlocks(markdown), "lesson")}</div>;
 }

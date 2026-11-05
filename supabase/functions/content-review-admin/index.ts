@@ -148,11 +148,11 @@ async function verifyToken(token: string, key: string): Promise<boolean> {
   } catch { return false; }
 }
 function reviewPath(entity: Entity, id: string, select: string): string | null {
-  if (entity === "lesson" && /^algebra-foundations-unit-(?:0[0-9]|1[0-2])$/.test(id)) {
+  if (entity === "lesson" && /^algebra-foundations-unit-(?:0[1-9]|1[0-3])$/.test(id)) {
     const query = new URLSearchParams({ select, id: `eq.${id}`, subject_slug: "eq.basic-algebra" });
     return `subject_lessons?${query.toString()}`;
   }
-  if (entity === "question" && /^algebra-foundations-u(?:0[0-9]|1[0-2])-q[0-9]{2}$/.test(id)) {
+  if (entity === "question" && /^algebra-foundations-u(?:0[1-9]|1[0-2])-q[0-9]{2}$/.test(id)) {
     const query = new URLSearchParams({ select, id: `eq.${id}`, subject_slug: "eq.basic-algebra" });
     return `practice_questions?${query.toString()}`;
   }
@@ -209,6 +209,7 @@ async function listReviewContent() {
   const lessonQuery = new URLSearchParams({
     select: "id,subject_slug,unit_number,slug,title,learning_objectives,lesson_markdown,source_note,status,review_notes,reviewed_at,updated_at",
     subject_slug: "eq.basic-algebra",
+    status: "neq.retired",
     order: "unit_number.asc",
     limit: "50",
   });
@@ -216,6 +217,7 @@ async function listReviewContent() {
     select: "id,subject_slug,topic,prompt,choices,correct_answer,solution_steps,explanation,source_note,status,review_notes,reviewed_at,updated_at,display_order",
     subject_slug: "eq.basic-algebra",
     id: "like.algebra-foundations-*",
+    status: "neq.retired",
     order: "display_order.asc",
     limit: "100",
   });
