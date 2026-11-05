@@ -715,8 +715,6 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 ## 18. Revision history
 
-| 2026-11-05 | Added the owner-approved Decision-Light lesson-reader pattern: reading-first content, no streak/completion/progress controls in the reader, topic-outline navigation, and up to three relevant published recommendations. Clarified that Phase 3 is complete and its earlier draft-PR status text is historical. |
-
 | Date | Update |
 |---|---|
 | 2026-11-04 | Recorded the owner-approved Decision-Light Design standard in the UX/UI Design System and the roadmap decision register. Set the full-site audit (C) as a deferred pre-Phase-4 entry gate after documentation A. No application UI, behavior, data, or production configuration changed. |
@@ -724,6 +722,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Change |
 |---|---|
+| 2026-11-05 | Added the owner-approved Decision-Light lesson-reader pattern: reading-first content, no streak/completion/progress controls in the reader, topic-outline navigation, and up to three relevant published recommendations. Clarified that Phase 3 is complete and its earlier draft-PR status text is historical. |
 | 2026-11-05 | PR #79 merged to `main` at `5f9ec1dc0bb3d3eb63bd4deb03a0dc01db05f76e`; recorded the current compact header and responsive left navigation drawer, owner acceptance of the Decision-Light prerequisite closeout, current CI/browser/secret evidence, and the Phase 4 Practice Workspace definition and implementation plan. Phase 4 scope preserves published-only content and current session behavior; no live content or production data/configuration changed. |
 | 2026-11-05 | Recorded Phase 4 Tasks 1-3 as implemented in draft PR #81 at `d9268a806748c1aa5426b9dacdafc0467f1a219a`. Exact-head automation passed 224 tests, 1,693/1,693 theme/responsive checks, 613/613 connectivity checks, Supabase migration/RLS and secret scan. Owner preview review and manual Android/TalkBack, keyboard-only, and 200% text zoom remain open; Phase 4 is not yet owner-accepted or release-ready. |
 | 2026-10-29 | Added the binding design quality and anti-template standard to the UX/UI design system and linked it here as the authoritative detailed rule set. Preserved Blueprint Academy, brand assets, website-first IA, Light/Dark toggle with Light default, no System option, and unresolved gamification/exam-readiness boundaries. Documentation only; no app implementation, merge, or production deployment authorized. |
