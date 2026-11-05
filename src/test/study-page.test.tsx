@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
@@ -189,8 +189,9 @@ describe("student lesson reader", () => {
 
     expect(await screen.findByRole("heading", { name: "Second Published Lesson" })).toBeInTheDocument();
     await user.click(screen.getByText(/Browse topics/));
-    expect(screen.getByRole("link", { name: /Published Test Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/1");
-    expect(screen.getByRole("link", { name: /Third Published Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/3");
+    const topicNavigation = within(screen.getByRole("complementary", { name: "Reviewer topics" }));
+    expect(topicNavigation.getByRole("link", { name: "Published Test Lesson" })).toHaveAttribute("href", "/study/basic-algebra/1");
+    expect(topicNavigation.getByRole("link", { name: "Third Published Lesson" })).toHaveAttribute("href", "/study/basic-algebra/3");
     expect(screen.queryByRole("link", { name: /← Previous|Next topic →/ })).not.toBeInTheDocument();
   });
 
@@ -216,7 +217,8 @@ describe("student lesson reader", () => {
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /← Previous|Next topic →/ })).not.toBeInTheDocument();
     await user.click(screen.getByText(/Browse topics/));
-    expect(screen.getByRole("link", { name: /Middle Published Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/2");
+    const firstTopicNavigation = within(screen.getByRole("complementary", { name: "Reviewer topics" }));
+    expect(firstTopicNavigation.getByRole("link", { name: "Middle Published Lesson" })).toHaveAttribute("href", "/study/basic-algebra/2");
     firstView.unmount();
 
     renderStudy("/study/basic-algebra/3");
