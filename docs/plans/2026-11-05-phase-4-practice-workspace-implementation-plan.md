@@ -31,6 +31,10 @@
 
 Phase 4 is the **Practice Workspace** workstream. It upgrades the focused problem-solving experience rather than creating a separate exam platform.
 
+### Implementation status (2026-11-05)
+
+The implementation work for Tasks 1-3 is committed on the draft feature PR [#81](https://github.com/justryan-n2d/CEStudy/pull/81), latest head `d9268a806748c1aa5426b9dacdafc0467f1a219a`. Automated verification on that exact head passed: 224 tests across 35 files, ESLint, production build, 1,693/1,693 Light/Dark responsive assertions, 613/613 connectivity/skeleton browser assertions, Supabase migration/RLS tests, and secret scanning. The current live Basic Algebra route intentionally supplies no tools; no calculator/formula/scratchpad UI is rendered. Owner review and physical-device accessibility QA remain open, so this phase is implemented in draft but is **not yet owner-accepted or release-ready**.
+
 ### In scope
 
 1. **Practice session flow**
@@ -97,7 +101,7 @@ Phase 4 is the **Practice Workspace** workstream. It upgrades the focused proble
 - Preserves: the existing `PracticeQuestion` component props and the published-only API contract.
 - Produces: deterministic UI behavior for load, retry, empty, active, submitted, completed, and restart states; no persisted attempt interface.
 
-- [ ] **Step 1: Add focused failing behavior tests**
+- [x] **Step 1: Add focused failing behavior tests**
 
 Add or extend tests proving:
 - A rejected first request shows the existing unavailable state and a Retry action.
@@ -115,27 +119,27 @@ Run: `npm test -- --run src/test/practice-flow.test.tsx src/test/practice-conten
 
 Expected: newly added assertions fail only where the current implementation does not satisfy the explicit state contract.
 
-- [ ] **Step 2: Verify the focused failure**
+- [x] **Step 2: Verify the focused failure**
 
 Record the command output and the decisive failing assertion. Correct test setup problems instead of treating import, syntax, or environment errors as a valid red result.
 
-- [ ] **Step 3: Implement the minimum state correction**
+- [x] **Step 3: Implement the minimum state correction**
 
 Keep the current in-memory session model and published-only API. Fix only state-reset, retry, or interaction defects demonstrated by the tests. Do not add persistence, timer behavior, question randomization, or new scoring policy.
 
-- [ ] **Step 4: Verify the focused pass**
+- [x] **Step 4: Verify the focused pass**
 
 Run: `npm test -- --run src/test/practice-flow.test.tsx src/test/practice-content.test.ts`
 
 Expected: all targeted session and content-validation assertions pass without weakening existing checks.
 
-- [ ] **Step 5: Run integration checks**
+- [x] **Step 5: Run integration checks**
 
 Run: `npm test -- --run`, `npm run lint`, and `npm run build`.
 
 Expected: all Vitest tests, ESLint, TypeScript project build, and Vite production build pass.
 
-- [ ] **Step 6: Commit the passing deliverable**
+- [x] **Step 6: Commit the passing deliverable**
 
 ```bash
 git add src/pages/PracticePage.tsx src/components/PracticeQuestion.tsx src/test/practice-flow.test.tsx src/test/practice-content.test.ts
@@ -156,7 +160,7 @@ git commit -m "test: harden practice session state flow"
 - Proposed component interface: `PracticeWorkspace({ children, tools? })`, where `children` is the primary question/session content and `tools` is absent until a functional approved tool is supplied.
 - Produces: a responsive workspace frame. With functional tools, desktop uses a flexible question/tools split and phone uses an accessible tools sheet/drawer. Without tools, no empty panel or inert open-tools control is rendered.
 
-- [ ] **Step 1: Add focused failing layout tests**
+- [x] **Step 1: Add focused failing layout tests**
 
 Verify:
 - The practice question is the primary content and retains its full prompt, answer choices, feedback, and explanation.
@@ -169,27 +173,27 @@ Run: `npm test -- --run src/test/practice-workspace.test.tsx`
 
 Expected: the new layout assertions fail before the workspace frame exists.
 
-- [ ] **Step 2: Verify the relevant failure**
+- [x] **Step 2: Verify the relevant failure**
 
 Record the failing assertions and ensure the test reaches the rendered practice page rather than failing during test setup.
 
-- [ ] **Step 3: Implement the workspace frame**
+- [x] **Step 3: Implement the workspace frame**
 
 Use the existing spacing, border, focus, surface, and theme tokens. Keep the question column flexible rather than forcing an exact 70/30 split. Render the tools region only when a real functional tool is supplied. Use a proper accessible dialog/sheet pattern on narrow screens if tools are supplied. Do not add new UI dependencies.
 
-- [ ] **Step 4: Verify the focused pass**
+- [x] **Step 4: Verify the focused pass**
 
 Run: `npm test -- --run src/test/practice-workspace.test.tsx src/test/practice-flow.test.tsx`
 
 Expected: all responsive composition and existing session-flow tests pass.
 
-- [ ] **Step 5: Run integration checks**
+- [x] **Step 5: Run integration checks**
 
 Run: `npm run lint` and `npm run build`.
 
 Expected: lint, TypeScript project build, and Vite production build pass.
 
-- [ ] **Step 6: Commit the passing deliverable**
+- [x] **Step 6: Commit the passing deliverable**
 
 ```bash
 git add src/components/PracticeWorkspace.tsx src/pages/PracticePage.tsx src/components/PracticeQuestion.tsx src/styles/global.css src/test/practice-workspace.test.tsx
@@ -207,7 +211,7 @@ git commit -m "feat: add responsive practice workspace frame"
 - Consumes: the built app, current `/practice/basic-algebra` route, synthetic published-question browser fixture, and existing CI smoke harness.
 - Produces: browser evidence for the practice question, answer, feedback, solution, result, retry, and empty states across the approved theme/viewport matrix.
 
-- [ ] **Step 1: Add focused browser assertions**
+- [x] **Step 1: Add focused browser assertions**
 
 Using synthetic fixture data only, verify:
 - Long question text and representative inline/display math render without clipping or page-wide horizontal overflow.
@@ -221,27 +225,27 @@ Using synthetic fixture data only, verify:
 - Screen-reader status announcements identify the result state; reduced-motion preferences are respected if the workspace adds motion.
 - No timer, calculator, formula panel, or tool trigger appears unless its actual implementation is part of the tested page.
 
-- [ ] **Step 2: Verify the relevant failure**
+- [x] **Step 2: Verify the relevant failure**
 
 Run the existing theme browser smoke against the current production build and record the new failing assertion before changing browser or layout code.
 
-- [ ] **Step 3: Implement only demonstrated fixes**
+- [x] **Step 3: Implement only demonstrated fixes**
 
 Correct question width, math overflow, focus handling, status semantics, or theme contrast based on the failed assertions. Keep math source and answer correctness unchanged.
 
-- [ ] **Step 4: Verify the focused pass**
+- [x] **Step 4: Verify the focused pass**
 
 Run the updated browser smoke through the repository's GitHub Actions workflow on the feature branch.
 
 Expected: all new practice assertions pass at every target viewport in both Light and Dark; no runtime errors are reported.
 
-- [ ] **Step 5: Run full integration and security checks**
+- [x] **Step 5: Run full integration and security checks**
 
 Run the repository's CI, connectivity/skeleton browser checks, Supabase migration/RLS tests, and secret scan on the final Phase 4 head.
 
 Expected: all required jobs pass; the public question API remains published-only; no production data or configuration changes occur.
 
-- [ ] **Step 6: Commit the passing deliverable**
+- [x] **Step 6: Commit the passing deliverable**
 
 ```bash
 git add scripts/theme-smoke.cjs scripts/connectivity-skeleton-smoke.cjs
@@ -250,15 +254,19 @@ git commit -m "test: verify practice workspace across themes and viewports"
 
 ## Phase 4 exit criteria
 
-Phase 4 can be marked complete only when:
-- The existing sequential answer/submission/feedback/solution/next/result/restart flow passes focused tests.
-- Loading, retry, and empty publication states are honest and verified.
-- The question-first workspace responds correctly at all five target widths.
-- A tools panel or mobile tools sheet is shown only for approved, functional tools; no inert panel remains.
-- Math content is readable, does not change meaning, and does not cause page-wide overflow.
-- Keyboard, focus, screen-reader, reduced-motion, and both-theme checks for the modified practice states pass.
-- The complete CI and secret-scan suite passes on the final feature head.
-- The owner reviews the preview and manually checks Android behavior before considering the experience ready.
+<text>**Automated implementation criteria on draft PR #81:**</text>
+- [x] The existing sequential answer/submission/feedback/solution/next/result/restart flow passes focused tests.
+- [x] Loading, retry, and empty publication states are honest and verified.
+- [x] The question-first workspace responds correctly at all five target widths.
+- [x] No tools panel or trigger appears without a functional tool; the supplied-tools sheet has focus, inert-background, close, and reduced-motion coverage.
+- [x] Synthetic engineering math content renders through KaTeX and does not cause page-wide or answer-option overflow in either theme.
+- [x] Keyboard focus containment/restoration, status feedback, and reduced-motion behavior are covered by automated tests.
+- [x] CI, Supabase migration/RLS, connectivity/browser, and secret-scan workflows pass on the final implementation head.
+
+**Owner acceptance and release criteria still outstanding:**
+- [ ] Owner reviews the Cloudflare preview and confirms the Practice Workspace visual/interaction direction.
+- [ ] Manually check Android layout and touch behavior, TalkBack/screen-reader output, keyboard-only navigation, and 200% text zoom.
+- [ ] Confirm any real tool before supplying it to the workspace. The current route has none and correctly renders no tools UI.
 
 **Release boundary:** Completion of this product workstream is not approval to publish questions, change production data, deploy to production, launch CEStudy broadly, or bypass the separate operational release Phase 7.
 
