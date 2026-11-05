@@ -60,7 +60,6 @@ export function ProgressPage() {
             {sortedLessons.map((lesson) => (
               <li className="progress-list-item" key={lesson.lessonId}>
                 <div>
-                  <span className="progress-subtitle">{subjectLabel(lesson.subjectSlug)} · Unit {lesson.unitNumber}</span>
                   <h2>{lesson.title}</h2>
                   <span className="progress-complete-label">Completed on this device</span>
                 </div>
