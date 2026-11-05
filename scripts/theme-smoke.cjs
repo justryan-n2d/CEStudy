@@ -224,6 +224,18 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
               navText: getComputedStyle(document.querySelector(".site-sidebar-link")).color,
               navBackground: getComputedStyle(document.querySelector(".site-sidebar")).backgroundColor,
+              practiceWorkspace: (() => {
+                const root = document.querySelector('[data-testid="practice-workspace"]');
+                const wrapper = document.querySelector(".practice-wrap");
+                const content = root?.querySelector(".practice-workspace__content");
+                return {
+                  exists: Boolean(root),
+                  contentWidth: content?.getBoundingClientRect().width ?? 0,
+                  wrapperMaxWidth: wrapper ? getComputedStyle(wrapper).maxWidth : "",
+                  hasToolsPanel: Boolean(root?.querySelector(".practice-workspace__tools")),
+                  hasToolsTrigger: Boolean(root?.querySelector(".practice-workspace__tools-trigger")),
+                };
+              })(),
             };
           });
 
@@ -290,6 +302,17 @@ The solutions are \(x=-2\) and \(x=-3\).`,
             Math.max(dark.documentWidth, dark.bodyWidth) <= dark.viewportWidth + 1,
             "viewport=" + dark.viewportWidth + ", document=" + dark.documentWidth + ", body=" + dark.bodyWidth);
 
+          if (route === "/practice/basic-algebra") {
+            const workspace = dark.practiceWorkspace;
+            check("Dark practice route keeps a visible question-first workspace: " + activeRoute,
+              workspace.exists && workspace.contentWidth > 0 && workspace.contentWidth <= width + 1,
+              JSON.stringify(workspace));
+            check("Dark practice workspace uses the expanded width cap: " + activeRoute,
+              workspace.wrapperMaxWidth === "1120px", JSON.stringify(workspace));
+            check("Dark practice route omits tools UI when no functional tool is supplied: " + activeRoute,
+              !workspace.hasToolsPanel && !workspace.hasToolsTrigger, JSON.stringify(workspace));
+          }
+
           if (route === "/" && width === 1440) {
             await page.waitForFunction(
               () => window.localStorage.getItem("cestudy:theme:v1") === "dark",
@@ -348,6 +371,18 @@ The solutions are \(x=-2\) and \(x=-3\).`,
               bodyBackgroundForText: getComputedStyle(document.body).backgroundColor,
               navText: getComputedStyle(document.querySelector(".site-sidebar-link")).color,
               navBackground: getComputedStyle(document.querySelector(".site-sidebar")).backgroundColor,
+              practiceWorkspace: (() => {
+                const root = document.querySelector('[data-testid="practice-workspace"]');
+                const wrapper = document.querySelector(".practice-wrap");
+                const content = root?.querySelector(".practice-workspace__content");
+                return {
+                  exists: Boolean(root),
+                  contentWidth: content?.getBoundingClientRect().width ?? 0,
+                  wrapperMaxWidth: wrapper ? getComputedStyle(wrapper).maxWidth : "",
+                  hasToolsPanel: Boolean(root?.querySelector(".practice-workspace__tools")),
+                  hasToolsTrigger: Boolean(root?.querySelector(".practice-workspace__tools-trigger")),
+                };
+              })(),
             };
           });
 
@@ -378,6 +413,17 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           check("No page-wide horizontal overflow in Light: " + activeRoute,
             Math.max(light.documentWidth, light.bodyWidth) <= light.viewportWidth + 1,
             "viewport=" + light.viewportWidth + ", document=" + light.documentWidth + ", body=" + light.bodyWidth);
+
+          if (route === "/practice/basic-algebra") {
+            const workspace = light.practiceWorkspace;
+            check("Light practice route keeps a visible question-first workspace: " + activeRoute,
+              workspace.exists && workspace.contentWidth > 0 && workspace.contentWidth <= width + 1,
+              JSON.stringify(workspace));
+            check("Light practice workspace uses the expanded width cap: " + activeRoute,
+              workspace.wrapperMaxWidth === "1120px", JSON.stringify(workspace));
+            check("Light practice route omits tools UI when no functional tool is supplied: " + activeRoute,
+              !workspace.hasToolsPanel && !workspace.hasToolsTrigger, JSON.stringify(workspace));
+          }
 
           if (route === "/" && width === 1440) {
             await page.waitForFunction(
