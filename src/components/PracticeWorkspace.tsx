@@ -1,5 +1,5 @@
-import { useEffect, useId, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import type { ReactNode, TransitionEvent } from "react";
 
 type PracticeWorkspaceProps = {
   children: ReactNode;
@@ -12,19 +12,41 @@ export function PracticeWorkspace({ children, tools }: PracticeWorkspaceProps) {
   const titleId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const toolsRef = useRef<HTMLElement>(null);
+  const restoreFocusRef = useRef(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [toolsClosing, setToolsClosing] = useState(false);
+  const modalActive = toolsOpen || toolsClosing;
 
-  function closeToolsAndRestoreFocus() {
+  const closeTools = useCallback(() => {
+    if (!toolsOpen) return;
+
+    restoreFocusRef.current = true;
     setToolsOpen(false);
-    triggerRef.current?.focus();
-  }
+
+    const prefersReducedMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    setToolsClosing(!prefersReducedMotion);
+  }, [toolsOpen]);
+
+  const handleToolsTransitionEnd = useCallback((event: TransitionEvent<HTMLElement>) => {
+    if (event.target !== event.currentTarget || event.propertyName !== "transform") return;
+    setToolsClosing(false);
+  }, []);
 
   useEffect(() => {
-    if (!hasTools || !toolsOpen) return;
+    if (!hasTools || !modalActive) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const focusableSelector = 'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    if (!toolsOpen) {
+      return () => {
+        document.body.style.overflow = previousOverflow;
+      };
+    }
+
+    const focusableSelector =
+      'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
     const getFocusableElements = () => Array.from(
       toolsRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
     ).filter((element) => !element.closest('[hidden], [aria-hidden="true"]'));
@@ -34,7 +56,7 @@ export function PracticeWorkspace({ children, tools }: PracticeWorkspaceProps) {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        closeToolsAndRestoreFocus();
+        closeTools();
         return;
       }
       if (event.key !== "Tab") return;
@@ -62,17 +84,33 @@ export function PracticeWorkspace({ children, tools }: PracticeWorkspaceProps) {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [hasTools, toolsOpen]);
+  }, [hasTools, modalActive, toolsOpen, closeTools]);
 
   useEffect(() => {
-    if (!hasTools) setToolsOpen(false);
+    if (!hasTools) {
+      setToolsOpen(false);
+      setToolsClosing(false);
+    }
   }, [hasTools]);
+
+  useEffect(() => {
+    if (modalActive || !restoreFocusRef.current) return;
+    restoreFocusRef.current = false;
+    triggerRef.current?.focus();
+  }, [modalActive]);
+
+  const sheetVisible = toolsOpen || toolsClosing;
 
   return (
     <div className={hasTools ? "practice-workspace practice-workspace--with-tools" : "practice-workspace"} data-testid="practice-workspace">
-      <div className="practice-workspace__content">
+      <div
+        className="practice-workspace__content"
+        data-testid="practice-workspace-content"
+        inert={modalActive}
+      >
         {children}
       </div>
+
       {hasTools ? (
         <>
           <button
@@ -81,32 +119,47 @@ export function PracticeWorkspace({ children, tools }: PracticeWorkspaceProps) {
             type="button"
             aria-controls={toolsId}
             aria-expanded={toolsOpen}
-            onClick={() => setToolsOpen(true)}
+            inert={modalActive}
+            onClick={() => {
+              setToolsClosing(false);
+              setToolsOpen(true);
+            }}
           >
             Open practice tools
           </button>
-          {toolsOpen ? (
+
+          {sheetVisible ? (
             <button
-              className="practice-workspace__backdrop"
+              className={toolsClosing
+                ? "practice-workspace__backdrop is-closing"
+                : "practice-workspace__backdrop is-open"}
               type="button"
               aria-label="Close practice tools backdrop"
               tabIndex={-1}
-              onClick={closeToolsAndRestoreFocus}
+              onClick={closeTools}
             />
           ) : null}
+
           <aside
             ref={toolsRef}
             id={toolsId}
-            className={toolsOpen ? "practice-workspace__tools is-open" : "practice-workspace__tools"}
+            className={[
+              "practice-workspace__tools",
+              toolsOpen ? "is-open" : "",
+              toolsClosing ? "is-closing" : "",
+            ].filter(Boolean).join(" ")}
             aria-labelledby={titleId}
+            aria-hidden={toolsClosing || undefined}
+            inert={toolsClosing}
             role={toolsOpen ? "dialog" : undefined}
             aria-modal={toolsOpen ? "true" : undefined}
             tabIndex={toolsOpen ? -1 : undefined}
+            onTransitionEnd={handleToolsTransitionEnd}
           >
             <div className="practice-workspace__tools-header">
               <h2 id={titleId}>Practice tools</h2>
               {toolsOpen ? (
-                <button className="button button-quiet practice-workspace__tools-close" type="button" onClick={closeToolsAndRestoreFocus}>
+                <button className="button button-quiet practice-workspace__tools-close" type="button" onClick={closeTools}>
                   Close practice tools
                 </button>
               ) : null}
