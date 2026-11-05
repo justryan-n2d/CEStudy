@@ -152,7 +152,7 @@ function reviewPath(entity: Entity, id: string, select: string): string | null {
     const query = new URLSearchParams({ select, id: `eq.${id}`, subject_slug: "eq.basic-algebra" });
     return `subject_lessons?${query.toString()}`;
   }
-  if (entity === "question" && /^algebra-foundations-u(?:0[0-9]|1[0-2])-q[0-9]{2}$/.test(id)) {
+  if (entity === "question" && /^algebra-foundations-u(?:0[1-9]|1[0-2])-q[0-9]{2}$/.test(id)) {
     const query = new URLSearchParams({ select, id: `eq.${id}`, subject_slug: "eq.basic-algebra" });
     return `practice_questions?${query.toString()}`;
   }
@@ -217,6 +217,7 @@ async function listReviewContent() {
     select: "id,subject_slug,topic,prompt,choices,correct_answer,solution_steps,explanation,source_note,status,review_notes,reviewed_at,updated_at,display_order",
     subject_slug: "eq.basic-algebra",
     id: "like.algebra-foundations-*",
+    status: "neq.retired",
     order: "display_order.asc",
     limit: "100",
   });
