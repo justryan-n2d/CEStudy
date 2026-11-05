@@ -859,6 +859,12 @@ The solutions are \(x=-2\) and \(x=-3\).`,
           themeMetrics.documentWidth <= themeMetrics.viewportWidth + 1 &&
             themeMetrics.mathErrorCount === 0,
           JSON.stringify(themeMetrics));
+        await page.getByRole("button", { name: "Close navigation menu" }).click();
+        await page.waitForFunction(
+          () => !document.querySelector(".site-sidebar-layer.is-open"),
+          null,
+          { timeout: 5000 },
+        );
         if (width === 390 || width === 1440) {
           await page.screenshot({
             path: path.join("artifacts", "populated-lesson-" + themeName.toLowerCase() + "-" + width + "px.png"),
