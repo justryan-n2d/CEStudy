@@ -107,7 +107,6 @@ export function StudyPage() {
                         <Link key={lesson.id} className={activeLesson?.id === lesson.id ? "study-outline-item active" : "study-outline-item"}
                           to={`/study/${subjectSlug}/${lesson.unitNumber}`} onClick={() => setTopicQuery("")}
                           aria-current={activeLesson?.id === lesson.id ? "page" : undefined}>
-                          <span className="study-outline-number">{lesson.unitNumber}</span>
                           <span className="study-outline-copy">
                             <span>{lesson.title}</span>
                             {normalizedQuery && <small>{topicSnippet(lesson, normalizedQuery)}</small>}
@@ -122,7 +121,6 @@ export function StudyPage() {
 
                 {showActiveLesson && activeLesson ? (
                   <article className="study-lesson">
-                    <div className="study-lesson-topline"><span className="status status-ready">Published topic</span><span>Unit {activeLesson.unitNumber}</span></div>
                     <h2>{activeLesson.title}</h2>
                     <MarkdownContent markdown={activeLesson.lessonMarkdown} />
 
