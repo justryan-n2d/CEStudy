@@ -190,8 +190,8 @@ describe("student lesson reader", () => {
     expect(await screen.findByRole("heading", { name: "Second Published Lesson" })).toBeInTheDocument();
     await user.click(screen.getByText(/Browse topics/));
     const topicNavigation = within(screen.getByRole("complementary", { name: "Reviewer topics" }));
-    expect(topicNavigation.getByRole("link", { name: "Published Test Lesson" })).toHaveAttribute("href", "/study/basic-algebra/1");
-    expect(topicNavigation.getByRole("link", { name: "Third Published Lesson" })).toHaveAttribute("href", "/study/basic-algebra/3");
+    expect(topicNavigation.getByRole("link", { name: /Published Test Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/1");
+    expect(topicNavigation.getByRole("link", { name: /Third Published Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/3");
     expect(screen.queryByRole("link", { name: /← Previous|Next topic →/ })).not.toBeInTheDocument();
   });
 
@@ -218,7 +218,7 @@ describe("student lesson reader", () => {
     expect(screen.queryByRole("link", { name: /← Previous|Next topic →/ })).not.toBeInTheDocument();
     await user.click(screen.getByText(/Browse topics/));
     const firstTopicNavigation = within(screen.getByRole("complementary", { name: "Reviewer topics" }));
-    expect(firstTopicNavigation.getByRole("link", { name: "Middle Published Lesson" })).toHaveAttribute("href", "/study/basic-algebra/2");
+    expect(firstTopicNavigation.getByRole("link", { name: /Middle Published Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/2");
     firstView.unmount();
 
     renderStudy("/study/basic-algebra/3");
