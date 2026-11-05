@@ -90,7 +90,7 @@ describe("owner content review", () => {
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
 
-    expect(await screen.findByRole("heading", { name: "Solving Linear Equations" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 })).toBeInTheDocument();
     expect(await screen.findByText("Apply equivalent operations to both sides.")).toBeInTheDocument();
     const verifyButton = screen.getByRole("button", { name: "Mark verified" });
     expect(verifyButton).toBeDisabled();
@@ -105,7 +105,7 @@ describe("owner content review", () => {
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Solving Linear Equations" });
+    await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 });
 
     await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Solving Linear Equations"));
     await user.clear(screen.getByLabelText("Lesson title"));
@@ -127,7 +127,7 @@ describe("owner content review", () => {
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Solving Linear Equations" });
+    await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 });
     await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Solving Linear Equations"));
 
     await user.click(screen.getByRole("checkbox", { name: /I reviewed this lesson against the approved syllabus/i }));
@@ -148,7 +148,7 @@ describe("owner content review", () => {
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Solving Linear Equations" });
+    await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 });
     await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
 
     expect((await screen.findAllByText("TEST QUESTION PROMPT")).length).toBeGreaterThan(0);
@@ -163,7 +163,7 @@ describe("owner content review", () => {
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
 
-    expect(await screen.findByRole("heading", { name: "Solving Linear Equations" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 })).toBeInTheDocument();
     expect(screen.queryByText(/Readiness Diagnostic/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Unit \d+$/)).not.toBeInTheDocument();
   });
