@@ -42,7 +42,7 @@ const reviewBundle = {
     slug: "solving-linear-equations",
     title: "Solving Linear Equations",
     learningObjectives: ["Solve multi-step equations and verify solutions."],
-    lessonMarkdown: "# Solving Linear Equations\\n\\nApply equivalent operations to both sides.",
+    lessonMarkdown: "# Solving Linear Equations\n\nApply equivalent operations to both sides.",
     sourceNote: "Synthetic college-level lesson fixture.",
     status: "needs-review" as const,
     reviewNotes: "Awaiting human academic review.",
@@ -116,7 +116,7 @@ describe("owner content review", () => {
       "lesson",
       "algebra-foundations-unit-04",
       "save-edits",
-      "",
+      "Awaiting human academic review.",
       expect.objectContaining({ title: "Corrected Solving Linear Equations" }),
     ));
     expect(await screen.findByText(/edits saved.*remains unpublished/i)).toBeVisible();
