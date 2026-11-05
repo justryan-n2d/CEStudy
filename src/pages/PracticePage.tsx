@@ -55,9 +55,9 @@ export function PracticePage() {
 
   return (
     <div className="page-wrap practice-wrap">
-      <Link className="back-link" to="/math-foundations">← Math foundations</Link>
-      <section className="page-intro"><span className="kicker">Mathematics foundations</span><h1>Algebra Foundations practice</h1></section>
       <PracticeWorkspace>
+        <Link className="back-link" to="/math-foundations">← Math foundations</Link>
+        <section className="page-intro"><span className="kicker">Mathematics foundations</span><h1>Algebra Foundations practice</h1></section>
         {loading
           ? <PracticeQuestionSkeleton label="Loading practice…" />
           : error
