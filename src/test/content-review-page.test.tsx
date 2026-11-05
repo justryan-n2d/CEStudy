@@ -91,7 +91,7 @@ describe("owner content review", () => {
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
 
     expect(await screen.findByRole("heading", { name: "Solving Linear Equations" })).toBeInTheDocument();
-    expect(await screen.findByText("TEST DRAFT BODY")).toBeInTheDocument();
+    expect(await screen.findByText("Apply equivalent operations to both sides.")).toBeInTheDocument();
     const verifyButton = screen.getByRole("button", { name: "Mark verified" });
     expect(verifyButton).toBeDisabled();
 
@@ -114,7 +114,7 @@ describe("owner content review", () => {
 
     await waitFor(() => expect(mocks.updateContentReviewStatus).toHaveBeenCalledWith(
       "lesson",
-      "algebra-foundations-unit-00",
+      "algebra-foundations-unit-04",
       "save-edits",
       "",
       expect.objectContaining({ title: "Corrected Solving Linear Equations" }),
@@ -165,7 +165,7 @@ describe("owner content review", () => {
 
     expect(await screen.findByRole("heading", { name: "Solving Linear Equations" })).toBeInTheDocument();
     expect(screen.queryByText(/Readiness Diagnostic/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/^Unit \\d+$/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Unit \d+$/)).not.toBeInTheDocument();
   });
 
 });
