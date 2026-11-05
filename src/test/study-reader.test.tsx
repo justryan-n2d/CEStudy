@@ -80,17 +80,17 @@ describe("lesson reader", () => {
 >
 > **Step 1: Evaluate the parentheses.**
 >
-> \\[
-> 18 - 3(2 + 4)^2 \\div 6
-> \\]
+> \[
+> 18 - 3(2 + 4)^2 \div 6
+> \]
 >
 > **Step 2: Evaluate the exponent.**
 >
-> \\[
-> 18 - 3(6)^2 \\div 6
-> \\]
+> \[
+> 18 - 3(6)^2 \div 6
+> \]
 >
-> Check the result using \\(8 + 2 \\times 5 = 18\\).`}
+> Check the result using \(8 + 2 \times 5 = 18\\).`}
       />,
     );
 
@@ -103,8 +103,8 @@ describe("lesson reader", () => {
       expect(container.querySelectorAll(".katex").length).toBeGreaterThanOrEqual(3);
     });
     expect(container.querySelector(".latex-math-error")).not.toBeInTheDocument();
-    expect(container.textContent).not.toContain("\\[");
-    expect(container.textContent).not.toContain("\\]");
+    expect(container.textContent).not.toContain("\[");
+    expect(container.textContent).not.toContain("\]");
   });
 
   it("removes streak, completion, and progress controls from the reading task", async () => {
