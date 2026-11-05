@@ -445,6 +445,28 @@ The solutions are \(x=-2\) and \(x=-3\).`,
                   hasToolsTrigger: Boolean(root?.querySelector(".practice-workspace__tools-trigger")),
                 };
               })(),
+              practiceContent: (() => {
+                const card = document.querySelector(".practice-question-card");
+                const question = card?.querySelector("h2");
+                const options = [...(card?.querySelectorAll(".answer-option") ?? [])];
+                const math = [...(card?.querySelectorAll(".katex") ?? [])];
+                const mathErrors = [...(card?.querySelectorAll(".latex-math-error") ?? [])];
+                const optionOverflowCount = options.filter((option) => {
+                  const label = option.querySelector("span");
+                  return label && label.scrollWidth > label.clientWidth + 1;
+                }).length;
+                return {
+                  promptVisible: Boolean(question && question.getBoundingClientRect().width > 0),
+                  questionWidth: card?.getBoundingClientRect().width ?? 0,
+                  questionClientWidth: card?.clientWidth ?? 0,
+                  questionScrollWidth: card?.scrollWidth ?? 0,
+                  optionCount: options.length,
+                  optionOverflowCount,
+                  katexCount: math.length,
+                  mathErrorCount: mathErrors.length,
+                  promptText: question?.textContent?.slice(0, 100) ?? "",
+                };
+              })(),
             };
           });
 
