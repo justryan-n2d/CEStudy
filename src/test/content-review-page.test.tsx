@@ -52,6 +52,21 @@ const reviewBundle = {
   questions: [{
     id: "algebra-foundations-u00-q01",
     subjectSlug: "basic-algebra",
+    topic: "Readiness: fractions",
+    prompt: "Legacy diagnostic question.",
+    choices: ["A", "B"],
+    correctAnswer: "A",
+    solutionSteps: ["Legacy step."],
+    explanation: "Retired diagnostic fixture.",
+    sourceNote: "Retired legacy fixture.",
+    status: "retired" as const,
+    reviewNotes: "Retired by owner decision.",
+    reviewedAt: null,
+    updatedAt: "2026-11-05T00:00:00.000Z",
+    displayOrder: 1,
+  }, {
+    id: "algebra-foundations-u01-q01",
+    subjectSlug: "basic-algebra",
     topic: "Synthetic question topic",
     prompt: "TEST QUESTION PROMPT",
     choices: ["TEST OPTION A", "TEST OPTION B"],
@@ -166,6 +181,20 @@ describe("owner content review", () => {
     expect(await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 })).toBeInTheDocument();
     expect(screen.queryByText(/Readiness Diagnostic/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Unit \d+$/)).not.toBeInTheDocument();
+  });
+
+  it("excludes retired readiness questions from the private practice review list", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
+    await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
+    await user.click(screen.getByRole("button", { name: "Unlock review" }));
+
+    await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 });
+    await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
+
+    expect(await screen.findAllByText("TEST QUESTION PROMPT")).toHaveLength(2);
+    expect(screen.queryByText(/Readiness: fractions/i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Retired diagnostic question.")).not.toBeInTheDocument();
   });
 
 });
