@@ -101,7 +101,7 @@ Task 1 fixed a demonstrated SubjectPage route-transition bug. Task 2 added contr
 
 CEStudy will combine free browsing of the engineering knowledge library with optional guided learning paths and personal progress tracking. The decision is recorded in [the combined learning model](product/COMBINED_LEARNING_MODEL.md) and reflected in [the roadmap](ROADMAP.md) and [phase plan](PHASE_PLAN.md).
 
-The first feature increment is already implemented on main: students can mark a published lesson complete, view browser-local completion history and streaks, and clear those records. Unit tests cover duplicate completions, one activity day per calendar day, malformed local data, clearing progress and date handling. It adds no student accounts, server-side progress writes or cross-device sync. Because zero lessons are currently published, meaningful student-facing lesson-progress use must wait for Phase 8 content approval. Phase 7 release gates still apply; implementation does not approve a broad launch.
+The original browser-local progress increment remains on `main` and its stored history is not deleted by the lesson-reader redesign. The owner-directed reader refinement on draft PR #81 removes the streak badge, Mark as complete / Mark as incomplete controls, progress-status copy, and View my progress link from the reading task. The dedicated Progress destination and its existing data utilities are separate concerns; this PR does not add account sync, server-side progress writes, or cross-device persistence. The one currently published lesson is a temporary synthetic UI-inspection demo, not approved academic content. Phase 7 release gates still apply; implementation does not approve a broad launch.
 
 
 ## Owner feedback management update (2026-10-18)
