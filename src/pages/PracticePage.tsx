@@ -5,6 +5,7 @@ import { UnavailableState } from "../components/UnavailableState";
 import { PracticeQuestion } from "../components/PracticeQuestion";
 import { fetchPublishedPracticeQuestions } from "../data/practice-api";
 import type { PracticeQuestion as PracticeQuestionData } from "../types/study-content";
+import { PracticeWorkspace } from "../components/PracticeWorkspace";
 
 export function PracticePage() {
   const [questions, setQuestions] = useState<PracticeQuestionData[]>([]);
@@ -56,27 +57,29 @@ export function PracticePage() {
     <div className="page-wrap practice-wrap">
       <Link className="back-link" to="/math-foundations">← Math foundations</Link>
       <section className="page-intro"><span className="kicker">Mathematics foundations</span><h1>Algebra Foundations practice</h1></section>
-      {loading
-        ? <PracticeQuestionSkeleton label="Loading practice…" />
-        : error
-          ? <UnavailableState
-              title="Practice unavailable"
-              message="Practice questions could not be loaded. Check your connection and try again."
-              onRetry={retry}
-            />
-          : questions.length === 0
-            ? <div className="state-panel review-gate"><h2>Questions coming soon</h2><p>We're reviewing these questions.</p><Link className="button button-primary" to="/catalog">Browse subjects</Link></div>
-            : complete
-              ? <div className="state-panel review-gate" role="status">
-                  <span className="review-gate-icon" aria-hidden="true">✓</span>
-                  <h2>Practice session complete</h2>
-                  <p>You answered {score} out of {questions.length} questions correctly.</p>
-                  <button className="button button-primary" type="button" onClick={restart}>Try again</button>
-                  <Link className="button button-secondary" to="/math-foundations">Explore more math topics</Link>
-                </div>
-              : current
-                ? <PracticeQuestion question={current} index={index} total={questions.length} selectedAnswer={selectedAnswer} submitted={submitted} onSelect={setSelectedAnswer} onSubmit={submitAnswer} onNext={nextQuestion} />
-                : null}
+      <PracticeWorkspace>
+        {loading
+          ? <PracticeQuestionSkeleton label="Loading practice…" />
+          : error
+            ? <UnavailableState
+                title="Practice unavailable"
+                message="Practice questions could not be loaded. Check your connection and try again."
+                onRetry={retry}
+              />
+            : questions.length === 0
+              ? <div className="state-panel review-gate"><h2>Questions coming soon</h2><p>We're reviewing these questions.</p><Link className="button button-primary" to="/catalog">Browse subjects</Link></div>
+              : complete
+                ? <div className="state-panel review-gate" role="status">
+                    <span className="review-gate-icon" aria-hidden="true">✓</span>
+                    <h2>Practice session complete</h2>
+                    <p>You answered {score} out of {questions.length} questions correctly.</p>
+                    <button className="button button-primary" type="button" onClick={restart}>Try again</button>
+                    <Link className="button button-secondary" to="/math-foundations">Explore more math topics</Link>
+                  </div>
+                : current
+                  ? <PracticeQuestion question={current} index={index} total={questions.length} selectedAnswer={selectedAnswer} submitted={submitted} onSelect={setSelectedAnswer} onSubmit={submitAnswer} onNext={nextQuestion} />
+                  : null}
+      </PracticeWorkspace>
     </div>
   );
 }
