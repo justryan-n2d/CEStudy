@@ -193,7 +193,27 @@ Before approving a significant screen or flow, reviewers must verify:
 - [ ] Common and less-frequent tasks are both tested with realistic student scenarios across relevant viewport sizes, themes, and input methods.
 - [ ] Usability checks consider task completion, time on task, errors/recovery, and whether students can discover secondary tools. Do not claim a retention improvement without longitudinal evidence.
 
-**Audit status:** This document establishes the binding standard only. It does not claim that existing CEStudy routes have already passed a site-wide Decision-Light audit. That audit is a separate deferred work item and a prerequisite to beginning Blueprint Academy Phase 4.
+**Audit status:** This document establishes the binding standard and does not claim that every CEStudy route has passed a site-wide Decision-Light audit. The owner accepted the Phase 4 entry gate on 2026-11-05 after the PR #79 Decision-Light navigation and interaction closeout. Route-specific reviews and accessibility validation remain explicit acceptance work for the affected implementation.
+
+### Lesson-reader application (owner-approved 2026-11-05)
+
+The lesson reader is a sustained-reading task. Its interface must support understanding the material without adding unrelated progress mechanics or competing calls to action.
+
+- **Keep the reading task primary.** Do not show the learning streak badge, a Mark as complete / Mark as incomplete control, local-progress status copy, or a View my progress link inside the lesson reader. Progress and rewards belong in their own relevant destinations, not in the middle of the reading task.
+- **Use one predictable lesson-navigation surface.** Keep the topic outline and its clearly labelled disclosure (Browse topics) as the route for selecting another lesson. Do not add competing Previous / Next buttons to the lesson footer. The topic list must remain discoverable and keyboard accessible.
+- **Recommend relevant lessons after the lesson body.** Show at most three recommendations. Only include published lessons from the same subject with a meaningful match in title or learning-objective terms. Exclude the current lesson, cross-subject content, unpublished content, and unrelated filler. When no relevant published lessons exist, say so plainly; do not invent recommendations.
+- **Render the source structure as content, not syntax.** Lesson Markdown headings, paragraphs, blockquotes, ordered/unordered lists, and thematic breaks must render as semantic structures. Standalone worked-solution step labels should have clear heading treatment and vertical separation.
+- **Typeset mathematical notation consistently.** Render explicit inline and display LaTeX through the shared KaTeX path. Display equations need their own vertical rhythm and must not create page-wide horizontal overflow at phone widths.
+- **Use reading hierarchy instead of decorative containers.** Separate sections and worked steps with typography, spacing, and restrained dividers. Do not wrap every paragraph or step in a nested card.
+
+**Lesson-reader review checks:**
+- [ ] The reader contains no streak, lesson-completion, or progress-management controls.
+- [ ] Topic navigation has one clear, labelled disclosure and remains accessible.
+- [ ] The lesson footer offers no competing Previous / Next calls to action.
+- [ ] Recommendations are published, same-subject, relevant, limited to three, and honest when none exist.
+- [ ] Headings, blockquotes, lists, worked steps, inline math, and display math render as intended.
+- [ ] Step spacing and equation spacing remain comfortable at phone, tablet, and desktop widths.
+- [ ] Both themes preserve readable contrast, and math does not overflow the article or viewport.
 
 ### Research basis
 
