@@ -1,11 +1,13 @@
 # Algebra Foundations: Pre-Lesson Academic Review
 
+> **Supersession note (2026-11-05):** This is a historical desk review of syllabus version 0.2. The owner later decided that Algebra Foundations begins with **Solving Linear Equations**, contains no readiness diagnostic or separate Algebra Readiness phase, and displays lesson titles without “Unit N” labels. Finding A6 below is superseded. This historical review does not constitute academic review or faculty approval of the new opening sequence. See [the owner curriculum decision](../curriculum/algebra-foundations-owner-decision-2026-11-05.md).
+
 **Review date:** 2026-10-18  
 **Reviewed artifact:** [Algebra Foundations syllabus v0.2](../curriculum/algebra-foundations-syllabus.md)  
 **Syllabus Git blob at review:** `a0d201ce1b05681503c0f661c9add55d4f8d98ea`  
 **Review type:** AI-assisted academic desk review of course scope, sequence, outcome alignment, and source claims  
 **Status:** Revised after desk review; independent instructor review remains outstanding  
-**Decision rule:** One subject = one syllabus. Algebra Readiness remains the opening phase inside the one Algebra Foundations syllabus. No lesson or practice-question bank is part of this review.
+**Historical decision rule at the time of review:** One subject = one syllabus. The 2026-10-18 version placed Algebra Readiness before College Algebra. This was superseded by the owner's 2026-11-05 decision. No lesson or practice-question bank was part of this review.
 
 ## 1. Review question and boundaries
 
@@ -15,7 +17,7 @@ This review did **not** verify future individual lessons, worked solutions, answ
 
 ## 2. Summary verdict
 
-**Contract verdict: Confirmed for the approved syllabus scope, with documented differences from specific university course packaging.** The document has one named subject and one syllabus, keeps Algebra Readiness as a non-blocking opening phase, preserves separate boundaries for Advanced Algebra, Trigonometry, Analytic Geometry, Solid Mensuration, and Calculus, and does not invent university credits, teaching weeks, or grading percentages.
+**Historical contract verdict for syllabus v0.2 only:** The reviewed document had one named subject and one syllabus, included a non-blocking Algebra Readiness phase, preserved separate boundaries for Advanced Algebra, Trigonometry, Analytic Geometry, Solid Mensuration, and Calculus, and did not invent university credits, teaching weeks, or grading percentages. The readiness-phase recommendation is no longer current.
 
 **Academic quality verdict: Partially confirmed.** The pre-lesson desk review identified and corrected sequence and scope clarity issues. The resulting outline is more coherent for lesson development, but the quality of actual mathematical teaching, examples, solutions, questions, accessibility, and assessment thresholds cannot be confirmed until materials exist and a qualified instructor reviews them.
 
@@ -56,12 +58,12 @@ This review did **not** verify future individual lessons, worked solutions, answ
 - **Change:** The syllabus now discloses that CEStudy intentionally uses substitution and elimination for systems and excludes matrix/determinant methods and partial fractions to preserve the approved subject boundary.
 - **Interpretation:** This is a CEStudy-specific learning sequence informed by published curricula, not an exact match to DLSU's course outline or a claim that every university assigns topics identically.
 
-### A6. Readiness diagnostic must remain formative
+### A6. Readiness diagnostic must remain formative (superseded)
 
-- **Severity:** Medium, student progression
-- **Evidence:** The approved design describes readiness as identifying gaps before the main course.
-- **Change:** Retained explicit wording that the diagnostic recommends review and does not block progress.
-- **Verification needed during implementation:** Feedback should show specific topics to review, not label learners as incapable or prevent access to the main material.
+- **Historical severity:** Medium, student progression
+- **Historical evidence:** The 2026-10-18 syllabus described readiness as identifying gaps before the main course.
+- **Historical recommendation:** The earlier review retained a formative, non-blocking diagnostic.
+- **Superseding owner decision (2026-11-05):** Do not create or include a readiness diagnostic at all. The first actual lesson is Solving Linear Equations. There is no required or optional diagnostic and no separate Algebra Readiness phase. This A6 recommendation is no longer an implementation requirement.
 
 ### A7. Assessment thresholds are not fixed yet
 
@@ -88,4 +90,4 @@ This review did **not** verify future individual lessons, worked solutions, answ
 
 ## 6. Review record
 
-The main sequence findings were resolved in syllabus version 0.2. A fresh fetch of the saved GitHub file and a structural check confirmed the approved Unit 0–12 sequence, explicit subject boundaries, source links, diagnostic policy, and draft-not-official disclaimer. These checks verify document structure and declared content only; they do not substitute for external academic review.
+The main sequence findings in this historical review were resolved in syllabus version 0.2. The owner made a later opening-sequence decision on 2026-11-05, documented separately; this review was not re-run against syllabus version 0.3. A fresh fetch of the saved GitHub file and a structural check confirmed the approved Unit 0–12 sequence, explicit subject boundaries, source links, diagnostic policy, and draft-not-official disclaimer. These checks verify document structure and declared content only; they do not substitute for external academic review.
