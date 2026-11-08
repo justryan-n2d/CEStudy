@@ -160,9 +160,9 @@ function normalizeSectionHeading(title: string): string {
 function isSuppressedLessonSection(title: string): boolean {
   const normalized = normalizeSectionHeading(title);
   return normalized === "key method"
-    || normalized === "common errors to avoid"
-    || normalized === "learning objectives"
-    || normalized.startsWith("one step and two step equations");
+    || /^common (?:errors?|mistakes?)(?: to avoid)?$/.test(normalized)
+    || /^learning objectives?$/.test(normalized)
+    || /^one step and two step equations?(?: example)?$/.test(normalized);
 }
 
 function isSampleProblemsHeading(title: string): boolean {
@@ -176,13 +176,23 @@ function isSampleProblemsHeading(title: string): boolean {
 }
 
 function isSampleProblemStatement(text: string): boolean {
-  return /^(?:example|problem)\s*(?:#?\d+)?\s*[:.)-]/i.test(text.trim());
+  return /^(?:(?:example|problem)\s*(?:#?\d+)?\s*[:.)-]|(?:modeling|modelling)\s+example\s*[:.)-])/i.test(text.trim());
+}
+
+function isWorkedExampleHeading(title: string): boolean {
+  return /^(?:worked|solved)\s+examples?\b/i.test(title.trim());
+}
+
+function headingNeedsProblemPrompt(title: string): boolean {
+  if (!/^example\s*(?:#?\d+)?\s*[:.)-]/i.test(title.trim())) return false;
+  return !/\b(solve|evaluate|simplify|find|make|determine|calculate|compute|what)\b/i.test(title);
 }
 
 function prepareLessonReaderBlocks(blocks: Block[]): Block[] {
   const visible: Block[] = [];
   let suppressedHeadingLevel: number | null = null;
   let sampleProblemsHeadingLevel: number | null = null;
+  let sampleProblemPending = false;
 
   for (const block of blocks) {
     if (suppressedHeadingLevel !== null) {
@@ -191,12 +201,7 @@ function prepareLessonReaderBlocks(blocks: Block[]): Block[] {
     }
 
     if (block.type === "heading") {
-      if (sampleProblemsHeadingLevel !== null
-        && block.level > sampleProblemsHeadingLevel
-        && isSampleProblemStatement(block.text)) {
-        visible.push({ type: "sample-problem", text: block.text });
-        continue;
-      }
+      sampleProblemPending = false;
 
       if (isSuppressedLessonSection(block.text)) {
         suppressedHeadingLevel = block.level;
@@ -209,15 +214,40 @@ function prepareLessonReaderBlocks(blocks: Block[]): Block[] {
       if (sampleProblemsHeadingLevel !== null && block.level <= sampleProblemsHeadingLevel) {
         sampleProblemsHeadingLevel = null;
       }
+
       if (isSampleProblemsHeading(block.text)) {
         sampleProblemsHeadingLevel = block.level;
+        visible.push(block);
+        continue;
       }
+
+      if (sampleProblemsHeadingLevel !== null
+        && block.level > sampleProblemsHeadingLevel
+        && isSampleProblemStatement(block.text)) {
+        visible.push({ type: "sample-problem", text: block.text });
+        continue;
+      }
+
+      if (isSampleProblemStatement(block.text)) {
+        visible.push({ type: "sample-problem", text: block.text });
+        sampleProblemPending = headingNeedsProblemPrompt(block.text);
+        continue;
+      }
+
       visible.push(block);
+      sampleProblemPending = isWorkedExampleHeading(block.text);
       continue;
     }
 
     if (block.type === "blockquote") {
       visible.push({ ...block, blocks: prepareLessonReaderBlocks(block.blocks) });
+      sampleProblemPending = false;
+      continue;
+    }
+
+    if (block.type === "display-math") {
+      visible.push(block);
+      sampleProblemPending = false;
       continue;
     }
 
@@ -227,17 +257,22 @@ function prepareLessonReaderBlocks(blocks: Block[]): Block[] {
       } else {
         visible.push(block);
       }
+      sampleProblemPending = false;
       continue;
     }
 
     if (block.type === "paragraph" && (
-      sampleProblemsHeadingLevel !== null || isSampleProblemStatement(block.text)
+      sampleProblemPending
+      || sampleProblemsHeadingLevel !== null
+      || isSampleProblemStatement(block.text)
     )) {
       visible.push({ type: "sample-problem", text: block.text });
+      sampleProblemPending = false;
       continue;
     }
 
     visible.push(block);
+    sampleProblemPending = false;
   }
 
   return visible;

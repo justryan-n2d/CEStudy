@@ -330,7 +330,7 @@ export function ContentReviewPage() {
             </div>
 
             {lesson && tab === "lessons" ? <>
-              <section className="review-detail-card"><h3>Lesson preview</h3><MarkdownContent markdown={editLessonMarkdown || lesson.lessonMarkdown} /></section>
+              <section className="review-detail-card"><h3>Lesson preview</h3><MarkdownContent markdown={editLessonMarkdown || lesson.lessonMarkdown} variant="lesson-reader" /></section>
               {(current.status === "needs-review" || current.status === "correction-required") && (
                 <section className="review-edit-fields">
                   <h3>Edit lesson content</h3>
