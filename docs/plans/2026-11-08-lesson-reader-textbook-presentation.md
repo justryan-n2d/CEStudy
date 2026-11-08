@@ -16,7 +16,7 @@ Make the student lesson reader read like a carefully typeset learning text, usin
 3. Present sample/worked problems as standalone centered prompts rather than ordinary unordered/ordered-list entries. Where an example includes a governing formula, keep that formula centered as display math.
 4. Keep solution explanations and numbered solution steps in their original logical order. Do not convert solution steps into decorative bullets.
 5. Add a bulleted legend only when the topic needs symbol, variable, unit, or diagram-label definitions. If the topic has no meaningful legend, do not invent one. Other lists remain semantic lists only when they represent a real set of items.
-6. Do not display a Learning Objectives section. Objectives remain searchable metadata.
+6. Do not display a Learning Objectives section in the student lesson body. Retain every lesson's objectives as structured metadata; never delete them as part of presentation work. The existing `subject_lessons.learning_objectives` field is parsed into `SubjectLesson.learningObjectives`, included in StudyPage topic search/snippets, used by `getRelatedLessons` to rank related lessons, and may supply the short description beneath a recommended lesson. These metadata-driven uses are distinct from rendering an objectives section in the lesson body. Keep the field and its consumers intact unless a separately reviewed product decision changes them.
 7. Suppress the lesson-reader sections titled “Key Method”, “Common errors to avoid”, and “One-step and two-step equations, example”. Suppression applies to the student reader presentation only. Do not delete or rewrite Supabase lesson rows or alter the curriculum catalog as part of this UI task.
 8. Do not create generic “Key Method” or “Common errors to avoid” headings in future lesson-reader content. Prefer specific explanatory prose, worked examples, and relevant notation legends.
 
@@ -43,7 +43,7 @@ The Markdown renderer is shared with the owner content-review surface. Implement
 
 ## Verification notes
 
-The existing MarkdownContent is shared by the student Study page and owner Content Review page. A dedicated rendering variant is therefore required to keep this request page-scoped. Do not claim stored lesson data was edited: all UI filtering in this plan occurs during presentation.
+The existing MarkdownContent is shared by the student Study page and owner Content Review page. A dedicated rendering variant is therefore required to keep this request page-scoped. Do not claim stored lesson data was edited: all UI filtering in this plan occurs during presentation. The `learning_objectives` structured field is retained and remains available to search and recommendation logic; hiding its Markdown section does not remove or invalidate that metadata.
 
 ## Change history
 
