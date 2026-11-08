@@ -348,18 +348,22 @@ Brand blue must remain the identity baseline. Validate its use on both light and
 
 ### 7.4 Lesson and engineering content
 
-Recommended lesson-reader hierarchy:
+Recommended shared lesson-content hierarchy for **both Owner Content Review preview and student Lesson Reader**:
 
 1. Lesson title.
 2. Concise conceptual explanation in readable paragraphs.
 3. Definitions and governing formulas, with each display equation centered and surrounded by deliberate vertical whitespace.
-4. Worked examples and sample problems presented as standalone prompts, not as bullet-list entries. Center the problem statement or its principal equation, then keep the solution explanation and numbered working steps in their natural reading order.
-5. A short legend or notation list only when readers need definitions for symbols, variables, units, or diagram labels. Use bullets for genuine sets of items; do not add a legend where the topic does not need one.
-6. Assumptions, units, interpretation, and a relevant next lesson or practice action when supported by reviewed content.
+4. Worked examples and sample problems presented as standalone centered prompts, not bullet-list entries. Keep solution explanations and numbered working steps in their original logical order.
+5. A short legend or notation list only when readers need definitions for symbols, variables, units, or diagram labels. Use bullets for genuine sets of items; do not invent a legend where a topic does not need one.
+6. Assumptions, units, interpretation, and relevant next-lesson/practice actions when supported by reviewed content.
 
-**Do not add generic “Key Method”, “Common errors to avoid”, or “Learning Objectives” sections to the student lesson reader.** Learning objectives remain searchable lesson metadata, not a displayed section. Suppress the specifically owner-rejected “One-step and two-step equations, example” section at the lesson-reader presentation boundary; this is a display decision, not permission to rewrite stored source records or the curriculum inventory.
+**Do not put generic “Key Method”, “Common errors to avoid”, “Common errors”, “Common mistakes”, “Common mistake”, or “Learning Objectives” sections in lesson Markdown.** This rule applies to Owner Review preview and the student Lesson Reader for every subject/topic. Learning objectives remain separately stored structured metadata in `subject_lessons.learning_objectives`; retain them for search, snippets, related-lesson ranking, and recommendations, but do not render them as a lesson-body section.
 
-This is a layout convention, not authorization to rewrite mathematical source content. Preserve formula meaning, variable names, units, diagrams, source attribution, and approved solution steps. Centering must not crop, truncate, or make a long equation inaccessible on narrow screens.
+Remove the owner-rejected “One-step and two-step equations” example section from Solving Linear Equations while preserving its general inverse-operations explanation in the preceding concept section. Do not confuse “Key takeaway” with “Key Method”; topic-specific takeaways may remain.
+
+The shared `MarkdownContent` `lesson-reader` variant is the sole presentation contract for both Owner Content Review preview and the student Study page. The default Markdown renderer for non-lesson contexts remains unchanged. Future lesson content across all subjects inherits this shared rule automatically.
+
+This is a layout and lesson-body consistency standard, not authorization to alter mathematical source meaning. Preserve formula meaning, variable names, units, diagrams, attribution, and approved solution steps. Do not introduce horizontal page overflow or crop long equations on mobile. Structured objectives are metadata and must not be erased during presentation cleanup.
 
 ### 7.5 Practice workspace
 
@@ -379,7 +383,7 @@ This is a layout convention, not authorization to rewrite mathematical source co
 | Year Levels | Existing | Overview of all four years; nested relationships from verified metadata only. |
 | Subject Catalog | Existing | Search, filters, accurate result counts, availability, useful reset and no-results recovery. Preserve current catalog behavior. |
 | Subject Detail | Existing | Title, summary, source/provenance, availability, relevant lessons, and practice entry only when available. |
-| Lesson / Study | Existing | Textbook-style reading flow: concise prose, centered display equations with generous whitespace, standalone centered worked/sample problems, and semantic legends only when needed. Structured learning objectives are retained in `subject_lessons.learning_objectives` for topic search and related-lesson recommendations, but are not rendered as a lesson-body section; do not add generic Key Method/Common errors sections or the owner-rejected one-step/two-step example section. Preserve published-only access, topic navigation and relevant recommendations. |
+| Lesson / Study | Existing | Shared textbook-style presentation in Owner Content Review preview and student Lesson Reader across all existing subjects/topics: centered display equations with generous whitespace, standalone centered example/problem prompts, semantic legends only when needed, preserved worked steps and metadata. Suppress generic Key Method/Common Errors/Common Mistakes/Learning Objectives body sections and the rejected one-/two-step example section. Retain structured objectives and preserve statuses/publication. Shared renderer applies to future lesson content. |
 | Review Materials Hub | Planned | Formula Sheets, Problem Sets with Solutions, Video Tutorials; show availability, review state, source/version, and download state only when real data exists. |
 | Practice | Existing, limited pool | Preserve current answer flow; improve question/tools layout, feedback and responsive access. Main live smoke currently expects zero published questions. |
 | Results / Progress | Existing progress and per-session results | Separate current-session score from stored history; show device-local scope and only real values. |
@@ -700,7 +704,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Update |
 |---|---|
-| 2026-11-08 | Recorded the owner-approved textbook-style lesson-reader presentation contract and implementation plan ([details](plans/2026-11-08-lesson-reader-textbook-presentation.md)). Display equations and sample problems use centered, spacious presentation; bullets remain semantic and topic-dependent. The requested generic sections and one-step/two-step example section are suppressed only in the student reader. No stored lesson rows, publication state, practice pages, or production settings are changed. |
+| 2026-11-08 | Expanded the textbook-style lesson presentation contract to both Owner Content Review preview and the student Lesson Reader across all existing and future subject/topic content. Updated all 14 existing Supabase lesson Markdown bodies to remove targeted generic sections and the rejected one-/two-step example section; retained all 43 structured learning objectives and every row's prior review/publication status. No schema, RLS, grant, OAuth, question, or production setting changed. See [shared lesson presentation plan](plans/2026-11-08-lesson-reader-textbook-presentation.md). |
 | 2026-11-04 | Recorded the owner-approved Decision-Light Design standard in the UX/UI Design System and the roadmap decision register. Set the full-site audit (C) as a deferred pre-Phase-4 entry gate after documentation A. No application UI, behavior, data, or production configuration changed. |
 | 2026-11-04 | Reconciled this roadmap with current `main` after PR #69 merged at `ad96cc6`. Updated the repository snapshot, current CI/theme/navigation evidence, consolidated PR #67 status, and phase tracker. Linked the dedicated Phase 3 implementation plan. Recorded that the 2026-11-01 live backup verified all three required tables and remote read-back. Product roadmap Phase 3 is distinct from the lifecycle Phase 3 in `PHASE_PLAN.md`. |
 

@@ -1,50 +1,82 @@
-# Lesson Reader: Textbook-Style Presentation Plan
+# Shared Lesson Content Presentation Standard
 
 Date: 2026-11-08  
 Target PR: https://github.com/justryan-n2d/CEStudy/pull/81  
 Target branch: feat/phase4-practice-question-validation-2026-11-05  
-Status: Owner-requested implementation; review and CI verification required.
+Status: Implemented in PR branch; exact-head CI and preview verification pending.
 
 ## Goal
 
-Make the student lesson reader read like a carefully typeset learning text, using the owner-provided Mathalino screenshots as a visual reference. The screenshots guide content hierarchy and spacing only; CEStudy must use its own original lesson content and preserve attribution/source requirements.
+Apply one consistent textbook-style lesson presentation contract to both:
+- Owner Content Review lesson preview (including the preview of unsaved editor changes).
+- Student-facing Study / Lesson Reader.
 
-## Binding presentation decisions
+The contract applies to every lesson subject and topic, not only Algebra Foundations. The owner-provided Mathalino screenshots are a visual reference for hierarchy and spacing, not a source for copying lesson prose.
 
-1. Keep explanatory prose left-aligned and readable.
-2. Center display equations. Give each equation generous space above and below without clipping, forcing horizontal page overflow, or left-aligning it on mobile.
-3. Present sample/worked problems as standalone centered prompts rather than ordinary unordered/ordered-list entries. Where an example includes a governing formula, keep that formula centered as display math.
-4. Keep solution explanations and numbered solution steps in their original logical order. Do not convert solution steps into decorative bullets.
-5. Add a bulleted legend only when the topic needs symbol, variable, unit, or diagram-label definitions. If the topic has no meaningful legend, do not invent one. Other lists remain semantic lists only when they represent a real set of items.
-6. Do not display a Learning Objectives section in the student lesson body. Retain every lesson's objectives as structured metadata; never delete them as part of presentation work. The existing `subject_lessons.learning_objectives` field is parsed into `SubjectLesson.learningObjectives`, included in StudyPage topic search/snippets, used by `getRelatedLessons` to rank related lessons, and may supply the short description beneath a recommended lesson. These metadata-driven uses are distinct from rendering an objectives section in the lesson body. Keep the field and its consumers intact unless a separately reviewed product decision changes them.
-7. Suppress the lesson-reader sections titled “Key Method”, “Common errors to avoid”, and “One-step and two-step equations, example”. Suppression applies to the student reader presentation only. Do not delete or rewrite Supabase lesson rows or alter the curriculum catalog as part of this UI task.
-8. Do not create generic “Key Method” or “Common errors to avoid” headings in future lesson-reader content. Prefer specific explanatory prose, worked examples, and relevant notation legends.
+## Binding content and presentation decisions
+
+1. Keep explanatory prose left-aligned, readable, and in its original teaching order.
+2. Center display equations in both preview surfaces. Give them deliberate vertical whitespace above and below. On narrow screens, preserve horizontal accessibility and avoid clipping or page overflow.
+3. Present sample/worked problem statements as standalone centered prompts without list markers. This includes authored “Example:” / “Problem:” statements, example prompts formatted as standalone bold Markdown lines, and the first prompt paragraph following a “Worked example” / “Solved example” heading. The following solution explanation and numbered working steps remain in their natural order and retain semantic ordered lists.
+4. When a topic has a real set of notation definitions, units, variables, or diagram labels, retain it as a semantic bulleted legend. Do not invent a legend for topics that do not need one. Other genuine lists remain lists.
+5. Do not display generic “Key Method”, “Common errors to avoid”, “Common errors”, “Common mistakes”, or singular “Common mistake(s)” sections in lesson content. Prefer specific explanatory prose, examples, and meaningful notation legends instead. This is a content rule for all existing and future lesson topics, not a label-only visual hide for one lesson.
+6. Remove the specifically rejected “One-step and two-step equations” example section from the Solving Linear Equations lesson. Preserve the underlying inverse-operations concept in the preceding conceptual explanation; do not keep that rejected section or its worked example.
+7. Do not display a “Learning Objectives” / “Learning objective” section inside lesson Markdown. Retain each lesson's structured objectives separately in `subject_lessons.learning_objectives`. They remain available to the application model, topic search/snippets, related-lesson ranking, and recommendation descriptions. Never delete or empty that metadata as part of lesson presentation cleanup.
+8. “Key takeaway” is not the same as the rejected “Key Method” section. Retain topic-specific takeaways unless a separate content decision changes them.
+9. Apply these rules in both Owner Content Review preview and the student Lesson Reader. The owner preview must show the same cleaned lesson presentation as students, while its title/status/editor fields and review workflow remain unchanged.
 
 ## Scope
 
-In scope: src/pages/StudyPage.tsx, the student-reader presentation mode in src/components/MarkdownContent.tsx, lesson-reader-only styles in src/styles/global.css, focused tests, this plan, and the canonical roadmap.
+In scope:
+- `src/components/MarkdownContent.tsx`: shared `lesson-reader` presentation variant and content transformations.
+- `src/pages/ContentReviewPage.tsx`: owner lesson preview uses the shared variant, including unsaved editor Markdown.
+- `src/pages/StudyPage.tsx`: student lesson content continues to use the same shared variant.
+- `src/styles/global.css`: shared centered equation and sample-problem layout for both surfaces.
+- Focused student and owner preview tests.
+- Existing lesson Markdown in Supabase, across all currently existing subjects/topics.
+- This plan and `docs/MASTER_ROADMAP_FOR_CESTUDY.md`.
 
-Out of scope: Dashboard/recently studied cards, catalog and subject pages, Practice Workspace, progress/history, owner content-review rendering, the shared Markdown default mode, database schema/data, lesson publication, Supabase policies, OAuth, production configuration, and deployment.
+Out of scope:
+- Dashboard / Recently Studied cards, catalog and subject discovery layouts, Practice Workspace, progress/history, question content, lesson objectives metadata, lesson IDs/titles, curriculum sequence, review notes, approval/publication status, schema, RLS/grants, OAuth, and production deployment.
+- Creating lesson records for subjects that do not yet have lesson content. The shared renderer rule will apply automatically when those lessons are authored.
 
-## Implementation boundary
+## Implementation and data boundary
 
-The Markdown renderer is shared with the owner content-review surface. Implement an explicit student lesson-reader variant and scope filtering/centering styles to that variant under the lesson article. The default Markdown rendering must remain unchanged. Keep stored Markdown and source records intact; do not perform data migration or live content mutation.
+- Both owner and student lesson preview surfaces use the same `MarkdownContent` `lesson-reader` variant. The default Markdown variant for non-lesson contexts remains unchanged.
+- The rendering transformation also handles Markdown edits that have not yet been saved in Owner Content Review.
+- Existing Supabase lesson body Markdown was cleaned because some content existed only in database rows and would otherwise continue to appear in both previews. This was a content-only update to `subject_lessons.lesson_markdown`; no schema/migration was necessary.
+- The separate `learning_objectives` JSON arrays, statuses, IDs, slugs, titles, source notes, review notes, and reviewed timestamps were not changed.
+- The one-/two-step worked-example section was removed from the body while the general inverse-operations explanation was retained in the preceding concept section.
+- No raw lesson content is copied into this public repository documentation.
+
+## Supabase content cleanup record
+
+A guarded update was applied to all 14 lesson rows present in the CEStudy Supabase project at the time of the change:
+- 13 `basic-algebra` lessons remained `needs-review`.
+- 1 `ui-inspection-demo` synthetic inspection lesson remained `published`.
+- Removed matching “Common errors”, “Common mistakes”, “Key method”, “Learning objective(s)”, and the one-/two-step example section where present.
+- All 43 structured learning objectives were retained (40 across Algebra Foundations and 3 in the UI inspection demo).
+- Post-update verification confirmed no targeted section heading remained in any of the 14 Markdown bodies and all 14 records retained their previous statuses.
+
+No lesson records currently exist for other catalog subjects. Those will receive the same rules through the shared renderer when content is added; no placeholder content or new lesson rows were created.
 
 ## Acceptance criteria
 
-- [ ] The student reader does not render “Key Method”, “Common errors to avoid”, “Learning Objectives”, or the named one-step/two-step example section and their section content.
-- [ ] Display equations are horizontally centered with clear vertical spacing on desktop and mobile.
-- [ ] Sample-problem lists become centered standalone problem prompts without list markers.
-- [ ] Legitimate legends remain real unordered lists when authored and needed; no legend is fabricated.
-- [ ] Conceptual prose and worked solution steps retain their logical order and readable alignment.
-- [ ] Owner review and other default Markdown consumers retain their previous headings/list presentation.
-- [ ] No unrelated dashboard, progress, practice, data, or publication behavior changes.
-- [ ] Focused tests, lint, production build, and the PR's applicable CI/browser checks pass. Inspect both themes and responsive widths; automated checks do not replace the owner’s physical-device review.
+- [x] The owner preview and student lesson reader both use the shared textbook-style lesson presentation.
+- [x] Generic Key Method, Common Errors, Common Mistakes, Learning Objectives body sections and the rejected one-/two-step example section are removed from existing stored lesson Markdown where present.
+- [x] Structured learning objectives remain intact and continue to be used as metadata.
+- [x] Display equations receive centered alignment and generous vertical space in the shared lesson presentation.
+- [x] Sample problems become centered standalone prompts without bullets; genuine solution steps and legends remain semantic lists.
+- [x] The shared renderer applies the same behavior to future topics and subjects.
+- [ ] Exact-head unit/integration tests, lint, production build, browser theme/responsive checks, and Supabase migration/RLS CI all pass.
+- [ ] Owner verifies the current populated Owner Review and student Lesson Reader previews on a physical mobile device, including long formulas, Light/Dark themes, and at least one topic with and without a notation legend.
 
-## Verification notes
+## Verification and release notes
 
-The existing MarkdownContent is shared by the student Study page and owner Content Review page. A dedicated rendering variant is therefore required to keep this request page-scoped. Do not claim stored lesson data was edited: all UI filtering in this plan occurs during presentation. The `learning_objectives` structured field is retained and remains available to search and recommendation logic; hiding its Markdown section does not remove or invalidate that metadata.
+The Markdown renderer is shared with other Markdown contexts. Only the explicit `lesson-reader` variant applies these rules; generic Markdown consumers retain their default behavior. Owner Content Review's preview now opts into that shared variant intentionally.
+
+This PR remains a draft and is not merged. No Cloudflare production deployment occurred. The Supabase content-only update has been applied and verified; CI/browser checks for the latest source commit and exact-head preview deployment still need confirmation.
 
 ## Change history
 
-- 2026-11-08: Initial owner-approved presentation contract for the PR #81 lesson reader revision.
+- 2026-11-08: Expanded the original student-only lesson-reader request to the Owner Content Review preview and all existing Supabase lesson records; retained all structured learning-objective metadata and documented the all-subject future-content rule.
