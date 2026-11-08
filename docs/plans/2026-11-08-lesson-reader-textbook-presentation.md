@@ -68,7 +68,7 @@ No lesson records currently exist for other catalog subjects. Those will receive
 - [x] Display equations receive centered alignment and generous vertical space in the shared lesson presentation.
 - [x] Sample problems become centered standalone prompts without bullets; genuine solution steps and legends remain semantic lists.
 - [x] The shared renderer applies the same behavior to future topics and subjects.
-- [x] On application commit `2117d81d95b1b19646506822a45d5b8d036ad614`: 36/36 test files and 236/236 tests passed; ESLint, production build, Pages routing/security-header packaging, and backup syntax/encryption/retention checks passed.
+- [x] On application commit `d38c8c34290e3d39f4910c10ced39e58ca448f7b`: 36/36 test files and 237/237 tests passed; ESLint, production build, Pages routing/security-header packaging, and backup syntax/encryption/retention checks passed.
 - [x] Chromium theme/responsive checks passed 1,698/1,698 assertions across populated lesson checks, Light/Dark themes, KaTeX readability, and overflow at the 320/390/768/1024/1440px viewport matrix. Connectivity/skeleton browser verification passed 613/613 assertions. Secret scan passed.
 - [ ] Supabase isolated migration/RLS CI could not reach the test phase: Supabase CLI 2.84.2 installation failed because the GitHub release checksum download returned HTTP 504. The stack and migration/RLS tests were skipped; rerun this job when the release endpoint is available. This is an infrastructure/setup failure, not a reported migration or RLS assertion failure.
 - [ ] Owner verifies the populated Owner Review and student Lesson Reader previews on a physical mobile device, including long formulas, Light/Dark themes, and topics with and without a notation legend.
