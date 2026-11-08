@@ -89,17 +89,18 @@ This generic error list should not be shown.
 These objectives should remain metadata, not lesson content.
 
 ## Governing formula
-\\[
+\[
 2x + 3 = 7
-\\]
+\]
 
 ## Sample Problems
-- Example 1: \\(2x + 3 = 7\\)
-- Example 2: \\(4x - 1 = 11\\)
+### Example 3: Solve \(5x = 20\)
+- Example 1: \(2x + 3 = 7\)
+- Example 2: \(4x - 1 = 11\)
 
 ## Legend
-- \\(x\\) represents the unknown value.
-- \\(b\\) represents the constant term.`;
+- \(x\) represents the unknown value.
+- \(b\) represents the constant term.`;
     const { container } = render(<MarkdownContent markdown={markdown} variant="lesson-reader" />);
 
     expect(screen.queryByText(/intentionally omitted from the student reader/i)).not.toBeInTheDocument();
@@ -110,6 +111,7 @@ These objectives should remain metadata, not lesson content.
 
     const sampleProblems = container.querySelector(".markdown-sample-problems");
     expect(sampleProblems?.querySelectorAll("p")).toHaveLength(2);
+    expect(container.querySelectorAll(".markdown-sample-problem")).toHaveLength(3);
     expect(sampleProblems?.querySelector("ul, ol")).not.toBeInTheDocument();
 
     const legend = container.querySelector("ul");
@@ -122,7 +124,7 @@ These objectives should remain metadata, not lesson content.
 Keep this section in the owner review rendering.
 
 ## Sample Problems
-- Example 1: \\(2x + 3 = 7\\)`;
+- Example 1: \(2x + 3 = 7\)`;
     const { container } = render(<MarkdownContent markdown={markdown} />);
 
     expect(screen.getByRole("heading", { name: "Key Method" })).toBeInTheDocument();

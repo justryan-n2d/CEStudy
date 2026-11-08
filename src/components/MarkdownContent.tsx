@@ -191,6 +191,13 @@ function prepareLessonReaderBlocks(blocks: Block[]): Block[] {
     }
 
     if (block.type === "heading") {
+      if (sampleProblemsHeadingLevel !== null
+        && block.level > sampleProblemsHeadingLevel
+        && isSampleProblemStatement(block.text)) {
+        visible.push({ type: "sample-problem", text: block.text });
+        continue;
+      }
+
       if (isSuppressedLessonSection(block.text)) {
         suppressedHeadingLevel = block.level;
         if (sampleProblemsHeadingLevel !== null && block.level <= sampleProblemsHeadingLevel) {
