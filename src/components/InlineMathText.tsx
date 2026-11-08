@@ -10,6 +10,7 @@ const STOP_WORDS = new Set([
   "by", "to", "get", "of", "using", "if", "is", "are", "was", "were", "be", "with", "gives", "means",
   "shows", "describes", "produces", "correspond", "matching", "has", "have",
   "can", "must", "write", "solve", "example", "formula", "equation", "discriminant",
+  "says", "exactly", "therefore", "thus", "hence", "iff",
 ]);
 
 interface MathRange { start: number; end: number }
@@ -60,7 +61,7 @@ function isMathCharacter(text: string, index: number): boolean {
 
 function stripLastStopWord(value: string, from: number): number {
   const suffix = value.slice(from);
-  const pattern = /\b(?:and|or|then|not|because|since|the|an|for|when|where|which|it|as|from|so|while|this|that|by|to|get|of|using|if|is|are|was|were|be|with|gives|means|shows|describes|produces|correspond|matching|has|have|can|must|write|solve|example|formula|equation|discriminant|simplify|calculate|compute|evaluate|determine|find|factor|expand|rewrite|reduce|express|derive|substitute|convert)\b\s+/giu;
+  const pattern = /\b(?:and|or|then|not|because|since|the|an|for|when|where|which|it|as|from|so|while|this|that|by|to|get|of|using|if|is|are|was|were|be|with|gives|means|shows|describes|produces|correspond|matching|has|have|can|must|write|solve|example|formula|equation|discriminant|says|exactly|therefore|thus|hence|iff|simplify|calculate|compute|evaluate|determine|find|factor|expand|rewrite|reduce|express|derive|substitute|convert)\b\s+/giu;
   let match: RegExpExecArray | null;
   let nextStart = from;
   while ((match = pattern.exec(suffix)) !== null) {

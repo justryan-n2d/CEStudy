@@ -2988,3 +2988,118 @@ body {
     margin-block: 1.35rem 1.65rem;
   }
 }
+
+
+/* Standalone worked-problem disclosure used by lesson and practice content. */
+.problem-card {
+  min-width: 0;
+  padding: clamp(1rem, 2.6vw, 1.45rem);
+  border: 1px solid var(--ui-border);
+  border-radius: 18px;
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  box-shadow: 0 4px 16px rgba(18, 52, 81, .035);
+}
+.problem-number {
+  margin: 0 0 .6rem;
+  color: var(--teal-dark);
+  font-size: .77rem;
+  font-weight: 850;
+  letter-spacing: .045em;
+}
+.problem-prompt {
+  margin: 0;
+  color: var(--ui-text);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.problem-solution {
+  margin-top: 1.85rem;
+}
+.problem-solution-summary {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  margin-inline: auto;
+  padding: .55rem .95rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  background: var(--ui-surface-muted);
+  color: var(--ui-heading);
+  font-size: .88rem;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+  list-style: none;
+}
+.problem-solution-summary::-webkit-details-marker {
+  display: none;
+}
+.problem-solution-summary:hover {
+  border-color: var(--ui-focus);
+  background: var(--ui-hover);
+}
+.problem-solution-summary:focus-visible {
+  outline: 3px solid var(--ui-focus);
+  outline-offset: 3px;
+}
+.problem-solution-arrow {
+  display: inline-block;
+  color: var(--brand-blue);
+  font-size: 1.12rem;
+  line-height: 1;
+  transform: translateY(-2px);
+  transition: transform .16s ease;
+}
+.problem-solution[open] .problem-solution-arrow {
+  transform: rotate(180deg) translateY(-2px);
+}
+.problem-solution-content {
+  max-width: 760px;
+  margin: 1.15rem auto 0;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--ui-border);
+}
+.problem-solution-content ol {
+  margin: .15rem 0 1.1rem;
+  padding-left: 1.4rem;
+  color: var(--ui-text);
+}
+.problem-solution-content li {
+  margin: .55rem 0;
+  padding-left: .2rem;
+  line-height: 1.65;
+}
+.problem-answer {
+  display: grid;
+  justify-items: center;
+  gap: .35rem;
+  margin: 1.15rem 0 0;
+  padding: 1rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 14px;
+  background: var(--ui-surface-muted);
+  color: var(--ui-heading);
+  text-align: center;
+}
+.problem-answer > strong {
+  color: var(--muted);
+  font-size: .75rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.problem-final-answer {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  .problem-solution-arrow {
+    transition: none;
+  }
+}
