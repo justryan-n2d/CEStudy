@@ -68,14 +68,18 @@ No lesson records currently exist for other catalog subjects. Those will receive
 - [x] Display equations receive centered alignment and generous vertical space in the shared lesson presentation.
 - [x] Sample problems become centered standalone prompts without bullets; genuine solution steps and legends remain semantic lists.
 - [x] The shared renderer applies the same behavior to future topics and subjects.
-- [ ] Exact-head unit/integration tests, lint, production build, browser theme/responsive checks, and Supabase migration/RLS CI all pass.
-- [ ] Owner verifies the current populated Owner Review and student Lesson Reader previews on a physical mobile device, including long formulas, Light/Dark themes, and at least one topic with and without a notation legend.
+- [x] On application commit `2117d81d95b1b19646506822a45d5b8d036ad614`: 36/36 test files and 236/236 tests passed; ESLint, production build, Pages routing/security-header packaging, and backup syntax/encryption/retention checks passed.
+- [x] Chromium theme/responsive checks passed 1,698/1,698 assertions across populated lesson checks, Light/Dark themes, KaTeX readability, and overflow at the 320/390/768/1024/1440px viewport matrix. Connectivity/skeleton browser verification passed 613/613 assertions. Secret scan passed.
+- [ ] Supabase isolated migration/RLS CI could not reach the test phase: Supabase CLI 2.84.2 installation failed because the GitHub release checksum download returned HTTP 504. The stack and migration/RLS tests were skipped; rerun this job when the release endpoint is available. This is an infrastructure/setup failure, not a reported migration or RLS assertion failure.
+- [ ] Owner verifies the populated Owner Review and student Lesson Reader previews on a physical mobile device, including long formulas, Light/Dark themes, and topics with and without a notation legend.
 
 ## Verification and release notes
 
 The Markdown renderer is shared with other Markdown contexts. Only the explicit `lesson-reader` variant applies these rules; generic Markdown consumers retain their default behavior. Owner Content Review's preview now opts into that shared variant intentionally.
 
-This PR remains a draft and is not merged. No Cloudflare production deployment occurred. The Supabase content-only update has been applied and verified; CI/browser checks for the latest source commit and exact-head preview deployment still need confirmation.
+Application commit `2117d81d95b1b19646506822a45d5b8d036ad614` passed the application CI and browser jobs listed above. Cloudflare Pages deployed this exact commit to [the current preview](https://68a30ed0.cestudy.pages.dev). Owner preview: `/owner/content-review`. Student lesson route pattern: `/study/:subjectSlug/:unit` (published lessons only). The isolated Supabase migration/RLS CI did not execute because the CLI download failed with HTTP 504; do not treat that job as passing.
+
+This PR remains a draft and is not merged. No Cloudflare production deployment occurred. The Supabase content-only update has been applied and verified.
 
 ## Change history
 
