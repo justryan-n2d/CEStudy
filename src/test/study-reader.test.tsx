@@ -119,6 +119,53 @@ These objectives should remain metadata, not lesson content.
     expect(legend?.querySelectorAll("li")).toHaveLength(2);
   });
 
+  it("removes legacy section variants and centers standalone example prompts", () => {
+    const markdown = String.raw`## Concept
+This explanation remains visible.
+
+## Common mistakes
+This generic list is not part of the lesson.
+
+## Common mistake
+This singular variant is also excluded.
+
+## Common errors to avoid
+This alternate heading is excluded too.
+
+## Key Method
+This generic method section is excluded.
+
+## Learning objective
+The objective remains metadata, not lesson body content.
+
+## One-step and two-step equations, example
+This owner-rejected example section is excluded.
+
+**Example: Solve \\(2x + 3 = 7\\).**
+
+## Worked example
+Solve \\(4x - 1 = 11\\).
+
+1. Add 1 to both sides.
+2. Divide by 4.
+
+## Legend
+- \\(x\\) represents the unknown value.`;
+    const { container } = render(<MarkdownContent markdown={markdown} variant="lesson-reader" />);
+
+    expect(screen.getByText("This explanation remains visible.")).toBeInTheDocument();
+    expect(screen.queryByText(/generic list is not part/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/singular variant is also excluded/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/alternate heading is excluded/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/generic method section is excluded/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/objective remains metadata/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/owner-rejected example section is excluded/i)).not.toBeInTheDocument();
+    expect(container.querySelectorAll(".markdown-sample-problem")).toHaveLength(2);
+    expect(container.querySelector(".markdown-sample-problem")?.textContent).toContain("2x + 3 = 7");
+    expect(container.querySelectorAll(".markdown-sample-problems ol")).toHaveLength(0);
+    expect(container.querySelector(".markdown-content-lesson-reader ul li")).toBeInTheDocument();
+  });
+
   it("keeps generic Markdown presentation unchanged outside the student lesson reader", () => {
     const markdown = String.raw`## Key Method
 Keep this section in the owner review rendering.

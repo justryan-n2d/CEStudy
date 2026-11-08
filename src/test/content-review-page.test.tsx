@@ -92,6 +92,41 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe("owner content review", () => {
+  it("uses the shared lesson-reader presentation in the owner preview", async () => {
+    const user = userEvent.setup();
+    const bundle = structuredClone(reviewBundle);
+    bundle.lessons[1].lessonMarkdown = `## Concept
+Owner preview concept remains visible.
+
+## Common mistakes
+This section is removed from the shared lesson view.
+
+## Key Method
+This section is removed too.
+
+## Learning Objectives
+These objectives remain metadata.
+
+## Worked example
+Solve \\(2x + 3 = 7\\).
+
+1. Subtract 3.
+2. Divide by 2.`;
+    mocks.fetchContentReviewBundle.mockResolvedValueOnce(bundle);
+    const { container } = render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
+
+    await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
+    await user.click(screen.getByRole("button", { name: "Unlock review" }));
+
+    expect(await screen.findByText("Owner preview concept remains visible.")).toBeInTheDocument();
+    const preview = container.querySelector(".review-detail-card .markdown-content");
+    expect(preview).toHaveClass("markdown-content-lesson-reader");
+    expect(preview?.textContent).not.toContain("This section is removed from the shared lesson view.");
+    expect(preview?.textContent).not.toContain("This section is removed too.");
+    expect(preview?.textContent).not.toContain("These objectives remain metadata.");
+    expect(preview?.querySelectorAll(".markdown-sample-problem")).toHaveLength(1);
+  });
+
   it("does not show lesson drafts before owner unlock", () => {
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     expect(screen.getByRole("heading", { name: "Unlock content review" })).toBeInTheDocument();
