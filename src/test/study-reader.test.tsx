@@ -71,6 +71,65 @@ describe("lesson reader", () => {
     vi.clearAllMocks();
   });
 
+  it("uses the textbook-style presentation only in student lesson-reader mode", () => {
+    const markdown = String.raw`# Solving Linear Equations
+
+A concise explanation stays as normal lesson prose.
+
+## One-step and two-step equations, example
+This section is intentionally omitted from the student reader.
+
+## Key Method
+This generic method section should not be shown.
+
+## Common errors to avoid
+This generic error list should not be shown.
+
+## Learning Objectives
+These objectives should remain metadata, not lesson content.
+
+## Governing formula
+\\[
+2x + 3 = 7
+\\]
+
+## Sample Problems
+- Example 1: \\(2x + 3 = 7\\)
+- Example 2: \\(4x - 1 = 11\\)
+
+## Legend
+- \\(x\\) represents the unknown value.
+- \\(b\\) represents the constant term.`;
+    const { container } = render(<MarkdownContent markdown={markdown} variant="lesson-reader" />);
+
+    expect(screen.queryByText(/intentionally omitted from the student reader/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/generic method section should not be shown/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/generic error list should not be shown/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/objectives should remain metadata/i)).not.toBeInTheDocument();
+    expect(container.querySelector(".markdown-display-math")).toBeInTheDocument();
+
+    const sampleProblems = container.querySelector(".markdown-sample-problems");
+    expect(sampleProblems?.querySelectorAll("p")).toHaveLength(2);
+    expect(sampleProblems?.querySelector("ul, ol")).not.toBeInTheDocument();
+
+    const legend = container.querySelector("ul");
+    expect(legend).toBeInTheDocument();
+    expect(legend?.querySelectorAll("li")).toHaveLength(2);
+  });
+
+  it("keeps generic Markdown presentation unchanged outside the student lesson reader", () => {
+    const markdown = String.raw`## Key Method
+Keep this section in the owner review rendering.
+
+## Sample Problems
+- Example 1: \\(2x + 3 = 7\\)`;
+    const { container } = render(<MarkdownContent markdown={markdown} />);
+
+    expect(screen.getByRole("heading", { name: "Key Method" })).toBeInTheDocument();
+    expect(container.querySelector(".markdown-sample-problems")).not.toBeInTheDocument();
+    expect(container.querySelector("ul li")).toBeInTheDocument();
+  });
+
   it("renders quoted Markdown as structured lesson content with properly separated steps and math", async () => {
     const { container } = render(
       <MarkdownContent
