@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ProblemCard } from "../components/ProblemCard";
 
 const problem = {
@@ -28,7 +28,7 @@ describe("problem solution disclosure", () => {
     expect(screen.queryByText("Final answer")).not.toBeVisible();
   });
 
-  it("reveals only rendered solution steps and the final answer", () => {
+  it("reveals only rendered solution steps and the final answer", async () => {
     const { container } = render(<ProblemCard problem={problem} number={2} />);
     fireEvent.click(screen.getByText("View the solution"));
 
@@ -36,7 +36,7 @@ describe("problem solution disclosure", () => {
     expect(screen.getByText("The greatest common factor is 3x.")).toBeVisible();
     expect(screen.getByText("Final answer")).toBeVisible();
     expect(screen.getByText("3x(2x + 3)", { selector: ".problem-final-answer" })).toBeVisible();
-    expect(container.querySelectorAll(".katex").length).toBeGreaterThan(0);
+    await waitFor(() => expect(container.querySelectorAll(".katex").length).toBeGreaterThan(0));
     expect(screen.queryByText(/Source note:/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Explanation/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Choices/i)).not.toBeInTheDocument();
