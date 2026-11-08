@@ -251,10 +251,22 @@ function prepareLessonReaderBlocks(blocks: Block[]): Block[] {
       continue;
     }
 
-    if (block.type === "unordered-list" || block.type === "ordered-list") {
+    if (block.type === "unordered-list") {
       if (sampleProblemsHeadingLevel !== null || block.items.every(isSampleProblemStatement)) {
         visible.push({ type: "sample-problems", items: block.items });
       } else {
+        visible.push(block);
+      }
+      sampleProblemPending = false;
+      continue;
+    }
+
+    if (block.type === "ordered-list") {
+      if (block.items.every(isSampleProblemStatement)) {
+        visible.push({ type: "sample-problems", items: block.items });
+      } else {
+        // Ordered lists inside or after a worked example represent solution steps.
+        // Keep them semantic and numbered; never turn them into centered problem prompts.
         visible.push(block);
       }
       sampleProblemPending = false;
