@@ -70,17 +70,17 @@ No lesson records currently exist for other catalog subjects. Those will receive
 - [x] The shared renderer applies the same behavior to future topics and subjects.
 - [x] On application commit `d38c8c34290e3d39f4910c10ced39e58ca448f7b`: 36/36 test files and 237/237 tests passed; ESLint, production build, Pages routing/security-header packaging, and backup syntax/encryption/retention checks passed.
 - [x] Chromium theme/responsive checks passed 1,698/1,698 assertions across populated lesson checks, Light/Dark themes, KaTeX readability, and overflow at the 320/390/768/1024/1440px viewport matrix. Connectivity/skeleton browser verification passed 613/613 assertions. Secret scan passed.
-- [ ] Supabase isolated migration/RLS CI could not reach the test phase: Supabase CLI 2.84.2 installation failed because the GitHub release checksum download returned HTTP 504. The stack and migration/RLS tests were skipped; rerun this job when the release endpoint is available. This is an infrastructure/setup failure, not a reported migration or RLS assertion failure.
+- [x] Supabase isolated migration/RLS tests passed on the documentation-only follow-up commit `129b4473b84fd08357338dfac452a5d3195bd9cc` ([CI run 42469887198](https://github.com/justryan-n2d/CEStudy/actions/runs/42469887198)). An earlier run encountered a transient HTTP 504 while downloading the CLI checksum; the retry installed the CLI, started the isolated stack, and passed the migrations/RLS tests.
 - [ ] Owner verifies the populated Owner Review and student Lesson Reader previews on a physical mobile device, including long formulas, Light/Dark themes, and topics with and without a notation legend.
 
 ## Verification and release notes
 
 The Markdown renderer is shared with other Markdown contexts. Only the explicit `lesson-reader` variant applies these rules; generic Markdown consumers retain their default behavior. Owner Content Review's preview now opts into that shared variant intentionally.
 
-Application commit `2117d81d95b1b19646506822a45d5b8d036ad614` passed the application CI and browser jobs listed above. Cloudflare Pages deployed this exact commit to [the current preview](https://68a30ed0.cestudy.pages.dev). Owner preview: `/owner/content-review`. Student lesson route pattern: `/study/:subjectSlug/:unit` (published lessons only). The isolated Supabase migration/RLS CI did not execute because the CLI download failed with HTTP 504; do not treat that job as passing.
+Application commit `d38c8c34290e3d39f4910c10ced39e58ca448f7b` passed the application CI and browser jobs listed above. The final documentation revision on `129b4473b84fd08357338dfac452a5d3195bd9cc` passed Supabase migrations/RLS in CI run 42469887198. Cloudflare Pages deployed the final PR head to [the current preview](https://c18d0cd1.cestudy.pages.dev). Owner preview: `/owner/content-review`. Student lesson route pattern: `/study/:subjectSlug/:unit` (published lessons only).
 
 This PR remains a draft and is not merged. No Cloudflare production deployment occurred. The Supabase content-only update has been applied and verified.
 
 ## Change history
 
-- 2026-11-08: Expanded the original student-only lesson-reader request to the Owner Content Review preview and all existing Supabase lesson records; retained all structured learning-objective metadata and documented the all-subject future-content rule.
+- 2026-11-08: Expanded the original student-only lesson-reader request to the Owner Content Review preview and all existing Supabase lesson records; retained all structured learning-objective metadata and documented the all-subject future-content rule. Verified 237 tests, lint/build, 1,698 responsive/theme assertions, 613 connectivity/skeleton assertions, secret scan, and Supabase migration/RLS CI after retrying a transient CLI release-download timeout.
