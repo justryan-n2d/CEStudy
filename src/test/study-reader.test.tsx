@@ -168,6 +168,20 @@ Solve \\(4x - 1 = 11\\).
     expect(container.querySelector(".markdown-content-lesson-reader ul li")).toBeInTheDocument();
   });
 
+  it("keeps ordered solution steps numbered inside a sample-problems section", () => {
+    const markdown = String.raw`## Sample Problems
+- Example 1: Solve \\(2x + 3 = 7\\).
+
+1. Subtract 3 from both sides.
+2. Divide both sides by 2.`;
+    const { container } = render(<MarkdownContent markdown={markdown} variant="lesson-reader" />);
+
+    const sampleProblems = container.querySelector(".markdown-sample-problems");
+    expect(sampleProblems?.querySelectorAll(".markdown-sample-problem")).toHaveLength(1);
+    expect(sampleProblems?.querySelector("ul, ol")).not.toBeInTheDocument();
+    expect(container.querySelectorAll(".markdown-content-lesson-reader > ol li")).toHaveLength(2);
+  });
+
   it("keeps generic Markdown presentation unchanged outside the student lesson reader", () => {
     const markdown = String.raw`## Key Method
 Keep this section in the owner review rendering.
