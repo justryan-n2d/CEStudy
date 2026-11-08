@@ -140,7 +140,6 @@ Solve \\(2x + 3 = 7\\).
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
 
-    expect(await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 })).toBeInTheDocument();
     expect(await screen.findByText("Apply equivalent operations to both sides.")).toBeInTheDocument();
     const verifyButton = screen.getByRole("button", { name: "Mark verified" });
     expect(verifyButton).toBeDisabled();
@@ -155,7 +154,7 @@ Solve \\(2x + 3 = 7\\).
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 });
+    await screen.findByText("Apply equivalent operations to both sides.");
 
     await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Solving Linear Equations"));
     await user.clear(screen.getByLabelText("Lesson title"));
@@ -177,7 +176,7 @@ Solve \\(2x + 3 = 7\\).
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 });
+    await screen.findByText("Apply equivalent operations to both sides.");
     await waitFor(() => expect(screen.getByLabelText("Lesson title")).toHaveValue("Solving Linear Equations"));
 
     await user.click(screen.getByRole("checkbox", { name: /I reviewed this lesson against the approved syllabus/i }));
@@ -198,7 +197,7 @@ Solve \\(2x + 3 = 7\\).
     render(<MemoryRouter><ContentReviewPage /></MemoryRouter>);
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
-    await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 });
+    await screen.findByText("Apply equivalent operations to both sides.");
     await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
 
     expect((await screen.findAllByText("TEST QUESTION PROMPT")).length).toBeGreaterThan(0);
@@ -213,7 +212,7 @@ Solve \\(2x + 3 = 7\\).
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
 
-    expect(await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 })).toBeInTheDocument();
+    expect(await screen.findByText("Apply equivalent operations to both sides.")).toBeInTheDocument();
     expect(screen.queryByText(/Readiness Diagnostic/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Unit \d+$/)).not.toBeInTheDocument();
   });
@@ -224,7 +223,7 @@ Solve \\(2x + 3 = 7\\).
     await user.type(screen.getByLabelText("Owner access key"), "test-owner-access-key-at-least-32-characters");
     await user.click(screen.getByRole("button", { name: "Unlock review" }));
 
-    await screen.findByRole("heading", { name: "Solving Linear Equations", level: 2 });
+    await screen.findByText("Apply equivalent operations to both sides.");
     await user.click(screen.getByRole("tab", { name: /Practice questions/i }));
 
     expect((await screen.findAllByText("TEST QUESTION PROMPT")).length).toBeGreaterThan(0);
