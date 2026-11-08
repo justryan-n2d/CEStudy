@@ -123,6 +123,8 @@ These objectives should remain metadata, not lesson content.
     const markdown = String.raw`## Concept
 This explanation remains visible.
 
+**Example: Solve \\(2x + 3 = 7\\).**
+
 ## Common mistakes
 This generic list is not part of the lesson.
 
