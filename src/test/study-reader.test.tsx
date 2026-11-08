@@ -130,6 +130,21 @@ Keep this section in the owner review rendering.
     expect(container.querySelector("ul li")).toBeInTheDocument();
   });
 
+  it("applies the textbook-style section and sample-problem rules on the student lesson route", async () => {
+    vi.mocked(fetchPublishedLessons).mockResolvedValueOnce([{
+      ...relatedLessons[0],
+      lessonMarkdown: "## Key Method\nThis section is not displayed in the student reader.\n\n## Common errors to avoid\nThis section is not displayed either.\n\n## Learning Objectives\nObjectives remain metadata.\n\n## Concept\nThis explanation remains visible.\n\n## Sample Problems\n- Example 1: \\(2x + 3 = 7\\)\n- Example 2: \\(4x - 1 = 11\\)\n\n## Legend\n- \\(x\\) is the unknown.",
+    }]);
+    const { container } = renderStudyPage();
+
+    expect(await screen.findByText("This explanation remains visible.")).toBeInTheDocument();
+    expect(screen.queryByText(/This section is not displayed/)).not.toBeInTheDocument();
+    expect(screen.queryByText("Objectives remain metadata.")).not.toBeInTheDocument();
+    expect(container.querySelector(".markdown-sample-problems")?.querySelectorAll("p")).toHaveLength(2);
+    expect(container.querySelector(".markdown-sample-problems ul")).not.toBeInTheDocument();
+    expect(container.querySelector(".markdown-content-lesson-reader ul li")).toBeInTheDocument();
+  });
+
   it("renders quoted Markdown as structured lesson content with properly separated steps and math", async () => {
     const { container } = render(
       <MarkdownContent

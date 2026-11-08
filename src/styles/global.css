@@ -2922,3 +2922,56 @@ body {
   color: var(--ui-text-muted);
   font-weight: 750;
 }
+
+
+/* Student lesson reader: textbook-like equation and worked-problem layout. */
+.study-lesson .markdown-content-lesson-reader .markdown-display-math {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  margin: 2rem 0 2.35rem;
+  padding: 1rem .25rem;
+}
+
+.study-lesson .markdown-content-lesson-reader .markdown-display-math .latex-math-block {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: .7rem .25rem;
+  text-align: center;
+}
+
+.study-lesson .markdown-content-lesson-reader .markdown-display-math .katex-display {
+  margin: 0;
+}
+
+.study-lesson .markdown-content-lesson-reader .markdown-sample-problems {
+  display: grid;
+  justify-items: center;
+  gap: 1.4rem;
+  margin: 1.9rem 0 2.25rem;
+}
+
+.study-lesson .markdown-content-lesson-reader .markdown-sample-problem {
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  line-height: 1.85;
+}
+
+@media (max-width: 560px) {
+  .study-lesson .markdown-content-lesson-reader .markdown-display-math {
+    margin-block: 1.6rem 1.9rem;
+    padding-block: .7rem;
+  }
+
+  .study-lesson .markdown-content-lesson-reader .markdown-display-math .latex-math-block {
+    text-align: center;
+  }
+
+  .study-lesson .markdown-content-lesson-reader .markdown-sample-problems {
+    gap: 1.25rem;
+    margin-block: 1.6rem 1.9rem;
+  }
+}

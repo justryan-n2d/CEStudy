@@ -348,17 +348,18 @@ Brand blue must remain the identity baseline. Validate its use on both light and
 
 ### 7.4 Lesson and engineering content
 
-Recommended lesson hierarchy:
+Recommended lesson-reader hierarchy:
 
-1. Title and learning objectives.
-2. Short concept explanation.
-3. Definition or governing equation.
-4. Worked example with numbered steps.
-5. Units, assumptions, and interpretation.
-6. Common mistake or check when supported by reviewed content.
-7. Next available lesson or practice action.
+1. Lesson title.
+2. Concise conceptual explanation in readable paragraphs.
+3. Definitions and governing formulas, with each display equation centered and surrounded by deliberate vertical whitespace.
+4. Worked examples and sample problems presented as standalone prompts, not as bullet-list entries. Center the problem statement or its principal equation, then keep the solution explanation and numbered working steps in their natural reading order.
+5. A short legend or notation list only when readers need definitions for symbols, variables, units, or diagram labels. Use bullets for genuine sets of items; do not add a legend where the topic does not need one.
+6. Assumptions, units, interpretation, and a relevant next lesson or practice action when supported by reviewed content.
 
-This is a layout convention, not authorization to rewrite mathematical source content. Visual changes must not alter formula meaning, variable names, units, diagrams, or approved solution steps.
+**Do not add generic “Key Method”, “Common errors to avoid”, or “Learning Objectives” sections to the student lesson reader.** Learning objectives remain searchable lesson metadata, not a displayed section. Suppress the specifically owner-rejected “One-step and two-step equations, example” section at the lesson-reader presentation boundary; this is a display decision, not permission to rewrite stored source records or the curriculum inventory.
+
+This is a layout convention, not authorization to rewrite mathematical source content. Preserve formula meaning, variable names, units, diagrams, source attribution, and approved solution steps. Centering must not crop, truncate, or make a long equation inaccessible on narrow screens.
 
 ### 7.5 Practice workspace
 
@@ -378,7 +379,7 @@ This is a layout convention, not authorization to rewrite mathematical source co
 | Year Levels | Existing | Overview of all four years; nested relationships from verified metadata only. |
 | Subject Catalog | Existing | Search, filters, accurate result counts, availability, useful reset and no-results recovery. Preserve current catalog behavior. |
 | Subject Detail | Existing | Title, summary, source/provenance, availability, relevant lessons, and practice entry only when available. |
-| Lesson / Study | Existing | Comfortable reading width, clear objectives and headings, consistent equation blocks, lesson outline/next links where supported, local completion disclosure. |
+| Lesson / Study | Existing | Textbook-style reading flow: concise prose, centered display equations with generous whitespace, standalone centered worked/sample problems, and semantic legends only when needed. Objectives stay searchable metadata; do not add generic Key Method/Common errors sections or the owner-rejected one-step/two-step example section. Preserve published-only access, topic navigation and relevant recommendations. |
 | Review Materials Hub | Planned | Formula Sheets, Problem Sets with Solutions, Video Tutorials; show availability, review state, source/version, and download state only when real data exists. |
 | Practice | Existing, limited pool | Preserve current answer flow; improve question/tools layout, feedback and responsive access. Main live smoke currently expects zero published questions. |
 | Results / Progress | Existing progress and per-session results | Separate current-session score from stored history; show device-local scope and only real values. |
@@ -699,6 +700,7 @@ Do not merge, deploy, publish, change production data/configuration, or weaken s
 
 | Date | Update |
 |---|---|
+| 2026-11-08 | Recorded the owner-approved textbook-style lesson-reader presentation contract and linked the dedicated implementation plan. Display equations and sample problems use centered, spacious presentation; bullets remain semantic and topic-dependent. The requested generic sections and one-step/two-step example section are suppressed only in the student reader. No stored lesson rows, publication state, practice pages, or production settings are changed. |
 | 2026-11-04 | Recorded the owner-approved Decision-Light Design standard in the UX/UI Design System and the roadmap decision register. Set the full-site audit (C) as a deferred pre-Phase-4 entry gate after documentation A. No application UI, behavior, data, or production configuration changed. |
 | 2026-11-04 | Reconciled this roadmap with current `main` after PR #69 merged at `ad96cc6`. Updated the repository snapshot, current CI/theme/navigation evidence, consolidated PR #67 status, and phase tracker. Linked the dedicated Phase 3 implementation plan. Recorded that the 2026-11-01 live backup verified all three required tables and remote read-back. Product roadmap Phase 3 is distinct from the lifecycle Phase 3 in `PHASE_PLAN.md`. |
 

@@ -122,7 +122,7 @@ export function StudyPage() {
                 {showActiveLesson && activeLesson ? (
                   <article className="study-lesson">
                     <h2>{activeLesson.title}</h2>
-                    <MarkdownContent markdown={activeLesson.lessonMarkdown} />
+                    <MarkdownContent markdown={activeLesson.lessonMarkdown} variant="lesson-reader" />
 
                     <section className="study-recommendations" aria-label="Recommended lessons">
                       <h3>Recommended lessons</h3>
