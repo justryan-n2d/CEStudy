@@ -3079,10 +3079,8 @@ body {
   justify-items: center;
   gap: .35rem;
   margin: 1.15rem 0 0;
-  padding: 1rem;
-  border: 1px solid var(--ui-border);
-  border-radius: 14px;
-  background: var(--ui-surface-muted);
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--ui-border);
   color: var(--ui-heading);
   text-align: center;
 }
