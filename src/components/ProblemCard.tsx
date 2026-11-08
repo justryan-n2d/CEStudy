@@ -12,15 +12,21 @@ interface ProblemCardProps {
   number: number;
 }
 
+function renderProblemText(value: string) {
+  // Keep plain text intact for selection and assistive technology.
+  // Authors can opt into inline typesetting with explicit delimiters.
+  return value.includes("\\(") || value.includes("$")
+    ? <InlineMathText text={value} />
+    : value;
+}
+
 export function ProblemCard({ problem, number }: ProblemCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <article className="problem-card">
-      <p className="problem-number">Problem {number}</p>
-      <p className="problem-prompt">
-        <InlineMathText text={problem.prompt} />
-      </p>
+      <h3 className="problem-number">Problem {number}</h3>
+      <p className="problem-prompt">{renderProblemText(problem.prompt)}</p>
 
       <details
         className="problem-solution"
@@ -40,9 +46,7 @@ export function ProblemCard({ problem, number }: ProblemCardProps) {
 
           <div className="problem-answer">
             <strong>Final answer</strong>
-            <p className="problem-final-answer">
-              <InlineMathText text={problem.correctAnswer} />
-            </p>
+            <p className="problem-final-answer">{renderProblemText(problem.correctAnswer)}</p>
           </div>
         </div>
       </details>
