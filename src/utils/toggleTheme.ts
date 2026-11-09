@@ -1,14 +1,10 @@
 import type { MouseEvent } from "react";
 
-interface ViewTransitionDocument extends Document {
-  startViewTransition?: (update: () => void) => { ready: Promise<void> };
-}
-
 export function toggleTheme(e: MouseEvent<HTMLButtonElement>, apply: () => void): void {
   const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-  const transitionDocument = document as ViewTransitionDocument;
+  const startViewTransition = document.startViewTransition;
 
-  if (!transitionDocument.startViewTransition || reduceMotion) {
+  if (typeof startViewTransition !== "function" || reduceMotion) {
     apply();
     return;
   }
@@ -21,7 +17,7 @@ export function toggleTheme(e: MouseEvent<HTMLButtonElement>, apply: () => void)
     Math.max(y, window.innerHeight - y),
   );
 
-  const transition = transitionDocument.startViewTransition(apply);
+  const transition = startViewTransition.call(document, apply);
   void transition.ready.then(() => {
     document.documentElement.animate(
       {
