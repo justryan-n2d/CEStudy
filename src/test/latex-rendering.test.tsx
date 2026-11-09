@@ -266,4 +266,17 @@ The solutions are \(x=-2\) and \(x=-3\).`;
     expect(document.querySelectorAll(".markdown-content ol li")).toHaveLength(3);
   });
 
+  it("keeps Factor Theorem prose outside automatically detected equations", async () => {
+    const lesson = "The Factor Theorem says P(a) = 0 exactly when x - a is a factor of P(x). Therefore x² - 5x + 6 = (x - 2)(x - 3).";
+    render(<MarkdownContent markdown={lesson} />);
+
+    await waitFor(() => expect(document.querySelectorAll(".katex")).toHaveLength(2));
+    const rendered = [...document.querySelectorAll(".katex")].map((element) => element.textContent ?? "");
+    expect(rendered.some((value) => value.includes("The Factor Theorem"))).toBe(false);
+    expect(rendered.some((value) => value.includes("exactly"))).toBe(false);
+    expect(rendered.some((value) => value.includes("Therefore"))).toBe(false);
+    expect(document.querySelector(".markdown-content")?.textContent).toContain("The Factor Theorem says");
+    expect(document.querySelector(".markdown-content")?.textContent).toContain("Therefore");
+  });
+
 });

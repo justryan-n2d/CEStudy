@@ -38,6 +38,79 @@ describe("practice flow",()=>{
     expect(screen.getByText("You answered 1 out of 2 questions correctly.")).toBeInTheDocument();
   });
 
+  it("recovers from a failed load when the student retries", async () => {
+    const user = userEvent.setup();
+    let resolveRetry: (questions: PracticeQuestion[]) => void = () => {
+      throw new Error("Retry request was not started.");
+    };
+    vi.mocked(fetchPublishedPracticeQuestions)
+      .mockRejectedValueOnce(new Error("Network unavailable"))
+      .mockImplementationOnce(() => new Promise<PracticeQuestion[]>((resolve) => {
+        resolveRetry = resolve;
+      }));
+
+    render(<MemoryRouter><PracticePage /></MemoryRouter>);
+
+    expect(await screen.findByRole("heading", { name: "Practice unavailable" })).toBeInTheDocument();
+    expect(fetchPublishedPracticeQuestions).toHaveBeenCalledTimes(1);
+
+    await user.click(screen.getByRole("button", { name: "Retry" }));
+
+    expect(await screen.findByText("Loading practice…")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Practice unavailable" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "TEST PROMPT ONE" })).not.toBeInTheDocument();
+
+    resolveRetry(demo);
+
+    expect(await screen.findByRole("heading", { name: "TEST PROMPT ONE" })).toBeInTheDocument();
+    expect(fetchPublishedPracticeQuestions).toHaveBeenCalledTimes(2);
+    expect(fetchPublishedPracticeQuestions).toHaveBeenNthCalledWith(1, "basic-algebra");
+    expect(fetchPublishedPracticeQuestions).toHaveBeenNthCalledWith(2, "basic-algebra");
+  });
+
+  it("locks a submitted answer and removes the submit action", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><PracticePage /></MemoryRouter>);
+
+    expect(await screen.findByRole("heading", { name: "TEST PROMPT ONE" })).toBeInTheDocument();
+    const checkAnswer = screen.getByRole("button", { name: /check answer/i });
+    expect(checkAnswer).toBeDisabled();
+
+    await user.click(screen.getByRole("radio", { name: "TEST OPTION B" }));
+    expect(checkAnswer).toBeEnabled();
+    await user.click(checkAnswer);
+
+    expect(screen.getByRole("radio", { name: "TEST OPTION A" })).toBeDisabled();
+    expect(screen.getByRole("radio", { name: "TEST OPTION B" })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: /check answer/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /next question/i })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Correct.");
+  });
+
+  it("restarts a completed session at question one with a cleared answer and score", async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter><PracticePage /></MemoryRouter>);
+
+    expect(await screen.findByRole("heading", { name: "TEST PROMPT ONE" })).toBeInTheDocument();
+    await user.click(screen.getByRole("radio", { name: "TEST OPTION B" }));
+    await user.click(screen.getByRole("button", { name: /check answer/i }));
+    await user.click(screen.getByRole("button", { name: /next question/i }));
+
+    expect(await screen.findByRole("heading", { name: "TEST PROMPT TWO" })).toBeInTheDocument();
+    await user.click(screen.getByRole("radio", { name: "TEST OPTION A" }));
+    await user.click(screen.getByRole("button", { name: /check answer/i }));
+    await user.click(screen.getByRole("button", { name: /see results/i }));
+
+    expect(screen.getByText("You answered 1 out of 2 questions correctly.")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+
+    expect(await screen.findByRole("heading", { name: "TEST PROMPT ONE" })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "TEST OPTION A" })).not.toBeChecked();
+    expect(screen.getByRole("radio", { name: "TEST OPTION B" })).not.toBeChecked();
+    expect(screen.getByRole("button", { name: /check answer/i })).toBeDisabled();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
+
   it("keeps questions hidden and uses concise copy when none have been published",async()=>{
     vi.mocked(fetchPublishedPracticeQuestions).mockResolvedValueOnce([]);
     render(<MemoryRouter><PracticePage/></MemoryRouter>);

@@ -1,7 +1,45 @@
-import { describe,expect,it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { parsePracticeQuestion } from "../types/study-content";
-describe("practice content validation",()=>{
-const valid={id:"q1",subject_slug:"basic-algebra",topic:"Test topic",prompt:"TEST PROMPT",choices:["TEST OPTION A","TEST OPTION B"],correct_answer:"TEST OPTION B",solution_steps:["TEST STEP"],explanation:"TEST EXPLANATION",source_note:"Draft only.",display_order:1};
-it("maps well-formed rows into the student-facing data shape",()=>expect(parsePracticeQuestion(valid)).toMatchObject({id:"q1",subjectSlug:"basic-algebra",correctAnswer:"TEST OPTION B",choices:["TEST OPTION A","TEST OPTION B"]}));
-it("rejects incomplete content instead of rendering it",()=>{expect(parsePracticeQuestion({...valid,choices:["one"]})).toBeNull();expect(parsePracticeQuestion({...valid,solution_steps:[]})).toBeNull();expect(parsePracticeQuestion({...valid,correct_answer:5})).toBeNull()});
+
+describe("practice content validation", () => {
+  const valid = {
+    id: "q1",
+    subject_slug: "basic-algebra",
+    topic: "Test topic",
+    prompt: "TEST PROMPT",
+    choices: ["TEST OPTION A", "TEST OPTION B"],
+    correct_answer: "TEST OPTION B",
+    solution_steps: ["TEST STEP"],
+    explanation: "TEST EXPLANATION",
+    source_note: "Synthetic test fixture only.",
+    display_order: 1,
+  };
+
+  it("maps well-formed rows into the student-facing data shape", () => {
+    expect(parsePracticeQuestion(valid)).toMatchObject({
+      id: "q1",
+      subjectSlug: "basic-algebra",
+      correctAnswer: "TEST OPTION B",
+      choices: ["TEST OPTION A", "TEST OPTION B"],
+    });
+  });
+
+  it("rejects incomplete content instead of rendering it", () => {
+    expect(parsePracticeQuestion({ ...valid, choices: ["one"] })).toBeNull();
+    expect(parsePracticeQuestion({ ...valid, solution_steps: [] })).toBeNull();
+    expect(parsePracticeQuestion({ ...valid, correct_answer: 5 })).toBeNull();
+  });
+
+  it("rejects a correct answer that is not one of the displayed choices", () => {
+    expect(parsePracticeQuestion({ ...valid, correct_answer: "NOT A DISPLAYED OPTION" })).toBeNull();
+  });
+
+  it("rejects blank answer choices", () => {
+    expect(parsePracticeQuestion({ ...valid, choices: ["", "TEST OPTION B"] })).toBeNull();
+    expect(parsePracticeQuestion({ ...valid, choices: ["   ", "TEST OPTION B"] })).toBeNull();
+  });
+
+  it("rejects duplicate answer choices", () => {
+    expect(parsePracticeQuestion({ ...valid, choices: ["TEST OPTION A", "TEST OPTION A"] })).toBeNull();
+  });
 });

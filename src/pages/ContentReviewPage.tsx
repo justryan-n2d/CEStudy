@@ -105,13 +105,16 @@ export function ContentReviewPage() {
     setError("");
     try {
       const next = await fetchContentReviewBundle();
-      setBundle(next);
-      setSelectedLessonId((currentId) => currentId && next.lessons.some((item) => item.id === currentId)
+      const reviewableLessons = next.lessons.filter((item) => item.status !== "retired");
+      const reviewableQuestions = next.questions.filter((item) => item.status !== "retired");
+      const reviewableBundle = { ...next, lessons: reviewableLessons, questions: reviewableQuestions };
+      setBundle(reviewableBundle);
+      setSelectedLessonId((currentId) => currentId && reviewableLessons.some((item) => item.id === currentId)
         ? currentId
-        : next.lessons.find((item) => item.status !== "published")?.id ?? next.lessons[0]?.id ?? null);
-      setSelectedQuestionId((currentId) => currentId && next.questions.some((item) => item.id === currentId)
+        : reviewableLessons.find((item) => item.status !== "published")?.id ?? reviewableLessons[0]?.id ?? null);
+      setSelectedQuestionId((currentId) => currentId && reviewableQuestions.some((item) => item.id === currentId)
         ? currentId
-        : next.questions.find((item) => item.status !== "published")?.id ?? next.questions[0]?.id ?? null);
+        : reviewableQuestions.find((item) => item.status !== "published")?.id ?? reviewableQuestions[0]?.id ?? null);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Content review could not be loaded.");
       if (!getContentReviewSessionToken()) setUnlocked(false);
@@ -303,14 +306,14 @@ export function ContentReviewPage() {
           : items.map((item) => {
             const selectedId = tab === "lessons" ? selectedLessonId : selectedQuestionId;
             const itemTitle = tab === "lessons" ? (item as SubjectLesson).title : (item as ReviewPracticeQuestion).topic;
-            const itemSub = tab === "lessons" ? `Unit ${(item as SubjectLesson).unitNumber}` : `Question ${(item as ReviewPracticeQuestion).displayOrder}`;
+            const itemSub = tab === "questions" ? `Question ${(item as ReviewPracticeQuestion).displayOrder}` : null;
             return <button key={item.id} type="button"
               className={`content-review-list-item${selectedId === item.id ? " active" : ""}`}
               onClick={() => {
                 if (tab === "lessons") setSelectedLessonId(item.id); else setSelectedQuestionId(item.id);
                 setError(""); setNotice("");
               }}>
-              <span className="content-review-list-top"><small>{itemSub}</small><span className={statusClass(item.status)}>{statusLabels[item.status]}</span></span>
+              <span className="content-review-list-top">{itemSub && <small>{itemSub}</small>}<span className={statusClass(item.status)}>{statusLabels[item.status]}</span></span>
               <strong>{itemTitle}</strong>
               {tab === "questions" && <span className="content-review-question-preview">{(item as ReviewPracticeQuestion).prompt}</span>}
             </button>;
@@ -321,13 +324,13 @@ export function ContentReviewPage() {
           {!current ? <div className="state-panel"><h2>Select an item</h2><p>Choose an item from the list to view it and record your review.</p></div>
           : <>
             <div className="review-detail-heading">
-              <div><span className="kicker">{tab === "lessons" ? `Unit ${(current as SubjectLesson).unitNumber}` : "Practice question"}</span>
+              <div>{tab === "questions" && <span className="kicker">Practice question</span>}
                 <h2>{tab === "lessons" ? (current as SubjectLesson).title : (current as ReviewPracticeQuestion).topic}</h2></div>
               <span className={statusClass(current.status)}>{statusLabels[current.status]}</span>
             </div>
 
             {lesson && tab === "lessons" ? <>
-              <section className="review-detail-card"><h3>Lesson preview</h3><MarkdownContent markdown={editLessonMarkdown || lesson.lessonMarkdown} /></section>
+              <section className="review-detail-card"><h3>Lesson preview</h3><MarkdownContent markdown={editLessonMarkdown || lesson.lessonMarkdown} variant="lesson-reader" /></section>
               {(current.status === "needs-review" || current.status === "correction-required") && (
                 <section className="review-edit-fields">
                   <h3>Edit lesson content</h3>

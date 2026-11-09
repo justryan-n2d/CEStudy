@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
@@ -167,7 +167,8 @@ describe("student lesson reader", () => {
     expect(screen.getByRole("heading", { name: "Choose a topic" })).toBeInTheDocument();
   });
 
-  it("navigates between adjacent published lessons in unit order", async () => {
+  it("keeps lesson navigation available through the progressively disclosed topic list", async () => {
+    const user = userEvent.setup();
     const secondLesson: SubjectLesson = {
       ...publishedLesson,
       id: "public-test-lesson-02",
@@ -187,11 +188,15 @@ describe("student lesson reader", () => {
     renderStudy("/study/basic-algebra/2");
 
     expect(await screen.findByRole("heading", { name: "Second Published Lesson" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "← Previous" })).toHaveAttribute("href", "/study/basic-algebra/1");
-    expect(screen.getByRole("link", { name: "Next topic →" })).toHaveAttribute("href", "/study/basic-algebra/3");
+    await user.click(screen.getByText(/Browse topics/));
+    const topicNavigation = within(screen.getByRole("complementary", { name: "Reviewer topics" }));
+    expect(topicNavigation.getByRole("link", { name: /Published Test Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/1");
+    expect(topicNavigation.getByRole("link", { name: /Third Published Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/3");
+    expect(screen.queryByRole("link", { name: /← Previous|Next topic →/ })).not.toBeInTheDocument();
   });
 
-  it("omits unavailable previous and next navigation at the lesson boundaries", async () => {
+  it("keeps the topic browser discoverable at lesson boundaries without adding competing next/previous buttons", async () => {
+    const user = userEvent.setup();
     const secondLesson: SubjectLesson = {
       ...publishedLesson,
       id: "public-test-middle-lesson",
@@ -210,16 +215,16 @@ describe("student lesson reader", () => {
 
     const firstView = renderStudy("/study/basic-algebra/1");
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /← Previous/ })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Next topic →" })).toHaveAttribute("href", "/study/basic-algebra/2");
+    expect(screen.queryByRole("link", { name: /← Previous|Next topic →/ })).not.toBeInTheDocument();
+    await user.click(screen.getByText(/Browse topics/));
+    const firstTopicNavigation = within(screen.getByRole("complementary", { name: "Reviewer topics" }));
+    expect(firstTopicNavigation.getByRole("link", { name: /Middle Published Lesson/ })).toHaveAttribute("href", "/study/basic-algebra/2");
     firstView.unmount();
 
     renderStudy("/study/basic-algebra/3");
     expect(await screen.findByRole("heading", { name: "Last Published Lesson" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "← Previous" })).toHaveAttribute("href", "/study/basic-algebra/2");
-    expect(screen.queryByRole("link", { name: "Next topic →" })).not.toBeInTheDocument();
-    expect(screen.getAllByRole("link", { name: "Practice problems →" })).toHaveLength(2);
-    expect(screen.getAllByRole("link", { name: "Practice problems →" }).every((link) => link.getAttribute("href") === "/practice/basic-algebra")).toBe(true);
+    expect(screen.queryByRole("link", { name: /← Previous|Next topic →/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Practice problems →" })).toHaveAttribute("href", "/practice/basic-algebra");
   });
 
   it("ignores a late response for the previous subject after the route changes", async () => {
@@ -260,19 +265,26 @@ describe("student lesson reader", () => {
     expect(screen.queryByRole("heading", { name: "Published Test Lesson" })).not.toBeInTheDocument();
   });
 
-  it("keeps completion visible without an incomplete action and preserves the next-topic action", async () => {
-    const user = userEvent.setup();
+  it("keeps the reading task free of streak, completion, and progress controls", async () => {
     fetchPublishedLessonsMock.mockResolvedValue([publishedLesson, factoringLesson]);
     renderStudy("/study/basic-algebra/1");
 
     expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Mark as complete" }));
-
-    expect(screen.getByText("Completed")).toBeInTheDocument();
-    expect(screen.getByText(/Completed and saved on this device\./)).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Mark as incomplete" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Mark as complete" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Next topic →" })).toHaveAttribute("href", "/study/basic-algebra/4");
-    expect(localStorage.getItem("cestudy:completed-lessons:v1")).toContain("public-test-lesson");
+    expect(screen.queryByText(/days streak/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /mark as complete/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /mark as incomplete/i })).not.toBeInTheDocument();
+    expect(screen.queryByText("Completed")).not.toBeInTheDocument();
+    expect(screen.queryByText(/progress is saved on this device/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /view my progress/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Recommended lessons" })).toBeInTheDocument();
   });
+  it("shows lesson titles without exposing internal unit numbers", async () => {
+    fetchPublishedLessonsMock.mockResolvedValue([publishedLesson, factoringLesson]);
+    renderStudy("/study/basic-algebra/1");
+
+    expect(await screen.findByRole("heading", { name: "Published Test Lesson" })).toBeInTheDocument();
+    expect(screen.queryByText("Unit 1")).not.toBeInTheDocument();
+    expect(document.querySelector(".study-outline-number")).not.toBeInTheDocument();
+  });
+
 });
