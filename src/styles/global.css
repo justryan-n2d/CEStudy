@@ -2702,3 +2702,19 @@ body {
   border-color: var(--ui-focus);
   box-shadow: none;
 }
+
+
+/* Let the circular theme reveal own the transition instead of cross-fading snapshots. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
