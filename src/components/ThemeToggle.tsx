@@ -1,4 +1,5 @@
 import { useTheme } from "../contexts/ThemeContext";
+import { toggleTheme } from "../utils/toggleTheme";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -10,7 +11,7 @@ export function ThemeToggle() {
         type="button"
         aria-label="Light"
         aria-pressed={theme === "light"}
-        onClick={() => setTheme("light")}
+        onClick={(event) => toggleTheme(event, () => setTheme("light"))}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <circle cx="12" cy="12" r="4" />
@@ -23,7 +24,7 @@ export function ThemeToggle() {
         type="button"
         aria-label="Dark"
         aria-pressed={theme === "dark"}
-        onClick={() => setTheme("dark")}
+        onClick={(event) => toggleTheme(event, () => setTheme("dark"))}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M20.7 15.1A8.7 8.7 0 0 1 8.9 3.3 8.8 8.8 0 1 0 20.7 15.1Z" />
