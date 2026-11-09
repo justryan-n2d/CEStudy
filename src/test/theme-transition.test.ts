@@ -18,7 +18,7 @@ function createClickEvent(clientX = 120, clientY = 240): MouseEvent<HTMLButtonEl
 
   const event = new MouseEvent("click", { clientX, clientY });
   Object.defineProperty(event, "currentTarget", { configurable: true, value: button });
-  return event as MouseEvent<HTMLButtonElement>;
+  return event as unknown as MouseEvent<HTMLButtonElement>;
 }
 
 function installViewTransition() {
