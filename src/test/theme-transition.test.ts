@@ -2,10 +2,6 @@ import type { MouseEvent } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { toggleTheme } from "../utils/toggleTheme";
 
-interface ViewTransitionDocument extends Document {
-  startViewTransition?: (update: () => void) => { ready: Promise<void> };
-}
-
 function createClickEvent(clientX = 120, clientY = 240): MouseEvent<HTMLButtonElement> {
   const button = document.createElement("button");
   button.getBoundingClientRect = () => ({
