@@ -1,0 +1,50 @@
+name: Production LaTeX fraction visual check
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/production-math-visual.yml"
+      - "scripts/production-math-visual.cjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-math-visual-check
+  cancel-in-progress: false
+
+jobs:
+  browser-visual-check:
+    name: Render fractions in production Chromium
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out test harness
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install locked app dependencies
+        run: npm ci
+      - name: Install isolated Playwright
+        run: npm install --prefix /tmp/cestudy-playwright --no-package-lock playwright@1.64.0
+      - name: Install Chromium
+        run: /tmp/cestudy-playwright/node_modules/.bin/playwright install --with-deps chromium
+      - name: Check browser test syntax
+        run: node --check scripts/production-math-visual.cjs
+      - name: Render bare and nested fractions against production
+        env:
+          CESTUDY_BASE_URL: https://cestudy.pages.dev
+          EXPECTED_SUPABASE_HOST: qqmdwltfgpqtcvdbcmto.supabase.co
+          PLAYWRIGHT_MODULE_PATH: /tmp/cestudy-playwright/node_modules/playwright
+        run: node scripts/production-math-visual.cjs
+      - name: Upload visual screenshots and summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-latex-fraction-visual-check
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 7
