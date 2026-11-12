@@ -21,7 +21,7 @@ jobs:
       contents: read
     steps:
       - name: Check out trusted main branch source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install PostgreSQL 17 client, OpenSSL, and rclone
         shell: bash
